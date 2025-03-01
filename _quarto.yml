@@ -6,8 +6,8 @@ project:
     - overleaf_presentations
 
 website:
-  title: "Evanns Morales-Cuadrado<br>
-          Ph.D Student at Georgia Tech"
+  title: "Evanns Morales-Cuadrado |<br>
+          Research Website"
 
   navbar:
     left:

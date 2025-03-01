@@ -1,5 +1,6 @@
 ---
-title: "Evanns Morales-Cuadrado"
+title: "Evanns Morales-Cuadrado |<br>
+        Ph.D Student at Georgia Tech"
 about:
   template: solana
   image: /files/LabPhoto.png
