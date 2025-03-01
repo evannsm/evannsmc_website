@@ -1,5 +1,5 @@
 ---
-title: "Evanns Morales-Cuadrado |<br>
+title: "Evanns Morales-Cuadrado|<br>
         Ph.D Student at Georgia Tech"
 about:
   template: solana
