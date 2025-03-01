@@ -13,7 +13,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: cv.qmd
+      - href: cv
         text: CV
       - href: publications.qmd
         text: Publications
