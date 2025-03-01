@@ -30,7 +30,7 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
 
 ## Education
 
-Georgia Institute of Technology| Atlanta, GA  
+Georgia Institute of Technology | Atlanta, GA  
 PhD in Robotics | Aug 2022 - Present
 
 University of Texas at Arlington | Arlington, TX  
