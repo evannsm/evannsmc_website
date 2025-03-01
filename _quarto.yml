@@ -1,0 +1,37 @@
+project:
+  type: website
+  output-dir: docs
+  resources: 
+    - CNAME
+    - overleaf_presentations
+
+website:
+  title: "Evanns Morales-Cuadrado<br>
+          Ph.D Student at Georgia Tech"
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: cv.qmd
+        text: CV
+      - href: publications.qmd
+        text: Publications
+      - href: blog.qmd
+        text: Blog
+      - href: about.qmd
+        text: About Me
+  twitter-card: true
+  open-graph: true
+
+  
+
+format:
+  html:
+    theme: lux
+    css: styles.css
+    # toc: true
+    html-math-method: mathjax
+
+
+

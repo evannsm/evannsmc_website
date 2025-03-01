@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Evanns Morales-Cuadrado",
+    "section": "",
+    "text": "egm [at] gatech.edu\nI am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unammed ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end.\nI hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career.\n\n\nGeorgia Institute of Technology| Atlanta, GA\nPhD in Robotics | Aug 2022 - Present\nUniversity of Texas at Arlington | Arlington, TX\nHonors B.S in Electrical Engineering | Aug 2018 - May 2022\nMinors in Mathematics and Physics Summa Cum Laude"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Evanns Morales-Cuadrado",
+    "section": "",
+    "text": "Georgia Institute of Technology| Atlanta, GA\nPhD in Robotics | Aug 2022 - Present\nUniversity of Texas at Arlington | Arlington, TX\nHonors B.S in Electrical Engineering | Aug 2018 - May 2022\nMinors in Mathematics and Physics Summa Cum Laude"
+  },
+  {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "Research Blog",
+    "section": "",
+    "text": "I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.\nI also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Evanns Morales-Cuadrado<br> Ph.D Student at Georgia Tech",
+    "section": "",
+    "text": "This is where I might tell you something deep, beautiful, and personal about myself when I have the chance to write something interesting :)"
+  },
+  {
+    "objectID": "about.html#about-me",
+    "href": "about.html#about-me",
+    "title": "Evanns Morales-Cuadrado<br> Ph.D Student at Georgia Tech",
+    "section": "",
+    "text": "This is where I might tell you something deep, beautiful, and personal about myself when I have the chance to write something interesting :)"
+  },
+  {
+    "objectID": "publications.html",
+    "href": "publications.html",
+    "title": "Publications",
+    "section": "",
+    "text": "These are my publications (even my undergraduate honors thesis for nostalgia)\n\n\n\nEvanns Morales-Cuadrado, Christian Llanes, Yorai Wardi, Samuel Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” Appeared in American Control Conference (ACC), 2024. [pdf] [slides]\nEvanns Morales-Cuadrado, “Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance” Undergraduate Honors College Thesis at UT Arlington, 2022.\n\n\n* indicates equal contribution"
+  }
+]

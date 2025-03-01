@@ -1,0 +1,7 @@
+---
+title: "Research Blog"
+---
+
+I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.
+
+I also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.

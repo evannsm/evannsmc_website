@@ -1,0 +1,38 @@
+---
+title: "Evanns Morales-Cuadrado"
+about:
+  template: solana
+  image: /files/LabPhoto.png
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/evannsm
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/evanns-morales/
+    - text: "{{< ai google-scholar >}} Google Scholar"
+      href: https://scholar.google.com/citations?user=FY9tS9oAAAAJ&hl=en
+    - text: "{{< ai orcid >}} ORCID"
+      href: https://orcid.org/0009-0000-3928-6243
+---
+
+
+# Welcome to My Research Site!
+
+egm \[at\] gatech.edu
+
+I am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems ([FACTS](https://coogan.ece.gatech.edu/)) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.
+
+My research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unammed ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end.
+
+I hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career.
+
+## Education
+
+Georgia Institute of Technology| Atlanta, GA  
+PhD in Robotics | Aug 2022 - Present
+
+University of Texas at Arlington | Arlington, TX  
+Honors B.S in Electrical Engineering | Aug 2018 - May 2022  
+Minors in Mathematics and Physics
+Summa Cum Laude

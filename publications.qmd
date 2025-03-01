@@ -1,0 +1,30 @@
+---
+title: Publications
+---
+These are my publications (even my undergraduate honors thesis for nostalgia)
+
+<style>
+  /* .publist {list-style-type: none; padding-left: 0;}
+  .pubitem:before {content: "[" counter(section, numeric) "] ";}
+  .pubitem { counter-increment: section;} */
+  .publist ol {
+    list-style-type:none;
+    counter-reset:item 3;
+  }
+  .publist ol > li {
+    counter-increment:item -1;
+  }
+  .publist ol > li::marker {
+    content: "[" counter(item) "]  ";
+  }
+  .publist a {font-weight: bold;}
+</style>
+
+:::{.publist}
+1. **Evanns Morales-Cuadrado**, Christian Llanes, Yorai Wardi, Samuel Coogan, "[Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.](https://arxiv.org/abs/2408.11197)" Appeared in American Control Conference (ACC), 2024. \[[pdf](https://arxiv.org/pdf/2408.11197)\] \[[slides](/presentations/2024ACC_NRFlow/)\]
+
+
+1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022.
+
+:::
+\* *indicates equal contribution*
