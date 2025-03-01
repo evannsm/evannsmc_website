@@ -15,14 +15,14 @@ website:
         text: Home
       - href: cv
         text: CV
-      - href: publications.qmd
+      - href: publications
         text: Publications
-      - href: blog.qmd
+      - href: blog
         text: Blog
-      - href: about.qmd
+      - href: about
         text: About Me
-  twitter-card: true
-  open-graph: true
+  # twitter-card: true
+  # open-graph: true
 
   
 

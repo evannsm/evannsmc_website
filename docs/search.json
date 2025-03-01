@@ -14,29 +14,29 @@
     "text": "Georgia Institute of Technology| Atlanta, GA\nPhD in Robotics | Aug 2022 - Present\nUniversity of Texas at Arlington | Arlington, TX\nHonors B.S in Electrical Engineering | Aug 2018 - May 2022\nMinors in Mathematics and Physics Summa Cum Laude"
   },
   {
-    "objectID": "blog.html",
-    "href": "blog.html",
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
     "title": "Research Blog",
     "section": "",
     "text": "I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.\nI also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
+    "objectID": "about/index.html",
+    "href": "about/index.html",
     "title": "Evanns Morales-Cuadrado<br> Ph.D Student at Georgia Tech",
     "section": "",
     "text": "This is where I might tell you something deep, beautiful, and personal about myself when I have the chance to write something interesting :)"
   },
   {
-    "objectID": "about.html#about-me",
-    "href": "about.html#about-me",
+    "objectID": "about/index.html#about-me",
+    "href": "about/index.html#about-me",
     "title": "Evanns Morales-Cuadrado<br> Ph.D Student at Georgia Tech",
     "section": "",
     "text": "This is where I might tell you something deep, beautiful, and personal about myself when I have the chance to write something interesting :)"
   },
   {
-    "objectID": "publications.html",
-    "href": "publications.html",
+    "objectID": "publications/index.html",
+    "href": "publications/index.html",
     "title": "Publications",
     "section": "",
     "text": "These are my publications (even my undergraduate honors thesis for nostalgia)\n\n\n\nEvanns Morales-Cuadrado, Christian Llanes, Yorai Wardi, Samuel Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” Appeared in American Control Conference (ACC), 2024. [pdf] [slides]\nEvanns Morales-Cuadrado, “Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance” Undergraduate Honors College Thesis at UT Arlington, 2022.\n\n\n* indicates equal contribution"
