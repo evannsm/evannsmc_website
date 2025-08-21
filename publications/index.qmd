@@ -21,8 +21,12 @@ These are my publications (even my undergraduate honors thesis for nostalgia)
 </style>
 
 :::{.publist}
-1. **Evanns Morales-Cuadrado**, Christian Llanes, Yorai Wardi, Samuel Coogan, "[Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.](https://arxiv.org/abs/2408.11197)" Appeared in American Control Conference (ACC), 2024. \[[pdf](https://arxiv.org/pdf/2408.11197)\] \[[slides](/presentations/2024ACC_NRFlow/)\]
 
+1. **Evanns Morales-Cuadrado**, Luke Baird, Yorai Wardi, Samuel Coogan, "[Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method](https://arxiv.org/abs/2508.14185)" Submitted to IEEE Transactions on Control Systems Technology (TCST), 2025. \[[preprint pdf](https://arxiv.org/pdf/2508.14185)\]
+
+
+1. **Evanns Morales-Cuadrado**, Christian Llanes, Yorai Wardi, Samuel Coogan, "[Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.](https://ieeexplore.ieee.org/document/10644692)" Appeared in American Control Conference (ACC), 2024. \[[preprint pdf](https://arxiv.org/pdf/2408.11197)\] 
+<!-- \[[slides](/presentations/2024ACC_NRFlow/)\] -->
 
 1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022.
 
