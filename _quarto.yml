@@ -14,7 +14,7 @@ website:
       - href: index.qmd
         text: Home
       - href: cv
-        text: CV
+        text: CV/Resume
       - href: publications
         text: Publications
       - href: blog

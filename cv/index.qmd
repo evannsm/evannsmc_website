@@ -1,5 +1,11 @@
 ---
-title: CV
+title: CV/Resume
 ---
+(Last updated: September 2025)
 
-<embed src="../files/nopersonalinfo_Jan2025EvannsMoralesCuadrado_CV.pdf" type="application/pdf" width=800 height=600/>
+Here's my one page (front and back) resume:
+<embed src="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf" width=800 height=600/>
+
+
+My full CV:
+<embed src="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf" width=800 height=600/>
