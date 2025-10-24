@@ -1,90 +1,97 @@
 #!/usr/bin/env python3
 """
-Generate a custom favicon with initials and Puerto Rican flag-inspired design
+Generate a custom favicon with initials and geometric design
 """
 
 from PIL import Image, ImageDraw, ImageFont
 import math
 
 def create_favicon(size=512):
-    """Create a favicon with Puerto Rican flag colors and star-inspired design"""
+    """Create a favicon with geometric design and initials"""
 
-    # Puerto Rican flag color scheme (light blue variant)
-    pr_light_blue = (85, 169, 229)    # Sky/light blue
-    pr_white = (255, 255, 255)         # White
-    pr_red = (237, 28, 36)             # Red
-    pr_black = (0, 0, 0)               # Black for text
-    outline_color = (60, 140, 200)     # Darker blue for outlines
+    # Cool color scheme - deep purple/blue gradient with gold accents
+    bg_color = (30, 20, 60)  # Deep purple/blue
+    accent1 = (100, 60, 180)  # Purple
+    accent2 = (60, 180, 200)  # Cyan
+    accent3 = (255, 200, 80)  # Gold
+    text_color = (255, 255, 255)  # White
 
-    # Create image with transparency
-    img = Image.new('RGBA', (size, size), (255, 255, 255, 0))
+    # Create image - make it bigger by using more of the canvas
+    img = Image.new('RGB', (size, size), bg_color)
     draw = ImageDraw.Draw(img)
 
+    # Draw geometric background pattern - rotating squares (bigger)
     center = size // 2
+    num_squares = 6
 
-    # First, draw horizontal stripes (5 stripes: red, white, red, white, red)
-    stripe_height = size / 5
-    for i in range(5):
-        y_start = int(i * stripe_height)
-        y_end = int((i + 1) * stripe_height)
-        stripe_color = pr_red if i % 2 == 0 else pr_white
-        draw.rectangle([0, y_start, size, y_end], fill=stripe_color)
+    for i in range(num_squares):
+        square_size = size - (i * size // (num_squares + 2))
+        rotation = i * 15  # Rotate each square
 
-    # Create a mask for the star shape
-    star_mask = Image.new('L', (size, size), 0)
-    mask_draw = ImageDraw.Draw(star_mask)
+        # Interpolate colors
+        if i % 3 == 0:
+            color = accent1
+        elif i % 3 == 1:
+            color = accent2
+        else:
+            color = accent3
 
-    # Draw a five-pointed star shape on the mask
-    star_radius_outer = int(size * 0.48)
-    star_radius_inner = int(size * 0.20)
+        # Make inner squares more transparent by adjusting thickness
+        thickness = max(2, 8 - i)
 
-    def get_star_points(cx, cy, radius_outer, radius_inner):
-        """Get points for a five-pointed star"""
-        points = []
-        for i in range(10):
-            angle = math.radians(i * 36 - 90)  # Start from top, -90 degrees
-            if i % 2 == 0:
-                # Outer point
-                r = radius_outer
-            else:
-                # Inner point
-                r = radius_inner
-            x = cx + r * math.cos(angle)
-            y = cy + r * math.sin(angle)
-            points.append((x, y))
-        return points
+        # Draw rotated square
+        half = square_size // 2
+        points = [
+            (-half, -half),
+            (half, -half),
+            (half, half),
+            (-half, half)
+        ]
 
-    # Draw filled star on mask
-    star_points = get_star_points(center, center, star_radius_outer, star_radius_inner)
-    mask_draw.polygon(star_points, fill=255)
+        # Rotate points
+        rad = math.radians(rotation)
+        cos_r = math.cos(rad)
+        sin_r = math.sin(rad)
 
-    # Apply the star mask to cut out the star shape from the stripes
-    img.putalpha(star_mask)
+        rotated = []
+        for x, y in points:
+            new_x = x * cos_r - y * sin_r + center
+            new_y = x * sin_r + y * cos_r + center
+            rotated.append((new_x, new_y))
 
-    # Draw star outline
-    draw.polygon(star_points, fill=None, outline=outline_color, width=6)
+        # Draw the square outline
+        for j in range(4):
+            draw.line(
+                [rotated[j], rotated[(j + 1) % 4]],
+                fill=color,
+                width=thickness
+            )
 
-    # Add light blue circular center
-    center_circle_radius = int(size * 0.22)
+    # Add circular accent in the background
+    circle_radius = size // 3
     draw.ellipse(
-        [center - center_circle_radius, center - center_circle_radius,
-         center + center_circle_radius, center + center_circle_radius],
-        fill=pr_light_blue,
-        outline=outline_color,
-        width=4
+        [center - circle_radius, center - circle_radius,
+         center + circle_radius, center + circle_radius],
+        fill=None,
+        outline=accent3,
+        width=3
     )
 
-    # Add text - initials "EGMC" in black
+    # Add text - initials "EMC" (changed from EGMC)
+    # Try to use a nice font, fallback to default if not available
     try:
-        font_size = size // 6
+        # Try common system fonts - bigger font size
+        font_size = size // 4  # Increased from size // 5
         font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
     except:
         try:
-            font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", size // 6)
+            font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", size // 4)
         except:
+            # Fallback to default
             font = ImageFont.load_default()
 
-    text = "EGMC"
+    # Draw text with shadow for depth
+    text = "EMC"  # Changed from EGMC
 
     # Get text bounding box for centering
     bbox = draw.textbbox((0, 0), text, font=font)
@@ -94,11 +101,20 @@ def create_favicon(size=512):
     text_x = (size - text_width) // 2
     text_y = (size - text_height) // 2
 
-    # Draw text in black
+    # Draw shadow
+    shadow_offset = 4  # Slightly bigger shadow
+    draw.text(
+        (text_x + shadow_offset, text_y + shadow_offset),
+        text,
+        fill=(0, 0, 0, 128),
+        font=font
+    )
+
+    # Draw main text
     draw.text(
         (text_x, text_y),
         text,
-        fill=pr_black,
+        fill=text_color,
         font=font
     )
 
