@@ -1,1 +1,8 @@
 /* css styles */
+
+/* Make navbar logo bigger */
+.navbar-brand img {
+  height: 50px !important;  /* Default is around 30px, this makes it bigger */
+  width: auto;
+  margin-right: 10px;
+}
