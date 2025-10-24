@@ -1,13 +1,15 @@
 project:
   type: website
   output-dir: docs
-  resources: 
+  resources:
     - CNAME
     - overleaf_presentations
+    - files/site_icon/apple-touch-icon.png
 
 website:
   title: "Evanns Morales-Cuadrado |<br>
           Research Website"
+  favicon: files/site_icon/favicon.png
 
   navbar:
     left:
@@ -32,6 +34,9 @@ format:
     css: styles.css
     # toc: true
     html-math-method: mathjax
+    include-in-header:
+      text: |
+        <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
 
 
 
