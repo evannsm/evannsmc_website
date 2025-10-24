@@ -12,6 +12,7 @@ website:
   favicon: files/site_icon/favicon.png
 
   navbar:
+    logo: files/site_icon/favicon.png
     left:
       - href: index.qmd
         text: Home
