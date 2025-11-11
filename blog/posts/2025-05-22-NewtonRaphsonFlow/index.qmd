@@ -13,7 +13,7 @@ csl: https://www.zotero.org/styles/ieee
 ## Introduction
 
 The **Newton-Raphson Flow (NRF) tracking controller** is a surprisingly powerful integrator-type control technique used for output tracking of reference signals in continuous-time dynamical systems [@wardi2023tracking]. This control technique is founded on real-time implementations of a fluid-flow variant of the Newton-Raphson method for solving algebraic equations [@wardi2023tracking]. The foundational premise is that tracking can be viewed as a dynamic process of attempting to solve a time-dependent suite of nonlinear algebraic equations [@wardi2023tracking].
-<!-- 
+
 The NRF technique is designed to be **simple and computationally lightweight**, essentially comprising a variable-gain integrator that requires low computing efforts compared to methods like Model Predictive Control (MPC). This methodology is suitable for linear and nonlinear systems, and has demonstrated success in practical applications such as aggressive quadrotor flight [@moralescuadrado2024quadrotor].
 
 ## The Iterative Root-Finding Method
@@ -101,6 +101,7 @@ Note that this means that the *predictor model* should track the reference, not 
 Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the **standard controller** (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow. 
 
 Furthermore, the standard NRF controller demonstrates **excellent real-world performance** even without the guarantee of exact tracking [@moralescuadrado2024quadrotor]. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and **outperformed the native, highly-tuned PID controller** in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor.
+<!-- 
 
 ## Code Examples
 

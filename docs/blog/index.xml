@@ -164,94 +164,53 @@ Once <img src="https://latex.codecogs.com/png.latex?R"> and its derivatives are 
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>The <strong>Newton-Raphson Flow (NRF) tracking controller</strong> is a surprisingly powerful integrator-type control technique used for output tracking of reference signals in continuous-time dynamical systems <span class="citation" data-cites="wardi2023tracking">[1]</span>. This control technique is founded on real-time implementations of a fluid-flow variant of the Newton-Raphson method for solving algebraic equations <span class="citation" data-cites="wardi2023tracking">[1]</span>. The foundational premise is that tracking can be viewed as a dynamic process of attempting to solve a time-dependent suite of nonlinear algebraic equations <span class="citation" data-cites="wardi2023tracking">[1]</span>. <!-- 
-The NRF technique is designed to be **simple and computationally lightweight**, essentially comprising a variable-gain integrator that requires low computing efforts compared to methods like Model Predictive Control (MPC). This methodology is suitable for linear and nonlinear systems, and has demonstrated success in practical applications such as aggressive quadrotor flight [@moralescuadrado2024quadrotor].
-
-## The Iterative Root-Finding Method
-
-The NRF controller finds its origins in the **Newton-Raphson method**, an iterative numerical procedure used to find the roots (zeros) of a nonlinear function $g: \mathbb{R}^m \to \mathbb{R}^m$. Derived from the first-order Taylor expansion of the error between a reference and a function $e = r - g(u_{n-1})$ the standard iterative root-finding form is given by:
-
-$$
-u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
-\tag{1}
-$$
-
-## The Continuous-Time (Fluid-Flow) Formulation for Memoryless Plants
-
-To transition this idea into a continuous-time control strategy, we first consider a simple case: a **memoryless nonlinearity plant** where the output $y(t)$ is algebraically related to the input $u(t)$ by $y(t) = g(u(t))$.
-
-The control objective (tracking) is to solve the time-dependent system of equations $r(t) - g(u) = 0$. The iterative tracking algorithm is restructured to drive the error $r - y$ to zero.
-
-By defining the time step $\Delta t$, scaling the step size by $\Delta t$, and taking the limit as $\Delta t \to 0$, the discrete iterative algorithm yields its **continuous-time, fluid-flow variant** that defines the rate of change of the control input $\dot{u}(t)$:
-
-$$
-\dot{u}(t) = \left( \frac{\partial g}{\partial u} (u(t)) \right)^{-1} \left( r(t) - g(u(t)) \right)
-\tag{2}
-$$
-
-This formulation results in an **integrator with a variable gain** (the inverse Jacobian) and guarantees asymptotic tracking for a constant reference signal $r(t)$.
-
-### Incorporating the Speedup Factor
-
-For a time-dependent reference signal $r(t)$, the controller's action is "sped up" (note this is technically not a 'gain') by multiplying the Right-Hand Side (RHS) of Equation (2) by a constant $\alpha > 1$. This results in the standard NRF tracking controller:
-
-$$
-\dot{u}(t) = \alpha \left( \frac{\partial g}{\partial u} (u(t)) \right)^{-1} \left( r(t) - g(u(t)) \right)
-\tag{3}
-$$
-
-The **controller speedup factor** ($\alpha$) serves to potentially **stabilize the closed-loop system** and reduce the asymptotic tracking error, providing a tighter upper bound on the error, $\eta/\alpha$, where $\eta$ relates to the rate of change of the reference.
-
-## The Need for Prediction in Dynamical Systems
-
-When the plant is a **dynamical system** modeled by an ordinary differential equation, the output $y(t)$ is not a simple algebraic function of $u(t)$ but depends on the entire history of the input trajectory. Consequently, the NRF flow derived for memoryless plants (Equation 2) is insufficient.
-
-To resolve this, the NRF technique utilizes an **output predictor**. This predictor computes an estimate of the future output, $\hat{y}(t + T)$, at a fixed "lookahead" time $T > 0$. This predicted output must be functionally dependent on the current state $x(t)$ and the current input $u(t)$:
-
-$$
-\hat{y}(t+T) = \rho(x(t), u(t))
-\tag{4}
-$$
-
-The controller then aims to solve the time-dependent equation $r(t + T) - \hat{y}(t + T) = 0$ at the current time $t$, for a small lookahead $T$
-
-## Newton-Raphson Flow for Dynamical Systems (Standard Version)
-
-By substituting the prediction function $\rho(x(t), u(t))$ for $g(u(t))$ and incorporating the reference target at the lookahead time $r(t+T)$ and speedup factor $\alpha$, we define the **standard NRF tracking controller for dynamical systems**:
-
-$$
-\dot{u}(t) = \alpha \left( \frac{\partial \rho}{\partial u} (x(t), u(t)) \right)^{-1} \left( r(t + T) - \rho(x(t), u(t)) \right)
-\tag{5}
-$$
-
-The asymptotic tracking error for this controller is bounded by the asymptotic prediction error ($\nu_1$) and errors related to disturbances and the reference change rate ($\nu_2$), where $\alpha$ only attenuates the latter:
-
-$$
-\lim \sup_{t \to \infty} ||r(t) - y(t)|| \leq \nu_1 + \frac{\nu_2}{\alpha}
-\tag{6}
-$$
-
-## The Enhanced Controller and Practical Performance
-
-The controller defined by Equation (5) is often referred to as the earlier version of the NRF tracking technique, where only **approximate tracking** was obtained in initial published works. A later, **enhanced controller** (modified control algorithm) was derived, which provides a stronger theoretical guarantee: it ensures **exact asymptotic tracking** of $r(t+T)$ by $\hat{y}(t+T)$ without resorting to controller speedup ($\alpha=1$).
-
-This enhanced controller (Equation 20 in the source) achieves this by adding terms that include the time derivative of the reference signal $\dot{r}(t+T)$ and related system dynamics terms to the controller rate equation:
-
-$$
-\dot{u}(t) = - \left( \frac{\partial \rho}{\partial u} (x(t), u(t)) \right)^{-1} \left( r(t+ T ) - \hat{y}(t+ T ) + \dot{r}(t+ T ) - \frac{\partial \rho}{\partial x} (x(t), u(t))f(x(t), u(t)) \right)
-\tag{7}
-$$
-
-For this modified controller (Equation 7), the Lyapunov function derivative satisfies $\dot{V} = -2V$, guaranteeing that the error $\lim_{t \to \infty} (r(t) - \hat{y}(t))$ converges exactly to zero.
-
-
-Note that this means that the *predictor model* should track the reference, not your actual system! Actual tracking performance is bounded by the accuracy of your predictor function. As the engineer implementing this method, you can choose any prediction method, as long as its jacobian with respect to the input can be calculated and is invertible. 
-
-### Simplicity vs. Perfection
-
-Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the **standard controller** (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow. 
-
-Furthermore, the standard NRF controller demonstrates **excellent real-world performance** even without the guarantee of exact tracking [@moralescuadrado2024quadrotor]. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and **outperformed the native, highly-tuned PID controller** in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor.
+<p>The <strong>Newton-Raphson Flow (NRF) tracking controller</strong> is a surprisingly powerful integrator-type control technique used for output tracking of reference signals in continuous-time dynamical systems <span class="citation" data-cites="wardi2023tracking">[1]</span>. This control technique is founded on real-time implementations of a fluid-flow variant of the Newton-Raphson method for solving algebraic equations <span class="citation" data-cites="wardi2023tracking">[1]</span>. The foundational premise is that tracking can be viewed as a dynamic process of attempting to solve a time-dependent suite of nonlinear algebraic equations <span class="citation" data-cites="wardi2023tracking">[1]</span>.</p>
+<p>The NRF technique is designed to be <strong>simple and computationally lightweight</strong>, essentially comprising a variable-gain integrator that requires low computing efforts compared to methods like Model Predictive Control (MPC). This methodology is suitable for linear and nonlinear systems, and has demonstrated success in practical applications such as aggressive quadrotor flight <span class="citation" data-cites="moralescuadrado2024quadrotor">[2]</span>.</p>
+</section>
+<section id="the-iterative-root-finding-method" class="level2">
+<h2 class="anchored" data-anchor-id="the-iterative-root-finding-method">The Iterative Root-Finding Method</h2>
+<p>The NRF controller finds its origins in the <strong>Newton-Raphson method</strong>, an iterative numerical procedure used to find the roots (zeros) of a nonlinear function <img src="https://latex.codecogs.com/png.latex?g:%20%5Cmathbb%7BR%7D%5Em%20%5Cto%20%5Cmathbb%7BR%7D%5Em">. Derived from the first-order Taylor expansion of the error between a reference and a function <img src="https://latex.codecogs.com/png.latex?e%20=%20r%20-%20g(u_%7Bn-1%7D)"> the standard iterative root-finding form is given by:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Au_%7Bn%7D%20=%20u_%7Bn-1%7D%20-%20%5Cleft(%20%5Cfrac%7Bdg%7D%7Bdu%7D%20(u_%7Bn-1%7D)%20%5Cright)%5E%7B-1%7D%20g(u_%7Bn-1%7D)%0A%5Ctag%7B1%7D%0A"></p>
+</section>
+<section id="the-continuous-time-fluid-flow-formulation-for-memoryless-plants" class="level2">
+<h2 class="anchored" data-anchor-id="the-continuous-time-fluid-flow-formulation-for-memoryless-plants">The Continuous-Time (Fluid-Flow) Formulation for Memoryless Plants</h2>
+<p>To transition this idea into a continuous-time control strategy, we first consider a simple case: a <strong>memoryless nonlinearity plant</strong> where the output <img src="https://latex.codecogs.com/png.latex?y(t)"> is algebraically related to the input <img src="https://latex.codecogs.com/png.latex?u(t)"> by <img src="https://latex.codecogs.com/png.latex?y(t)%20=%20g(u(t))">.</p>
+<p>The control objective (tracking) is to solve the time-dependent system of equations <img src="https://latex.codecogs.com/png.latex?r(t)%20-%20g(u)%20=%200">. The iterative tracking algorithm is restructured to drive the error <img src="https://latex.codecogs.com/png.latex?r%20-%20y"> to zero.</p>
+<p>By defining the time step <img src="https://latex.codecogs.com/png.latex?%5CDelta%20t">, scaling the step size by <img src="https://latex.codecogs.com/png.latex?%5CDelta%20t">, and taking the limit as <img src="https://latex.codecogs.com/png.latex?%5CDelta%20t%20%5Cto%200">, the discrete iterative algorithm yields its <strong>continuous-time, fluid-flow variant</strong> that defines the rate of change of the control input <img src="https://latex.codecogs.com/png.latex?%5Cdot%7Bu%7D(t)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cdot%7Bu%7D(t)%20=%20%5Cleft(%20%5Cfrac%7B%5Cpartial%20g%7D%7B%5Cpartial%20u%7D%20(u(t))%20%5Cright)%5E%7B-1%7D%20%5Cleft(%20r(t)%20-%20g(u(t))%20%5Cright)%0A%5Ctag%7B2%7D%0A"></p>
+<p>This formulation results in an <strong>integrator with a variable gain</strong> (the inverse Jacobian) and guarantees asymptotic tracking for a constant reference signal <img src="https://latex.codecogs.com/png.latex?r(t)">.</p>
+<section id="incorporating-the-speedup-factor" class="level3">
+<h3 class="anchored" data-anchor-id="incorporating-the-speedup-factor">Incorporating the Speedup Factor</h3>
+<p>For a time-dependent reference signal <img src="https://latex.codecogs.com/png.latex?r(t)">, the controller’s action is “sped up” (note this is technically not a ‘gain’) by multiplying the Right-Hand Side (RHS) of Equation (2) by a constant <img src="https://latex.codecogs.com/png.latex?%5Calpha%20%3E%201">. This results in the standard NRF tracking controller:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cdot%7Bu%7D(t)%20=%20%5Calpha%20%5Cleft(%20%5Cfrac%7B%5Cpartial%20g%7D%7B%5Cpartial%20u%7D%20(u(t))%20%5Cright)%5E%7B-1%7D%20%5Cleft(%20r(t)%20-%20g(u(t))%20%5Cright)%0A%5Ctag%7B3%7D%0A"></p>
+<p>The <strong>controller speedup factor</strong> (<img src="https://latex.codecogs.com/png.latex?%5Calpha">) serves to potentially <strong>stabilize the closed-loop system</strong> and reduce the asymptotic tracking error, providing a tighter upper bound on the error, <img src="https://latex.codecogs.com/png.latex?%5Ceta/%5Calpha">, where <img src="https://latex.codecogs.com/png.latex?%5Ceta"> relates to the rate of change of the reference.</p>
+</section>
+</section>
+<section id="the-need-for-prediction-in-dynamical-systems" class="level2">
+<h2 class="anchored" data-anchor-id="the-need-for-prediction-in-dynamical-systems">The Need for Prediction in Dynamical Systems</h2>
+<p>When the plant is a <strong>dynamical system</strong> modeled by an ordinary differential equation, the output <img src="https://latex.codecogs.com/png.latex?y(t)"> is not a simple algebraic function of <img src="https://latex.codecogs.com/png.latex?u(t)"> but depends on the entire history of the input trajectory. Consequently, the NRF flow derived for memoryless plants (Equation 2) is insufficient.</p>
+<p>To resolve this, the NRF technique utilizes an <strong>output predictor</strong>. This predictor computes an estimate of the future output, <img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D(t%20+%20T)">, at a fixed “lookahead” time <img src="https://latex.codecogs.com/png.latex?T%20%3E%200">. This predicted output must be functionally dependent on the current state <img src="https://latex.codecogs.com/png.latex?x(t)"> and the current input <img src="https://latex.codecogs.com/png.latex?u(t)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Chat%7By%7D(t+T)%20=%20%5Crho(x(t),%20u(t))%0A%5Ctag%7B4%7D%0A"></p>
+<p>The controller then aims to solve the time-dependent equation <img src="https://latex.codecogs.com/png.latex?r(t%20+%20T)%20-%20%5Chat%7By%7D(t%20+%20T)%20=%200"> at the current time <img src="https://latex.codecogs.com/png.latex?t">, for a small lookahead <img src="https://latex.codecogs.com/png.latex?T"></p>
+</section>
+<section id="newton-raphson-flow-for-dynamical-systems-standard-version" class="level2">
+<h2 class="anchored" data-anchor-id="newton-raphson-flow-for-dynamical-systems-standard-version">Newton-Raphson Flow for Dynamical Systems (Standard Version)</h2>
+<p>By substituting the prediction function <img src="https://latex.codecogs.com/png.latex?%5Crho(x(t),%20u(t))"> for <img src="https://latex.codecogs.com/png.latex?g(u(t))"> and incorporating the reference target at the lookahead time <img src="https://latex.codecogs.com/png.latex?r(t+T)"> and speedup factor <img src="https://latex.codecogs.com/png.latex?%5Calpha">, we define the <strong>standard NRF tracking controller for dynamical systems</strong>:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cdot%7Bu%7D(t)%20=%20%5Calpha%20%5Cleft(%20%5Cfrac%7B%5Cpartial%20%5Crho%7D%7B%5Cpartial%20u%7D%20(x(t),%20u(t))%20%5Cright)%5E%7B-1%7D%20%5Cleft(%20r(t%20+%20T)%20-%20%5Crho(x(t),%20u(t))%20%5Cright)%0A%5Ctag%7B5%7D%0A"></p>
+<p>The asymptotic tracking error for this controller is bounded by the asymptotic prediction error (<img src="https://latex.codecogs.com/png.latex?%5Cnu_1">) and errors related to disturbances and the reference change rate (<img src="https://latex.codecogs.com/png.latex?%5Cnu_2">), where <img src="https://latex.codecogs.com/png.latex?%5Calpha"> only attenuates the latter:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Clim%20%5Csup_%7Bt%20%5Cto%20%5Cinfty%7D%20%7C%7Cr(t)%20-%20y(t)%7C%7C%20%5Cleq%20%5Cnu_1%20+%20%5Cfrac%7B%5Cnu_2%7D%7B%5Calpha%7D%0A%5Ctag%7B6%7D%0A"></p>
+</section>
+<section id="the-enhanced-controller-and-practical-performance" class="level2">
+<h2 class="anchored" data-anchor-id="the-enhanced-controller-and-practical-performance">The Enhanced Controller and Practical Performance</h2>
+<p>The controller defined by Equation (5) is often referred to as the earlier version of the NRF tracking technique, where only <strong>approximate tracking</strong> was obtained in initial published works. A later, <strong>enhanced controller</strong> (modified control algorithm) was derived, which provides a stronger theoretical guarantee: it ensures <strong>exact asymptotic tracking</strong> of <img src="https://latex.codecogs.com/png.latex?r(t+T)"> by <img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D(t+T)"> without resorting to controller speedup (<img src="https://latex.codecogs.com/png.latex?%5Calpha=1">).</p>
+<p>This enhanced controller (Equation 20 in the source) achieves this by adding terms that include the time derivative of the reference signal <img src="https://latex.codecogs.com/png.latex?%5Cdot%7Br%7D(t+T)"> and related system dynamics terms to the controller rate equation:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cdot%7Bu%7D(t)%20=%20-%20%5Cleft(%20%5Cfrac%7B%5Cpartial%20%5Crho%7D%7B%5Cpartial%20u%7D%20(x(t),%20u(t))%20%5Cright)%5E%7B-1%7D%20%5Cleft(%20r(t+%20T%20)%20-%20%5Chat%7By%7D(t+%20T%20)%20+%20%5Cdot%7Br%7D(t+%20T%20)%20-%20%5Cfrac%7B%5Cpartial%20%5Crho%7D%7B%5Cpartial%20x%7D%20(x(t),%20u(t))f(x(t),%20u(t))%20%5Cright)%0A%5Ctag%7B7%7D%0A"></p>
+<p>For this modified controller (Equation 7), the Lyapunov function derivative satisfies <img src="https://latex.codecogs.com/png.latex?%5Cdot%7BV%7D%20=%20-2V">, guaranteeing that the error <img src="https://latex.codecogs.com/png.latex?%5Clim_%7Bt%20%5Cto%20%5Cinfty%7D%20(r(t)%20-%20%5Chat%7By%7D(t))"> converges exactly to zero.</p>
+<p>Note that this means that the <em>predictor model</em> should track the reference, not your actual system! Actual tracking performance is bounded by the accuracy of your predictor function. As the engineer implementing this method, you can choose any prediction method, as long as its jacobian with respect to the input can be calculated and is invertible.</p>
+<section id="simplicity-vs.-perfection" class="level3">
+<h3 class="anchored" data-anchor-id="simplicity-vs.-perfection">Simplicity vs.&nbsp;Perfection</h3>
+<p>Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the <strong>standard controller</strong> (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow.</p>
+<p>Furthermore, the standard NRF controller demonstrates <strong>excellent real-world performance</strong> even without the guarantee of exact tracking <span class="citation" data-cites="moralescuadrado2024quadrotor">[2]</span>. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and <strong>outperformed the native, highly-tuned PID controller</strong> in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor. <!-- 
 
 ## Code Examples
 
@@ -308,10 +267,14 @@ def newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):
 
 
 </section>
+</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-wardi2023tracking" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Y. Wardi, C. Seatzu, J. Cortés, M. Egerstedt, S. Shivam, and I. Buckley, <span>“Tracking control by the newton-raphson method with output prediction and controller speedup,”</span> <em>International Journal of Robust and Nonlinear Control</em>, 2023, doi: <a href="https://doi.org/10.1002/rnc.6976">10.1002/rnc.6976</a>.</div>
+</div>
+<div id="ref-moralescuadrado2024quadrotor" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">E. Morales-Cuadrado, C. Llanes, Y. Wardi, and S. Coogan, <span>“Newton-raphson flow for aggressive quadrotor tracking control,”</span> 2024, Available: <a href="https://arxiv.org/pdf/2408.11197">https://arxiv.org/pdf/2408.11197</a></div>
 </div>
 </div></section></div> ]]></description>
   <category>control theory</category>
