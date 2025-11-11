@@ -101,7 +101,6 @@ Note that this means that the *predictor model* should track the reference, not 
 Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the **standard controller** (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow. 
 
 Furthermore, the standard NRF controller demonstrates **excellent real-world performance** even without the guarantee of exact tracking [@moralescuadrado2024quadrotor]. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and **outperformed the native, highly-tuned PID controller** in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor.
-<!-- 
 
 ## Code Examples
 
@@ -154,4 +153,4 @@ def newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):
     u_next = u + u_dot * dt
     return u_next
 
-``` -->
+```
