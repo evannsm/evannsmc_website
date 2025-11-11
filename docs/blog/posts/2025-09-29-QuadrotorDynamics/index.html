@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Evanns Morales-Cuadrado">
+<meta name="dcterms.date" content="2025-09-29">
+<meta name="description" content="A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.">
 
-<title>Research Blog – Evanns Morales-Cuadrado | Research Website</title>
+<title>Understanding Quadrotor Dynamics and Control – Evanns Morales-Cuadrado | Research Website</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +23,47 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,35 +91,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -131,20 +123,20 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../styles.css">
-<link rel="alternate" type="application/rss+xml" title="Evanns Morales-Cuadrado |<br> Research Website" href="index.xml" data-external="1"></head>
+<link rel="stylesheet" href="../../../styles.css">
+</head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Evanns Morales-Cuadrado |<br> Research Website</span>
     </a>
   </div>
@@ -155,23 +147,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv"> 
+    <a class="nav-link" href="../../../cv"> 
 <span class="menu-text">CV &amp; Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../publications"> 
+    <a class="nav-link" href="../../../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog"> 
+    <a class="nav-link" href="../../../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
+    <a class="nav-link" href="../../../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
 </ul>
@@ -182,270 +174,171 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Research Blog</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM=">calculus of variations <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29udHJvbCUyMHRoZW9yeQ==">control theory <span class="quarto-category-count">(4)</span></div><div class="category" data-category="ZHluYW1pY2FsJTIwc3lzdGVtcw==">dynamical systems <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Z2VvbWV0cmljJTIwY29udHJvbA==">geometric control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aGFyZHdhcmU=">hardware <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aW1wbGVtZW50YXRpb24=">implementation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="aXRlcmF0aXZlJTIwbWV0aG9kcw==">iterative methods <span class="quarto-category-count">(1)</span></div><div class="category" data-category="amF4">jax <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bW9kZWxpbmc=">modeling <span class="quarto-category-count">(1)</span></div><div class="category" data-category="b3B0aW1hbCUyMGNvbnRyb2w=">optimal control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UFg0">PX4 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cXVhZHJvdG9y">quadrotor <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cmVhY2hhYmlsaXR5">reachability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Uk9TMg==">ROS2 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c29mdHdhcmU=">software <span class="quarto-category-count">(2)</span></div><div class="category" data-category="dG9vbHM=">tools <span class="quarto-category-count">(2)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Understanding Quadrotor Dynamics and Control</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">dynamical systems</div>
+    <div class="quarto-category">control theory</div>
+    <div class="quarto-category">quadrotor</div>
+    <div class="quarto-category">geometric control</div>
+    <div class="quarto-category">modeling</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
 
-
-
-<p>I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.</p>
-<p>I also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Evanns Morales-Cuadrado </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 29, 2025</p>
     </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ill-make-this-more-in-depth-and-polished-later-but-here-is-a-start." class="level1">
+<h1>I’ll make this more in-depth and polished later, but here is a start.</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Quadrotors are among the most common UAV platforms in research thanks to their simple mechanical design and vertical takeoff and landing (VTOL) ability <span class="citation" data-cites="hoffmann2007quadrotor"><a href="#ref-hoffmann2007quadrotor" role="doc-biblioref">[1]</a></span>. However, their control is fundamentally challenging because the system is <strong>nonlinear and underactuated</strong>—it moves in six degrees of freedom but only has four independent control inputs <span class="citation" data-cites="sabatino2015quadrotor"><a href="#ref-sabatino2015quadrotor" role="doc-biblioref">[2]</a></span>.</p>
+<p>To control such a system, we first need a clear mathematical model of its motion. This model is typically derived from <strong>Newton–Euler mechanics</strong>, describing the evolution of position and orientation in three dimensions <span class="citation" data-cites="sabatino2015quadrotor"><a href="#ref-sabatino2015quadrotor" role="doc-biblioref">[2]</a></span>. Ordinary differential equations (ODEs) provide the foundation for expressing these dynamics <span class="citation" data-cites="arnold1973ordinary"><a href="#ref-arnold1973ordinary" role="doc-biblioref">[3]</a></span>.</p>
+<hr>
+</section>
+<section id="coordinate-frames-and-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="coordinate-frames-and-configuration">Coordinate Frames and Configuration</h2>
+<p>Modeling a quadrotor begins with defining coordinate frames that describe how it moves and rotates <span class="citation" data-cites="sabatino2015quadrotor"><a href="#ref-sabatino2015quadrotor" role="doc-biblioref">[2]</a></span>.</p>
+<ul>
+<li><p><strong>Inertial Frame (World Frame, W):</strong><br>
+A fixed reference frame where Newton’s laws apply. The position of the quadrotor’s center of mass, <span class="math inline">\(r \in \mathbb{R}^3\)</span>, is defined here <span class="citation" data-cites="mellinger2012trajectory"><a href="#ref-mellinger2012trajectory" role="doc-biblioref">[4]</a></span>.</p></li>
+<li><p><strong>Body Frame (B):</strong><br>
+Attached to the quadrotor’s center of mass and aligned with its principal axes. The <span class="math inline">\(z^B\)</span>-axis is normal to the rotor plane, usually pointing downward (opposite to thrust) <span class="citation" data-cites="lee2010geometric"><a href="#ref-lee2010geometric" role="doc-biblioref">[5]</a></span>.</p></li>
+<li><p><strong>Configuration on SE(3):</strong><br>
+The full configuration is given by position <span class="math inline">\(r\)</span> and orientation <span class="math inline">\(R\)</span>. Together they define a point on the <strong>Special Euclidean group</strong> <span class="math inline">\(\text{SE}(3) = \mathbb{R}^3 \times \text{SO}(3)\)</span> <span class="citation" data-cites="lee2010geometric"><a href="#ref-lee2010geometric" role="doc-biblioref">[5]</a></span>.<br>
+While Euler angles (<span class="math inline">\(\phi, \theta, \psi\)</span>) are often used, geometric control instead operates directly on <span class="math inline">\(\text{SE}(3)\)</span> to avoid coordinate singularities <span class="citation" data-cites="lee2010geometric"><a href="#ref-lee2010geometric" role="doc-biblioref">[5]</a></span>.</p></li>
+</ul>
+<hr>
+</section>
+<section id="dynamic-model" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-model">Dynamic Model</h2>
+<p>The quadrotor is often represented by a 12-dimensional state vector containing position, velocity, orientation, and angular velocity <span class="citation" data-cites="sabatino2015quadrotor"><a href="#ref-sabatino2015quadrotor" role="doc-biblioref">[2]</a></span>.</p>
+<section id="translational-dynamics" class="level3">
+<h3 class="anchored" data-anchor-id="translational-dynamics">Translational Dynamics</h3>
+<p>Forces on the center of mass determine the linear motion:</p>
+<p><span class="math display">\[
+m\ddot{r} = mg\mathbf{e}_3 - f_t R\mathbf{e}_3
+\]</span></p>
+<p>where <span class="math inline">\(f_t\)</span> is the total thrust along the body <span class="math inline">\(z^B\)</span>-axis and <span class="math inline">\(R\)</span> transforms it to the inertial frame.</p>
+</section>
+<section id="rotational-dynamics" class="level3">
+<h3 class="anchored" data-anchor-id="rotational-dynamics">Rotational Dynamics</h3>
+<p>Rotation about the center of mass follows Euler’s rotational equation:</p>
+<p><span class="math display">\[
+I\dot{\omega}_B + \omega_B \times (I\omega_B) = \tau_B
+\]</span></p>
+<p>where <span class="math inline">\(I\)</span> is the inertia matrix and <span class="math inline">\(\tau_B\)</span> the total torque in the body frame <span class="citation" data-cites="sabatino2015quadrotor"><a href="#ref-sabatino2015quadrotor" role="doc-biblioref">[2]</a></span>.</p>
+</section>
+<section id="control-inputs" class="level3">
+<h3 class="anchored" data-anchor-id="control-inputs">Control Inputs</h3>
+<p>The four control inputs are:</p>
+<p><span class="math display">\[
+u = [f_t, \tau_x, \tau_y, \tau_z]^T
+\]</span></p>
+<p>These are generated by the squared rotor speeds:</p>
+<p><span class="math display">\[
+\begin{cases}
+f_t = b(\Omega_1^2 + \Omega_2^2 + \Omega_3^2 + \Omega_4^2) \\
+\tau_x = bl(\Omega_3^2 - \Omega_1^2) \\
+\tau_y = bl(\Omega_4^2 - \Omega_2^2) \\
+\tau_z = d(\Omega_2^2 + \Omega_4^2 - \Omega_1^2 - \Omega_3^2)
+\end{cases}
+\]</span></p>
+<p>where <span class="math inline">\(b\)</span> and <span class="math inline">\(d\)</span> are thrust and drag constants, and <span class="math inline">\(l\)</span> is the arm length.</p>
+</section>
+</section>
+<section id="geometric-foundations" class="level2">
+<h2 class="anchored" data-anchor-id="geometric-foundations">Geometric Foundations</h2>
+<p>The dynamics of a quadrotor evolve on a <strong>smooth manifold</strong>, meaning the system’s state lives in a space that locally resembles <span class="math inline">\(\mathbb{R}^n\)</span> but may have a more complex global structure <span class="citation" data-cites="arnold1973ordinary"><a href="#ref-arnold1973ordinary" role="doc-biblioref">[3]</a></span>.<br>
+The time evolution of the system can be described by <strong>vector fields</strong> defined on this manifold, each assigning a tangent direction to every point in the state space.</p>
+<p>A <strong>control system</strong> can thus be viewed as a <em>family of vector fields parameterized by control inputs</em>: for every fixed input <span class="math inline">\(u\)</span>, the system follows a distinct vector field <span class="math inline">\(f_u(x)\)</span>.<br>
+This geometric formulation underpins nonlinear control, offering a natural language for describing motion, constraints, and feedback on curved spaces such as <span class="math inline">\(SO(3)\)</span> and <span class="math inline">\(SE(3)\)</span>.</p>
+<hr>
+</section>
+<section id="differential-flatness" class="level2">
+<h2 class="anchored" data-anchor-id="differential-flatness">Differential Flatness</h2>
+<p>An important structural property of the quadrotor system is <strong>differential flatness</strong> <span class="citation" data-cites="mellinger2012trajectory"><a href="#ref-mellinger2012trajectory" role="doc-biblioref">[4]</a></span>.<br>
+This property implies that all states and inputs can be expressed as algebraic functions of a smaller set of <strong>flat outputs</strong> and their derivatives.<br>
+A common choice of flat outputs is:</p>
+<p><span class="math display">\[
+\mathbf{y} = [x, y, z, \psi]^T
+\]</span></p>
+<p>representing the vehicle’s position and yaw.</p>
+<p>From these outputs and their derivatives, one can reconstruct the full state and input:</p>
+<ol type="1">
+<li><p><strong>Thrust Direction:</strong><br>
+<span class="math display">\[
+\mathbf{z}^B = \frac{[\ddot{x}, \ddot{y}, \ddot{z} + g]^T}{\|[\ddot{x}, \ddot{y}, \ddot{z} + g]\|}
+\]</span></p></li>
+<li><p><strong>Thrust Magnitude:</strong><br>
+<span class="math display">\[
+u_1 = m \|[\ddot{x}, \ddot{y}, \ddot{z} + g]\|
+\]</span></p></li>
+<li><p><strong>Orientation:</strong><br>
+The rotation matrix <span class="math inline">\(R = [\mathbf{x}^B, \mathbf{y}^B, \mathbf{z}^B]\)</span> is constructed from the thrust direction and desired yaw.</p></li>
+<li><p><strong>Moments:</strong><br>
+Once <span class="math inline">\(R\)</span> and its derivatives are known, the required control torques follow from Euler’s equations.</p></li>
+</ol>
+<p>This framework enables the generation of <strong>smooth, dynamically feasible trajectories</strong> by working directly in the space of flat outputs, simplifying both trajectory design and tracking control.</p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-hoffmann2007quadrotor" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">G. M. Hoffmann, H. Huang, S. L. Waslander, and C. J. Tomlin, <span>“Quadrotor helicopter flight dynamics and control: Theory and experiment,”</span> in <em>Proceedings of the AIAA guidance, navigation and control conference and exhibit</em>, Hilton Head, South Carolina, 2007.</div>
 </div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="UFg0JTJDcXVhZHJvdG9yJTJDUk9TMiUyQ2hhcmR3YXJlJTJDdG9vbHMlMkNzb2Z0d2FyZSUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1760500800000" data-listing-file-modified-sort="1762889303692" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="92">
-<div class="thumbnail"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UFg0'); return false;">PX4</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Uk9TMg=='); return false;">ROS2</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aGFyZHdhcmU='); return false;">hardware</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
-
+<div id="ref-sabatino2015quadrotor" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">F. Sabatino, <span>“Quadrotor control: Modeling, nonlinear control design, and simulation,”</span> PhD thesis, KTH Royal Institute of Technology, Stockholm, Sweden, 2015.</div>
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<p>Will write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package.</p>
-</a></div>
+<div id="ref-arnold1973ordinary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">V. I. Arnold, <em>Ordinary differential equations</em>. Cambridge, Massachusetts,; London, England: The MIT Press, 1973.</div>
 </div>
-<div class="metadata">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<div class="listing-date">
-Oct 15, 2025
+<div id="ref-mellinger2012trajectory" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">D. W. Mellinger, <span>“Trajectory generation and control for quadrotors,”</span> PhD thesis, University of Pennsylvania, 2012.</div>
 </div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
+<div id="ref-lee2010geometric" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">T. Lee, M. Leok, and N. H. McClamroch, <span>“Geometric tracking control of a quadrotor <span>UAV</span> on <span>SE</span>(3),”</span> 2010.</div>
 </div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNxdWFkcm90b3IlMkNnZW9tZXRyaWMlMjBjb250cm9sJTJDbW9kZWxpbmc=" data-listing-date-sort="1759118400000" data-listing-file-modified-sort="1762888611129" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="679">
-<div class="thumbnail"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">Understanding Quadrotor Dynamics and Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2VvbWV0cmljJTIwY29udHJvbA=='); return false;">geometric control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">modeling</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<p>A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<div class="listing-date">
-Sep 29, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29udHJvbCUyMHRoZW9yeSUyQ2l0ZXJhdGl2ZSUyMG1ldGhvZHMlMkNkeW5hbWljYWwlMjBzeXN0ZW1z" data-listing-date-sort="1747886400000" data-listing-file-modified-sort="1762884570021" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
-<div class="thumbnail"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">Newton-Raphson Flow: From Iteration to Continuous Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aXRlcmF0aXZlJTIwbWV0aG9kcw=='); return false;">iterative methods</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<p>The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<div class="listing-date">
-May 22, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="b3B0aW1hbCUyMGNvbnRyb2wlMkNjYWxjdWx1cyUyMG9mJTIwdmFyaWF0aW9ucyUyQ2NvbnRyb2wlMjB0aGVvcnk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884495184" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">[TODO] Understanding Optimal Control and Calculus of Variations</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('b3B0aW1hbCUyMGNvbnRyb2w='); return false;">optimal control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM='); return false;">calculus of variations</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<p>Will write about calculus of variations and its applications in optimal control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="dG9vbHMlMkNzb2Z0d2FyZSUyQ2pheCUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884496198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">[TODO] Understanding Jax</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('amF4'); return false;">jax</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<p>Will write about Jax and its uses for control research</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNyZWFjaGFiaWxpdHk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884490311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">[TODO] Understanding Reachability</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cmVhY2hhYmlsaXR5'); return false;">reachability</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<p>Will write about reachability analysis methods in control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
