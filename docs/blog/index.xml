@@ -217,7 +217,7 @@ Once <img src="https://latex.codecogs.com/png.latex?R"> and its derivatives are 
 <h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
 <p>The NRF technique defines the derivative of the control input, <img src="https://latex.codecogs.com/png.latex?%5Cdot%7Bu%7D(t)">. This rate <img src="https://latex.codecogs.com/png.latex?%5Cdot%7Bu%7D(t)"> must be integrated over time to yield the final control output <img src="https://latex.codecogs.com/png.latex?u(t+%5CDelta%20t)">. In a real implementation loop, <img src="https://latex.codecogs.com/png.latex?u(t+dt)%20=%20u(t)%20+%20%5Cdot%7Bu%7D%20%5Ccdot%20%5CDelta%20t">.</p>
 <p>We note that the difficulty in implementation for real-world system comes from implementing the output predictor <img src="https://latex.codecogs.com/png.latex?%5Crho">, its jacobian, and balancing stability of the closed-loop system and prediction accuraty via the lookahead <img src="https://latex.codecogs.com/png.latex?T">, and the speedup factor <img src="https://latex.codecogs.com/png.latex?%5Calpha">.</p>
-<div id="a7a28746" class="cell" data-execution_count="1">
+<div id="80a445a2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -434,6 +434,53 @@ font-style: inherit;">return</span> u_next</span></code></pre></div>
   <category>control theory</category>
   <category>reachability</category>
   <guid>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingReachability/</guid>
+  <pubDate>Wed, 01 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>[TODO] Understanding Reinforcement Learning</title>
+  <dc:creator>Evanns Morales-Cuadrado</dc:creator>
+  <link>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingRL/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Will fill in here when I have time :)</p>
+
+
+</section>
+
+ ]]></description>
+  <category>dynamical systems</category>
+  <category>control theory</category>
+  <category>reinforcement learning</category>
+  <guid>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingRL/</guid>
+  <pubDate>Wed, 01 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>[TODO] Understanding Game Theoretic Control</title>
+  <dc:creator>Evanns Morales-Cuadrado</dc:creator>
+  <link>https://evannsmc.com/blog/posts/2025-11-11-GameTheoreticControl/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Will fill in here when I have time :)</p>
+
+
+</section>
+
+ ]]></description>
+  <category>dynamical systems</category>
+  <category>control theory</category>
+  <category>game theory</category>
+  <category>differential games</category>
+  <guid>https://evannsmc.com/blog/posts/2025-11-11-GameTheoreticControl/</guid>
   <pubDate>Wed, 01 Jan 2025 05:00:00 GMT</pubDate>
 </item>
 </channel>

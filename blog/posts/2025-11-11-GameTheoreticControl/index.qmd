@@ -1,0 +1,15 @@
+---
+title: "[TODO] Understanding Game Theoretic Control"
+description: "Will write about game theoretic control methods"
+author: "Evanns Morales-Cuadrado"
+date: "2025-1-1"
+categories: [dynamical systems, control theory, game theory, differential games]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+Will fill in here when I have time :)
