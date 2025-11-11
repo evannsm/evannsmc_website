@@ -5,7 +5,7 @@ author: "Evanns Morales-Cuadrado"
 date: "2025-01-15"
 categories: [control theory, robotics, tutorial]
 # image: "thumbnail.jpg"
-draft: true
+draft: false
 ---
 
 ## Introduction

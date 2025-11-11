@@ -321,6 +321,78 @@ def newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):
   <pubDate>Thu, 22 May 2025 04:00:00 GMT</pubDate>
 </item>
 <item>
+  <title>Understanding PID Controllers: A Visual Introduction</title>
+  <dc:creator>Evanns Morales-Cuadrado</dc:creator>
+  <link>https://evannsmc.com/blog/posts/2025-01-15-example-post/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This is an example blog post to demonstrate the structure. When you write your actual posts, you can use this template!</p>
+<p>PID (Proportional-Integral-Derivative) controllers are fundamental to control systems. In this post, I’ll explain…</p>
+</section>
+<section id="the-proportional-term" class="level2">
+<h2 class="anchored" data-anchor-id="the-proportional-term">The Proportional Term</h2>
+<p>The proportional term responds to the current error. Imagine you’re trying to balance a robot…</p>
+</section>
+<section id="key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>Write your content here</li>
+<li>You can use markdown formatting</li>
+<li>Images, equations, code blocks all work</li>
+</ul>
+</section>
+<section id="mathematical-expressions" class="level2">
+<h2 class="anchored" data-anchor-id="mathematical-expressions">Mathematical Expressions</h2>
+<p>Quarto supports LaTeX math. For example:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Au(t)%20=%20K_p%20e(t)%20+%20K_i%20%5Cint_0%5Et%20e(%5Ctau)%20d%5Ctau%20+%20K_d%20%5Cfrac%7Bde(t)%7D%7Bdt%7D%0A"></p>
+</section>
+<section id="code-examples" class="level2">
+<h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> pid_controller(error, integral, derivative, kp, ki, kd):</span>
+<span id="cb1-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Simple PID controller implementation"""</span></span>
+<span id="cb1-3">    output <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> kp <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> error <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> ki <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> integral <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> kd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> derivative</span>
+<span id="cb1-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> output</span></code></pre></div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Replace this with your actual content! The YAML frontmatter at the top controls how this appears on the blog listing page.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>control theory</category>
+  <category>robotics</category>
+  <category>tutorial</category>
+  <guid>https://evannsmc.com/blog/posts/2025-01-15-example-post/</guid>
+  <pubDate>Wed, 15 Jan 2025 05:00:00 GMT</pubDate>
+</item>
+<item>
   <title>[TODO] Understanding Optimal Control and Calculus of Variations</title>
   <dc:creator>Evanns Morales-Cuadrado</dc:creator>
   <link>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingOptimalControl/</link>

@@ -84,6 +84,55 @@
     "text": "Will fill in here when I have time :)"
   },
   {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html",
+    "href": "blog/posts/2025-01-15-example-post/index.html",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "",
+    "text": "This is an example blog post to demonstrate the structure. When you write your actual posts, you can use this template!\nPID (Proportional-Integral-Derivative) controllers are fundamental to control systems. In this post, I’ll explain…"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#introduction",
+    "href": "blog/posts/2025-01-15-example-post/index.html#introduction",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "",
+    "text": "This is an example blog post to demonstrate the structure. When you write your actual posts, you can use this template!\nPID (Proportional-Integral-Derivative) controllers are fundamental to control systems. In this post, I’ll explain…"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#the-proportional-term",
+    "href": "blog/posts/2025-01-15-example-post/index.html#the-proportional-term",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "The Proportional Term",
+    "text": "The Proportional Term\nThe proportional term responds to the current error. Imagine you’re trying to balance a robot…"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#key-takeaways",
+    "href": "blog/posts/2025-01-15-example-post/index.html#key-takeaways",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\nWrite your content here\nYou can use markdown formatting\nImages, equations, code blocks all work"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#mathematical-expressions",
+    "href": "blog/posts/2025-01-15-example-post/index.html#mathematical-expressions",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "Mathematical Expressions",
+    "text": "Mathematical Expressions\nQuarto supports LaTeX math. For example:\n\\[\nu(t) = K_p e(t) + K_i \\int_0^t e(\\tau) d\\tau + K_d \\frac{de(t)}{dt}\n\\]"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#code-examples",
+    "href": "blog/posts/2025-01-15-example-post/index.html#code-examples",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "Code Examples",
+    "text": "Code Examples\ndef pid_controller(error, integral, derivative, kp, ki, kd):\n    \"\"\"Simple PID controller implementation\"\"\"\n    output = kp * error + ki * integral + kd * derivative\n    return output"
+  },
+  {
+    "objectID": "blog/posts/2025-01-15-example-post/index.html#conclusion",
+    "href": "blog/posts/2025-01-15-example-post/index.html#conclusion",
+    "title": "Understanding PID Controllers: A Visual Introduction",
+    "section": "Conclusion",
+    "text": "Conclusion\nReplace this with your actual content! The YAML frontmatter at the top controls how this appears on the blog listing page."
+  },
+  {
     "objectID": "publications/index.html",
     "href": "publications/index.html",
     "title": "Publications",
@@ -123,7 +172,7 @@
     "href": "blog/index.html",
     "title": "Research Blog",
     "section": "",
-    "text": "I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.\nI also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2\n\n\n\nPX4\n\nquadrotor\n\nROS2\n\nhardware\n\ntools\n\nsoftware\n\nimplementation\n\n\n\nWill write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package.\n\n\n\n\n\nOct 15, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding Quadrotor Dynamics and Control\n\n\n\ndynamical systems\n\ncontrol theory\n\nquadrotor\n\ngeometric control\n\nmodeling\n\n\n\nA practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.\n\n\n\n\n\nSep 29, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\nNewton-Raphson Flow: From Iteration to Continuous Control\n\n\n\ncontrol theory\n\niterative methods\n\ndynamical systems\n\n\n\nThe Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.\n\n\n\n\n\nMay 22, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Optimal Control and Calculus of Variations\n\n\n\noptimal control\n\ncalculus of variations\n\ncontrol theory\n\n\n\nWill write about calculus of variations and its applications in optimal control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Jax\n\n\n\ntools\n\nsoftware\n\njax\n\nimplementation\n\n\n\nWill write about Jax and its uses for control research\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Reachability\n\n\n\ndynamical systems\n\ncontrol theory\n\nreachability\n\n\n\nWill write about reachability analysis methods in control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Reinforcement Learning\n\n\n\ndynamical systems\n\ncontrol theory\n\nreinforcement learning\n\n\n\nWill write about reinforcement learning methods in control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Game Theoretic Control\n\n\n\ndynamical systems\n\ncontrol theory\n\ngame theory\n\ndifferential games\n\n\n\nWill write about game theoretic control methods\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\nNo matching items"
+    "text": "I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.\nI also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2\n\n\n\nPX4\n\nquadrotor\n\nROS2\n\nhardware\n\ntools\n\nsoftware\n\nimplementation\n\n\n\nWill write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package.\n\n\n\n\n\nOct 15, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding Quadrotor Dynamics and Control\n\n\n\ndynamical systems\n\ncontrol theory\n\nquadrotor\n\ngeometric control\n\nmodeling\n\n\n\nA practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.\n\n\n\n\n\nSep 29, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\nNewton-Raphson Flow: From Iteration to Continuous Control\n\n\n\ncontrol theory\n\niterative methods\n\ndynamical systems\n\n\n\nThe Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.\n\n\n\n\n\nMay 22, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding PID Controllers: A Visual Introduction\n\n\n\ncontrol theory\n\nrobotics\n\ntutorial\n\n\n\nA beginner-friendly explanation of PID control with practical examples from robotics.\n\n\n\n\n\nJan 15, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Optimal Control and Calculus of Variations\n\n\n\noptimal control\n\ncalculus of variations\n\ncontrol theory\n\n\n\nWill write about calculus of variations and its applications in optimal control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Jax\n\n\n\ntools\n\nsoftware\n\njax\n\nimplementation\n\n\n\nWill write about Jax and its uses for control research\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Reachability\n\n\n\ndynamical systems\n\ncontrol theory\n\nreachability\n\n\n\nWill write about reachability analysis methods in control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Reinforcement Learning\n\n\n\ndynamical systems\n\ncontrol theory\n\nreinforcement learning\n\n\n\nWill write about reinforcement learning methods in control\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\n\n\n\n\n\n\n\n[TODO] Understanding Game Theoretic Control\n\n\n\ndynamical systems\n\ncontrol theory\n\ngame theory\n\ndifferential games\n\n\n\nWill write about game theoretic control methods\n\n\n\n\n\nJan 1, 2025\n\n\nEvanns Morales-Cuadrado\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/posts/2025-10-15-UnderstandingPX4/index.html",
