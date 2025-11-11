@@ -13,7 +13,7 @@ csl: https://www.zotero.org/styles/ieee
 ## Introduction
 
 The **Newton-Raphson Flow (NRF) tracking controller** is a surprisingly powerful integrator-type control technique used for output tracking of reference signals in continuous-time dynamical systems [@wardi2023tracking]. This control technique is founded on real-time implementations of a fluid-flow variant of the Newton-Raphson method for solving algebraic equations [@wardi2023tracking]. The foundational premise is that tracking can be viewed as a dynamic process of attempting to solve a time-dependent suite of nonlinear algebraic equations [@wardi2023tracking].
-
+<!-- 
 The NRF technique is designed to be **simple and computationally lightweight**, essentially comprising a variable-gain integrator that requires low computing efforts compared to methods like Model Predictive Control (MPC). This methodology is suitable for linear and nonlinear systems, and has demonstrated success in practical applications such as aggressive quadrotor flight [@moralescuadrado2024quadrotor].
 
 ## The Iterative Root-Finding Method
@@ -153,4 +153,4 @@ def newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):
     u_next = u + u_dot * dt
     return u_next
 
-```
+``` -->

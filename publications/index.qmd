@@ -9,7 +9,7 @@ These are my publications (even my undergraduate honors thesis for nostalgia)
   .pubitem { counter-increment: section;} */
   .publist ol {
     list-style-type:none;
-    counter-reset:item 3;
+    counter-reset:item 4;
   }
   .publist ol > li {
     counter-increment:item -1;
