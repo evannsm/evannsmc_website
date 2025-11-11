@@ -6,6 +6,6 @@ title-block-banner: true
 
 
 
-No time to write I'm spending quality time with my pet block
+No time to write I'm spending quality time with my writer's block.
 
 <img src="writers_block.png" alt="Writers Block" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
