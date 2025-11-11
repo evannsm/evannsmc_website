@@ -1,0 +1,46 @@
+---
+title: "Understanding PID Controllers: A Visual Introduction"
+description: "A beginner-friendly explanation of PID control with practical examples from robotics."
+author: "Evanns Morales-Cuadrado"
+date: "2025-01-15"
+categories: [control theory, robotics, tutorial]
+# image: "thumbnail.jpg"
+draft: true
+---
+
+## Introduction
+
+This is an example blog post to demonstrate the structure. When you write your actual posts, you can use this template!
+
+PID (Proportional-Integral-Derivative) controllers are fundamental to control systems. In this post, I'll explain...
+
+## The Proportional Term
+
+The proportional term responds to the current error. Imagine you're trying to balance a robot...
+
+## Key Takeaways
+
+- Write your content here
+- You can use markdown formatting
+- Images, equations, code blocks all work
+
+## Mathematical Expressions
+
+Quarto supports LaTeX math. For example:
+
+$$
+u(t) = K_p e(t) + K_i \int_0^t e(\tau) d\tau + K_d \frac{de(t)}{dt}
+$$
+
+## Code Examples
+
+```python
+def pid_controller(error, integral, derivative, kp, ki, kd):
+    """Simple PID controller implementation"""
+    output = kp * error + ki * integral + kd * derivative
+    return output
+```
+
+## Conclusion
+
+Replace this with your actual content! The YAML frontmatter at the top controls how this appears on the blog listing page.

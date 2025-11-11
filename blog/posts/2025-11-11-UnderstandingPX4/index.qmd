@@ -1,0 +1,17 @@
+---
+title: "[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2"
+description: "Will write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package."
+author: "Evanns Morales-Cuadrado"
+date: "2025-10-15"
+categories: [PX4, quadrotor, ROS2, hardware, tools, software, implementation]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+Will fill in here when I have time :)
+
+In the meantime check out my open-source PX4-ROS2 offboard control package [here](https://github.com/evannsm/clean-px4-offboard-node) and my PX4 data logger package [here](https://github.com/evannsm/ROS2Logger).

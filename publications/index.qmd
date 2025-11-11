@@ -22,6 +22,8 @@ These are my publications (even my undergraduate honors thesis for nostalgia)
 
 :::{.publist}
 
+1. Submitted revision in double-blind journal (will post full citation when allowed)
+
 1. **Evanns Morales-Cuadrado**, Luke Baird, Yorai Wardi, Samuel Coogan, "[Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method](https://arxiv.org/abs/2508.14185)" Submitted to IEEE Transactions on Control Systems Technology (TCST), 2025. \[[preprint pdf](https://arxiv.org/pdf/2508.14185)\]
 
 

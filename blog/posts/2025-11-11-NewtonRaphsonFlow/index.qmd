@@ -1,0 +1,156 @@
+---
+title: "Newton-Raphson Flow: From Iteration to Continuous Control"
+description: "The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction."
+author: "Evanns Morales-Cuadrado"
+date: "2025-05-22"
+categories: [control theory, iterative methods, dynamical systems]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+The **Newton-Raphson Flow (NRF) tracking controller** is a surprisingly powerful integrator-type control technique used for output tracking of reference signals in continuous-time dynamical systems [@wardi2023tracking]. This control technique is founded on real-time implementations of a fluid-flow variant of the Newton-Raphson method for solving algebraic equations [@wardi2023tracking]. The foundational premise is that tracking can be viewed as a dynamic process of attempting to solve a time-dependent suite of nonlinear algebraic equations [@wardi2023tracking].
+
+The NRF technique is designed to be **simple and computationally lightweight**, essentially comprising a variable-gain integrator that requires low computing efforts compared to methods like Model Predictive Control (MPC). This methodology is suitable for linear and nonlinear systems, and has demonstrated success in practical applications such as aggressive quadrotor flight [@moralescuadrado2024quadrotor].
+
+## The Iterative Root-Finding Method
+
+The NRF controller finds its origins in the **Newton-Raphson method**, an iterative numerical procedure used to find the roots (zeros) of a nonlinear function $g: \mathbb{R}^m \to \mathbb{R}^m$. Derived from the first-order Taylor expansion of the error between a reference and a function $e = r - g(u_{n-1})$ the standard iterative root-finding form is given by:
+
+$$
+u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
+\tag{1}
+$$
+
+## The Continuous-Time (Fluid-Flow) Formulation for Memoryless Plants
+
+To transition this idea into a continuous-time control strategy, we first consider a simple case: a **memoryless nonlinearity plant** where the output $y(t)$ is algebraically related to the input $u(t)$ by $y(t) = g(u(t))$.
+
+The control objective (tracking) is to solve the time-dependent system of equations $r(t) - g(u) = 0$. The iterative tracking algorithm is restructured to drive the error $r - y$ to zero.
+
+By defining the time step $\Delta t$, scaling the step size by $\Delta t$, and taking the limit as $\Delta t \to 0$, the discrete iterative algorithm yields its **continuous-time, fluid-flow variant** that defines the rate of change of the control input $\dot{u}(t)$:
+
+$$
+\dot{u}(t) = \left( \frac{\partial g}{\partial u} (u(t)) \right)^{-1} \left( r(t) - g(u(t)) \right)
+\tag{2}
+$$
+
+This formulation results in an **integrator with a variable gain** (the inverse Jacobian) and guarantees asymptotic tracking for a constant reference signal $r(t)$.
+
+### Incorporating the Speedup Factor
+
+For a time-dependent reference signal $r(t)$, the controller's action is "sped up" (note this is technically not a 'gain') by multiplying the Right-Hand Side (RHS) of Equation (2) by a constant $\alpha > 1$. This results in the standard NRF tracking controller:
+
+$$
+\dot{u}(t) = \alpha \left( \frac{\partial g}{\partial u} (u(t)) \right)^{-1} \left( r(t) - g(u(t)) \right)
+\tag{3}
+$$
+
+The **controller speedup factor** ($\alpha$) serves to potentially **stabilize the closed-loop system** and reduce the asymptotic tracking error, providing a tighter upper bound on the error, $\eta/\alpha$, where $\eta$ relates to the rate of change of the reference.
+
+## The Need for Prediction in Dynamical Systems
+
+When the plant is a **dynamical system** modeled by an ordinary differential equation, the output $y(t)$ is not a simple algebraic function of $u(t)$ but depends on the entire history of the input trajectory. Consequently, the NRF flow derived for memoryless plants (Equation 2) is insufficient.
+
+To resolve this, the NRF technique utilizes an **output predictor**. This predictor computes an estimate of the future output, $\hat{y}(t + T)$, at a fixed "lookahead" time $T > 0$. This predicted output must be functionally dependent on the current state $x(t)$ and the current input $u(t)$:
+
+$$
+\hat{y}(t+T) = \rho(x(t), u(t))
+\tag{4}
+$$
+
+The controller then aims to solve the time-dependent equation $r(t + T) - \hat{y}(t + T) = 0$ at the current time $t$, for a small lookahead $T$
+
+## Newton-Raphson Flow for Dynamical Systems (Standard Version)
+
+By substituting the prediction function $\rho(x(t), u(t))$ for $g(u(t))$ and incorporating the reference target at the lookahead time $r(t+T)$ and speedup factor $\alpha$, we define the **standard NRF tracking controller for dynamical systems**:
+
+$$
+\dot{u}(t) = \alpha \left( \frac{\partial \rho}{\partial u} (x(t), u(t)) \right)^{-1} \left( r(t + T) - \rho(x(t), u(t)) \right)
+\tag{5}
+$$
+
+The asymptotic tracking error for this controller is bounded by the asymptotic prediction error ($\nu_1$) and errors related to disturbances and the reference change rate ($\nu_2$), where $\alpha$ only attenuates the latter:
+
+$$
+\lim \sup_{t \to \infty} ||r(t) - y(t)|| \leq \nu_1 + \frac{\nu_2}{\alpha}
+\tag{6}
+$$
+
+## The Enhanced Controller and Practical Performance
+
+The controller defined by Equation (5) is often referred to as the earlier version of the NRF tracking technique, where only **approximate tracking** was obtained in initial published works. A later, **enhanced controller** (modified control algorithm) was derived, which provides a stronger theoretical guarantee: it ensures **exact asymptotic tracking** of $r(t+T)$ by $\hat{y}(t+T)$ without resorting to controller speedup ($\alpha=1$).
+
+This enhanced controller (Equation 20 in the source) achieves this by adding terms that include the time derivative of the reference signal $\dot{r}(t+T)$ and related system dynamics terms to the controller rate equation:
+
+$$
+\dot{u}(t) = - \left( \frac{\partial \rho}{\partial u} (x(t), u(t)) \right)^{-1} \left( r(t+ T ) - \hat{y}(t+ T ) + \dot{r}(t+ T ) - \frac{\partial \rho}{\partial x} (x(t), u(t))f(x(t), u(t)) \right)
+\tag{7}
+$$
+
+For this modified controller (Equation 7), the Lyapunov function derivative satisfies $\dot{V} = -2V$, guaranteeing that the error $\lim_{t \to \infty} (r(t) - \hat{y}(t))$ converges exactly to zero.
+
+
+Note that this means that the *predictor model* should track the reference, not your actual system! Actual tracking performance is bounded by the accuracy of your predictor function. As the engineer implementing this method, you can choose any prediction method, as long as its jacobian with respect to the input can be calculated and is invertible. 
+
+### Simplicity vs. Perfection
+
+Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the **standard controller** (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow. 
+
+Furthermore, the standard NRF controller demonstrates **excellent real-world performance** even without the guarantee of exact tracking [@moralescuadrado2024quadrotor]. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and **outperformed the native, highly-tuned PID controller** in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor.
+
+## Code Examples
+
+The NRF technique defines the derivative of the control input, $\dot{u}(t)$. This rate $\dot{u}(t)$ must be integrated over time to yield the final control output $u(t+\Delta t)$. In a real implementation loop, $u(t+dt) = u(t) + \dot{u} \cdot \Delta t$.
+
+
+We note that the difficulty in implementation for real-world system comes from implementing the output predictor $\rho$, its jacobian, and balancing stability of the closed-loop system and prediction accuraty via the lookahead $T$, and the speedup factor $\alpha$. 
+
+```{python}
+import numpy as np
+
+def newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):
+    """
+    One time-step update of the Newton-Raphson Flow controller.
+
+    Parameters
+    ----------
+    x : ndarray
+        Current state vector.
+    u : ndarray
+        Current control input.
+    r_future : ndarray
+        Future reference (r(t + T)).
+    rho : callable
+        Output prediction function ρ(x, u).
+    J_rho_u : callable
+        Function returning the Jacobian ∂ρ/∂u.
+    alpha : float
+        Controller speedup factor.
+    dt : float
+        Time step for integration.
+
+    Returns
+    -------
+    u_next : ndarray
+        Updated control input.
+    u_dot : ndarray
+        Control rate of change.
+    """
+
+    # Compute prediction and Jacobian inverse
+    y_hat = rho(x, u)
+    J_inv = np.linalg.inv(J_rho_u(x, u))
+
+    # Compute flow rate (Equation 5)
+    error = r_future - y_hat
+    u_dot = alpha * J_inv @ error
+
+    # Euler integrate to update input
+    u_next = u + u_dot * dt
+    return u_next
+
+```

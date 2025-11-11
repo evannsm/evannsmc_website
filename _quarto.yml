@@ -10,6 +10,8 @@ website:
   title: "Evanns Morales-Cuadrado |<br>
           Research Website"
   favicon: files/site_icon/favicon.png
+  site-url: https://evannsmc.com
+  description: "Research website and blog on robotics, control theory, and related topics"
 
   navbar:
     logo: files/site_icon/favicon.png
@@ -21,7 +23,7 @@ website:
       - href: publications
         text: Publications
       - href: blog
-        text: Blog
+        text: Research Blog
       - href: about
         text: About Me
   # twitter-card: true

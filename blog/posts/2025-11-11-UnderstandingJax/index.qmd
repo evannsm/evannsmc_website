@@ -1,0 +1,15 @@
+---
+title: "[TODO] Understanding Jax"
+description: "Will write about Jax and its uses for control research"
+author: "Evanns Morales-Cuadrado"
+date: "2025-1-1"
+categories: [tools, software, jax, implementation]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+Will fill in here when I have time :)

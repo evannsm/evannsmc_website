@@ -1,0 +1,15 @@
+---
+title: "[TODO] Understanding Optimal Control and Calculus of Variations"
+description: "Will write about calculus of variations and its applications in optimal control"
+author: "Evanns Morales-Cuadrado"
+date: "2025-1-1"
+categories: [optimal control, calculus of variations, control theory]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+Will fill in here when I have time :)

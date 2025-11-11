@@ -1,0 +1,15 @@
+---
+title: "[TODO] Understanding Reachability"
+description: "Will write about reachability analysis methods in control"
+author: "Evanns Morales-Cuadrado"
+date: "2025-1-1"
+categories: [dynamical systems, control theory, reachability]
+# image: "thumbnail.jpg"
+draft: false
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+---
+
+## Introduction
+
+Will fill in here when I have time :)

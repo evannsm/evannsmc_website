@@ -1,0 +1,45 @@
+---
+title: "The Kalman Filter: What I Wish Someone Had Told Me"
+description: "Demystifying the Kalman filter with intuition before equations."
+author: "Evanns Morales-Cuadrado"
+date: "2025-01-20"
+categories: [estimation, robotics, tutorial]
+draft: true
+---
+
+## What This Post Covers
+
+This is another example post! Notice how each post is in its own folder within `blog/posts/`.
+
+The beauty of the Kalman filter is...
+
+## Why Folders for Each Post?
+
+Having each post in its own folder (`blog/posts/post-name/index.qmd`) allows you to:
+
+1. **Keep images with the post** - Just drop images in the same folder
+2. **Organize related files** - Data files, notebooks, etc.
+3. **Easy to manage** - Each post is self-contained
+
+## The YAML Frontmatter
+
+At the top of this file, the YAML frontmatter between `---` marks contains:
+
+- **title**: The post title (appears as heading and in listings)
+- **description**: Short summary (appears in the blog listing page)
+- **author**: Your name
+- **date**: Publication date (used for sorting)
+- **categories**: Tags for filtering posts
+- **image**: Optional featured image (if you add one to this folder)
+- **draft: true**: This marks the post as a draft (won't appear on your site until you change to `draft: false` or remove this line)
+
+## Next Steps
+
+When you're ready to write your first real post:
+
+1. Create a new folder in `blog/posts/` like `blog/posts/2025-01-25-your-topic/`
+2. Copy this file as a template
+3. Update the YAML frontmatter
+4. Write your content
+5. Set `draft: false` when ready to publish
+6. Run `quarto render` to build your site

@@ -1,3 +1,11 @@
-## About Me
+---
+title: "About Me"
+page-layout: full
+title-block-banner: true
+---
 
-Writer's block goes here.
+
+
+No time to write I'm spending quality time with my pet block
+
+<img src="writers_block.png" alt="Writers Block" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>

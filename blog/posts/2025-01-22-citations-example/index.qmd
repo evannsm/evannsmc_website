@@ -1,0 +1,92 @@
+---
+title: "Example: How to Cite Papers in Blog Posts"
+description: "Demonstration of citation features in Quarto using BibTeX references."
+author: "Evanns Morales-Cuadrado"
+date: "2025-01-22"
+categories: [tutorial, example]
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+draft: true
+---
+
+## Overview
+
+This post demonstrates how to cite academic papers in your Quarto blog posts, just like you would in LaTeX! All you need is a `.bib` file in the same folder as your post.
+
+## How It Works
+
+1. **Create a `.bib` file** in your post folder (e.g., `references.bib`)
+2. **Add `bibliography: references.bib`** to your YAML frontmatter
+3. **Use citation syntax** like `[@kalman1960]` in your text
+4. **The bibliography is automatically generated** at the end!
+
+## Citation Examples
+
+### Basic Citation
+
+The Kalman filter revolutionized state estimation [@kalman1960]. This creates a citation in parentheses.
+
+### Multiple Citations
+
+Many excellent textbooks cover feedback control [@astrom2008; @lynch2017]. Use semicolons to separate multiple citations.
+
+### In-Text Citation
+
+@boyd2004 provide a comprehensive treatment of convex optimization. This puts the author names directly in the sentence.
+
+### Citation with Page Numbers
+
+The configuration space approach is discussed in detail [@lavalle2006, pp. 123-145].
+
+### Suppressing Author Names
+
+The LQR-trees algorithm [-@tedrake2010] uses sums-of-squares verification. The `-` suppresses the author names but keeps the year.
+
+### Multiple References Together
+
+Modern approaches to motion planning combine optimization and control theory [@lavalle2006; @tedrake2010; @lynch2017].
+
+## Practical Example
+
+Let's discuss a real topic with citations. The foundations of modern control theory were established by the development of optimal filtering [@kalman1960]. This work, along with @astrom2008's accessible treatment of feedback systems, provides the theoretical basis for many robotic applications.
+
+When implementing controllers for robotic manipulators, @lynch2017 offer practical algorithms that build on classical control theory [@astrom2008]. For path planning, @lavalle2006 provides comprehensive coverage of the configuration space approach.
+
+## Citation Styles
+
+Notice the `csl:` field in the YAML frontmatter? This controls the citation style:
+
+- **IEEE** (currently used): `csl: https://www.zotero.org/styles/ieee`
+- **APA**: `csl: https://www.zotero.org/styles/apa`
+- **Chicago**: `csl: https://www.zotero.org/styles/chicago-author-date`
+- **Nature**: `csl: https://www.zotero.org/styles/nature`
+
+You can find thousands of styles at [Zotero Style Repository](https://www.zotero.org/styles).
+
+## Where Do You Get `.bib` Entries?
+
+Most places you find papers have BibTeX export:
+
+- **Google Scholar**: Click the quote icon → "BibTeX"
+- **arXiv**: Click "Export BibTeX Citation"
+- **Conference/Journal websites**: Usually have a "Cite" or "Export" button
+- **Zotero/Mendeley**: Export your library as `.bib`
+
+## Summary
+
+The citation syntax is identical to LaTeX:
+
+| Syntax | Output |
+|--------|--------|
+| `[@kalman1960]` | [1] |
+| `@kalman1960` | Kalman [1] |
+| `[-@kalman1960]` | [1] (no author) |
+| `[@kalman1960; @boyd2004]` | [1], [2] |
+| `[@kalman1960, p. 42]` | [1, p. 42] |
+
+The references section is automatically added below!
+
+## References
+
+::: {#refs}
+:::
