@@ -1,0 +1,99 @@
+---
+title: "Community & Outreach"
+page-layout: full
+title-block-banner: true
+---
+
+<div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+  <img src="../files/BORI/bori_logo.jpg" alt="BORI Logo" style="width: 200px; height: auto;"/>
+  <h2 style="margin: 0; flex: 1;">BORI (Boricuas Organized for Impact)</h2>
+</div>
+
+::: {style="display: flex; align-items: flex-start; gap: 30px; margin-bottom: 20px;"}
+::: {style="flex: 1;"}
+I helped co-found **BORI (Boricuas Organized for Impact)**, a student organization dedicated to building community and celebrating Puerto Rican culture at Georgia Tech.
+
+*Photos from our events will be added soon!*
+:::
+
+::: {style="flex: 0 0 400px;"}
+<img src="../files/BORI/BORI_cofounders.jpg" alt="BORI Co-founders" style="width: 100%; height: auto; border-radius: 8px;"/>
+<p style="font-style: italic; margin-top: 10px; text-align: center; font-size: 0.9em;">BORI Co-founders (left to right): Gustavo, Camelia, Evanns</p>
+:::
+:::
+
+### Event History
+
+#### Fall 2024
+
+<strong>Inaugural BORI Event</strong>
+
+- Homemade Coquito, Sandwiches de Mezclita, Sorullitos
+- Introduce everyone to the club and its purpose/vision
+
+<strong>Trivia Night with Snacks</strong>
+
+- Hacer PR trivia questions, snacks
+
+---
+
+#### Spring 2025
+
+<strong>Winter Org Fair: Enero 30 @11am-1pm</strong>
+
+- Poster, Banderitas, Bocina, Hershey Kisses
+
+<strong>BORI Kickoff: Febrero 6 @5pm</strong>
+
+- Coquito, Sandwiches de Mezclita, Sorullitos
+
+<strong>Festival de Chocolate: Febrero 21</strong>
+
+- Fresas con chocolate, tierrita, start/stop running game, papa caliente, The Standard rooftop area
+
+<strong>March Gladness: Marzo 6</strong>
+
+- Tabling event con juego tipico de PR (jacks)
+
+<strong>BORI Game Night: Marzo 13</strong>
+
+- Jueguitos tradicionales de PR y juegos PR themed y snacks
+
+---
+
+#### Fall 2025
+
+<strong>Freshman Kickoff: Agosto 12 @ 1:15pm (Skiles 169)</strong>
+
+- Bienvenidos a GT/Atlanta, serve as resources for new students from PR
+- Krispy Kreme donas
+
+<strong>Fall Org Fair: Agosto 27 @11-1pm (Tech Green)</strong>
+
+- Poster, Banderitas, Bocina, Hershey Kisses
+
+<strong>BORI KickOff: Septiembre 3 @5:30pm (Boggs 103)</strong>
+
+- Galletas publix, snacks tipicos, dulcecitos
+
+<strong>BORI Professional Panel: Septiembre 24 @5pm (IC)</strong>
+
+- Regalo para participantes, Preguntas ready
+
+<strong>Dominos Tournament: Octubre @11-1pm at Kendeda</strong>
+
+- Funding requested for $200, Dominoes, Papi's Cuban cater empanadas, Prizes
+
+<strong>Vamo a Jugal': Octubre 10 @4pm (Piedmont Park)</strong>
+
+- Limber Parcha y Cherry y Coco, Bolas Soccer, Volley, Football, Bocina #active
+
+<strong>Movie Night: Noviembre 13 @7pm (The Connector 7th floor big screen)</strong>
+
+- Reserve the big screen at the Connect, Pelicula puertorriquena, popcorn, snacks
+
+<strong>Taller Coquito: Noviembre ____ @7pm (TBD. apt)</strong>
+
+- Leche evaporada, leche condensada, crema de coco, canela molida, vainilla, botellas de cristal para que la gente se lleve el coquito que han hecho
+
+<strong>Coffee/Chocolate Event with BRASA: (TBD)</strong>

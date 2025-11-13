@@ -126,11 +126,11 @@
     "text": "These are my publications (even my undergraduate honors thesis for nostalgia)\n\n\n\nSubmitted revision in double-blind journal (will post full citation when allowed)\nEvanns Morales-Cuadrado, Luke Baird, Yorai Wardi, Samuel Coogan, “Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method” Submitted to IEEE Transactions on Control Systems Technology (TCST), 2025. [preprint pdf]\nEvanns Morales-Cuadrado, Christian Llanes, Yorai Wardi, Samuel Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” Appeared in American Control Conference (ACC), 2024. [preprint pdf] \nEvanns Morales-Cuadrado, “Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance” Undergraduate Honors College Thesis at UT Arlington, 2022.\n\n\n* indicates equal contribution"
   },
   {
-    "objectID": "about/index.html",
-    "href": "about/index.html",
-    "title": "About Me",
+    "objectID": "community/index.html",
+    "href": "community/index.html",
+    "title": "Community & Outreach",
     "section": "",
-    "text": "No time to write I’m spending quality time with my writer’s block."
+    "text": "I helped co-found BORI (Boricuas Organized for Impact), a student organization dedicated to building community and celebrating Puerto Rican culture at Georgia Tech.\nPhotos from our events will be added soon!\n\n\n\n\nInaugural BORI Event: - Homemade Coquito, Sandwiches de Mezclita, Sorullitos - Introduce everyone to the club and its purpose/vision\nTrivia Night with Snacks: - Hacer PR trivia questions, snacks\n\n\n\n\nWinter Org Fair: Enero 30 @11am-1pm - Poster, Banderitas, Bocina, Hershey Kisses\nBORI Kickoff: Febrero 6 @5pm - Coquito, Sandwiches de Mezclita, Sorullitos\nFestival de Chocolate: Febrero 21 - Fresas con chocolate, tierrita, start/stop running game, papa caliente, The Standard rooftop area\nMarch Gladness: Marzo 6 - Tabling event con juego tipico de PR (jacks)\nBORI Game Night: Marzo 13 - Jueguitos tradicionales de PR y juegos PR themed y snacks\n\n\n\n\nFreshman Kickoff: Agosto 12 @ 1:15pm (Skiles 169) - Bienvenidos a GT/Atlanta, serve as resources for new students from PR - Krispy Kreme donas\nFall Org Fair: Agosto 27 @11-1pm (Tech Green) - Poster, Banderitas, Bocina, Hershey Kisses\nBORI KickOff: Septiembre 3 @5:30pm (Boggs 103) - Galletas publix, snacks tipicos, dulcecitos\nBORI Professional Panel: Septiembre 24 @5pm (IC) - Regalo para participantes, Preguntas ready\nDominos Tournament: Octubre @11-1pm at Kendeda - Funding requested for $200, Dominoes, Papi’s Cuban cater empanadas, Prizes\nVamo a Jugal’: Octubre 10 @4pm (Piedmont Park) - Limber Parcha y Cherry y Coco, Bolas Soccer, Volley, Football, Bocina #active\nMovie Night: Noviembre 13 @7pm (The Connector 7th floor big screen) - Reserve the big screen at the Connect, Pelicula puertorriquena, popcorn, snacks\nTaller Coquito: Noviembre ____ @7pm (TBD. apt) - Leche evaporada, leche condensada, crema de coco, canela molida, vainilla, botellas de cristal para que la gente se lleve el coquito que han hecho\nCoffee/Chocolate Event with BRASA: (TBD)"
   },
   {
     "objectID": "index.html",
@@ -145,6 +145,13 @@
     "title": "Evanns Morales-Cuadrado| Ph.D Student at Georgia Tech",
     "section": "",
     "text": "Georgia Institute of Technology | Atlanta, GA\nPhD in Robotics | Aug 2022 - Present\nUniversity of Texas at Arlington | Arlington, TX\nHonors B.S in Electrical Engineering | Aug 2018 - May 2022\nMinors in Mathematics and Physics Summa Cum Laude"
+  },
+  {
+    "objectID": "about/index.html",
+    "href": "about/index.html",
+    "title": "About Me",
+    "section": "",
+    "text": "No time to write I’m spending quality time with my writer’s block."
   },
   {
     "objectID": "cv/index.html",
@@ -215,5 +222,12 @@
     "title": "[TODO] Understanding Game Theoretic Control",
     "section": "",
     "text": "Will fill in here when I have time :)"
+  },
+  {
+    "objectID": "community/index.html#bori-boricuas-organized-for-impact",
+    "href": "community/index.html#bori-boricuas-organized-for-impact",
+    "title": "Community & Outreach",
+    "section": "",
+    "text": "I helped co-found BORI (Boricuas Organized for Impact), a student organization dedicated to building community and celebrating Puerto Rican culture at Georgia Tech.\nPhotos from our events will be added soon!\n\n\n\n\nInaugural BORI Event: - Homemade Coquito, Sandwiches de Mezclita, Sorullitos - Introduce everyone to the club and its purpose/vision\nTrivia Night with Snacks: - Hacer PR trivia questions, snacks\n\n\n\n\nWinter Org Fair: Enero 30 @11am-1pm - Poster, Banderitas, Bocina, Hershey Kisses\nBORI Kickoff: Febrero 6 @5pm - Coquito, Sandwiches de Mezclita, Sorullitos\nFestival de Chocolate: Febrero 21 - Fresas con chocolate, tierrita, start/stop running game, papa caliente, The Standard rooftop area\nMarch Gladness: Marzo 6 - Tabling event con juego tipico de PR (jacks)\nBORI Game Night: Marzo 13 - Jueguitos tradicionales de PR y juegos PR themed y snacks\n\n\n\n\nFreshman Kickoff: Agosto 12 @ 1:15pm (Skiles 169) - Bienvenidos a GT/Atlanta, serve as resources for new students from PR - Krispy Kreme donas\nFall Org Fair: Agosto 27 @11-1pm (Tech Green) - Poster, Banderitas, Bocina, Hershey Kisses\nBORI KickOff: Septiembre 3 @5:30pm (Boggs 103) - Galletas publix, snacks tipicos, dulcecitos\nBORI Professional Panel: Septiembre 24 @5pm (IC) - Regalo para participantes, Preguntas ready\nDominos Tournament: Octubre @11-1pm at Kendeda - Funding requested for $200, Dominoes, Papi’s Cuban cater empanadas, Prizes\nVamo a Jugal’: Octubre 10 @4pm (Piedmont Park) - Limber Parcha y Cherry y Coco, Bolas Soccer, Volley, Football, Bocina #active\nMovie Night: Noviembre 13 @7pm (The Connector 7th floor big screen) - Reserve the big screen at the Connect, Pelicula puertorriquena, popcorn, snacks\nTaller Coquito: Noviembre ____ @7pm (TBD. apt) - Leche evaporada, leche condensada, crema de coco, canela molida, vainilla, botellas de cristal para que la gente se lleve el coquito que han hecho\nCoffee/Chocolate Event with BRASA: (TBD)"
   }
 ]

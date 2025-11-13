@@ -26,6 +26,8 @@ website:
         text: Research Blog
       - href: about
         text: About Me
+      - href: community
+        text: Community & Outreach
   # twitter-card: true
   # open-graph: true
 
