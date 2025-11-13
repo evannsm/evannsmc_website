@@ -111,14 +111,25 @@ I helped co-found **BORI (Boricuas Organized for Impact)**, a student organizati
 </div>
 </details>
 
+
 <details style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-<summary style="cursor: pointer; font-size: 1.5em; font-weight: bold;">
-  🍳 Cooking
+<summary style="cursor: pointer; font-size: 1.5em; font-weight: bold; list-style: none;">
+  Hobbies
 </summary>
 
 <div style="margin-top: 20px;">
 
-I've always had a passion for cooking, especially exploring different cuisines and experimenting with traditional recipes. From mastering Puerto Rican classics to trying new international dishes, the kitchen is my creative space.
+I swear I have hobbies. Will post about cooking, reading, and dance eventually.
+
+
+<!-- <details style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+<summary style="cursor: pointer; font-size: 1.5em; font-weight: bold; list-style: none;">
+  🍳 Cooking
+</summary>
+
+<div style="margin-top: 20px;"> -->
+
+<!-- I've always had a passion for cooking, especially exploring different cuisines and experimenting with traditional recipes. From mastering Puerto Rican classics to trying new international dishes, the kitchen is my creative space.
 
 **Favorite dishes to make:**
 - Traditional Puerto Rican cuisine (arroz con gandules, pernil, pasteles)
@@ -131,7 +142,7 @@ I've always had a passion for cooking, especially exploring different cuisines a
 </details>
 
 <details style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-<summary style="cursor: pointer; font-size: 1.5em; font-weight: bold;">
+<summary style="cursor: pointer; font-size: 1.5em; font-weight: bold; list-style: none;">
   💃 Dance
 </summary>
 
@@ -147,4 +158,4 @@ Dance has been an important part of my life, providing both creative expression 
 *More details and photos coming soon!*
 
 </div>
-</details>
+</details> -->
