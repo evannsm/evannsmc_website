@@ -96,7 +96,7 @@ For this modified controller (Equation 7), the Lyapunov function derivative sati
 
 Note that this means that the *predictor model* should track the reference, not your actual system! Actual tracking performance is bounded by the accuracy of your predictor function. As the engineer implementing this method, you can choose any prediction method, as long as its jacobian with respect to the input can be calculated and is invertible. 
 
-### Simplicity vs. Perfection
+### Efficiency vs. Perfection
 
 Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the **standard controller** (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow. 
 
