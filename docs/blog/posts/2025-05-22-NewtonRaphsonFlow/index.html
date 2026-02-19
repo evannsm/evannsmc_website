@@ -327,8 +327,8 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
 \]</span></p>
 <p>For this modified controller (Equation 7), the Lyapunov function derivative satisfies <span class="math inline">\(\dot{V} = -2V\)</span>, guaranteeing that the error <span class="math inline">\(\lim_{t \to \infty} (r(t) - \hat{y}(t))\)</span> converges exactly to zero.</p>
 <p>Note that this means that the <em>predictor model</em> should track the reference, not your actual system! Actual tracking performance is bounded by the accuracy of your predictor function. As the engineer implementing this method, you can choose any prediction method, as long as its jacobian with respect to the input can be calculated and is invertible.</p>
-<section id="simplicity-vs.-perfection" class="level3">
-<h3 class="anchored" data-anchor-id="simplicity-vs.-perfection">Simplicity vs.&nbsp;Perfection</h3>
+<section id="efficiency-vs.-perfection" class="level3">
+<h3 class="anchored" data-anchor-id="efficiency-vs.-perfection">Efficiency vs.&nbsp;Perfection</h3>
 <p>Despite the enhanced controller offering this guarantee of exact asymptotic convergence (Equation 7), the <strong>standard controller</strong> (Equation 5) still has a significant place because it is simpler and does not require computing reference trajectory derivatives. It can be more practical in many situations when compute and time do not allow.</p>
 <p>Furthermore, the standard NRF controller demonstrates <strong>excellent real-world performance</strong> even without the guarantee of exact tracking <span class="citation" data-cites="moralescuadrado2024quadrotor"><a href="#ref-moralescuadrado2024quadrotor" role="doc-biblioref">[2]</a></span>. For instance, when applied to aggressive quadrotor flight, the standard NRF controller achieved good tracking and <strong>outperformed the native, highly-tuned PID controller</strong> in the PX4 autopilot stack across all tested trajectories. This strong performance is achieved even when using a highly simplified predictor based on linearized dynamics, which emphasizes that the power of the NRF method lies in the combination of the flow equation and a reasonable, though not necessarily perfect, predictor.</p>
 </section>
@@ -337,7 +337,7 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
 <h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
 <p>The NRF technique defines the derivative of the control input, <span class="math inline">\(\dot{u}(t)\)</span>. This rate <span class="math inline">\(\dot{u}(t)\)</span> must be integrated over time to yield the final control output <span class="math inline">\(u(t+\Delta t)\)</span>. In a real implementation loop, <span class="math inline">\(u(t+dt) = u(t) + \dot{u} \cdot \Delta t\)</span>.</p>
 <p>We note that the difficulty in implementation for real-world system comes from implementing the output predictor <span class="math inline">\(\rho\)</span>, its jacobian, and balancing stability of the closed-loop system and prediction accuraty via the lookahead <span class="math inline">\(T\)</span>, and the speedup factor <span class="math inline">\(\alpha\)</span>.</p>
-<div id="835cb69d" class="cell" data-execution_count="1">
+<div id="517f3936" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):</span>
