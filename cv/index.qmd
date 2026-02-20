@@ -1,7 +1,7 @@
 ---
 title: CV & Resume
 ---
-(Last updated: February 2026)
+(Last updated: February 20, 2026)
 
 <!-- In the future I want to do it like this: https://www.cynthiahqy.com/posts/cv-html-pdf/ -->
 
