@@ -1,5 +1,5 @@
 ### Selected Publications
 
-1. **E. Morales-Cuadrado**, C. Llanes, Y. Wardi and S. Coogan, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control." *2024 American Control Conference (ACC).*
-2. **E. Morales-Cuadrado**, L. Baird, Y. Wardi and S. Coogan, "Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method." Submitted to *IEEE Transactions on Control Systems Technology.* arXiv preprint available. *(under revision)*
-3. L. Baird, **E. Morales-Cuadrado**, and S. Coogan, "Runtime Assurance for Uncertain Systems from Interval Signal Temporal Logic." Submitted to *IEEE Transactions on Robotics.* *(under revision)*
+1. **E. Morales-Cuadrado**, C. Llanes, Y. Wardi and S. Coogan, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control." *2024 American Control Conference (ACC)*
+2. L. Baird, **E. Morales-Cuadrado**, and S. Coogan, "Runtime Assurance for Uncertain Systems from Interval Signal Temporal Logic." Submitted to IEEE Transactions on Robotics. *(under revision)*
+3. **E. Morales-Cuadrado**, L. Baird, Y. Wardi and S. Coogan, "Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method." Submitted to IEEE Transactions on Control Systems Technology. *arXiv preprint available.* *(under revision)*

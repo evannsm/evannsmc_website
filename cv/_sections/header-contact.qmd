@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Email** | [evannsmc@gmail.com](mailto:evannsmc@gmail.com) |
-| **Website** | [evannsmc.com](https://www.evannsmc.com/) |
-| **GitHub** | [github.com/evannsm](https://github.com/evannsm) |
-| **LinkedIn** | [linkedin.com/in/evanns-morales](https://www.linkedin.com/in/evanns-morales/) |
+| **Email** | evannsmc [at] gmail [dot] com |
+| **Research Website** | [https://www.evannsmc.com/](https://www.evannsmc.com/) |
+| **Github** | [https://github.com/evannsm](https://github.com/evannsm) |
+| **LinkedIn** | [https://www.linkedin.com/in/evanns-morales/](https://www.linkedin.com/in/evanns-morales/) |

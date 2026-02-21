@@ -1,7 +1,7 @@
 ### Work Experience
 
 **Graduate Research Assistant** — FACTS Lab, Georgia Institute of Technology | Atlanta, GA\
-*August 2022 – Present*
+*August 2022 - Present*
 
 - Advised by Dr. Samuel Coogan
 - Implemented novel aggressive tracking control methods on quadrotor hardware
@@ -9,28 +9,28 @@
 - Published and presented novel research at top conferences and journals in the fields of robotics and control theory
 
 **Teaching Assistant** — Vertically Integrated Project in Robotics, Georgia Institute of Technology | Atlanta, GA\
-*January 2024 – Present*
+*January 2024 - Present*
 
 - Aided professor in his instruction of this research-based course
 - Provided promising undergraduates with guidance performing applied research in the field of robotics
 - Taught control theoretical concepts in an accessible manner for undergraduates
 
 **Research Assistant** — Autonomous Systems Lab, University of Texas at Arlington | Arlington, TX\
-*November 2021 – May 2022*
+*November 2021 - May 2022*
 
 - Advised by Dr. Frank Lewis
 - Received personal mentorship from a leading researcher in the field of controls and reinforcement learning (ranked 12th in the USA and 23rd in the world during my time in his lab)
 - Aided graduate students on reinforcement learning research applied to quadrotor control
 
 **Teaching Assistant** — Graduate-Level Intelligent Systems Course, University of Texas at Arlington | Arlington, TX\
-*January 2022 – May 2022*
+*January 2022 - May 2022*
 
 - Aided professor in his instruction of the course
 - Hosted review sessions for students in preparation for exams
 - Gained teaching experience in a graduate-level course while still an undergraduate
 
 **Research Assistant** — Dynamical Networks and Control Lab, University of Texas at Arlington | Arlington, TX\
-*October 2019 – May 2022*
+*October 2019 - May 2022*
 
 - Advised by Dr. Yan Wan
 - Gained experience with Robot Operating System (ROS), OpenCV, and path planning
