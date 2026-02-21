@@ -1,0 +1,4 @@
+### Open-Source Contributions
+
+- **PX4 Autopilot:** Contributed documentation improvements to the official PX4 Autopilot manual.
+- **Vicon4PX4:** Developed and open-sourced a ROS 2 C++ Vicon–PX4 interface enabling external vision fusion for indoor quadrotor flight experiments; adopted and showcased by Georgia Tech's Indoor Flight Lab as part of its official codebase. Also created a parallel package for OptiTrack motion capture systems.

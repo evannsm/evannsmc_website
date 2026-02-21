@@ -1,0 +1,14 @@
+### Research Interests
+
+:::: {.columns}
+::: {.column width="50%"}
+- Safe Autonomy
+- Hardware Deployment
+- Unmanned Ground and Aerial Vehicles
+:::
+::: {.column width="50%"}
+- Advanced Nonlinear Control
+- Learning-Based Control
+- Trajectory Generation and Planning
+:::
+::::

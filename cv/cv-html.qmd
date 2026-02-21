@@ -1,0 +1,45 @@
+---
+title: "CV — Evanns Morales-Cuadrado"
+toc: false
+---
+
+::: {.d-flex .gap-2 .mb-3}
+[← Back to PDFs](index.qmd){.btn .btn-sm .btn-outline-secondary}
+<a href="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" class="btn btn-sm btn-outline-primary" download>Download PDF</a>
+:::
+
+---
+
+{{< include _sections/header-contact.qmd >}}
+
+---
+
+{{< include _sections/technical-skills.qmd >}}
+
+---
+
+{{< include _sections/education.qmd >}}
+
+---
+
+{{< include _sections/work-experience.qmd >}}
+
+---
+
+{{< include _sections/publications.qmd >}}
+
+---
+
+{{< include _sections/research-interests.qmd >}}
+
+---
+
+{{< include _sections/open-source.qmd >}}
+
+---
+
+{{< include _sections/service-cv.qmd >}}
+
+---
+
+{{< include _sections/awards-cv.qmd >}}

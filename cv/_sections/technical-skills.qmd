@@ -1,0 +1,8 @@
+### Technical Skills
+
+- **Programming Languages:** Python, C/C++, Matlab/Simulink
+- **Frameworks & Libraries:** JAX, PyTorch, acados, CasADi, ROS 2, PX4, ArduPilot
+- **Development & DevOps Tools:** Docker, Continuous Integration, Git/GitHub
+- **Hardware & Experimentation:** UAV assembly, repair, and deployment
+- **Motion-Capture:** OptiTrack and Vicon
+- **Languages:** Spanish (Native), English (Native)
