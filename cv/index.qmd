@@ -3,7 +3,9 @@ title: CV & Resume
 ---
 (Last updated: February 2026)
 
-<!-- In the future I want to do it like this: https://www.cynthiahqy.com/posts/cv-html-pdf/ -->
+[View HTML CV](cv-html.qmd){.btn .btn-outline-primary .btn-sm}
+
+---
 
 Here's my one page (front and back) resume:
 <embed src="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf" width=800 height=600/>
