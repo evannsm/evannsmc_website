@@ -1,12 +1,12 @@
 ---
-title: CV & Resume
+title: CV & Résumé
 ---
 *(Last updated: February 2026)*
 
-### Resume
+### Résumé
 
 ::: {.d-flex .gap-2 .mb-2}
-[View HTML Resume](resume-html.qmd){.btn .btn-sm .btn-outline-primary}
+[View HTML Résumé](resume-html.qmd){.btn .btn-sm .btn-outline-primary}
 <a href="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" class="btn btn-sm btn-outline-secondary" download>Download PDF</a>
 :::
 

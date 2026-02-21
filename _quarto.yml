@@ -19,7 +19,7 @@ website:
       - href: index.qmd
         text: Home
       - href: cv
-        text: CV & Resume
+        text: CV & Résumé
       - href: publications
         text: Publications
       - href: projects

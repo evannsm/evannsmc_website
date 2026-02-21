@@ -135,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../cv"> 
-<span class="menu-text">CV &amp; Resume</span></a>
+<span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../publications"> 
@@ -203,14 +203,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond — from academic document tooling to flight controllers deployed on real hardware. If any of these are useful to your work, a ⭐ on GitHub goes a long way.</p>
+<p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond — from academic document tooling to flight controllers deployed on real hardware.</p>
 <hr>
 <section id="quartocv" class="level2">
 <h2 class="anchored" data-anchor-id="quartocv">QuartoCV</h2>
-<p><strong>A modular, build-system-driven CV and resume template for academics.</strong></p>
-<div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/quartoCV" class="btn btn-sm btn-primary" target="_blank">⭐ Star on GitHub</a> <a href="https://github.com/evannsm/quartoCV" class="btn btn-sm btn-outline-secondary" target="_blank">View Repository</a></p>
-</div>
+<p><strong>A modular, build-system-driven CV and Résumé template for academics.</strong></p>
+<p><a href="https://github.com/evannsm/quartoCV" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
 <p>If you’ve ever spent more time fighting LaTeX than writing about your research, QuartoCV is for you. It combines Quarto’s literate programming model with a smart GNU Make build system that tracks which source sections changed and rebuilds only the affected PDFs — so editing a single shared section automatically propagates across every document that includes it.</p>
 <p>The template ships with two distinct style variants and three ready-to-use example documents:</p>
 <ul>
@@ -231,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="mocap4px4">Motion Capture → PX4 Pipelines</h2>
 <p><strong>Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.</strong></p>
 <div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/vicon4px4" class="btn btn-sm btn-primary" target="_blank">⭐ Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsm/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">⭐ OptiTrack4PX4 on GitHub</a></p>
+<p><a href="https://github.com/evannsm/vicon4px4" class="btn btn-sm btn-primary" target="_blank">Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsm/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">OptiTrack4PX4 on GitHub</a></p>
 </div>
 <p>Running indoor flight experiments means solving the same infrastructure problem every time: get your motion-capture system’s position data into the drone’s state estimator. These two companion packages handle all of it — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.</p>
 <p><strong>Vicon4PX4</strong> connects to Vicon Tracker via the DataStream SDK (fully vendored — no system install needed), while <strong>OptiTrack4PX4</strong> connects to OptiTrack Motive via the NatNet protocol. Both packages share the same architecture and interface:</p>
@@ -249,9 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="newton-raphson-flow-for-px4" class="level2">
 <h2 class="anchored" data-anchor-id="newton-raphson-flow-for-px4">Newton-Raphson Flow for PX4</h2>
 <p><strong>A research-grade quadrotor controller backed by three peer-reviewed papers.</strong></p>
-<div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/newton_raphson_px4" class="btn btn-sm btn-primary" target="_blank">⭐ Star on GitHub</a> <a href="https://github.com/evannsm/newton_raphson_px4" class="btn btn-sm btn-outline-secondary" target="_blank">View Repository</a></p>
-</div>
+<p><a href="https://github.com/evannsm/newton_raphson_px4" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
 <p>NR Flow reframes trajectory tracking as an optimization problem solved at each timestep by the Newton-Raphson method — yielding fast, accurate control that is more computationally efficient than NMPC while matching or exceeding its tracking performance. The result: a controller that runs comfortably on a Raspberry Pi 4 onboard a real quadrotor.</p>
 <p>Integral Control Barrier Functions (I-CBFs) are baked in to handle actuation limits without discontinuous switching, and all computations are JAX JIT-compiled for real-time deployment.</p>
 <p><strong>Key features:</strong></p>
@@ -292,9 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nmpc-acados-px4" class="level2">
 <h2 class="anchored" data-anchor-id="nmpc-acados-px4">NMPC Acados PX4</h2>
 <p><strong>A production-ready Nonlinear Model Predictive Controller for quadrotors.</strong></p>
-<div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/nmpc_acados_px4" class="btn btn-sm btn-primary" target="_blank">⭐ Star on GitHub</a> <a href="https://github.com/evannsm/nmpc_acados_px4" class="btn btn-sm btn-outline-secondary" target="_blank">View Repository</a></p>
-</div>
+<p><a href="https://github.com/evannsm/nmpc_acados_px4" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
 <p>This package implements a 9-state NMPC using the Acados solver with QPOASES — a rigorous, well-understood approach that was used as the primary comparison baseline for the Newton-Raphson Flow work. If you need a solid NMPC reference implementation for your own quadrotor research, this is a clean starting point.</p>
 <p>The controller tracks position, velocity, and Euler angles jointly with a configurable error-based cost formulation, wrapped yaw error handling to avoid angle discontinuities, and hard input constraints on thrust and body rates. C-code is generated by Acados for real-time computation.</p>
 <p><strong>Key features:</strong></p>
@@ -313,9 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="quarto-georgia-tech-slides" class="level2">
 <h2 class="anchored" data-anchor-id="quarto-georgia-tech-slides">Quarto Georgia Tech Slides</h2>
 <p><strong>Official Georgia Tech-branded RevealJS presentations, installable in one command.</strong></p>
-<div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/quarto-gatech-slides" class="btn btn-sm btn-primary" target="_blank">⭐ Star on GitHub</a> <a href="https://github.com/evannsm/quarto-gatech-slides" class="btn btn-sm btn-outline-secondary" target="_blank">View Repository</a></p>
-</div>
+<p><a href="https://github.com/evannsm/quarto-gatech-slides" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
 <p>Co-created with <a href="https://github.com/brendangould">Brendan Gould</a>, this Quarto extension brings official Georgia Tech colors, backgrounds, and typography to RevealJS HTML presentations. Install it into any existing Quarto project with a single terminal command:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> use template evannsm/quarto-gatech-slides</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The theme includes the full official color palette (Navy, Tech Gold, Buzz Gold), branded slide backgrounds for title and section slides, fragment-animated highlight classes, and GT-styled callout blocks. Requires Quarto ≥ 1.7.0.</p>
