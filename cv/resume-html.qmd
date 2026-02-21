@@ -1,5 +1,6 @@
 ---
 title: "Resume — Evanns Morales-Cuadrado"
+toc: true
 ---
 
 ::: {.d-flex .gap-2 .mb-3}
