@@ -1,0 +1,142 @@
+---
+title: "Open-Source Projects"
+toc: true
+toc-depth: 2
+---
+
+A collection of open-source tools developed through my research at Georgia Tech's FACTS Lab and beyond — from academic document tooling to flight controllers deployed on real hardware. If any of these are useful to your work, a ⭐ on GitHub goes a long way.
+
+---
+
+## QuartoCV
+
+**A modular, build-system-driven CV and resume template for academics.**
+
+::: {.d-flex .gap-2 .mb-3}
+[⭐ Star on GitHub](https://github.com/evannsm/quartoCV){.btn .btn-sm .btn-primary target="_blank"}
+[View Repository](https://github.com/evannsm/quartoCV){.btn .btn-sm .btn-outline-secondary target="_blank"}
+:::
+
+If you've ever spent more time fighting LaTeX than writing about your research, QuartoCV is for you. It combines Quarto's literate programming model with a smart GNU Make build system that tracks which source sections changed and rebuilds only the affected PDFs — so editing a single shared section automatically propagates across every document that includes it.
+
+The template ships with two distinct style variants and three ready-to-use example documents:
+
+- **Academic style** — two-column compact layout with bold section labels, 8pt typography, and tight spacing optimized for fitting a lot onto a page cleanly
+- **Consulting style** — single-column standard margins with centered headers for a cleaner, more modern look
+
+**Key features:**
+
+- Modular `sections/` directory — edit one `.qmd` file, every CV that includes it rebuilds automatically
+- Intelligent incremental builds via Makefile dependency tracking
+- XeLaTeX engine for publication-quality typographic output
+- Easily customizable fonts, margins, and spacing through YAML front matter
+
+**Built with:** Quarto · XeLaTeX · GNU Make
+
+---
+
+## Motion Capture → PX4 Pipelines {#mocap4px4}
+
+**Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.**
+
+::: {.d-flex .gap-2 .mb-3}
+[⭐ Vicon4PX4 on GitHub](https://github.com/evannsm/vicon4px4){.btn .btn-sm .btn-primary target="_blank"}
+[⭐ OptiTrack4PX4 on GitHub](https://github.com/evannsm/optitrack4px4){.btn .btn-sm .btn-primary target="_blank"}
+:::
+
+Running indoor flight experiments means solving the same infrastructure problem every time: get your motion-capture system's position data into the drone's state estimator. These two companion packages handle all of it — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.
+
+**Vicon4PX4** connects to Vicon Tracker via the DataStream SDK (fully vendored — no system install needed), while **OptiTrack4PX4** connects to OptiTrack Motive via the NatNet protocol. Both packages share the same architecture and interface:
+
+- ENU (East-North-Up) → NED (North-East-Down) coordinate conversion
+- Pose data published as both quaternions and Euler angles
+- `VehicleOdometry` messages for direct PX4 EKF external vision fusion
+- Optional full-state relay merging fused EKF outputs into a single topic for logging and control
+
+Three launch modes let you run exactly what you need: motion-capture client only, client + visual odometry relay, or all nodes including the full-state merger.
+
+Vicon4PX4 has been adopted and showcased by Georgia Tech's Indoor Flight Lab as part of its official codebase.
+
+**Built with:** ROS 2 (Jazzy / Humble) · C++17 · Ubuntu 22.04 / 24.04 · x86\_64 & ARM64
+
+---
+
+## Newton-Raphson Flow for PX4
+
+**A research-grade quadrotor controller backed by three peer-reviewed papers.**
+
+::: {.d-flex .gap-2 .mb-3}
+[⭐ Star on GitHub](https://github.com/evannsm/newton_raphson_px4){.btn .btn-sm .btn-primary target="_blank"}
+[View Repository](https://github.com/evannsm/newton_raphson_px4){.btn .btn-sm .btn-outline-secondary target="_blank"}
+:::
+
+NR Flow reframes trajectory tracking as an optimization problem solved at each timestep by the Newton-Raphson method — yielding fast, accurate control that is more computationally efficient than NMPC while matching or exceeding its tracking performance. The result: a controller that runs comfortably on a Raspberry Pi 4 onboard a real quadrotor.
+
+Integral Control Barrier Functions (I-CBFs) are baked in to handle actuation limits without discontinuous switching, and all computations are JAX JIT-compiled for real-time deployment.
+
+**Key features:**
+
+- Newton-Raphson iterative Jacobian inversion for feedback linearization
+- Integral CBF safety constraints on actuator inputs (enabled by default, configurable)
+- JAX JIT-compilation for real-time performance on resource-constrained hardware
+- Structured CLI for simulation and hardware deployment across multiple trajectory types
+- Optional CSV logging with automatic analysis notebook generation
+- Demonstrated on a Holybro X500V2 + Raspberry Pi 4
+
+**Academic foundation:**
+
+| Venue | Year |
+|---|---|
+| American Control Conference (ACC) | 2024 |
+| IEEE Transactions on Control Systems Technology (TCST) | 2025 |
+| IEEE Transactions on Robotics (TRO) | 2025 |
+
+**Built with:** Python · JAX · ROS 2 · PX4
+
+---
+
+## NMPC Acados PX4
+
+**A production-ready Nonlinear Model Predictive Controller for quadrotors.**
+
+::: {.d-flex .gap-2 .mb-3}
+[⭐ Star on GitHub](https://github.com/evannsm/nmpc_acados_px4){.btn .btn-sm .btn-primary target="_blank"}
+[View Repository](https://github.com/evannsm/nmpc_acados_px4){.btn .btn-sm .btn-outline-secondary target="_blank"}
+:::
+
+This package implements a 9-state NMPC using the Acados solver with QPOASES — a rigorous, well-understood approach that was used as the primary comparison baseline for the Newton-Raphson Flow work. If you need a solid NMPC reference implementation for your own quadrotor research, this is a clean starting point.
+
+The controller tracks position, velocity, and Euler angles jointly with a configurable error-based cost formulation, wrapped yaw error handling to avoid angle discontinuities, and hard input constraints on thrust and body rates. C-code is generated by Acados for real-time computation.
+
+**Key features:**
+
+- 9-dimensional state tracking (position, velocity, Euler angles)
+- Configurable stage and terminal cost weighting matrices
+- Hard input constraints on thrust and body rates
+- Wrapped yaw error handling via atan2
+- Multiple built-in trajectory types: figure-8, circle, helix, hover
+- Optional CSV data logging
+- Clean ROS 2 node interface with `--platform {sim,hw}` flag
+
+**Built with:** Python · Acados · QPOASES · ROS 2 · PX4
+
+---
+
+## Quarto Georgia Tech Slides
+
+**Official Georgia Tech-branded RevealJS presentations, installable in one command.**
+
+::: {.d-flex .gap-2 .mb-3}
+[⭐ Star on GitHub](https://github.com/evannsm/quarto-gatech-slides){.btn .btn-sm .btn-primary target="_blank"}
+[View Repository](https://github.com/evannsm/quarto-gatech-slides){.btn .btn-sm .btn-outline-secondary target="_blank"}
+:::
+
+Co-created with [Brendan Gould](https://github.com/brendangould), this Quarto extension brings official Georgia Tech colors, backgrounds, and typography to RevealJS HTML presentations. Install it into any existing Quarto project with a single terminal command:
+
+```bash
+quarto use template evannsm/quarto-gatech-slides
+```
+
+The theme includes the full official color palette (Navy, Tech Gold, Buzz Gold), branded slide backgrounds for title and section slides, fragment-animated highlight classes, and GT-styled callout blocks. Requires Quarto ≥ 1.7.0.
+
+**Built with:** Quarto · RevealJS · SCSS

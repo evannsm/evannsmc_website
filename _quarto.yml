@@ -22,6 +22,8 @@ website:
         text: CV & Resume
       - href: publications
         text: Publications
+      - href: projects
+        text: Projects
       - href: blog
         text: Research Blog
       - href: about
