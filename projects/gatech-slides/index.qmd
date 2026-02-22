@@ -1,0 +1,19 @@
+---
+title: "Quarto Georgia Tech Slides"
+description: "Official Georgia Tech-branded RevealJS presentations, installable in one command."
+categories: [Quarto, Tools]
+---
+
+**Official Georgia Tech-branded RevealJS presentations, installable in one command.**
+
+[View on GitHub](https://github.com/evannsm/quarto-gatech-slides){.btn .btn-sm .btn-primary target="_blank"}
+
+Co-created with [Brendan Gould](https://github.com/brendangould), this Quarto extension brings official Georgia Tech colors, backgrounds, and typography to RevealJS HTML presentations. Install it into any existing Quarto project with a single terminal command:
+
+```bash
+quarto use template evannsm/quarto-gatech-slides
+```
+
+The theme includes the full official color palette (Navy, Tech Gold, Buzz Gold), branded slide backgrounds for title and section slides, fragment-animated highlight classes, and GT-styled callout blocks. Requires Quarto ≥ 1.7.0.
+
+**Built with:** Quarto · RevealJS · SCSS

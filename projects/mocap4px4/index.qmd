@@ -1,0 +1,27 @@
+---
+title: "Motion Capture → PX4 Pipelines"
+description: "Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack."
+categories: [ROS 2, Robotics, C++]
+---
+
+**Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.**
+
+::: {.d-flex .gap-2 .mb-3}
+[Vicon4PX4 on GitHub](https://github.com/evannsm/vicon4px4){.btn .btn-sm .btn-primary target="_blank"}
+[OptiTrack4PX4 on GitHub](https://github.com/evannsm/optitrack4px4){.btn .btn-sm .btn-primary target="_blank"}
+:::
+
+Running indoor flight experiments means solving the same infrastructure problem every time: get your motion-capture system's position data into the drone's state estimator. These two companion packages handle all of it — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.
+
+**Vicon4PX4** connects to Vicon Tracker via the DataStream SDK (fully vendored — no system install needed), while **OptiTrack4PX4** connects to OptiTrack Motive via the NatNet protocol. Both packages share the same architecture and interface:
+
+- ENU (East-North-Up) → NED (North-East-Down) coordinate conversion
+- Pose data published as both quaternions and Euler angles
+- `VehicleOdometry` messages for direct PX4 EKF external vision fusion
+- Optional full-state relay merging fused EKF outputs into a single topic for logging and control
+
+Three launch modes let you run exactly what you need: motion-capture client only, client + visual odometry relay, or all nodes including the full-state merger.
+
+Vicon4PX4 has been adopted and showcased by Georgia Tech's Indoor Flight Lab as part of its official codebase.
+
+**Built with:** ROS 2 (Jazzy / Humble) · C++17 · Ubuntu 22.04 / 24.04 · x86\_64 & ARM64

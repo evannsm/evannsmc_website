@@ -1,0 +1,25 @@
+---
+title: "QuartoCV"
+description: "A modular, build-system-driven CV and Résumé template for academics."
+categories: [Quarto, LaTeX, Tools]
+---
+
+**A modular, build-system-driven CV and Résumé template for academics.**
+
+[View on GitHub](https://github.com/evannsm/quartoCV){.btn .btn-sm .btn-primary target="_blank"}
+
+If you've ever spent more time fighting LaTeX than writing about your research, QuartoCV is for you. It combines Quarto's literate programming model with a smart GNU Make build system that tracks which source sections changed and rebuilds only the affected PDFs — so editing a single shared section automatically propagates across every document that includes it.
+
+The template ships with two distinct style variants and three ready-to-use example documents:
+
+- **Academic style** — two-column compact layout with bold section labels, 8pt typography, and tight spacing optimized for fitting a lot onto a page cleanly
+- **Consulting style** — single-column standard margins with centered headers for a cleaner, more modern look
+
+**Key features:**
+
+- Modular `sections/` directory — edit one `.qmd` file, every CV that includes it rebuilds automatically
+- Intelligent incremental builds via Makefile dependency tracking
+- XeLaTeX engine for publication-quality typographic output
+- Easily customizable fonts, margins, and spacing through YAML front matter
+
+**Built with:** Quarto · XeLaTeX · GNU Make

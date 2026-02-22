@@ -1,0 +1,32 @@
+---
+title: "Newton-Raphson Flow for PX4"
+description: "A research-grade quadrotor controller backed by three peer-reviewed papers."
+categories: [Control, Python, JAX, Research]
+---
+
+**A research-grade quadrotor controller backed by three peer-reviewed papers.**
+
+[View on GitHub](https://github.com/evannsm/newton_raphson_px4){.btn .btn-sm .btn-primary target="_blank"}
+
+NR Flow reframes trajectory tracking as an optimization problem solved at each timestep by the Newton-Raphson method — yielding fast, accurate control that is more computationally efficient than NMPC while matching or exceeding its tracking performance. The result: a controller that runs comfortably on a Raspberry Pi 4 onboard a real quadrotor.
+
+Integral Control Barrier Functions (I-CBFs) are baked in to handle actuation limits without discontinuous switching, and all computations are JAX JIT-compiled for real-time deployment.
+
+**Key features:**
+
+- Newton-Raphson iterative Jacobian inversion for feedback linearization
+- Integral CBF safety constraints on actuator inputs (enabled by default, configurable)
+- JAX JIT-compilation for real-time performance on resource-constrained hardware
+- Structured CLI for simulation and hardware deployment across multiple trajectory types
+- Optional CSV logging with automatic analysis notebook generation
+- Demonstrated on a Holybro X500V2 + Raspberry Pi 4
+
+**Academic foundation:**
+
+| Venue | Year |
+|---|---|
+| American Control Conference (ACC) | 2024 |
+| IEEE Transactions on Control Systems Technology (TCST) | 2025 |
+| IEEE Transactions on Robotics (TRO) | 2025 |
+
+**Built with:** Python · JAX · ROS 2 · PX4

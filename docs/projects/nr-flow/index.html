@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A research-grade quadrotor controller backed by three peer-reviewed papers.">
 
-<title>Open-Source Projects – Evanns Morales-Cuadrado | Research Website</title>
+<title>Newton-Raphson Flow for PX4 – Evanns Morales-Cuadrado | Research Website</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,26 +24,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,81 +69,23 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Evanns Morales-Cuadrado |<br> Research Website</span>
     </a>
   </div>
@@ -155,31 +96,31 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv"> 
+    <a class="nav-link" href="../../cv"> 
 <span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../publications"> 
+    <a class="nav-link" href="../../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../projects"> 
+    <a class="nav-link" href="../../projects"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog"> 
+    <a class="nav-link" href="../../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
+    <a class="nav-link" href="../../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../community"> 
+    <a class="nav-link" href="../../community"> 
 <span class="menu-text">Community &amp; Hobbies</span></a>
   </li>  
 </ul>
@@ -190,153 +131,84 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Open-Source Projects</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Newton-Raphson Flow for PX4</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Control</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">JAX</div>
+    <div class="quarto-category">Research</div>
+  </div>
+  </div>
 
-
-
-
-<p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="UXVhcnRvJTJDTGFUZVglMkNUb29scw==" data-listing-file-modified-sort="1771729966368" data-listing-reading-time-sort="1" data-listing-word-count-sort="167">
-<a href="../projects/quartocv/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-QuartoCV
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGFUZVg='); return false;">LaTeX</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
-
+<div>
+  <div class="description">
+    A research-grade quadrotor controller backed by three peer-reviewed papers.
+  </div>
 </div>
-<div class="card-text listing-description delink">
-<p>A modular, build-system-driven CV and Résumé template for academics.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Uk9TJTIwMiUyQ1JvYm90aWNzJTJDQyUyQiUyQg==" data-listing-file-modified-sort="1771729978414" data-listing-reading-time-sort="2" data-listing-word-count-sort="206">
-<a href="../projects/mocap4px4/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Motion Capture → PX4 Pipelines
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('Uk9TJTIwMg=='); return false;">ROS 2</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Um9ib3RpY3M='); return false;">Robotics</div>
+<div class="quarto-title-meta">
 
-<div class="listing-category" onclick="window.quartoListingCategory('QyUyQiUyQg=='); return false;">C++</div>
+    
+  
+    
+  </div>
+  
 
-</div>
-<div class="card-text listing-description delink">
-<p>Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ0pBWCUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1771729987660" data-listing-reading-time-sort="1" data-listing-word-count-sort="182">
-<a href="../projects/nr-flow/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Newton-Raphson Flow for PX4
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
+</header>
 
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('SkFY'); return false;">JAX</div>
+<p><strong>A research-grade quadrotor controller backed by three peer-reviewed papers.</strong></p>
+<p><a href="https://github.com/evannsm/newton_raphson_px4" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
+<p>NR Flow reframes trajectory tracking as an optimization problem solved at each timestep by the Newton-Raphson method — yielding fast, accurate control that is more computationally efficient than NMPC while matching or exceeding its tracking performance. The result: a controller that runs comfortably on a Raspberry Pi 4 onboard a real quadrotor.</p>
+<p>Integral Control Barrier Functions (I-CBFs) are baked in to handle actuation limits without discontinuous switching, and all computations are JAX JIT-compiled for real-time deployment.</p>
+<p><strong>Key features:</strong></p>
+<ul>
+<li>Newton-Raphson iterative Jacobian inversion for feedback linearization</li>
+<li>Integral CBF safety constraints on actuator inputs (enabled by default, configurable)</li>
+<li>JAX JIT-compilation for real-time performance on resource-constrained hardware</li>
+<li>Structured CLI for simulation and hardware deployment across multiple trajectory types</li>
+<li>Optional CSV logging with automatic analysis notebook generation</li>
+<li>Demonstrated on a Holybro X500V2 + Raspberry Pi 4</li>
+</ul>
+<p><strong>Academic foundation:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Venue</th>
+<th>Year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>American Control Conference (ACC)</td>
+<td>2024</td>
+</tr>
+<tr class="even">
+<td>IEEE Transactions on Control Systems Technology (TCST)</td>
+<td>2025</td>
+</tr>
+<tr class="odd">
+<td>IEEE Transactions on Robotics (TRO)</td>
+<td>2025</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Built with:</strong> Python · JAX · ROS 2 · PX4</p>
 
-<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
 
-</div>
-<div class="card-text listing-description delink">
-<p>A research-grade quadrotor controller backed by three peer-reviewed papers.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1771729994217" data-listing-reading-time-sort="1" data-listing-word-count-sort="161">
-<a href="../projects/nmpc-acados/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-NMPC Acados PX4
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A production-ready Nonlinear Model Predictive Controller for quadrotors.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="UXVhcnRvJTJDVG9vbHM=" data-listing-file-modified-sort="1771729996457" data-listing-reading-time-sort="1" data-listing-word-count-sort="84">
-<a href="../projects/gatech-slides/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Quarto Georgia Tech Slides
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Official Georgia Tech-branded RevealJS presentations, installable in one command.</p>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

@@ -1,71 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://evannsmc.com/projects/index.html</loc>
-    <lastmod>2026-02-21T04:29:42.411Z</lastmod>
+    <loc>https://evannsmc.com/projects/gatech-slides/index.html</loc>
+    <lastmod>2026-02-22T03:13:16.457Z</lastmod>
   </url>
   <url>
-    <loc>https://evannsmc.com/blog/posts/2025-11-11-GameTheoreticControl/index.html</loc>
-    <lastmod>2025-11-11T19:33:30.849Z</lastmod>
+    <loc>https://evannsmc.com/projects/quartocv/index.html</loc>
+    <lastmod>2026-02-22T03:12:46.368Z</lastmod>
   </url>
   <url>
-    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingRL/index.html</loc>
-    <lastmod>2025-11-11T19:33:01.803Z</lastmod>
+    <loc>https://evannsmc.com/projects/mocap4px4/index.html</loc>
+    <lastmod>2026-02-22T03:12:58.414Z</lastmod>
   </url>
   <url>
-    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingJax/index.html</loc>
-    <lastmod>2025-11-11T18:08:16.198Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/blog/posts/2025-10-15-UnderstandingPX4/index.html</loc>
-    <lastmod>2025-11-11T19:28:23.692Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/blog/index.html</loc>
-    <lastmod>2025-11-11T18:24:19.621Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/cv/cv-html.html</loc>
-    <lastmod>2026-02-21T04:29:48.559Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/cv/index.html</loc>
-    <lastmod>2026-02-21T04:29:39.514Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/about/index.html</loc>
-    <lastmod>2025-11-11T20:03:28.319Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/index.html</loc>
-    <lastmod>2026-02-21T04:10:53.680Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/community/index.html</loc>
-    <lastmod>2026-02-19T00:51:27.356Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/cv/resume-html.html</loc>
-    <lastmod>2026-02-21T04:29:41.899Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/publications/index.html</loc>
-    <lastmod>2025-11-11T19:40:24.007Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingOptimalControl/index.html</loc>
-    <lastmod>2025-11-11T18:08:15.184Z</lastmod>
-  </url>
-  <url>
-    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingReachability/index.html</loc>
-    <lastmod>2025-11-11T18:08:10.311Z</lastmod>
+    <loc>https://evannsmc.com/blog/posts/2025-05-22-NewtonRaphsonFlow/index.html</loc>
+    <lastmod>2026-02-16T04:12:51.352Z</lastmod>
   </url>
   <url>
     <loc>https://evannsmc.com/blog/posts/2025-09-29-QuadrotorDynamics/index.html</loc>
     <lastmod>2025-11-11T19:44:35.543Z</lastmod>
   </url>
   <url>
-    <loc>https://evannsmc.com/blog/posts/2025-05-22-NewtonRaphsonFlow/index.html</loc>
-    <lastmod>2026-02-16T04:12:51.352Z</lastmod>
+    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingReachability/index.html</loc>
+    <lastmod>2025-11-11T18:08:10.311Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingOptimalControl/index.html</loc>
+    <lastmod>2025-11-11T18:08:15.184Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/publications/index.html</loc>
+    <lastmod>2025-11-11T19:40:24.007Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/cv/resume-html.html</loc>
+    <lastmod>2026-02-21T04:29:41.899Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/community/index.html</loc>
+    <lastmod>2026-02-19T00:51:27.356Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/index.html</loc>
+    <lastmod>2026-02-21T04:10:53.680Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/about/index.html</loc>
+    <lastmod>2025-11-11T20:03:28.319Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/cv/index.html</loc>
+    <lastmod>2026-02-21T04:29:39.514Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/cv/cv-html.html</loc>
+    <lastmod>2026-02-21T04:29:48.559Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/index.html</loc>
+    <lastmod>2025-11-11T18:24:19.621Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/posts/2025-10-15-UnderstandingPX4/index.html</loc>
+    <lastmod>2025-11-11T19:28:23.692Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingJax/index.html</loc>
+    <lastmod>2025-11-11T18:08:16.198Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/posts/2025-11-11-UnderstandingRL/index.html</loc>
+    <lastmod>2025-11-11T19:33:01.803Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/blog/posts/2025-11-11-GameTheoreticControl/index.html</loc>
+    <lastmod>2025-11-11T19:33:30.849Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/projects/index.html</loc>
+    <lastmod>2026-02-22T03:13:20.372Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/projects/nr-flow/index.html</loc>
+    <lastmod>2026-02-22T03:13:07.660Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/projects/nmpc-acados/index.html</loc>
+    <lastmod>2026-02-22T03:13:14.217Z</lastmod>
   </url>
 </urlset>

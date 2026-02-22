@@ -11,5 +11,15 @@
       "/blog/posts/2025-11-11-UnderstandingRL/index.html",
       "/blog/posts/2025-11-11-GameTheoreticControl/index.html"
     ]
+  },
+  {
+    "listing": "/projects/index.html",
+    "items": [
+      "/projects/quartocv/index.html",
+      "/projects/mocap4px4/index.html",
+      "/projects/nr-flow/index.html",
+      "/projects/nmpc-acados/index.html",
+      "/projects/gatech-slides/index.html"
+    ]
   }
 ]
