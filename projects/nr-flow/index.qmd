@@ -4,8 +4,6 @@ description: "A research-grade quadrotor controller backed by three peer-reviewe
 categories: [Control, Python, JAX, Research]
 ---
 
-**A research-grade quadrotor controller backed by three peer-reviewed papers.**
-
 [View on GitHub](https://github.com/evannsm/newton_raphson_px4){.btn .btn-sm .btn-primary target="_blank"}
 
 NR Flow reframes trajectory tracking as an optimization problem solved at each timestep by the Newton-Raphson method — yielding fast, accurate control that is more computationally efficient than NMPC while matching or exceeding its tracking performance. The result: a controller that runs comfortably on a Raspberry Pi 4 onboard a real quadrotor.

@@ -4,8 +4,6 @@ description: "A production-ready Nonlinear Model Predictive Controller for quadr
 categories: [Control, Python, Research]
 ---
 
-**A production-ready Nonlinear Model Predictive Controller for quadrotors.**
-
 [View on GitHub](https://github.com/evannsm/nmpc_acados_px4){.btn .btn-sm .btn-primary target="_blank"}
 
 This package implements a 9-state NMPC using the Acados solver with QPOASES — a rigorous, well-understood approach that was used as the primary comparison baseline for the Newton-Raphson Flow work. If you need a solid NMPC reference implementation for your own quadrotor research, this is a clean starting point.
