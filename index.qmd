@@ -1,6 +1,6 @@
 ---
 title: "Evanns Morales-Cuadrado"
-description: "@evannsmc"
+description: "@evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech."
 about:
   template: solana
   image: /files/LabPhoto.png
@@ -39,5 +39,3 @@ University of Texas at Arlington | Arlington, TX
 Honors B.S in Electrical Engineering | Aug 2018 - May 2022
 Minors in Mathematics and Physics
 Summa Cum Laude
-
-
