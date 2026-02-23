@@ -11,7 +11,7 @@ website:
   title: "evannsmc"
   favicon: files/site_icon/favicon.png
   site-url: https://evannsmc.com
-  description: "evannsmc is the personal research website of Evanns Morales-Cuadrado, a Robotics Ph.D student at Georgia Tech working on safe autonomy, nonlinear control, and quadrotor UAVs."
+  description: "evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech."
   open-graph: true
   twitter-card: true
 

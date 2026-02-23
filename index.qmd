@@ -1,6 +1,6 @@
 ---
 title: "Evanns Morales-Cuadrado"
-description: "evannsmc is the personal research website of Evanns Morales-Cuadrado, a Robotics Ph.D student at Georgia Tech working on safe autonomy, nonlinear control, and quadrotor UAVs."
+description: "@evannsmc"
 about:
   template: solana
   image: /files/LabPhoto.png
@@ -18,13 +18,11 @@ about:
 ---
 
 
-# Welcome to evannsmc
+# Welcome to Evannsmc
 
 egm \[at\] gatech \[dot\] edu
 
 evannsmc \[at\] gmail \[dot\] com
-
-evannsmc is the personal research website of Evanns Morales-Cuadrado. Here you'll find my publications, open-source projects, and writing on safe autonomy, control theory, and quadrotor UAV systems.
 
 I am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems ([FACTS](https://coogan.ece.gatech.edu/)) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.
 
@@ -41,3 +39,5 @@ University of Texas at Arlington | Arlington, TX
 Honors B.S in Electrical Engineering | Aug 2018 - May 2022
 Minors in Mathematics and Physics
 Summa Cum Laude
+
+
