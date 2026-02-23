@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2025-05-22">
 <meta name="description" content="The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.">
 
-<title>Newton-Raphson Flow: From Iteration to Continuous Control – Evannsmc</title>
+<title>Newton-Raphson Flow: From Iteration to Continuous Control – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,7 +135,7 @@ div.csl-indent {
       "@type": "Person",
       "@id": "https://evannsmc.com/#person",
       "name": "Evanns Morales-Cuadrado",
-      "alternateName": "Evannsmc",
+      "alternateName": "evannsmc",
       "url": "https://evannsmc.com",
       "jobTitle": "Ph.D Student in Robotics and ECE",
       "affiliation": {
@@ -154,7 +154,7 @@ div.csl-indent {
     {
       "@type": "WebSite",
       "@id": "https://evannsmc.com/#website",
-      "name": "Evannsmc",
+      "name": "evannsmc",
       "url": "https://evannsmc.com",
       "description": "The personal research website of Evanns Morales-Cuadrado",
       "author": {
@@ -196,10 +196,10 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="Newton-Raphson Flow: From Iteration to Continuous Control – Evannsmc">
+<meta property="og:title" content="Newton-Raphson Flow: From Iteration to Continuous Control – evannsmc">
 <meta property="og:description" content="The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.">
-<meta property="og:site_name" content="Evannsmc">
-<meta name="twitter:title" content="Newton-Raphson Flow: From Iteration to Continuous Control – Evannsmc">
+<meta property="og:site_name" content="evannsmc">
+<meta name="twitter:title" content="Newton-Raphson Flow: From Iteration to Continuous Control – evannsmc">
 <meta name="twitter:description" content="The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.">
 <meta name="twitter:card" content="summary">
 </head>
@@ -215,7 +215,7 @@ window.Quarto = {
     <img src="../../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="../../../index.html">
-    <span class="navbar-title">Evannsmc</span>
+    <span class="navbar-title">evannsmc</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -384,7 +384,7 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
 <h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
 <p>The NRF technique defines the derivative of the control input, <span class="math inline">\(\dot{u}(t)\)</span>. This rate <span class="math inline">\(\dot{u}(t)\)</span> must be integrated over time to yield the final control output <span class="math inline">\(u(t+\Delta t)\)</span>. In a real implementation loop, <span class="math inline">\(u(t+dt) = u(t) + \dot{u} \cdot \Delta t\)</span>.</p>
 <p>We note that the difficulty in implementation for real-world system comes from implementing the output predictor <span class="math inline">\(\rho\)</span>, its jacobian, and balancing stability of the closed-loop system and prediction accuraty via the lookahead <span class="math inline">\(T\)</span>, and the speedup factor <span class="math inline">\(\alpha\)</span>.</p>
-<div id="2789f7e3" class="cell" data-execution_count="1">
+<div id="d92f192f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):</span>
@@ -841,6 +841,19 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 

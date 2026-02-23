@@ -8,12 +8,15 @@ project:
     - googleffaf8e4b1a20676c.html
 
 website:
-  title: "Evannsmc"
+  title: "evannsmc"
   favicon: files/site_icon/favicon.png
   site-url: https://evannsmc.com
-  description: "Evannsmc is the personal research website of Evanns Morales-Cuadrado, a Robotics Ph.D student at Georgia Tech working on safe autonomy, nonlinear control, and quadrotor UAVs."
+  description: "evannsmc is the personal research website of Evanns Morales-Cuadrado, a Robotics Ph.D student at Georgia Tech working on safe autonomy, nonlinear control, and quadrotor UAVs."
   open-graph: true
   twitter-card: true
+
+  page-footer:
+    center: "© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved"
 
   navbar:
     logo: files/site_icon/favicon.png
@@ -52,7 +55,7 @@ format:
               "@type": "Person",
               "@id": "https://evannsmc.com/#person",
               "name": "Evanns Morales-Cuadrado",
-              "alternateName": "Evannsmc",
+              "alternateName": "evannsmc",
               "url": "https://evannsmc.com",
               "jobTitle": "Ph.D Student in Robotics and ECE",
               "affiliation": {
@@ -71,7 +74,7 @@ format:
             {
               "@type": "WebSite",
               "@id": "https://evannsmc.com/#website",
-              "name": "Evannsmc",
+              "name": "evannsmc",
               "url": "https://evannsmc.com",
               "description": "The personal research website of Evanns Morales-Cuadrado",
               "author": {
