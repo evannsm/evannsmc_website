@@ -8,11 +8,12 @@ project:
     - googleffaf8e4b1a20676c.html
 
 website:
-  title: "Evanns Morales-Cuadrado |<br>
-          Research Website"
+  title: "Evannsmc"
   favicon: files/site_icon/favicon.png
   site-url: https://evannsmc.com
-  description: "Research website and blog on robotics, control theory, and related topics"
+  description: "Evannsmc is the personal research website of Evanns Morales-Cuadrado, a Robotics Ph.D student at Georgia Tech working on safe autonomy, nonlinear control, and quadrotor UAVs."
+  open-graph: true
+  twitter-card: true
 
   navbar:
     logo: files/site_icon/favicon.png
@@ -31,10 +32,8 @@ website:
         text: About Me
       - href: community
         text: Community & Hobbies
-  # twitter-card: true
-  # open-graph: true
 
-  
+
 
 format:
   html:
@@ -45,6 +44,40 @@ format:
     include-in-header:
       text: |
         <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
-
-
-
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Person",
+              "@id": "https://evannsmc.com/#person",
+              "name": "Evanns Morales-Cuadrado",
+              "alternateName": "Evannsmc",
+              "url": "https://evannsmc.com",
+              "jobTitle": "Ph.D Student in Robotics and ECE",
+              "affiliation": {
+                "@type": "CollegeOrUniversity",
+                "name": "Georgia Institute of Technology",
+                "url": "https://www.gatech.edu"
+              },
+              "description": "Robotics and ECE Ph.D student at Georgia Tech researching safe autonomy, nonlinear control, and quadrotor UAVs.",
+              "sameAs": [
+                "https://github.com/evannsm",
+                "https://www.linkedin.com/in/evanns-morales/",
+                "https://scholar.google.com/citations?user=FY9tS9oAAAAJ",
+                "https://orcid.org/0009-0000-3928-6243"
+              ]
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://evannsmc.com/#website",
+              "name": "Evannsmc",
+              "url": "https://evannsmc.com",
+              "description": "The personal research website of Evanns Morales-Cuadrado",
+              "author": {
+                "@id": "https://evannsmc.com/#person"
+              }
+            }
+          ]
+        }
+        </script>
