@@ -261,6 +261,13 @@ window.Quarto = {
 
 
 <p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond.</p>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('a.quarto-grid-link').forEach(function (a) {
+    a.href = a.href.replace(/\/index\.html$/, '/');
+  });
+});
+</script>
 
 
 
