@@ -15,13 +15,19 @@
   border: none !important;
   background: transparent !important;
   cursor: pointer;
-  padding: 4px 8px !important;
-  font-size: 1.3rem;
-  transition: transform 0.3s ease;
+  padding: 6px !important;
+  border-radius: 50% !important;
+  width: 36px;
+  height: 36px;
+  transition: background-color 0.2s ease;
 }
 
 .quarto-color-scheme-toggle:hover {
-  transform: scale(1.2);
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.quarto-color-scheme-toggle.alternate:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Hide the default Bootstrap Icons toggle glyph */
@@ -31,15 +37,15 @@
 
 /* Sun icon (light mode — click to go dark) */
 .quarto-color-scheme-toggle .bi::after {
-  content: "\f5a1" !important;  /* Bootstrap Icons: bi-sun-fill */
+  content: "\f5a1" !important;  /* bi-sun-fill */
   font-family: "bootstrap-icons" !important;
-  color: #f0a500;
-  font-size: 1.3rem;
-  transition: opacity 0.3s ease;
+  font-size: 1.1rem;
+  color: #495057;
+  transition: color 0.2s ease;
 }
 
 /* Moon icon (dark mode — click to go light) */
 .quarto-color-scheme-toggle.alternate .bi::after {
-  content: "\f495" !important;  /* Bootstrap Icons: bi-moon-stars-fill */
-  color: #c4b5fd;
+  content: "\f495" !important;  /* bi-moon-stars-fill */
+  color: rgba(255, 255, 255, 0.85);
 }
