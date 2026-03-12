@@ -37,15 +37,16 @@
 
 /* Sun icon (light mode — click to go dark) */
 .quarto-color-scheme-toggle .bi::after {
-  content: "\f5a1" !important;  /* bi-sun-fill */
+  content: "\f1d1" !important;  /* bi-brightness-high-fill */
   font-family: "bootstrap-icons" !important;
-  font-size: 1.1rem;
-  color: #495057;
+  font-size: 1.3rem;
+  color: #d4a017;
   transition: color 0.2s ease;
 }
 
 /* Moon icon (dark mode — click to go light) */
 .quarto-color-scheme-toggle.alternate .bi::after {
   content: "\f495" !important;  /* bi-moon-stars-fill */
+  font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.85);
 }
