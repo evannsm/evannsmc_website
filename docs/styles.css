@@ -36,9 +36,14 @@
 }
 
 /* Sun icon (light mode — click to go dark) */
+.quarto-color-scheme-toggle .bi {
+  font-style: normal !important;
+}
+
 .quarto-color-scheme-toggle .bi::after {
   content: "\f1d1" !important;  /* bi-brightness-high-fill */
   font-family: "bootstrap-icons" !important;
+  font-style: normal !important;
   font-size: 1.3rem;
   color: #d4a017;
   transition: color 0.2s ease;
