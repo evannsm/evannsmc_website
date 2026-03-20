@@ -3,11 +3,14 @@ title: "RTD-RAX"
 description: "Safe trajectory planning with runtime reachability verification and repair."
 categories: [Robotics, Safety, Python, JAX, Research]
 ---
-
 ::: {.d-flex .gap-2 .mb-3}
+[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-dark target="_blank"}
+[Dedicated Website (it's really nice)](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-primary target="_blank"}
+:::
+<!-- ::: {.d-flex .gap-2 .mb-3}
 [View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-primary target="_blank"}
 [Dedicated Website (it's really nice)](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-outline-primary target="_blank"}
-:::
+::: -->
 
 `RTD-RAX` is a runtime-assurance extension of Reachability-based Trajectory Design (RTD) that replaces conservative offline reachable sets with fast online safety certification via mixed-monotone reachability ([immrax](https://github.com/gtfactslab/immrax)).
 
