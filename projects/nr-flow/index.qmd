@@ -30,6 +30,6 @@ Integral Control Barrier Functions (I-CBFs) are baked in to handle actuation lim
 |---|---|
 | American Control Conference (ACC) | 2024 |
 | IEEE Transactions on Control Systems Technology (TCST) | 2025 |
-| IEEE Transactions on Robotics (TRO) | 2025 |
+<!-- | IEEE Transactions on Robotics (TRO) | 2025 | -->
 
 **Built with:** Python · JAX · ROS 2 · PX4
