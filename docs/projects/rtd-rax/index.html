@@ -385,12 +385,12 @@ ul.task-list li input[type="checkbox"] {
 <div class="d-flex gap-2 mb-3">
 <p><a href="https://github.com/evannsm/rtd-rax" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a> <a href="https://evannsm.github.io/ws_RTD" class="btn btn-sm btn-outline-primary" target="_blank">Documentation</a></p>
 </div>
-<p>RTD-RAX augments Reachability-based Trajectory Design (RTD) with formal runtime verification via <a href="https://github.com/gtfactslab/immrax">immrax</a>. Standard RTD computes Forward Reachable Sets offline using simplified models, then inflates them to account for tracking error — making the planner too conservative in many scenarios. Ignoring the inflation recovers feasible trajectories but sacrifices safety guarantees, and neither approach handles runtime disturbances like wind or ice.</p>
-<p>RTD-RAX closes both gaps with a three-stage online loop:</p>
+<p><code>RTD-RAX</code> is a runtime-assurance extension of Reachability-based Trajectory Design (RTD) that replaces conservative offline reachable sets with fast online safety certification via mixed-monotone reachability (<a href="https://github.com/gtfactslab/immrax">immrax</a>).</p>
+<p>RTD precomputes Forward Reachable Sets (FRS) offline and uses them at runtime to find collision-free trajectories. The problem: it inflates those sets with worst-case tracking-error bounds, making the planner overly cautious — it rejects safe trajectories, triggers unnecessary braking, and can’t handle disturbances like wind or ice that weren’t anticipated offline. <code>RTD-RAX</code> fixes this by splitting the problem: RTD handles fast candidate generation without the conservative inflation, while a separate online verifier certifies each candidate under the actual measured conditions. If a candidate can’t be certified safe, a repair procedure modifies it until a safe alternative is found.</p>
 <ol type="1">
-<li><strong>Plan</strong> with the less-conservative <code>noerror</code> FRS to find candidate trajectories.</li>
-<li><strong>Verify</strong> each candidate using immrax interval-arithmetic reachability under measured uncertainty and disturbance bounds.</li>
-<li><strong>Repair</strong> any candidate flagged as unsafe via speed-backoff and CEGIS-style obstacle buffer tightening, then re-verify before execution.</li>
+<li><strong>Plan</strong> — use the uninflated FRS to rapidly generate candidate trajectories.</li>
+<li><strong>Verify</strong> — certify each candidate online via mixed-monotone reachability under current conditions.</li>
+<li><strong>Repair</strong> — if unsafe, modify the candidate and re-verify before execution.</li>
 </ol>
 <section id="gap-scenario" class="level3">
 <h3 class="anchored" data-anchor-id="gap-scenario">Gap Scenario</h3>

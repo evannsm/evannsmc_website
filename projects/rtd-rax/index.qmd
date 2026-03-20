@@ -9,13 +9,13 @@ categories: [Robotics, Safety, Python, JAX, Research]
 [Documentation](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
-RTD-RAX augments Reachability-based Trajectory Design (RTD) with formal runtime verification via [immrax](https://github.com/gtfactslab/immrax). Standard RTD computes Forward Reachable Sets offline using simplified models, then inflates them to account for tracking error --- making the planner too conservative in many scenarios. Ignoring the inflation recovers feasible trajectories but sacrifices safety guarantees, and neither approach handles runtime disturbances like wind or ice.
+`RTD-RAX` is a runtime-assurance extension of Reachability-based Trajectory Design (RTD) that replaces conservative offline reachable sets with fast online safety certification via mixed-monotone reachability ([immrax](https://github.com/gtfactslab/immrax)).
 
-RTD-RAX closes both gaps with a three-stage online loop:
+RTD precomputes Forward Reachable Sets (FRS) offline and uses them at runtime to find collision-free trajectories. The problem: it inflates those sets with worst-case tracking-error bounds, making the planner overly cautious --- it rejects safe trajectories, triggers unnecessary braking, and can't handle disturbances like wind or ice that weren't anticipated offline. `RTD-RAX` fixes this by splitting the problem: RTD handles fast candidate generation without the conservative inflation, while a separate online verifier certifies each candidate under the actual measured conditions. If a candidate can't be certified safe, a repair procedure modifies it until a safe alternative is found.
 
-1. **Plan** with the less-conservative `noerror` FRS to find candidate trajectories.
-2. **Verify** each candidate using immrax interval-arithmetic reachability under measured uncertainty and disturbance bounds.
-3. **Repair** any candidate flagged as unsafe via speed-backoff and CEGIS-style obstacle buffer tightening, then re-verify before execution.
+1. **Plan** --- use the uninflated FRS to rapidly generate candidate trajectories.
+2. **Verify** --- certify each candidate online via mixed-monotone reachability under current conditions.
+3. **Repair** --- if unsafe, modify the candidate and re-verify before execution.
 
 ### Gap Scenario
 
