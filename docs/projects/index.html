@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Research Blog – evannsmc</title>
+<title>Open-Source Projects – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,9 +84,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -173,10 +173,10 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<link rel="alternate" type="application/rss+xml" title="evannsmc" href="index.xml" data-external="1"><meta property="og:title" content="Research Blog – evannsmc">
+<meta property="og:title" content="Open-Source Projects – evannsmc">
 <meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta property="og:site_name" content="evannsmc">
-<meta name="twitter:title" content="Research Blog – evannsmc">
+<meta name="twitter:title" content="Open-Source Projects – evannsmc">
 <meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta name="twitter:card" content="summary">
 </head>
@@ -402,13 +402,13 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Research Blog</h1>
+    <div class="quarto-title column-page">
+      <h1 class="title">Open-Source Projects</h1>
                       </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta column-page">
 
       
     
@@ -419,318 +419,157 @@ window.Quarto = {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM=">calculus of variations <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29udHJvbCUyMHRoZW9yeQ==">control theory <span class="quarto-category-count">(6)</span></div><div class="category" data-category="ZGlmZmVyZW50aWFsJTIwZ2FtZXM=">differential games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZHluYW1pY2FsJTIwc3lzdGVtcw==">dynamical systems <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Z2FtZSUyMHRoZW9yeQ==">game theory <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Z2VvbWV0cmljJTIwY29udHJvbA==">geometric control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aGFyZHdhcmU=">hardware <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aW1wbGVtZW50YXRpb24=">implementation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="aXRlcmF0aXZlJTIwbWV0aG9kcw==">iterative methods <span class="quarto-category-count">(1)</span></div><div class="category" data-category="amF4">jax <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bW9kZWxpbmc=">modeling <span class="quarto-category-count">(1)</span></div><div class="category" data-category="b3B0aW1hbCUyMGNvbnRyb2w=">optimal control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UFg0">PX4 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cXVhZHJvdG9y">quadrotor <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cmVhY2hhYmlsaXR5">reachability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cmVpbmZvcmNlbWVudCUyMGxlYXJuaW5n">reinforcement learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Uk9TMg==">ROS2 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c29mdHdhcmU=">software <span class="quarto-category-count">(2)</span></div><div class="category" data-category="dG9vbHM=">tools <span class="quarto-category-count">(2)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
 
 
 
 
 
-<p>I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.</p>
-<p>I also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.</p>
+<p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond.</p>
 
 
 
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="UFg0JTJDcXVhZHJvdG9yJTJDUk9TMiUyQ2hhcmR3YXJlJTJDdG9vbHMlMkNzb2Z0d2FyZSUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1760500800000" data-listing-file-modified-sort="1762889303692" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="92">
-<div class="thumbnail"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2</a>
-</h3>
+<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
+<div class="list grid quarto-listing-cols-3">
+<div class="g-col-1" data-index="0" data-categories="Um9ib3RpY3MlMkNTYWZldHklMkNQeXRob24lMkNKQVglMkNSZXNlYXJjaA==" data-listing-file-modified-sort="1773991359089" data-listing-reading-time-sort="2" data-listing-word-count-sort="307">
+<a href="../projects/rtd-rax/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+RTD-RAX
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('UFg0'); return false;">PX4</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Um9ib3RpY3M='); return false;">Robotics</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
+<div class="listing-category" onclick="window.quartoListingCategory('U2FmZXR5'); return false;">Safety</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Uk9TMg=='); return false;">ROS2</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('aGFyZHdhcmU='); return false;">hardware</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SkFY'); return false;">JAX</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<p>Will write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<div class="listing-date">
-Oct 15, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>Safe trajectory planning with runtime reachability verification and repair.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNxdWFkcm90b3IlMkNnZW9tZXRyaWMlMjBjb250cm9sJTJDbW9kZWxpbmc=" data-listing-date-sort="1759118400000" data-listing-file-modified-sort="1762890275543" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="679">
-<div class="thumbnail"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">Understanding Quadrotor Dynamics and Control</a>
-</h3>
+</div></a>
+</div>
+<div class="g-col-1" data-index="1" data-categories="UXVhcnRvJTJDTGFUZVglMkNUb29scw==" data-listing-file-modified-sort="1771730278976" data-listing-reading-time-sort="1" data-listing-word-count-sort="159">
+<a href="../projects/quartocv/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+QuartoCV
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
+<div class="listing-category" onclick="window.quartoListingCategory('TGFUZVg='); return false;">LaTeX</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2VvbWV0cmljJTIwY29udHJvbA=='); return false;">geometric control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">modeling</div>
+<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<p>A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<div class="listing-date">
-Sep 29, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>A modular, build-system-driven CV and Résumé template for academics.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29udHJvbCUyMHRoZW9yeSUyQ2l0ZXJhdGl2ZSUyMG1ldGhvZHMlMkNkeW5hbWljYWwlMjBzeXN0ZW1z" data-listing-date-sort="1747886400000" data-listing-file-modified-sort="1771215171352" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
-<div class="thumbnail"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">Newton-Raphson Flow: From Iteration to Continuous Control</a>
-</h3>
+</div></a>
+</div>
+<div class="g-col-1" data-index="2" data-categories="Uk9TJTIwMiUyQ1JvYm90aWNzJTJDQyUyQiUyQg==" data-listing-file-modified-sort="1771730280103" data-listing-reading-time-sort="1" data-listing-word-count-sort="195">
+<a href="../projects/mocap4px4/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Motion Capture → PX4 Pipelines
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Uk9TJTIwMg=='); return false;">ROS 2</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('aXRlcmF0aXZlJTIwbWV0aG9kcw=='); return false;">iterative methods</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Um9ib3RpY3M='); return false;">Robotics</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
+<div class="listing-category" onclick="window.quartoListingCategory('QyUyQiUyQg=='); return false;">C++</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<p>The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<div class="listing-date">
-May 22, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="b3B0aW1hbCUyMGNvbnRyb2wlMkNjYWxjdWx1cyUyMG9mJTIwdmFyaWF0aW9ucyUyQ2NvbnRyb2wlMjB0aGVvcnk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884495184" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">[TODO] Understanding Optimal Control and Calculus of Variations</a>
-</h3>
+</div></a>
+</div>
+<div class="g-col-1" data-index="3" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ0pBWCUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1771730281127" data-listing-reading-time-sort="1" data-listing-word-count-sort="174">
+<a href="../projects/nr-flow/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Newton-Raphson Flow for PX4
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('b3B0aW1hbCUyMGNvbnRyb2w='); return false;">optimal control</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM='); return false;">calculus of variations</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SkFY'); return false;">JAX</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<p>Will write about calculus of variations and its applications in optimal control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>A research-grade quadrotor controller backed by three peer-reviewed papers.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="dG9vbHMlMkNzb2Z0d2FyZSUyQ2pheCUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884496198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">[TODO] Understanding Jax</a>
-</h3>
+</div></a>
+</div>
+<div class="g-col-1" data-index="4" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1771730282245" data-listing-reading-time-sort="1" data-listing-word-count-sort="154">
+<a href="../projects/nmpc-acados/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+NMPC Acados PX4
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('amF4'); return false;">jax</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<p>Will write about Jax and its uses for control research</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>A production-ready Nonlinear Model Predictive Controller for quadrotors.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNyZWFjaGFiaWxpdHk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884490311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">[TODO] Understanding Reachability</a>
-</h3>
+</div></a>
+</div>
+<div class="g-col-1" data-index="5" data-categories="UXVhcnRvJTJDVG9vbHM=" data-listing-file-modified-sort="1771730283564" data-listing-reading-time-sort="1" data-listing-word-count-sort="76">
+<a href="../projects/gatech-slides/" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Quarto Georgia Tech Slides
+</h5>
 <div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cmVhY2hhYmlsaXR5'); return false;">reachability</div>
+<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
 
 </div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<p>Will write about reachability analysis methods in control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
+<div class="card-text listing-description delink">
+<p>Official Georgia Tech-branded RevealJS presentations, installable in one command.</p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNyZWluZm9yY2VtZW50JTIwbGVhcm5pbmc=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762889581803" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">[TODO] Understanding Reinforcement Learning</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cmVpbmZvcmNlbWVudCUyMGxlYXJuaW5n'); return false;">reinforcement learning</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-<p>Will write about reinforcement learning methods in control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNnYW1lJTIwdGhlb3J5JTJDZGlmZmVyZW50aWFsJTIwZ2FtZXM=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762889610849" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">[TODO] Understanding Game Theoretic Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2FtZSUyMHRoZW9yeQ=='); return false;">game theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGlmZmVyZW50aWFsJTIwZ2FtZXM='); return false;">differential games</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-<p>Will write about game theoretic control methods</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
+</div></a>
 </div>
 </div>
 <div class="listing-no-matching d-none">No matching items</div>
