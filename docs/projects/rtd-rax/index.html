@@ -383,7 +383,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="d-flex gap-2 mb-3">
-<p><a href="https://github.com/evannsm/rtd-rax" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a> <a href="https://evannsm.github.io/ws_RTD" class="btn btn-sm btn-outline-primary" target="_blank">Documentation</a></p>
+<p><a href="https://github.com/evannsm/rtd-rax" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a> <a href="https://evannsm.github.io/ws_RTD" class="btn btn-sm btn-outline-primary" target="_blank">Dedicated Website (it’s really nice)</a></p>
 </div>
 <p><code>RTD-RAX</code> is a runtime-assurance extension of Reachability-based Trajectory Design (RTD) that replaces conservative offline reachable sets with fast online safety certification via mixed-monotone reachability (<a href="https://github.com/gtfactslab/immrax">immrax</a>).</p>
 <p>RTD precomputes Forward Reachable Sets (FRS) offline and uses them at runtime to find collision-free trajectories. The problem: it inflates those sets with worst-case tracking-error bounds, making the planner overly cautious — it rejects safe trajectories, triggers unnecessary braking, and can’t handle disturbances like wind or ice that weren’t anticipated offline. <code>RTD-RAX</code> fixes this by splitting the problem: RTD handles fast candidate generation without the conservative inflation, while a separate online verifier certifies each candidate under the actual measured conditions. If a candidate can’t be certified safe, a repair procedure modifies it until a safe alternative is found.</p>
