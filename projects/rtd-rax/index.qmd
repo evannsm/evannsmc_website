@@ -4,9 +4,10 @@ description: "Safe trajectory planning with runtime reachability verification an
 categories: [Robotics, Safety, Python, JAX, Research]
 ---
 ::: {.d-flex .gap-2 .mb-3}
-[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-dark target="_blank"}
+[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-primary target="_blank"}
 [Dedicated Website (it's really nice)](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-primary target="_blank"}
 :::
+
 <!-- ::: {.d-flex .gap-2 .mb-3}
 [View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-primary target="_blank"}
 [Dedicated Website (it's really nice)](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-outline-primary target="_blank"}
