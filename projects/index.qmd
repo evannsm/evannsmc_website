@@ -2,6 +2,7 @@
 title: "Open-Source Projects"
 listing:
   contents:
+    - rtd-rax
     - quartocv
     - mocap4px4
     - nr-flow

@@ -1,0 +1,58 @@
+---
+title: "RTD-RAX"
+description: "Safe trajectory planning with runtime reachability verification and repair."
+categories: [Robotics, Safety, Python, JAX, Research]
+---
+
+::: {.d-flex .gap-2 .mb-3}
+[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-primary target="_blank"}
+[Documentation](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-outline-primary target="_blank"}
+:::
+
+RTD-RAX augments Reachability-based Trajectory Design (RTD) with formal runtime verification via [immrax](https://github.com/gtfactslab/immrax). Standard RTD computes Forward Reachable Sets offline using simplified models, then inflates them to account for tracking error --- making the planner too conservative in many scenarios. Ignoring the inflation recovers feasible trajectories but sacrifices safety guarantees, and neither approach handles runtime disturbances like wind or ice.
+
+RTD-RAX closes both gaps with a three-stage online loop:
+
+1. **Plan** with the less-conservative `noerror` FRS to find candidate trajectories.
+2. **Verify** each candidate using immrax interval-arithmetic reachability under measured uncertainty and disturbance bounds.
+3. **Repair** any candidate flagged as unsafe via speed-backoff and CEGIS-style obstacle buffer tightening, then re-verify before execution.
+
+### Gap Scenario
+
+Standard RTD is too conservative to navigate a narrow corridor. RTD-RAX certifies a safe path through using the noerror FRS plus immrax verification.
+
+::: {.text-center .my-4}
+![](gap_compare.gif){.img-fluid .rounded .shadow style="max-width: min(100%, 44rem);"}
+:::
+
+### Angled Obstacles with Repair
+
+When immrax flags an unsafe candidate, the hybrid repair loop finds a safer alternative and re-verifies before execution.
+
+::: {.text-center .my-4}
+![](angled_repair_view_two_repairs.gif){.img-fluid .rounded .shadow style="max-width: min(100%, 36rem);"}
+:::
+
+### Disturbance Course
+
+A randomized multi-gap course with disturbance patches. Standard RTD collides; RTD-RAX detects the risk, repairs, and reaches the goal.
+
+::: {.text-center .my-4}
+![](disturbance_compare.gif){.img-fluid .rounded .shadow style="max-width: min(100%, 44rem);"}
+:::
+
+| Planner | Outcome | Cycles | Repairs | Mean / p95 Compute |
+|---|---|---|---|---|
+| Standard RTD | Collision (cycle 3) | 3 | -- | 10.5 ms / 21.9 ms |
+| RTD-RAX | Goal reached | 19 | 3 | 10.5 ms / 37.4 ms |
+
+**Key features:**
+
+- First fully Python implementation of an RTD framework
+- Immrax interval-arithmetic reachability verification at runtime
+- Disturbance-aware verification with measured runtime disturbance bounds
+- Hybrid repair loop (speed-backoff + CEGIS buffer tightening) for unsafe candidates
+- Fully Dockerized with `make` command interface for reproducibility
+- Three case studies with manuscript-ready figure generation
+
+**Built with:** Python · NumPy · SciPy · JAX · immrax · Docker
