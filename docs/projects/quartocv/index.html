@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A modular, build-system-driven CV and Résumé template for academics.">
 
-<title>Research Blog – evannsmc</title>
+<title>QuartoCV – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,30 +24,28 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,35 +73,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
 <script type="application/ld+json">
 {
@@ -142,44 +112,17 @@ ul.task-list li input[type="checkbox"] {
 }
 </script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
-<link rel="alternate" type="application/rss+xml" title="evannsmc" href="index.xml" data-external="1"><meta property="og:title" content="Research Blog – evannsmc">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="QuartoCV – evannsmc">
+<meta property="og:description" content="A modular, build-system-driven CV and Résumé template for academics.">
 <meta property="og:site_name" content="evannsmc">
-<meta name="twitter:title" content="Research Blog – evannsmc">
+<meta name="twitter:title" content="QuartoCV – evannsmc">
+<meta name="twitter:description" content="A modular, build-system-driven CV and Résumé template for academics.">
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -344,14 +287,14 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">evannsmc</span>
     </a>
   </div>
@@ -362,31 +305,31 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv"> 
+    <a class="nav-link" href="../../cv"> 
 <span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../publications"> 
+    <a class="nav-link" href="../../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../projects"> 
+    <a class="nav-link" href="../../projects"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog"> 
+    <a class="nav-link" href="../../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
+    <a class="nav-link" href="../../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../journey"> 
+    <a class="nav-link" href="../../journey"> 
 <span class="menu-text">Journey</span></a>
   </li>  
 </ul>
@@ -398,412 +341,62 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Research Blog</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM=">calculus of variations <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29udHJvbCUyMHRoZW9yeQ==">control theory <span class="quarto-category-count">(6)</span></div><div class="category" data-category="ZGlmZmVyZW50aWFsJTIwZ2FtZXM=">differential games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZHluYW1pY2FsJTIwc3lzdGVtcw==">dynamical systems <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Z2FtZSUyMHRoZW9yeQ==">game theory <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Z2VvbWV0cmljJTIwY29udHJvbA==">geometric control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aGFyZHdhcmU=">hardware <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aW1wbGVtZW50YXRpb24=">implementation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="aXRlcmF0aXZlJTIwbWV0aG9kcw==">iterative methods <span class="quarto-category-count">(1)</span></div><div class="category" data-category="amF4">jax <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bW9kZWxpbmc=">modeling <span class="quarto-category-count">(1)</span></div><div class="category" data-category="b3B0aW1hbCUyMGNvbnRyb2w=">optimal control <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UFg0">PX4 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cXVhZHJvdG9y">quadrotor <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cmVhY2hhYmlsaXR5">reachability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cmVpbmZvcmNlbWVudCUyMGxlYXJuaW5n">reinforcement learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Uk9TMg==">ROS2 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c29mdHdhcmU=">software <span class="quarto-category-count">(2)</span></div><div class="category" data-category="dG9vbHM=">tools <span class="quarto-category-count">(2)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">QuartoCV</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Quarto</div>
+    <div class="quarto-category">LaTeX</div>
+    <div class="quarto-category">Tools</div>
+  </div>
+  </div>
 
-
-
-
-<style>
-#title-block-header {
-  display: none;
-}
-
-:root {
-  --blog-accent: #2563eb;
-  --blog-text-secondary: var(--bs-secondary-color, #57534e);
-}
-
-.blog-shell {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 3rem clamp(1rem, 2vw, 2rem) 1.5rem;
-}
-
-.blog-kicker {
-  margin: 0 0 0.45rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--blog-accent);
-}
-
-.blog-title {
-  margin: 0 0 0.5rem;
-  font-size: clamp(2rem, 3.6vw, 3rem);
-  font-weight: 700;
-  line-height: 1.05;
-}
-
-.blog-intro {
-  max-width: 52rem;
-  margin: 0 0 2.4rem;
-  color: var(--blog-text-secondary);
-  font-size: 1rem;
-  line-height: 1.75;
-}
-
-#quarto-margin-sidebar {
-  padding-top: 16rem;
-}
-
-@media (max-width: 640px) {
-  .blog-shell {
-    padding: 2.5rem 1rem 1rem;
-  }
-}
-</style>
-
-<div class="blog-shell">
-  <p class="blog-kicker">Research Blog</p>
-  <p class="blog-title">Notes &amp; Tutorials.</p>
-  <p class="blog-intro">
-    Explanatory pieces on important topics in robotics and control systems theory, things I wish had been explained to me in a particular manner, and topics I find interesting that are related to my field.
-  </p>
+<div>
+  <div class="description">
+    A modular, build-system-driven CV and Résumé template for academics.
+  </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var sidebar = document.getElementById('quarto-margin-sidebar');
-  var filter = document.querySelector('.quarto-listing-filter');
-  if (sidebar && filter) {
-    var wrapper = filter.closest('.input-group');
-    if (wrapper) {
-      sidebar.insertBefore(wrapper, sidebar.firstChild);
-      wrapper.style.marginBottom = '1.5rem';
-      wrapper.style.marginTop = '0';
-    }
-  }
-});
-</script>
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://github.com/evannsm/quartoCV" class="btn btn-sm btn-primary" target="_blank">View on GitHub</a></p>
+<p>If you’ve ever spent more time fighting LaTeX than writing about your research, QuartoCV is for you. It combines Quarto’s literate programming model with a smart GNU Make build system that tracks which source sections changed and rebuilds only the affected PDFs — so editing a single shared section automatically propagates across every document that includes it.</p>
+<p>The template ships with two distinct style variants and three ready-to-use example documents:</p>
+<ul>
+<li><strong>Academic style</strong> — two-column compact layout with bold section labels, 8pt typography, and tight spacing optimized for fitting a lot onto a page cleanly</li>
+<li><strong>Consulting style</strong> — single-column standard margins with centered headers for a cleaner, more modern look</li>
+</ul>
+<p><strong>Key features:</strong></p>
+<ul>
+<li>Modular <code>sections/</code> directory — edit one <code>.qmd</code> file, every CV that includes it rebuilds automatically</li>
+<li>Intelligent incremental builds via Makefile dependency tracking</li>
+<li>XeLaTeX engine for publication-quality typographic output</li>
+<li>Easily customizable fonts, margins, and spacing through YAML front matter</li>
+</ul>
+<p><strong>Built with:</strong> Quarto · XeLaTeX · GNU Make</p>
 
 
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="UFg0JTJDcXVhZHJvdG9yJTJDUk9TMiUyQ2hhcmR3YXJlJTJDdG9vbHMlMkNzb2Z0d2FyZSUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1760500800000" data-listing-file-modified-sort="1762889303692" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="92">
-<div class="thumbnail"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">[In progress] Understanding PX4 Autopilot and Offboard Control via ROS2</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UFg0'); return false;">PX4</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Uk9TMg=='); return false;">ROS2</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aGFyZHdhcmU='); return false;">hardware</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<p>Will write about PX4 flight stack and how to utilize ROS2 for offboard control with novel control algorithms. Also showcasing my open-source modular ROS2-PX4 offboard flight package for control algorithm implementation with modular platform, trajectory, and control setups and my custom logger package.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-10-15-UnderstandingPX4/index.html" class="no-external">
-<div class="listing-date">
-Oct 15, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNxdWFkcm90b3IlMkNnZW9tZXRyaWMlMjBjb250cm9sJTJDbW9kZWxpbmc=" data-listing-date-sort="1759118400000" data-listing-file-modified-sort="1762890275543" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="679">
-<div class="thumbnail"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">Understanding Quadrotor Dynamics and Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cXVhZHJvdG9y'); return false;">quadrotor</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2VvbWV0cmljJTIwY29udHJvbA=='); return false;">geometric control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">modeling</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<p>A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-09-29-QuadrotorDynamics/index.html" class="no-external">
-<div class="listing-date">
-Sep 29, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29udHJvbCUyMHRoZW9yeSUyQ2l0ZXJhdGl2ZSUyMG1ldGhvZHMlMkNkeW5hbWljYWwlMjBzeXN0ZW1z" data-listing-date-sort="1747886400000" data-listing-file-modified-sort="1771215171352" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
-<div class="thumbnail"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">Newton-Raphson Flow: From Iteration to Continuous Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aXRlcmF0aXZlJTIwbWV0aG9kcw=='); return false;">iterative methods</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<p>The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-05-22-NewtonRaphsonFlow/index.html" class="no-external">
-<div class="listing-date">
-May 22, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="b3B0aW1hbCUyMGNvbnRyb2wlMkNjYWxjdWx1cyUyMG9mJTIwdmFyaWF0aW9ucyUyQ2NvbnRyb2wlMjB0aGVvcnk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884495184" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">[TODO] Understanding Optimal Control and Calculus of Variations</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('b3B0aW1hbCUyMGNvbnRyb2w='); return false;">optimal control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y2FsY3VsdXMlMjBvZiUyMHZhcmlhdGlvbnM='); return false;">calculus of variations</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<p>Will write about calculus of variations and its applications in optimal control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingOptimalControl/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="dG9vbHMlMkNzb2Z0d2FyZSUyQ2pheCUyQ2ltcGxlbWVudGF0aW9u" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884496198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">[TODO] Understanding Jax</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('dG9vbHM='); return false;">tools</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c29mdHdhcmU='); return false;">software</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('amF4'); return false;">jax</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW1wbGVtZW50YXRpb24='); return false;">implementation</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<p>Will write about Jax and its uses for control research</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingJax/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNyZWFjaGFiaWxpdHk=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762884490311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">[TODO] Understanding Reachability</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cmVhY2hhYmlsaXR5'); return false;">reachability</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<p>Will write about reachability analysis methods in control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingReachability/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNyZWluZm9yY2VtZW50JTIwbGVhcm5pbmc=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762889581803" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">[TODO] Understanding Reinforcement Learning</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cmVpbmZvcmNlbWVudCUyMGxlYXJuaW5n'); return false;">reinforcement learning</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-<p>Will write about reinforcement learning methods in control</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-UnderstandingRL/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="ZHluYW1pY2FsJTIwc3lzdGVtcyUyQ2NvbnRyb2wlMjB0aGVvcnklMkNnYW1lJTIwdGhlb3J5JTJDZGlmZmVyZW50aWFsJTIwZ2FtZXM=" data-listing-date-sort="1735707600000" data-listing-file-modified-sort="1762889610849" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9">
-<div class="thumbnail"><a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">[TODO] Understanding Game Theoretic Control</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZHluYW1pY2FsJTIwc3lzdGVtcw=='); return false;">dynamical systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29udHJvbCUyMHRoZW9yeQ=='); return false;">control theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2FtZSUyMHRoZW9yeQ=='); return false;">game theory</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGlmZmVyZW50aWFsJTIwZ2FtZXM='); return false;">differential games</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-<p>Will write about game theoretic control methods</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/2025-11-11-GameTheoreticControl/index.html" class="no-external">
-<div class="listing-date">
-Jan 1, 2025
-</div>
-<div class="listing-author">
-Evanns Morales-Cuadrado
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

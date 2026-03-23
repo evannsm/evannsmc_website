@@ -54,7 +54,7 @@ title-block-banner: true
 }
 
 #quarto-margin-sidebar {
-  padding-top: 24rem;
+  padding-top: 16rem;
 }
 
 @media (max-width: 640px) {
