@@ -1,5 +1,6 @@
 ---
 title: Publications
+page-layout: full
 ---
 These are my publications, including the undergraduate honors thesis for nostalgia.
 

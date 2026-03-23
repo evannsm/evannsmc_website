@@ -1,5 +1,6 @@
 ---
 title: CV & Résumé
+page-layout: full
 ---
 *(Last updated: March 2026)*
 

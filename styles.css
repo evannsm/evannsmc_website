@@ -26,7 +26,8 @@ body.quarto-light .footer {
   margin-right: 10px;
 }
 
-/* Let full-width pages use the entire screen */
+/* Let all pages use the entire screen */
+.column-page,
 .page-layout-full .column-page {
   max-width: 100% !important;
   padding-left: clamp(1rem, 2vw, 2rem) !important;
