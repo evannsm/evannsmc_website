@@ -435,7 +435,6 @@ title-block-banner: true
         <svg
           class="journey-map-svg"
           id="journey-map-svg"
-          viewBox="0 0 1480 720"
           role="img"
           aria-labelledby="journey-map-title"
         >
@@ -623,6 +622,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var stateFeatures = [];
 
   var svg = d3.select('#journey-map-svg');
+  // Set viewBox via JS because Quarto/Pandoc lowercases the HTML attribute
+  // to "viewbox", which SVG does not recognise (it requires camelCase "viewBox").
+  document.getElementById('journey-map-svg').setAttribute('viewBox', '0 0 ' + WIDTH + ' ' + HEIGHT);
   var loading = document.getElementById('journey-map-loading');
   var resetButton = document.getElementById('journey-reset');
   var detail = document.getElementById('journey-detail');

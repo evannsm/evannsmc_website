@@ -793,7 +793,7 @@ ul.task-list li input[type="checkbox"] {
           <img id="journey-map-photo-img" alt="">
         </div>
         <div class="journey-map-loading" id="journey-map-loading">Loading map...</div>
-        <svg class="journey-map-svg" id="journey-map-svg" viewbox="0 0 1480 720" role="img" aria-labelledby="journey-map-title">
+        <svg class="journey-map-svg" id="journey-map-svg" role="img" aria-labelledby="journey-map-title">
           <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, Atlanta, Toronto, and Albuquerque</title>
         </svg>
       </div>
@@ -978,6 +978,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var stateFeatures = [];
 
   var svg = d3.select('#journey-map-svg');
+  // Set viewBox via JS because Quarto/Pandoc lowercases the HTML attribute
+  // to "viewbox", which SVG does not recognise (it requires camelCase "viewBox").
+  document.getElementById('journey-map-svg').setAttribute('viewBox', '0 0 ' + WIDTH + ' ' + HEIGHT);
   var loading = document.getElementById('journey-map-loading');
   var resetButton = document.getElementById('journey-reset');
   var detail = document.getElementById('journey-detail');

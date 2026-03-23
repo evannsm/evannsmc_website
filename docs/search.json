@@ -256,56 +256,7 @@
     "href": "Agents.html",
     "title": "evannsmc",
     "section": "",
-    "text": "Crop out the right side just a bit more again it’s almost how I need it to be\nPut my latest project thing above the beyond the lab thing in the home page.\nUse the abstract to improve the NAHS project entry:” This paper addresses the problem of safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty in a static environment. We leverage the recently developed framework of interval signal temporal logic to accommodate uncertainty. We then propose a runtime assurance algorithm that, at each controller update step, considers the proposed input from a nominal controller and minimally adjusts the proposed input to maintain satisfaction of the safety specification at all times under all realizations of the uncertainty. Similar to related methods for control synthesis from temporal logic constraints with or without uncertainty, our algorithm requires solving a mixed integer linear program at each control update step. We equip our solution with necessary conditions to guarantee its feasibility for all time. The efficiencies afforded by interval signal temporal logic imply that our algorithm incurs a modest increase in the size of the program to accommodate uncertainty, and we demonstrate via experiments the real-time computational tractability of this approach. Moreover, we prove that, if a computation deadline is ever missed, our solution approach ensures that a safe backup input is always available. We demonstrate our approach on a miniature autonomous blimp.”\nAnd here’s a figure from the paper I want to have on the NAHS project page itself please adapt it for use on the website: “\n” I have put the two images in the figure in root for you to place where needed to make this happen.\nMake RTD-RAX Render Like LaTeX \\texttt{} Across Website"
-  },
-  {
-    "objectID": "Agents.html#goal",
-    "href": "Agents.html#goal",
-    "title": "evannsmc",
-    "section": "Goal",
-    "text": "Goal\nEnsure that every instance of RTD-RAX on the website is displayed in a LaTeX-style typewriter (monospace) format, similar to \\texttt{RTD-RAX}."
-  },
-  {
-    "objectID": "Agents.html#step-1-add-css-class",
-    "href": "Agents.html#step-1-add-css-class",
-    "title": "evannsmc",
-    "section": "Step 1 — Add CSS Class",
-    "text": "Step 1 — Add CSS Class\nAdd the following CSS to the global stylesheet:\n.tt {\n  font-family: \"Fira Code\", \"JetBrains Mono\", \"Courier New\", monospace;\n  font-size: 0.95em;\n  letter-spacing: 0.03em;\n}"
-  },
-  {
-    "objectID": "Agents.html#step-2-replace-all-instances-in-html",
-    "href": "Agents.html#step-2-replace-all-instances-in-html",
-    "title": "evannsmc",
-    "section": "Step 2 — Replace All Instances in HTML",
-    "text": "Step 2 — Replace All Instances in HTML\nFind every occurrence of:\nRTD-RAX\nReplace it with:\n&lt;span class=\"tt\"&gt;RTD-RAX&lt;/span&gt;"
-  },
-  {
-    "objectID": "Agents.html#step-3-scope-of-replacement",
-    "href": "Agents.html#step-3-scope-of-replacement",
-    "title": "evannsmc",
-    "section": "Step 3 — Scope of Replacement",
-    "text": "Step 3 — Scope of Replacement\nApply this change consistently across:\n\nHome page\nProject pages\nBlog posts\nNavigation / banners\nAny dynamically rendered content (if applicable)"
-  },
-  {
-    "objectID": "Agents.html#step-4-important-notes",
-    "href": "Agents.html#step-4-important-notes",
-    "title": "evannsmc",
-    "section": "Step 4 — Important Notes",
-    "text": "Step 4 — Important Notes\n\nDo not use &lt;code&gt; tags unless specifically desired for semantic code blocks.\nAlways use the &lt;span class=\"tt\"&gt;...&lt;/span&gt; approach for styling consistency.\nEnsure no duplicate wrapping occurs (i.e., avoid nesting .tt inside .tt)."
-  },
-  {
-    "objectID": "Agents.html#step-5-optional-advanced-consistency",
-    "href": "Agents.html#step-5-optional-advanced-consistency",
-    "title": "evannsmc",
-    "section": "Step 5 — Optional (Advanced Consistency)",
-    "text": "Step 5 — Optional (Advanced Consistency)\nIf using a component framework (React, etc.), create a reusable component:\nconst TT = ({ children }) =&gt; (\n  &lt;span className=\"tt\"&gt;{children}&lt;/span&gt;\n);\nThen replace instances with:\n&lt;TT&gt;RTD-RAX&lt;/TT&gt;"
-  },
-  {
-    "objectID": "Agents.html#result",
-    "href": "Agents.html#result",
-    "title": "evannsmc",
-    "section": "Result",
-    "text": "Result\nAll instances of RTD-RAX will visually match LaTeX \\texttt{} styling across the site.\nIgnore everything below here. Future: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page\n\nExpand margins across all pages"
+    "text": "Read through everything in /home/egmc/evannsmc_website to understand the current state of my website, and from /home/egmc/resume_portfolio to understand some new features I may want to implement.\nDoes every page use the new layout? it seems like home/projects/about me look very different from the rest in my website in that regard. The margins are too tight on the sides and the content doesn’t have much room to breathe and take up left-right space.\nMy picture and name are still absrudly huge on the home page\nTHE MAP IS STILL NOT RIGHT IN THE JOURNEY PAGE. LEARN FROM /home/egmc/resume_portfolio that does it correctly if you need to\n\nIgnore everything below here. Future: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page\n3. Finish working on margins and using more of the page for every page and also the journey map shit 4. Latest project shows the bad shit 6. On the home page, all the links should be in blue, not just github which it currently is but also linkedin, scholar, and orcid 7. When you click to expand the project panels there should also be a button to click and see the pdf of the paper for all those that have pdf links (you can easily tell from my CV if there’s a hyperlink to a pdf of the project’s paper if there is one)"
   },
   {
     "objectID": "blog/index.html",
