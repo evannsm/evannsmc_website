@@ -114,10 +114,8 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="CV &amp; Résumé – evannsmc">
-<meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta property="og:site_name" content="evannsmc">
 <meta name="twitter:title" content="CV &amp; Résumé – evannsmc">
-<meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -286,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -340,51 +338,193 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">CV &amp; Résumé</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">CV &amp; Résumé</h1>
-</div>
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta column-page">
 
-    
-  
-    
+
+
+<style>
+#title-block-header {
+  display: none;
+}
+
+:root {
+  --cv-accent: #2563eb;
+  --cv-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --cv-text-secondary: var(--bs-secondary-color, #57534e);
+  --cv-border: var(--bs-border-color, #e7e5e4);
+}
+
+.cv-shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 2vw, 2rem) 5rem;
+}
+
+.cv-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--cv-accent);
+}
+
+.cv-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.cv-intro {
+  max-width: 52rem;
+  margin: 0 0 2.4rem;
+  color: var(--cv-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.cv-section-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--cv-text-secondary);
+  margin: 0 0 1rem;
+}
+
+.cv-card {
+  border: 1px solid var(--cv-border);
+  border-radius: 1.35rem;
+  background: var(--cv-bg-secondary);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.cv-card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.cv-card-updated {
+  margin: 0 0 1rem;
+  color: var(--cv-text-secondary);
+  font-size: 0.9rem;
+}
+
+.cv-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cv-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--cv-border);
+  text-decoration: none;
+  font-weight: 600;
+  background: var(--bs-body-bg, #fff);
+}
+
+.cv-button.primary {
+  background: var(--cv-accent);
+  border-color: var(--cv-accent);
+  color: #fff;
+}
+
+.cv-button.primary:hover,
+.cv-button.primary:focus {
+  color: #fff;
+  opacity: 0.92;
+}
+
+.cv-embed {
+  width: 100%;
+  border: 1px solid var(--cv-border);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.cv-embed embed {
+  width: 100%;
+  height: 700px;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .cv-shell {
+    padding: 2.5rem 1rem 4rem;
+  }
+
+  .cv-embed embed {
+    height: 500px;
+  }
+}
+</style>
+
+<div class="cv-shell">
+  <p class="cv-kicker">CV &amp; Résumé</p>
+  <p class="cv-title">Documents.</p>
+  <p class="cv-intro">
+    Last updated March 2026. View inline or download as PDF.
+  </p>
+
+  <p class="cv-section-heading">Résumé</p>
+  <div class="cv-card">
+    <p class="cv-card-title">Résumé</p>
+    <div class="cv-button-row">
+      <a class="cv-button primary" href="resume-html.html">View HTML Résumé</a>
+      <a class="cv-button" href="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" download="">Download PDF</a>
+    </div>
+    <div class="cv-embed">
+      <embed src="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf">
+    </div>
   </div>
-  
 
-
-</header>
-
-
-<p><em>(Last updated: March 2026)</em></p>
-<section id="résumé" class="level3">
-<h3 class="anchored" data-anchor-id="résumé">Résumé</h3>
-<div class="d-flex gap-2 mb-2">
-<p><a href="../cv/resume-html.html" class="btn btn-sm btn-outline-primary">View HTML Résumé</a> <a href="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" class="btn btn-sm btn-outline-secondary" download="">Download PDF</a></p>
+  <p class="cv-section-heading">Full CV</p>
+  <div class="cv-card">
+    <p class="cv-card-title">Curriculum Vitae</p>
+    <div class="cv-button-row">
+      <a class="cv-button primary" href="cv-html.html">View HTML CV</a>
+      <a class="cv-button" href="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" download="">Download PDF</a>
+    </div>
+    <div class="cv-embed">
+      <embed src="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf">
+    </div>
+  </div>
 </div>
-<embed src="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf" width="800" height="600/">
-<hr>
-</section>
-<section id="full-cv" class="level3">
-<h3 class="anchored" data-anchor-id="full-cv">Full CV</h3>
-<div class="d-flex gap-2 mb-2">
-<p><a href="../cv/cv-html.html" class="btn btn-sm btn-outline-primary">View HTML CV</a> <a href="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" class="btn btn-sm btn-outline-secondary" download="">Download PDF</a></p>
-</div>
-<embed src="../files/CV_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" type="application/pdf" width="800" height="600/">
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -174,10 +174,8 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../styles.css">
 <link rel="alternate" type="application/rss+xml" title="evannsmc" href="index.xml" data-external="1"><meta property="og:title" content="Research Blog – evannsmc">
-<meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta property="og:site_name" content="evannsmc">
 <meta name="twitter:title" content="Research Blog – evannsmc">
-<meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -430,8 +428,60 @@ window.Quarto = {
 
 
 
-<p>I hope to fill this section with explanatory pieces on important topics in the field of robotics/control systems theory.</p>
-<p>I also hope to cover things I wish had been explained to me in a particular manner, or just things I find interesting that are (maybe even just tangentially) related to my field.</p>
+<style>
+#title-block-header {
+  display: none;
+}
+
+:root {
+  --blog-accent: #2563eb;
+  --blog-text-secondary: var(--bs-secondary-color, #57534e);
+}
+
+.blog-shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 2vw, 2rem) 1.5rem;
+}
+
+.blog-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--blog-accent);
+}
+
+.blog-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.blog-intro {
+  max-width: 52rem;
+  margin: 0 0 2.4rem;
+  color: var(--blog-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 640px) {
+  .blog-shell {
+    padding: 2.5rem 1rem 1rem;
+  }
+}
+</style>
+
+<div class="blog-shell">
+  <p class="blog-kicker">Research Blog</p>
+  <p class="blog-title">Notes &amp; Tutorials.</p>
+  <p class="blog-intro">
+    Explanatory pieces on important topics in robotics and control systems theory, things I wish had been explained to me in a particular manner, and topics I find interesting that are related to my field.
+  </p>
+</div>
 
 
 

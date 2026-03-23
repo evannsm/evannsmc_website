@@ -114,10 +114,8 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Publications – evannsmc">
-<meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta property="og:site_name" content="evannsmc">
 <meta name="twitter:title" content="Publications – evannsmc">
-<meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -286,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -340,60 +338,142 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">Publications</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Publications</h1>
-</div>
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta column-page">
-
-    
-  
-    
-  </div>
-  
 
 
-</header>
 
-
-<p>These are my publications, including the undergraduate honors thesis for nostalgia.</p>
 <style>
-  .publist ol {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
+#title-block-header {
+  display: none;
+}
 
-  .publist ol > li {
-    margin-bottom: 1rem;
-    padding-left: 0;
-  }
+:root {
+  --pubs-accent: #2563eb;
+  --pubs-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --pubs-text-secondary: var(--bs-secondary-color, #57534e);
+  --pubs-border: var(--bs-border-color, #e7e5e4);
+}
 
-  .pub-marker {
-    font-weight: 700;
-    margin-right: 0.25rem;
-  }
+.pubs-shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 2vw, 2rem) 5rem;
+}
 
-  .publist ol > li p {
-    margin: 0;
-  }
+.pubs-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pubs-accent);
+}
 
-  .publist a {
-    font-weight: 700;
+.pubs-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.pubs-intro {
+  max-width: 52rem;
+  margin: 0 0 2.4rem;
+  color: var(--pubs-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.pubs-card {
+  border: 1px solid var(--pubs-border);
+  border-radius: 1.35rem;
+  background: var(--pubs-bg-secondary);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.pubs-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.pubs-list > li {
+  margin-bottom: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--pubs-border);
+  border-radius: 1rem;
+  background: var(--bs-body-bg, #fff);
+  font-size: 0.95rem;
+  line-height: 1.72;
+  color: var(--pubs-text-secondary);
+}
+
+.pubs-list > li:last-child {
+  margin-bottom: 0;
+}
+
+.pubs-list > li p {
+  margin: 0;
+}
+
+.pubs-list a {
+  font-weight: 700;
+  color: var(--pubs-accent);
+}
+
+.pub-marker {
+  font-weight: 800;
+  margin-right: 0.35rem;
+  color: var(--pubs-accent);
+}
+
+.pubs-footnote {
+  margin-top: 1.25rem;
+  color: var(--pubs-text-secondary);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .pubs-shell {
+    padding: 2.5rem 1rem 4rem;
   }
+}
 </style>
-<div class="publist">
+
+<div class="pubs-shell">
+  <p class="pubs-kicker">Publications</p>
+  <p class="pubs-title">Research Output.</p>
+  <p class="pubs-intro">
+    Published and in-progress work, including the undergraduate honors thesis for nostalgia.
+  </p>
+
+  <div class="pubs-card">
+    <ol class="pubs-list" id="pub-list">
 <ol type="1">
 <li><p><strong>E. Morales-Cuadrado</strong>, L. Chung, S. Kousik and S. Coogan, “Fast, Safe Trajectory Planning for Systems under Unknown Disturbances.” Joint Submission to 2026 Modeling, Estimation and Control Conference (MECC) and ASME Letters in Dynamic Systems and Control (ALDSC). <em>(under revision)</em></p></li>
 <li><p><strong>E. Morales-Cuadrado</strong>, L. Baird, Y. Wardi and S. Coogan, “Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method.” Submitted to IEEE Transactions on Control Systems Technology, 2026. <em>(under revision)</em> <a href="https://arxiv.org/abs/2508.14185"><em>arXiv preprint available.</em></a></p></li>
@@ -401,11 +481,14 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>E. Morales-Cuadrado</strong>, C. Llanes, Y. Wardi and S. Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” <a href="https://arxiv.org/abs/2408.11197"><em>2024 American Control Conference (ACC)</em></a></p></li>
 <li><p><strong>Evanns Morales-Cuadrado</strong>, “<a href="https://mavmatrix.uta.edu/honors_spring2022/60/">Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance</a>” Undergraduate Honors College Thesis at UT Arlington, 2022.</p></li>
 </ol>
+    </ol>
+    <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
+  </div>
 </div>
-<p>* <em>indicates equal contribution</em></p>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var list = document.querySelector('.publist ol');
+  var list = document.getElementById('pub-list');
   if (!list) return;
 
   var items = Array.prototype.slice.call(list.children);
