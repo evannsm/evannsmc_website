@@ -111,22 +111,24 @@ title-block-banner: true
     Published and in-progress work, including the undergraduate honors thesis for nostalgia.
   </p>
 
-  <div class="pubs-card">
-    <ol class="pubs-list" id="pub-list">
+  <div class="pubs-card" id="pubs-card">
 ```
 
 {{< include ../cv/_sections/publications-shared.qmd >}}
 
 ```{=html}
-    </ol>
     <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var list = document.getElementById('pub-list');
+  var card = document.getElementById('pubs-card');
+  if (!card) return;
+  var list = card.querySelector('ol');
   if (!list) return;
+
+  list.classList.add('pubs-list');
 
   var items = Array.prototype.slice.call(list.children);
   var total = items.length;
