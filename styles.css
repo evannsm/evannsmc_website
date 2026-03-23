@@ -300,7 +300,7 @@ body.quarto-light .footer {
 .home-latest-project-copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   min-width: 0;
 }
 
