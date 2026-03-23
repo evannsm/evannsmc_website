@@ -5,7 +5,7 @@ MSG="update site"
 while getopts "m:" opt; do
   case $opt in
     m) MSG="$OPTARG" ;;
-    *) echo "Usage: ./publish [-m \"commit message\"]"; exit 1 ;;
+    *) echo "Usage: ./push [-m \"commit message\"]"; exit 1 ;;
   esac
 done
 
