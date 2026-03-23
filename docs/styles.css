@@ -26,16 +26,11 @@ body.quarto-light .footer {
   margin-right: 10px;
 }
 
-/* Let all pages use the entire screen — shells handle their own padding */
-.page-columns {
-  grid-template-columns: [screen-start] 0 [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 0 [screen-end] !important;
-}
-
-.column-page,
+/* Let full-width pages use the entire screen */
 .page-layout-full .column-page {
   max-width: 100% !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding-left: clamp(1rem, 2vw, 2rem) !important;
+  padding-right: clamp(1rem, 2vw, 2rem) !important;
 }
 
 /* ── Day/Night toggle: sun/moon icon button ── */

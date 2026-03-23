@@ -371,6 +371,15 @@ ul.task-list li input[type="checkbox"] {
   display: none;
 }
 
+/* Full-width grid override for journey page only */
+.page-columns {
+  grid-template-columns: [screen-start] 0 [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 0 [screen-end] !important;
+}
+
+main.content.column-page {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 
 :root {
   --journey-accent: #2563eb;

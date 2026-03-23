@@ -10,6 +10,11 @@ title-block-banner: true
   display: none;
 }
 
+/* Tighter padding for 2-column layout */
+main.content.column-page {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
 
 :root {
   --projects-accent: #2563eb;
