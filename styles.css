@@ -27,6 +27,10 @@ body.quarto-light .footer {
 }
 
 /* Let all pages use the entire screen — shells handle their own padding */
+.page-columns {
+  grid-template-columns: [screen-start] 0 [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 0 [screen-end] !important;
+}
+
 .column-page,
 .page-layout-full .column-page {
   max-width: 100% !important;
