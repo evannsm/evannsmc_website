@@ -116,7 +116,7 @@ title-block-banner: true
 ```
 
 {{< include ../cv/_sections/publications-shared.qmd >}}
-<!-- 1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022. -->
+1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022.
 
 ```{=html}
     </ol>
