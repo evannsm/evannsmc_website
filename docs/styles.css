@@ -9,7 +9,12 @@
 
 /* Give full-width custom pages more usable room before their own wrappers apply */
 .page-layout-full .column-page {
-  max-width: min(94vw, 88rem) !important;
+  max-width: min(97vw, 96rem) !important;
+}
+
+/* Give the home page's Solana layout more horizontal room as well */
+.quarto-about-solana.column-body {
+  max-width: min(95vw, 92rem) !important;
 }
 
 /* ── Day/Night toggle: sun/moon icon button ── */
@@ -69,17 +74,17 @@
 
 /* Home page snapshot cards */
 .home-snapshot {
-  margin: 2.5rem 0 3rem;
+  margin: 2.75rem 0 3.25rem;
 }
 
 .home-snapshot-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .home-snapshot-card {
-  padding: 1.35rem;
+  padding: 1.55rem;
   border: 1px solid var(--bs-border-color, #dee2e6);
   border-radius: 1rem;
   background: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.03));

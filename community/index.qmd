@@ -374,7 +374,7 @@ title-block-banner: true
       <div class="events-intro">
         <p class="feature-title">Event history</p>
         <p class="event-copy">
-          The original list had much more detail than the compressed summary cards, so this section keeps the fuller event archive and makes it scrollable instead.
+          I'll update these with pictures and videos as well coming up soon &#128578
         </p>
       </div>
       <div class="events-scroll">
