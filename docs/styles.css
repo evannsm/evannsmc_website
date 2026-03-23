@@ -55,3 +55,85 @@
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.85);
 }
+
+/* Home page about image crop */
+.quarto-about-solana .about-image {
+  object-fit: cover;
+  object-position: 50% 24%;
+}
+
+/* Home page snapshot cards */
+.home-snapshot {
+  margin: 2.5rem 0 3rem;
+}
+
+.home-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.home-snapshot-card {
+  padding: 1.35rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 1rem;
+  background: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.03));
+}
+
+.home-snapshot-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #2563eb;
+}
+
+.home-snapshot-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.home-snapshot-copy {
+  margin: 0;
+  color: var(--bs-secondary-color, #6c757d);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.home-snapshot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.home-snapshot-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.home-snapshot-link.primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.home-snapshot-link.primary:hover,
+.home-snapshot-link.primary:focus {
+  color: #fff;
+  opacity: 0.92;
+}
+
+@media (max-width: 900px) {
+  .home-snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+}

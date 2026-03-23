@@ -120,7 +120,7 @@ title-block-banner: true
 }
 
 .journey-map-panel {
-  padding: 1rem;
+  padding: 0.75rem 1rem 1rem;
 }
 
 .journey-map-shell {
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return d3.geoMercator()
       .center(currentCenter)
       .scale(currentScale)
-      .translate([WIDTH / 2, HEIGHT / 2]);
+      .translate([WIDTH / 2, HEIGHT / 2 - 24]);
   }
 
   function animateTo(targetCenter, targetScale) {

@@ -337,10 +337,6 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="../journey"> 
 <span class="menu-text">Journey</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../community"> 
-<span class="menu-text">Community &amp; Hobbies</span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -391,7 +387,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .about-shell {
-  max-width: 64rem;
+  max-width: 68rem;
   margin: 0 auto;
   padding: 3rem 1.5rem 5rem;
 }
@@ -404,10 +400,11 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .about-avatar {
-  width: 96px;
-  height: 96px;
+  width: 104px;
+  height: 104px;
   border-radius: 999px;
   object-fit: cover;
+  object-position: 50% 24%;
   flex-shrink: 0;
 }
 
@@ -448,7 +445,9 @@ ul.task-list li input[type="checkbox"] {
 
 .metric-card,
 .origin-card,
-.journey-link-card {
+.journey-link-card,
+.community-card,
+.hobbies-card {
   border: 1px solid var(--about-border);
   border-radius: 1.25rem;
   background: var(--about-bg-secondary);
@@ -497,13 +496,17 @@ ul.task-list li input[type="checkbox"] {
   display: block;
 }
 
-.origin-title {
+.origin-title,
+.community-title,
+.hobbies-title {
   margin: 0 0 0.5rem;
   font-size: 1.2rem;
   font-weight: 700;
 }
 
-.origin-copy {
+.origin-copy,
+.community-copy,
+.hobbies-copy {
   margin: 0;
   color: var(--about-text-secondary);
   font-size: 0.95rem;
@@ -542,6 +545,67 @@ ul.task-list li input[type="checkbox"] {
 .journey-link-button:focus {
   color: #fff;
   opacity: 0.92;
+}
+
+.community-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.community-copy p {
+  margin: 0 0 1rem;
+}
+
+.community-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.community-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--about-text-secondary);
+}
+
+.community-list li + li {
+  margin-top: 0.55rem;
+}
+
+.community-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.community-figure {
+  margin: 0;
+}
+
+.community-figure img {
+  width: 100%;
+  border-radius: 0.95rem;
+  display: block;
+}
+
+.community-figure figcaption {
+  margin-top: 0.45rem;
+  color: var(--about-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.community-figure.small {
+  display: flex;
+  flex-direction: column;
+}
+
+.community-figure.small img {
+  height: 100%;
+  object-fit: cover;
 }
 
 .lang-stack {
@@ -585,10 +649,15 @@ ul.task-list li input[type="checkbox"] {
   transition: width 1s ease-out;
 }
 
+.hobbies-card {
+  padding: 1.5rem;
+}
+
 .interests-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .interest-tag {
@@ -601,9 +670,14 @@ ul.task-list li input[type="checkbox"] {
   background: transparent;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .about-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .journey-link-card,
+  .community-card {
+    grid-template-columns: 1fr;
   }
 
   .journey-link-card {
@@ -623,11 +697,16 @@ ul.task-list li input[type="checkbox"] {
     align-items: flex-start;
   }
 
-  .origin-flag-wrap {
+  .origin-flag-wrap,
+  .community-gallery {
     width: 100%;
   }
 
   .about-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .community-gallery {
     grid-template-columns: 1fr;
   }
 
@@ -664,16 +743,16 @@ ul.task-list li input[type="checkbox"] {
       <p class="metric-label">Languages</p>
     </div>
     <div class="metric-card">
-      <p class="metric-value">3</p>
-      <p class="metric-label">Places That Shaped My Journey</p>
+      <p class="metric-value">5</p>
+      <p class="metric-label">Locations in the journey</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">4</p>
-      <p class="metric-label">Research Labs</p>
+      <p class="metric-label">Research labs along the way</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">1</p>
-      <p class="metric-label">Community Organization Founded</p>
+      <p class="metric-label">Community organization founded</p>
     </div>
   </div>
 
@@ -694,6 +773,31 @@ ul.task-list li input[type="checkbox"] {
   <div class="journey-link-card">
     <p class="journey-link-title">Open the interactive journey map.</p>
     <a class="journey-link-button" href="../journey/">Open Journey Map</a>
+  </div>
+
+  <p class="about-section-heading">Community</p>
+  <div class="community-card">
+    <div class="community-copy">
+      <p class="community-title">BORI</p>
+      <p>
+        I helped co-found <strong>BORI (Boricuas Organized for Impact)</strong> to build community and celebrate Puerto Rican culture at Georgia Tech. It has become one of the main ways I stay connected to home while also making campus feel more welcoming for other Puerto Rican students.
+      </p>
+      <ul class="community-list">
+        <li>We create spaces that feel culturally familiar, from kickoff events to game nights and shared Puerto Rican food.</li>
+        <li>We try to be useful, not just social - helping newer students find people, resources, and a sense of belonging.</li>
+        <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li>
+      </ul>
+    </div>
+    <div class="community-gallery">
+      <figure class="community-figure figure">
+        <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together" class="figure-img">
+        <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
+      </figure>
+      <figure class="community-figure small figure">
+        <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coqui with Coquito" class="figure-img">
+        <figcaption>Coqui with Coquito, the BORI mascot</figcaption>
+      </figure>
+    </div>
   </div>
 
   <p class="about-section-heading">Languages</p>
@@ -736,14 +840,20 @@ ul.task-list li input[type="checkbox"] {
     </div>
   </div>
 
-  <p class="about-section-heading">Interests</p>
-  <div class="interests-grid">
-    <span class="interest-tag">Cooking</span>
-    <span class="interest-tag">Dance</span>
-    <span class="interest-tag">Reading</span>
-    <span class="interest-tag">Writing</span>
-    <span class="interest-tag">Community Building</span>
-    <span class="interest-tag">Film</span>
+  <p class="about-section-heading">Outside the Lab</p>
+  <div class="hobbies-card">
+    <p class="hobbies-title">What I come back to.</p>
+    <p class="hobbies-copy">
+      Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: cooking for people, dancing, reading, writing, and finding ways to stay connected to community.
+    </p>
+    <div class="interests-grid">
+      <span class="interest-tag">Cooking</span>
+      <span class="interest-tag">Dance</span>
+      <span class="interest-tag">Reading</span>
+      <span class="interest-tag">Writing</span>
+      <span class="interest-tag">Film</span>
+      <span class="interest-tag">Community Building</span>
+    </div>
   </div>
 </div>
 

@@ -30,6 +30,40 @@ My research is centered around safe autonomy of hardware systems, primarily focu
 
 I hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career.
 
+## Beyond the Lab
+
+```{=html}
+<div class="home-snapshot">
+  <div class="home-snapshot-grid">
+    <div class="home-snapshot-card">
+      <p class="home-snapshot-kicker">Roots</p>
+      <p class="home-snapshot-title">Puerto Rico is still central.</p>
+      <p class="home-snapshot-copy">
+        I was born and raised in Puerto Rico until I was 9, and that sense of home still shapes how I think about culture, belonging, and community.
+      </p>
+    </div>
+    <div class="home-snapshot-card">
+      <p class="home-snapshot-kicker">Community</p>
+      <p class="home-snapshot-title">BORI matters as much as the research.</p>
+      <p class="home-snapshot-copy">
+        At Georgia Tech I helped co-found BORI to make campus feel more welcoming and culturally familiar for Puerto Rican students.
+      </p>
+    </div>
+    <div class="home-snapshot-card">
+      <p class="home-snapshot-kicker">Journey</p>
+      <p class="home-snapshot-title">The path keeps widening.</p>
+      <p class="home-snapshot-copy">
+        From UT Arlington to Georgia Tech, then Toronto for ACC 2024, and next to Albuquerque for a Summer 2026 internship at Sandia National Laboratories.
+      </p>
+    </div>
+  </div>
+  <div class="home-snapshot-links">
+    <a class="home-snapshot-link primary" href="./about/">More About Me</a>
+    <a class="home-snapshot-link" href="./journey/">Open Journey Map</a>
+  </div>
+</div>
+```
+
 ## Education
 
 Georgia Institute of Technology | Atlanta, GA
