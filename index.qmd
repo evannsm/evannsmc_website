@@ -55,10 +55,25 @@ page-layout: full
         <a class="home-link-pill primary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
-    <figure class="home-hero-sidebar">
-      <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
-      <figcaption class="home-hero-caption">C'est Moi.</figcaption>
-    </figure>
+    <aside class="home-hero-sidebar">
+      <figure class="home-hero-portrait">
+        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
+        <figcaption class="home-hero-caption">C'est Moi.</figcaption>
+      </figure>
+      <div class="home-focus-card">
+        <p class="home-focus-kicker">Focus areas</p>
+        <p class="home-focus-title">What currently takes up the whiteboard.</p>
+        <div class="home-focus-tags" aria-label="Research focus areas">
+          <span class="home-focus-tag">Robotics</span>
+          <span class="home-focus-tag">Safety</span>
+          <span class="home-focus-tag">Python</span>
+          <span class="home-focus-tag">JAX</span>
+          <span class="home-focus-tag">Research</span>
+          <span class="home-focus-tag">Quadrotors</span>
+          <span class="home-focus-tag">Control</span>
+        </div>
+      </div>
+    </aside>
   </section>
 </div>
 ```
@@ -78,9 +93,7 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
 ```{=html}
 <a class="home-latest-project" href="./projects/rtd-rax/">
   <div class="home-latest-project-copy">
-    <!-- <p class="home-snapshot-kicker">My latest project</p> -->
     <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
-    <!-- <p class="home-latest-project-title">'RTD-RAX.'</p> -->
     <p class="home-latest-project-text">
       Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
       RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 

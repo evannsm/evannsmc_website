@@ -380,8 +380,8 @@ ul.task-list li input[type="checkbox"] {
   grid-column: screen-start / screen-end !important;
   width: 100%;
   max-width: none;
-  padding-left: clamp(0.55rem, 1vw, 1.25rem) !important;
-  padding-right: clamp(0.55rem, 1vw, 1.25rem) !important;
+  padding-left: clamp(0.2rem, 0.55vw, 0.7rem) !important;
+  padding-right: clamp(0.2rem, 0.55vw, 0.7rem) !important;
 }
 
 main.content.column-page {
@@ -399,6 +399,7 @@ main.content.column-page {
 }
 
 .journey-page {
+  width: 100%;
   max-width: none;
   margin: 0 auto;
   padding: 0.9rem 0 4.5rem;
@@ -443,7 +444,7 @@ main.content.column-page {
 
 .journey-layout {
   display: flex;
-  gap: clamp(0.7rem, 1vw, 0.95rem);
+  gap: clamp(0.55rem, 0.8vw, 0.8rem);
   align-items: start;
 }
 
@@ -464,8 +465,8 @@ main.content.column-page {
 }
 
 .journey-detail {
-  flex: 0 0 9.25rem;
-  max-width: 9.25rem;
+  flex: 0 0 8.5rem;
+  max-width: 8.5rem;
   padding: 1rem;
   min-height: 0;
   align-self: start;
@@ -527,7 +528,7 @@ main.content.column-page {
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
-  aspect-ratio: 2.08 / 1;
+  aspect-ratio: 1.92 / 1;
   border: 1px solid rgba(100, 116, 139, 0.18);
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
@@ -606,8 +607,8 @@ main.content.column-page {
 }
 
 .journey-sidebar {
-  flex: 0 0 10rem;
-  max-width: 10rem;
+  flex: 0 0 9.25rem;
+  max-width: 9.25rem;
   padding: 0.1rem 0 0;
 }
 
@@ -884,7 +885,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var HEIGHT = 720;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-85, 31.5], scale: 940 };
+  var OVERVIEW = { center: [-86.5752, 31.7951], scale: 1080 };
 
   var stops = [
     {

@@ -354,7 +354,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content page-columns page-full column-page" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -387,8 +387,8 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 
-<div class="home-page">
-  <section class="home-hero">
+<div class="home-page page-columns page-full">
+  <section class="home-hero page-columns page-full">
     <div class="home-hero-copy">
       <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
       <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
@@ -431,10 +431,25 @@ ul.task-list li input[type="checkbox"] {
         <a class="home-link-pill primary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
-    <figure class="home-hero-sidebar figure">
-      <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo figure-img">
-      <figcaption class="home-hero-caption">C'est Moi.</figcaption>
-    </figure>
+    <aside class="home-hero-sidebar">
+      <figure class="home-hero-portrait figure">
+        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo figure-img">
+        <figcaption class="home-hero-caption">C'est Moi.</figcaption>
+      </figure>
+      <div class="home-focus-card">
+        <p class="home-focus-kicker">Focus areas</p>
+        <p class="home-focus-title">What currently takes up the whiteboard.</p>
+        <div class="home-focus-tags" aria-label="Research focus areas">
+          <span class="home-focus-tag">Robotics</span>
+          <span class="home-focus-tag">Safety</span>
+          <span class="home-focus-tag">Python</span>
+          <span class="home-focus-tag">JAX</span>
+          <span class="home-focus-tag">Research</span>
+          <span class="home-focus-tag">Quadrotors</span>
+          <span class="home-focus-tag">Control</span>
+        </div>
+      </div>
+    </aside>
   </section>
 </div>
 <section id="inside-the-lab" class="level2">
@@ -447,9 +462,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="my-latest-project">My Latest Project</h2>
 <a class="home-latest-project" href="./projects/rtd-rax/">
   <div class="home-latest-project-copy">
-    <!-- <p class="home-snapshot-kicker">My latest project</p> -->
     <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
-    <!-- <p class="home-latest-project-title">'RTD-RAX.'</p> -->
     <p class="home-latest-project-text">
       Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
       RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
