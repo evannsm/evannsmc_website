@@ -263,7 +263,7 @@
     "href": "Agents.html",
     "title": "evannsmc",
     "section": "",
-    "text": "Publications page: there’s a stray [1] on the top – get rid of it, and properly add my UTA honors thesis again. Also reverse the numbering so that [1] is on the bottom as the number for my UTA honors thesis and [5] is the latest RTD-RAX paper\n\nIgnore everything below here.\nFuture: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page\n3. Finish working on margins and using more of the page for every page and also the journey map shit"
+    "text": "Publications page: there’s a stray [1] on the top – get rid of it, and properly add my UTA honors thesis again. Also reverse the numbering so that [1] is on the bottom as the number for my UTA honors thesis and [5] is the latest RTD-RAX paper\n\nIgnore everything below here.\nFuture: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page\n3. Finish working on margins and using more of the page for every page and also the journey map shit\n\nThe pages have all been way too expanded horizontally to the point where everything looks ugly and yet for some reason the only one unaffected is the only one that needed that treatment which is the journey page which actually needs the whole page ito fit the map and make th tot bigger. reverse that change on the pages and only apply it to the journey page"
   },
   {
     "objectID": "blog/index.html",
