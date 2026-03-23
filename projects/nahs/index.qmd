@@ -1,0 +1,31 @@
+---
+title: "Interval STL Runtime Assurance"
+description: "Runtime assurance for uncertain systems using interval signal temporal logic."
+categories: [Safety, Formal Methods, Hybrid Systems, Research]
+---
+
+**Links:**
+
+::: {.d-flex .gap-2 .mb-3}
+[View Publications Page](../../publications/){.btn .btn-sm .btn-primary}
+[Back to Projects](../){.btn .btn-sm .btn-outline-primary}
+:::
+
+This project studies runtime assurance for uncertain systems using interval signal temporal logic (iSTL). Instead of checking temporal requirements against a single nominal trajectory or collapsing uncertainty into a crude worst-case margin, the goal is to reason directly about bounded uncertainty while still preserving meaningful guarantees.
+
+The paper, with Leslie Baird and Samuel Coogan, is currently under revision for IFAC *Nonlinear Analysis: Hybrid Systems* (NAHS). It sits on the more formal-methods side of the same safe-autonomy thread that runs through the rest of the work on this site.
+
+**Key ideas:**
+
+- Use interval signal temporal logic to encode temporal requirements under bounded uncertainty
+- Connect formal temporal specifications with runtime-assurance reasoning
+- Keep guarantees informative without defaulting to extreme conservatism
+- Frame uncertainty-aware safety analysis in a way that is compatible with hybrid-systems thinking
+
+**Academic foundation:**
+
+| Venue | Status |
+|---|---|
+| IFAC *Nonlinear Analysis: Hybrid Systems* (NAHS) | Submitted, under revision |
+
+**Built around:** Runtime assurance · Temporal logic · Interval analysis · Hybrid systems

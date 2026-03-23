@@ -469,6 +469,28 @@ ul.task-list li input[type="checkbox"] {
   margin-bottom: 0.6rem;
 }
 
+.project-name-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.project-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--projects-accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
 .project-name {
   margin: 0;
   font-size: 1.28rem;
@@ -515,7 +537,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .project-preview-panel.rtd-preview img {
-  width: 103%;
+  width: 104.5%;
   height: 100%;
   max-width: none;
   object-fit: cover;
@@ -684,7 +706,10 @@ ul.task-list li input[type="checkbox"] {
               <span class="project-tag">Research</span>
             </div>
             <div class="project-name-row">
-              <p class="project-name">RTD-RAX</p>
+              <div class="project-name-group">
+                <span class="project-number">01</span>
+                <p class="project-name">RTD-RAX</p>
+              </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
@@ -722,66 +747,15 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">Quarto</span>
-              <span class="project-tag">LaTeX</span>
-              <span class="project-tag">Tools</span>
-            </div>
-            <div class="project-name-row">
-              <p class="project-name">QuartoCV</p>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Build once, reuse everywhere</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Shared sections</div>
-                <div class="project-preview-line">Incremental PDF rebuilds</div>
-                <div class="project-preview-line">Academic + consulting styles</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Quarto</span>
-                <span class="project-preview-metric">XeLaTeX</span>
-                <span class="project-preview-metric">Make</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
-            </p>
-            <ul class="project-detail-list">
-              <li>One source section can feed multiple document variants.</li>
-              <li>Dependency-aware incremental builds keep edits fast.</li>
-              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
               <span class="project-tag">ROS 2</span>
               <span class="project-tag">Robotics</span>
               <span class="project-tag">C++</span>
             </div>
             <div class="project-name-row">
-              <p class="project-name">Motion Capture → PX4 Pipelines</p>
+              <div class="project-name-group">
+                <span class="project-number">02</span>
+                <p class="project-name">Motion Capture → PX4 Pipelines</p>
+              </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
@@ -831,13 +805,73 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
+              <span class="project-tag">Quarto</span>
+              <span class="project-tag">LaTeX</span>
+              <span class="project-tag">Tools</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">03</span>
+                <p class="project-name">QuartoCV</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Build once, reuse everywhere</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Shared sections</div>
+                <div class="project-preview-line">Incremental PDF rebuilds</div>
+                <div class="project-preview-line">Academic + consulting styles</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Quarto</span>
+                <span class="project-preview-metric">XeLaTeX</span>
+                <span class="project-preview-metric">Make</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
+            </p>
+            <ul class="project-detail-list">
+              <li>One source section can feed multiple document variants.</li>
+              <li>Dependency-aware incremental builds keep edits fast.</li>
+              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
               <span class="project-tag">Control</span>
               <span class="project-tag">Python</span>
               <span class="project-tag">JAX</span>
               <span class="project-tag">Research</span>
             </div>
             <div class="project-name-row">
-              <p class="project-name">Newton-Raphson Flow for PX4</p>
+              <div class="project-name-group">
+                <span class="project-number">04</span>
+                <p class="project-name">Newton-Raphson Flow for PX4</p>
+              </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
@@ -892,7 +926,10 @@ ul.task-list li input[type="checkbox"] {
               <span class="project-tag">Research</span>
             </div>
             <div class="project-name-row">
-              <p class="project-name">NMPC Acados PX4</p>
+              <div class="project-name-group">
+                <span class="project-number">05</span>
+                <p class="project-name">NMPC Acados PX4</p>
+              </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
@@ -942,11 +979,72 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
+              <span class="project-tag">Safety</span>
+              <span class="project-tag">Formal Methods</span>
+              <span class="project-tag">Hybrid Systems</span>
+              <span class="project-tag">Research</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">06</span>
+                <p class="project-name">Interval STL Runtime Assurance</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              Runtime assurance for uncertain systems using interval signal temporal logic, focused on reasoning about temporal specifications under bounded uncertainty.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">NAHS 2025 submission</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Interval Signal Temporal Logic</div>
+                <div class="project-preview-line">Uncertain nonlinear systems</div>
+                <div class="project-preview-line">Runtime assurance guarantees</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">iSTL</span>
+                <span class="project-preview-metric">NAHS</span>
+                <span class="project-preview-metric">Safety</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              This project studies how to certify uncertain system behavior against temporal logic requirements without collapsing everything into worst-case conservatism. The core idea is to use interval signal temporal logic to reason directly about bounded uncertainty and preserve meaningful runtime-assurance guarantees.
+            </p>
+            <ul class="project-detail-list">
+              <li>Targets uncertain systems where temporal requirements matter, not just pointwise state constraints.</li>
+              <li>Builds on interval reasoning to keep guarantees interpretable under bounded uncertainty.</li>
+              <li>Represents the formal-methods side of the same safe-autonomy thread that shows up in the planning and control work.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/nahs/">Open Project Page</a>
+            <a class="project-action" href="../publications/">Publications ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
               <span class="project-tag">Quarto</span>
               <span class="project-tag">Tools</span>
             </div>
             <div class="project-name-row">
-              <p class="project-name">Quarto Georgia Tech Slides</p>
+              <div class="project-name-group">
+                <span class="project-number">07</span>
+                <p class="project-name">Quarto Georgia Tech Slides</p>
+              </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">

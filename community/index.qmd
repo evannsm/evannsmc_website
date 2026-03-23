@@ -478,14 +478,14 @@ title-block-banner: true
           </article>
 
           <article class="event-card">
-            <p class="event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC</p>
+            <p class="event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC Building</p>
             <ul class="event-list">
               <li>Prepared questions and participant gifts.</li>
             </ul>
           </article>
 
           <article class="event-card">
-            <p class="event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda</p>
+            <p class="event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda Building</p>
             <ul class="event-list">
               <li>Funding request for $200.</li>
               <li>Dominoes, Papi's Cuban catered empanadas, prizes.</li>
@@ -501,7 +501,7 @@ title-block-banner: true
           </article>
 
           <article class="event-card">
-            <p class="event-title">Movie Night · Noviembre 13 · 7pm · The Connector</p>
+            <p class="event-title">Movie Night · Noviembre 13 · 7pm · The Connector Apt</p>
             <ul class="event-list">
               <li>Reserved the big screen on the 7th floor.</li>
               <li>Puerto Rican film, popcorn, snacks.</li>
@@ -509,19 +509,13 @@ title-block-banner: true
           </article>
 
           <article class="event-card">
-            <p class="event-title">Taller Coquito · Noviembre · 7pm · TBD apartment</p>
+            <p class="event-title">Taller Coquito · Noviembre · 7pm · The Standard Apt</p>
             <ul class="event-list">
               <li>Leche evaporada, leche condensada, crema de coco, canela molida, vainilla.</li>
               <li>Glass bottles so people could take home the coquito they made.</li>
             </ul>
           </article>
 
-          <article class="event-card">
-            <p class="event-title">Coffee/Chocolate Event with BRASA · TBD</p>
-            <ul class="event-list">
-              <li>Planned collaboration event with BRASA.</li>
-            </ul>
-          </article>
         </div>
 
         <div class="season-block">
@@ -530,28 +524,28 @@ title-block-banner: true
           </div>
 
           <article class="event-card">
-            <p class="event-title">Resume Review Workshop · January 22, 2026</p>
+            <p class="event-title">Resume Review Workshop · Enero 22, 2026 · Crossland 2157</p>
             <ul class="event-list">
               <li>Professional-development event focused on strengthening resumes and preparing members for internship and full-time applications.</li>
             </ul>
           </article>
 
           <article class="event-card">
-            <p class="event-title">Cafezinho com Brasa · January 29, 2026</p>
+            <p class="event-title">Cafezinho com Brasa · Enero 29, 2026 · The Connector 7th Floor</p>
             <ul class="event-list">
               <li>Joint social event with the Brazilian student organization to socialize and taste-test coffees from each other's countries.</li>
             </ul>
           </article>
 
           <article class="event-card">
-            <p class="event-title">Joint General Body Meeting with ALPFA and Cisco · February 3, 2026</p>
+            <p class="event-title">Joint General Body Meeting with ALPFA and Cisco · Febrero 3, 2026 · Scheller 300</p>
             <ul class="event-list">
               <li>Collaborative event with ALPFA where we hosted recruiters from Cisco.</li>
             </ul>
           </article>
 
           <article class="event-card">
-            <p class="event-title">World Baseball Classic Watch Party · March 6, 2026</p>
+            <p class="event-title">World Baseball Classic Watch Party · Marzo 6, 2026 · Inspire Apt</p>
             <ul class="event-list">
               <li>Watched Team Puerto Rico take on Colombia together and turned it into a community hangout around baseball and home-team energy.</li>
             </ul>
