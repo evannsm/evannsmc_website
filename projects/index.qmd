@@ -10,10 +10,14 @@ title-block-banner: true
   display: none;
 }
 
-/* Tighter padding for 2-column layout */
+/* Wider layout for 2-column projects */
+.page-columns {
+  grid-template-columns: [screen-start] 1rem [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 1rem [screen-end] !important;
+}
+
 main.content.column-page {
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 :root {
