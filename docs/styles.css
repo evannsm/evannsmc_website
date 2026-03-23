@@ -1,8 +1,8 @@
 /* css styles */
 
-/* ── Dark side margins (light mode only) ── */
+/* ── Warm beige side margins (light mode only) ── */
 body.quarto-light {
-  background-color: #1a1a1a;
+  background-color: #e8ddd3;
 }
 
 body.quarto-light #quarto-content {
