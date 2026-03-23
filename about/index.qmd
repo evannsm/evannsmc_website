@@ -418,7 +418,7 @@ title-block-banner: true
     <div>
       <p class="origin-title">Puerto Rico</p>
       <p class="origin-copy">
-        I was born and raised on the island until I was 9. Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters to me.
+        Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters to me.
       </p>
     </div>
   </div>
