@@ -26,7 +26,7 @@ page-layout: full
             <img src="./files/about/Georgia_Tech_Yellow_Jackets_logo.svg.png" alt="Georgia Tech logo" class="home-meta-logo">
             <div>
               <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
-              <p class="home-meta-subtle">Advised by Dr. Sam Coogan · 4.0 GPA · Summa Cum Laude · Publish in top Conferences and Journals in the fields of robotics and control theory · Aug 2022 - Present</p>
+              <p class="home-meta-subtle">Advised by Dr. Sam Coogan · 4.0 GPA · Summa Cum Laude · Deploy Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
@@ -79,7 +79,8 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
 <a class="home-latest-project" href="./projects/rtd-rax/">
   <div class="home-latest-project-copy">
     <!-- <p class="home-snapshot-kicker">My latest project</p> -->
-    <p class="home-latest-project-title">'RTD-RAX.'</p>
+    <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
+    <!-- <p class="home-latest-project-title">'RTD-RAX.'</p> -->
     <p class="home-latest-project-text">
       Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
       RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
