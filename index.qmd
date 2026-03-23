@@ -30,7 +30,7 @@ page-layout: full
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
-          <span class="home-meta-badge">Ph.D. under Dr. Samuel Coogan, Eckman Award recipient</span>
+          <span class="home-meta-badge">Ph.D. under <a href="https://scholar.google.com/citations?user=jVFH7asAAAAJ" target="_blank">Dr. Samuel Coogan</a>, Eckman Award recipient</span>
         </div>
         <div class="home-meta-card">
           <div class="home-meta-card-header">
@@ -40,7 +40,9 @@ page-layout: full
               <p class="home-meta-subtle">Summa Cum Laude · Minors in Math & Physics · Certificate in Unmanned Vehicle Systems</p>
             </div>
           </div>
-          <span class="home-meta-badge">Mentored by <a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a> — world #1 in Optimal Control & Reinforcement Learning, Top 1% Cited Researcher in the World</span>
+          <span class="home-meta-badge">Mentored by <a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a></span>
+          <span class="home-meta-badge">World #1 in Optimal Control & Reinforcement Learning</span>
+          <span class="home-meta-badge">Top 1% Cited Researcher in the World</span>
         </div>
       </div>
       <div class="home-contact-list">
@@ -117,7 +119,7 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
       <p class="home-snapshot-kicker">Community</p>
       <p class="home-snapshot-title">BORI matters as much as the research.</p>
       <p class="home-snapshot-copy">
-        At Georgia Tech I helped co-found BORI to make campus feel more welcoming and culturally familiar for Puerto Rican students.
+        At Georgia Tech I helped co-found "BORI" to provide a welcoming place for Puerto Rican students and promote our culture across campus.
       </p>
     </div>
   </div>
