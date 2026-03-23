@@ -6,6 +6,7 @@ project:
     - CNAME
     - overleaf_presentations
     - files/site_icon/apple-touch-icon.png
+    - files/about/PR_flag_island.png
     - googleffaf8e4b1a20676c.html
 
 website:
@@ -34,6 +35,8 @@ website:
         text: Research Blog
       - href: about
         text: About Me
+      - href: journey
+        text: Journey
       - href: community
         text: Community & Hobbies
 

@@ -1,0 +1,480 @@
+---
+title: "Journey"
+page-layout: full
+title-block-banner: true
+---
+
+```{=html}
+<style>
+#title-block-header {
+  display: none;
+}
+
+:root {
+  --journey-accent: #2563eb;
+  --journey-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --journey-text-secondary: var(--bs-secondary-color, #57534e);
+  --journey-border: var(--bs-border-color, #e7e5e4);
+  --journey-map-water: rgba(37, 99, 235, 0.06);
+  --journey-map-land: rgba(148, 163, 184, 0.18);
+  --journey-map-stroke: rgba(100, 116, 139, 0.4);
+}
+
+.journey-page {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.journey-kicker,
+.journey-sidebar-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.journey-kicker {
+  margin: 0 0 0.5rem;
+  color: var(--journey-accent);
+}
+
+.journey-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.journey-intro {
+  max-width: 38rem;
+  margin: 0 0 2rem;
+  color: var(--journey-text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.journey-layout {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr) 17rem;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.journey-panel,
+.journey-sidebar,
+.timeline-stop {
+  border: 1px solid var(--journey-border);
+  border-radius: 1.25rem;
+  background: var(--journey-bg-secondary);
+}
+
+.journey-detail {
+  padding: 1.35rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.journey-detail-year {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.journey-detail-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.journey-detail-role {
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.journey-detail-copy {
+  margin: 0;
+  color: var(--journey-text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.journey-map-panel {
+  padding: 1rem;
+}
+
+.journey-map-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02));
+  border: 1px solid rgba(100, 116, 139, 0.16);
+}
+
+.journey-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.journey-map-caption {
+  margin: 0.75rem 0 0;
+  color: var(--journey-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.map-grid line {
+  stroke: rgba(100, 116, 139, 0.12);
+  stroke-width: 1;
+}
+
+.map-landmass {
+  fill: var(--journey-map-land);
+  stroke: var(--journey-map-stroke);
+  stroke-width: 2;
+}
+
+.map-region {
+  fill: transparent;
+  stroke: transparent;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.map-region.is-active {
+  opacity: 1;
+  fill: var(--stop-tint);
+  stroke: var(--stop-color);
+  stroke-width: 2;
+}
+
+.route-line {
+  fill: none;
+  stroke: rgba(100, 116, 139, 0.45);
+  stroke-width: 2.5;
+  stroke-dasharray: 10 8;
+  stroke-linecap: round;
+}
+
+.map-stop {
+  cursor: pointer;
+  outline: none;
+}
+
+.map-stop .stop-ring {
+  fill: transparent;
+  stroke: var(--stop-color);
+  stroke-width: 2;
+  opacity: 0.35;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.map-stop .stop-core {
+  fill: var(--stop-color);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.map-stop .stop-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: currentColor;
+}
+
+.map-stop .stop-subtitle {
+  font-size: 10px;
+  fill: var(--journey-text-secondary);
+}
+
+.map-stop.is-active .stop-ring,
+.map-stop:hover .stop-ring,
+.map-stop:focus .stop-ring {
+  opacity: 0.75;
+}
+
+.journey-sidebar {
+  padding: 1rem;
+}
+
+.journey-sidebar-heading {
+  color: var(--journey-text-secondary);
+  margin: 0 0 0.8rem;
+}
+
+.journey-stops {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.timeline-stop {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.timeline-stop.is-active {
+  border-color: var(--stop-color);
+  background: var(--stop-tint);
+}
+
+.timeline-topline {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--stop-color);
+}
+
+.timeline-city {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.timeline-label,
+.timeline-year {
+  margin: 0;
+  color: var(--journey-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 1080px) {
+  .journey-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .journey-sidebar {
+    order: 3;
+  }
+
+  .journey-detail {
+    order: 1;
+  }
+
+  .journey-map-panel {
+    order: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .journey-page {
+    padding: 2.5rem 1rem 4rem;
+  }
+
+  .journey-map-panel {
+    padding: 0.75rem;
+  }
+}
+</style>
+
+<div class="journey-page">
+  <p class="journey-kicker">Journey</p>
+  <p class="journey-title">From Puerto Rico to the lab.</p>
+  <p class="journey-intro">
+    This now follows the same structure as your friend's site: a dedicated Journey page with a map, a focused detail card, and a clickable timeline. Click a marker or stop to shift the spotlight.
+  </p>
+
+  <div class="journey-layout">
+    <aside class="journey-panel journey-detail" id="journey-detail">
+      <p class="journey-detail-year" id="journey-detail-year">Where it all began</p>
+      <p class="journey-detail-title" id="journey-detail-title">Puerto Rico</p>
+      <p class="journey-detail-role" id="journey-detail-role">Home, culture, and resilience</p>
+      <p class="journey-detail-copy" id="journey-detail-copy">
+        Growing up on the island gave me community, identity, and the kind of resilience that still shapes how I work. It is the reason BORI mattered enough to build once I got to Georgia Tech.
+      </p>
+    </aside>
+
+    <div class="journey-panel journey-map-panel">
+      <div class="journey-map-frame">
+        <svg class="journey-map" viewBox="0 0 960 540" role="img" aria-labelledby="journey-map-title">
+          <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, and Atlanta</title>
+
+          <g class="map-grid" aria-hidden="true">
+            <line x1="120" y1="70" x2="120" y2="460"></line>
+            <line x1="240" y1="70" x2="240" y2="460"></line>
+            <line x1="360" y1="70" x2="360" y2="460"></line>
+            <line x1="480" y1="70" x2="480" y2="460"></line>
+            <line x1="600" y1="70" x2="600" y2="460"></line>
+            <line x1="720" y1="70" x2="720" y2="460"></line>
+            <line x1="840" y1="70" x2="840" y2="460"></line>
+            <line x1="80" y1="110" x2="900" y2="110"></line>
+            <line x1="80" y1="190" x2="900" y2="190"></line>
+            <line x1="80" y1="270" x2="900" y2="270"></line>
+            <line x1="80" y1="350" x2="900" y2="350"></line>
+            <line x1="80" y1="430" x2="900" y2="430"></line>
+          </g>
+
+          <path
+            class="map-landmass"
+            d="M100 95 C96 154 108 201 145 238 C178 272 232 313 304 332 C354 345 404 365 447 392 C481 413 529 418 567 402 C607 386 638 357 646 317 C652 287 642 255 617 226 C602 208 592 183 598 156 C606 119 653 92 705 102 C744 109 785 137 805 171 C821 197 842 209 870 214 C889 218 903 232 900 249 C892 281 858 307 814 312 C773 316 737 326 714 342 C689 361 653 369 614 362 C575 355 545 340 516 317 C490 297 459 285 420 279 C381 273 347 264 318 246 C286 227 251 220 223 231 C194 242 171 236 153 214 C133 190 123 164 117 129 C115 114 109 103 100 95 Z"
+          ></path>
+
+          <path class="map-region" id="region-uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.2);" d="M274 244 L334 252 L360 286 L346 322 L306 338 L271 308 L274 271 Z"></path>
+          <path class="map-region" id="region-gt" style="--stop-color:#b3a369; --stop-tint:rgba(179, 163, 105, 0.24);" d="M463 239 L516 237 L532 262 L516 291 L479 287 L462 260 Z"></path>
+          <path class="map-region" id="region-pr" style="--stop-color:#ef4444; --stop-tint:rgba(239, 68, 68, 0.22);" d="M744 390 C757 380 780 378 796 388 C808 397 808 410 793 417 C775 426 748 421 739 406 C735 399 737 395 744 390 Z"></path>
+
+          <path class="route-line" d="M768 398 C664 355 462 314 319 286"></path>
+          <path class="route-line" d="M319 286 C385 242 452 223 497 260"></path>
+
+          <g class="map-stop is-active" data-stop="pr" tabindex="0" role="button" aria-label="Focus Puerto Rico" style="--stop-color:#ef4444;">
+            <circle class="stop-ring" cx="768" cy="398" r="18"></circle>
+            <circle class="stop-core" cx="768" cy="398" r="7"></circle>
+            <text class="stop-label" x="768" y="373" text-anchor="middle">Puerto Rico</text>
+            <text class="stop-subtitle" x="768" y="386" text-anchor="middle">Where it all began</text>
+          </g>
+
+          <g class="map-stop" data-stop="uta" tabindex="0" role="button" aria-label="Focus Arlington, Texas" style="--stop-color:#f97316;">
+            <circle class="stop-ring" cx="319" cy="286" r="18"></circle>
+            <circle class="stop-core" cx="319" cy="286" r="7"></circle>
+            <text class="stop-label" x="319" y="258" text-anchor="middle">Arlington</text>
+            <text class="stop-subtitle" x="319" y="271" text-anchor="middle">UT Arlington</text>
+          </g>
+
+          <g class="map-stop" data-stop="gt" tabindex="0" role="button" aria-label="Focus Atlanta, Georgia" style="--stop-color:#b3a369;">
+            <circle class="stop-ring" cx="497" cy="260" r="18"></circle>
+            <circle class="stop-core" cx="497" cy="260" r="7"></circle>
+            <text class="stop-label" x="548" y="244" text-anchor="start">Atlanta</text>
+            <text class="stop-subtitle" x="548" y="257" text-anchor="start">Georgia Tech</text>
+          </g>
+        </svg>
+      </div>
+      <p class="journey-map-caption">Puerto Rico - Arlington - Atlanta. A simpler Quarto implementation, but now the page behaves like a map-based Journey tab rather than a plain vertical timeline.</p>
+    </div>
+
+    <aside class="journey-sidebar">
+      <p class="journey-sidebar-heading">Timeline</p>
+      <div class="journey-stops">
+        <button class="timeline-stop is-active" data-stop="pr" style="--stop-color:#ef4444; --stop-tint:rgba(239, 68, 68, 0.1);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <p class="timeline-city">Puerto Rico</p>
+          </div>
+          <p class="timeline-label">Home base</p>
+          <p class="timeline-year">Before college</p>
+        </button>
+
+        <button class="timeline-stop" data-stop="uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.1);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <p class="timeline-city">Arlington, TX</p>
+          </div>
+          <p class="timeline-label">UT Arlington</p>
+          <p class="timeline-year">Aug 2018 - May 2022</p>
+        </button>
+
+        <button class="timeline-stop" data-stop="gt" style="--stop-color:#b3a369; --stop-tint:rgba(179, 163, 105, 0.14);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <p class="timeline-city">Atlanta, GA</p>
+          </div>
+          <p class="timeline-label">Georgia Tech</p>
+          <p class="timeline-year">Aug 2022 - Present</p>
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var stops = {
+    pr: {
+      year: 'Where it all began',
+      title: 'Puerto Rico',
+      role: 'Home, culture, and resilience',
+      copy: 'Growing up on the island gave me community, identity, and the kind of resilience that still shapes how I work. It is the reason BORI mattered enough to build once I got to Georgia Tech.',
+      color: '#ef4444',
+      tint: 'rgba(239, 68, 68, 0.1)'
+    },
+    uta: {
+      year: 'Aug 2018 - May 2022',
+      title: 'Arlington, TX - UT Arlington',
+      role: 'Honors B.S. in Electrical Engineering',
+      copy: 'UTA is where I built the formal engineering foundation. I graduated summa cum laude, added minors in math and physics, and got my start in research through the Wan and Lewis labs.',
+      color: '#f97316',
+      tint: 'rgba(249, 115, 22, 0.1)'
+    },
+    gt: {
+      year: 'Aug 2022 - Present',
+      title: 'Atlanta, GA - Georgia Tech',
+      role: 'Ph.D. in Robotics, FACTS Lab',
+      copy: 'Georgia Tech is where the work became both more theoretical and more personal: safe autonomy research, quadrotor hardware, teaching in robotics, and co-founding BORI to build Puerto Rican community on campus.',
+      color: '#b3a369',
+      tint: 'rgba(179, 163, 105, 0.14)'
+    }
+  };
+
+  var detail = document.getElementById('journey-detail');
+  var detailYear = document.getElementById('journey-detail-year');
+  var detailTitle = document.getElementById('journey-detail-title');
+  var detailRole = document.getElementById('journey-detail-role');
+  var detailCopy = document.getElementById('journey-detail-copy');
+  var timelineStops = Array.prototype.slice.call(document.querySelectorAll('.timeline-stop'));
+  var mapStops = Array.prototype.slice.call(document.querySelectorAll('.map-stop'));
+  var mapRegions = {
+    pr: document.getElementById('region-pr'),
+    uta: document.getElementById('region-uta'),
+    gt: document.getElementById('region-gt')
+  };
+
+  function setActive(id) {
+    var stop = stops[id];
+    if (!stop) return;
+
+    detailYear.textContent = stop.year;
+    detailTitle.textContent = stop.title;
+    detailRole.textContent = stop.role;
+    detailCopy.textContent = stop.copy;
+    detail.style.borderColor = stop.color;
+    detail.style.backgroundColor = stop.tint;
+
+    timelineStops.forEach(function (button) {
+      button.classList.toggle('is-active', button.getAttribute('data-stop') === id);
+    });
+
+    mapStops.forEach(function (marker) {
+      marker.classList.toggle('is-active', marker.getAttribute('data-stop') === id);
+    });
+
+    Object.keys(mapRegions).forEach(function (key) {
+      mapRegions[key].classList.toggle('is-active', key === id);
+    });
+  }
+
+  timelineStops.forEach(function (button) {
+    button.addEventListener('click', function () {
+      setActive(button.getAttribute('data-stop'));
+    });
+  });
+
+  mapStops.forEach(function (marker) {
+    marker.addEventListener('click', function () {
+      setActive(marker.getAttribute('data-stop'));
+    });
+
+    marker.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setActive(marker.getAttribute('data-stop'));
+      }
+    });
+  });
+
+  setActive('pr');
+});
+</script>
+```
