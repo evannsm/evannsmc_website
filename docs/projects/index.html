@@ -752,6 +752,64 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
+              <span class="project-tag">Control</span>
+              <span class="project-tag">Python</span>
+              <span class="project-tag">Research</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">02</span>
+                <p class="project-name">NMPC Acados PX4</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A clean NMPC baseline for quadrotor research built around Acados and QPOASES, with a full ROS 2 interface and real-time-ready generated code.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Custom NMPC Implementation</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Fast Computation</div>
+                <div class="project-preview-line">Aggressive Trajectory Control</div>
+                <div class="project-preview-line">Smart, De-Coupled Yaw Tracking</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Acados</span>
+                <span class="project-preview-metric">QPOASES</span>
+                <span class="project-preview-metric">ROS 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              This controller served as the main comparison baseline for the Newton-Raphson Flow work. It is a solid reference implementation if you want a rigorous NMPC starting point rather than a highly specialized demo.
+            </p>
+            <ul class="project-detail-list">
+              <li>Jointly tracks position, velocity, and Euler angles.</li>
+              <li>Handles wrapped yaw error correctly.</li>
+              <li>Uses hard thrust and body-rate constraints with a clean command-line interface.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/nmpc-acados/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
               <span class="project-tag">Safety</span>
               <span class="project-tag">Formal Methods</span>
               <span class="project-tag">Hybrid Systems</span>
@@ -759,7 +817,7 @@ ul.task-list li input[type="checkbox"] {
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">02</span>
+                <span class="project-number">03</span>
                 <p class="project-name">Interval STL Runtime Assurance</p>
               </div>
               <span class="project-toggle"></span>
@@ -818,7 +876,7 @@ ul.task-list li input[type="checkbox"] {
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">03</span>
+                <span class="project-number">04</span>
                 <p class="project-name">Newton-Raphson Flow for PX4</p>
               </div>
               <span class="project-toggle"></span>
