@@ -427,7 +427,7 @@ main.content.column-page {
       </div>
       <p class="journey-detail-role" id="journey-detail-role">Home, culture, and resilience</p>
       <p class="journey-detail-copy" id="journey-detail-copy">
-        Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.
+        My upbringing in Puerto Rico and as an immigrant in Texas shaped my values, my drive, and my sense of community. It still grounds the work I care about most.
       </p>
     </aside>
 

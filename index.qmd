@@ -103,7 +103,7 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
       <p class="home-snapshot-kicker">Roots</p>
       <p class="home-snapshot-title">Puerto Rico is still central.</p>
       <p class="home-snapshot-copy">
-        I was born and raised in Puerto Rico until I was 9, and that sense of home still shapes how I think about culture, belonging, and community.
+        Born in Puerto Rico, my sense of home still shapes how I think about culture, belonging, and community.
       </p>
     </div>
     <div class="home-snapshot-card">
