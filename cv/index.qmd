@@ -132,8 +132,10 @@ title-block-banner: true
 </style>
 
 <div class="cv-shell">
-  <!-- <p class="cv-kicker">CV & Résumé</p> -->
-  <p class="cv-title">CV & Documents.</p>
+  <p class="cv-kicker">CV & Résumé.</p>
+  <!-- <p class="cv-title">My Professional History.</p> -->
+  <p class="cv-title">A Record of My Work.</p>
+
   <p class="cv-intro">
     Last updated March 2026. View inline or download as PDF.
   </p>

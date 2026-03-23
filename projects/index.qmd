@@ -22,7 +22,7 @@ main.content.column-page {
 
 :root {
   --projects-accent: #2563eb;
-  --projects-bg-secondary: #eae8e6;
+  --projects-bg-secondary: #e8eef8;
   --projects-text-secondary: var(--bs-secondary-color, #57534e);
   --projects-border: #a8a4a0;
 }
