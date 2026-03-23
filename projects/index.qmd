@@ -352,7 +352,7 @@ title-block-banner: true
             </p>
           </div>
           <div class="project-preview-panel rtd-preview">
-            <img src="../projects/rtd-rax/gap_compare.gif" alt="RTD-RAX gap scenario animation">
+            <img src="../projects/rtd-rax/angled_repair_view_two_repairs.gif" alt="RTD-RAX angled obstacles with repair animation">
           </div>
         </div>
       </summary>
