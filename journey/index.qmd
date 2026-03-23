@@ -11,7 +11,7 @@ title-block-banner: true
 }
 
 #quarto-document-content.column-page {
-  max-width: min(98vw, 95rem) !important;
+  max-width: min(98vw, 120rem) !important;
 }
 
 :root {
@@ -24,7 +24,7 @@ title-block-banner: true
 }
 
 .journey-page {
-  max-width: 1520px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 5rem;
 }
@@ -89,8 +89,8 @@ title-block-banner: true
 }
 
 .journey-detail {
-  flex: 0 0 12.5rem;
-  max-width: 12.5rem;
+  flex: 0 0 11rem;
+  max-width: 11rem;
   padding: 1.25rem;
   min-height: 0;
   align-self: start;
@@ -152,6 +152,7 @@ title-block-banner: true
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
+  min-height: 800px;
   border: 1px solid rgba(100, 116, 139, 0.18);
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
@@ -230,8 +231,8 @@ title-block-banner: true
 }
 
 .journey-sidebar {
-  flex: 0 0 13.5rem;
-  max-width: 13.5rem;
+  flex: 0 0 12rem;
+  max-width: 12rem;
   padding: 0.1rem 0 0;
 }
 
@@ -434,7 +435,7 @@ title-block-banner: true
         <svg
           class="journey-map-svg"
           id="journey-map-svg"
-          viewBox="0 0 1120 800"
+          viewBox="0 0 1120 1000"
           role="img"
           aria-labelledby="journey-map-title"
         >
@@ -511,10 +512,10 @@ title-block-banner: true
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var WIDTH = 1120;
-  var HEIGHT = 800;
+  var HEIGHT = 1000;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-84, 34], scale: 950 };
+  var OVERVIEW = { center: [-84, 38], scale: 1500 };
 
   var stops = [
     {
@@ -523,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Home',
       countryId: '630',
       coordinates: [-66.5, 18.2],
-      zoom: { center: [-66.5, 18.2], scale: 2200 },
+      zoom: { center: [-66.5, 18.2], scale: 3200 },
       year: 'Before college',
       role: 'Home, culture, and resilience',
       description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
@@ -541,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'UT Arlington',
       stateName: 'Texas',
       coordinates: [-97.1081, 32.7357],
-      zoom: { center: [-97.1081, 32.7357], scale: 1600 },
+      zoom: { center: [-97.1081, 32.7357], scale: 2200 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering',
       description: 'UT Arlington is where I built the foundation: summa cum laude, minors in mathematics and physics, and early research experience with the Wan and Lewis labs.',
@@ -557,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Georgia Tech',
       stateName: 'Georgia',
       coordinates: [-84.3963, 33.7756],
-      zoom: { center: [-84.3963, 33.7756], scale: 1800 },
+      zoom: { center: [-84.3963, 33.7756], scale: 2600 },
       year: 'Aug 2022 - Present',
       role: 'Ph.D. in Robotics, FACTS Lab',
       description: 'Georgia Tech is home base now: safe autonomy research, nonlinear control for quadrotor UAVs, robotics teaching, and co-founding BORI to build Puerto Rican community on campus.',
@@ -576,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'ACC 2024',
       countryId: '124',
       coordinates: [-79.3832, 43.6532],
-      zoom: { center: [-79.3832, 43.6532], scale: 1900 },
+      zoom: { center: [-79.3832, 43.6532], scale: 2800 },
       year: '2024',
       role: 'Presented ACC paper in Toronto',
       description: 'I presented my paper, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control," at the 2024 American Control Conference in Toronto.',
@@ -592,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Sandia',
       stateName: 'New Mexico',
       coordinates: [-106.6504, 35.0844],
-      zoom: { center: [-106.6504, 35.0844], scale: 1800 },
+      zoom: { center: [-106.6504, 35.0844], scale: 2600 },
       year: 'Summer 2026',
       role: 'Incoming intern at Sandia National Laboratories',
       description: 'This upcoming summer I will be in Albuquerque, New Mexico for an internship at Sandia National Laboratories.',

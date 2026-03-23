@@ -9,13 +9,13 @@
 
 /* Give full-width custom pages more usable room before their own wrappers apply */
 .page-layout-full .column-page {
-  max-width: min(97vw, 95rem) !important;
+  max-width: min(98vw, 120rem) !important;
 }
 
 /* Give the home page's Solana layout more horizontal room as well */
 .quarto-about-solana.column-body {
-  max-width: min(98vw, 90rem) !important;
-  column-gap: clamp(2rem, 4vw, 5rem);
+  max-width: min(98vw, 120rem) !important;
+  column-gap: clamp(2rem, 5vw, 6rem);
 }
 
 .quarto-about-solana .about-entity {
