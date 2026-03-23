@@ -146,6 +146,15 @@ body.quarto-light .footer {
   line-height: 1.8;
 }
 
+.home-edu-heading {
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #2563eb;
+}
+
 .home-meta-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -158,6 +167,42 @@ body.quarto-light .footer {
   border: 1px solid var(--bs-border-color, #dee2e6);
   border-radius: 1rem;
   background: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.03));
+}
+
+.home-meta-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.home-meta-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+}
+
+.home-meta-badge {
+  display: inline-block;
+  margin-top: 0.55rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 0.6rem;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.home-meta-badge a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.home-meta-badge a:hover {
+  opacity: 0.8;
 }
 
 .home-meta-label {

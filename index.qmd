@@ -19,14 +19,26 @@ page-layout: full
       <p class="home-hero-summary">
         I work on safe autonomy for hardware systems, especially quadrotor UAVs, with an emphasis on nonlinear control, trajectory planning, and getting theory to survive contact with real platforms.
       </p>
+      <p class="home-edu-heading">Education</p>
       <div class="home-meta-grid">
         <div class="home-meta-card">
-          <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
-          <p class="home-meta-subtle">FACTS Lab · Aug 2022 - Present</p>
+          <div class="home-meta-card-header">
+            <div>
+              <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
+              <p class="home-meta-subtle">FACTS Lab · Aug 2022 - Present</p>
+            </div>
+          </div>
+          <span class="home-meta-badge">#2 Public EE Program in the U.S.</span>
         </div>
-        <div class="home-meta-card home-meta-card-education">
-          <p class="home-meta-value">Honors B.S. in Electrical Engineering · University of Texas</p>
-          <p class="home-meta-subtle">Minors in Mathematics and Physics · Summa Cum Laude</p>
+        <div class="home-meta-card">
+          <div class="home-meta-card-header">
+            <img src="./files/about/UTA_logomark.png" alt="UT Arlington logo" class="home-meta-logo">
+            <div>
+              <p class="home-meta-value">Honors B.S. in EE · UT Arlington</p>
+              <p class="home-meta-subtle">Summa Cum Laude · Minors in Math & Physics</p>
+            </div>
+          </div>
+          <span class="home-meta-badge">Mentored by <a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a> — world #1 in Optimal Control & RL</span>
         </div>
       </div>
       <div class="home-contact-list">
