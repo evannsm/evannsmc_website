@@ -114,19 +114,9 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="About Me – evannsmc">
-<meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
-<meta property="og:image" content="https://evannsmc.com/about/writers_block.png">
 <meta property="og:site_name" content="evannsmc">
-<meta property="og:image:alt" content="Writers Block">
-<meta property="og:image:height" content="1024">
-<meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="About Me – evannsmc">
-<meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
-<meta name="twitter:image" content="https://evannsmc.com/about/writers_block.png">
-<meta name="twitter:image:alt" content="Writers Block">
-<meta name="twitter:image-height" content="1024">
-<meta name="twitter:image-width" content="1024">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -376,8 +366,271 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>No time to write I’m spending quality time with my writer’s block.</p>
-<p><img src="writers_block.png" alt="Writers Block" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"></p>
+<style>
+/* ── Shared accent ── */
+:root {
+  --about-accent: #2563eb;
+  --about-accent-light: #60a5fa;
+}
+
+/* ── Container ── */
+.about-wrap {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ── Section headings ── */
+.about-section-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bs-secondary-color, #6c757d);
+  margin-bottom: 1.25rem;
+  margin-top: 3rem;
+}
+
+/* ── Where I'm From card ── */
+.origin-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  background: var(--bs-tertiary-bg, rgba(0,0,0,0.02));
+}
+.origin-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.origin-card h3 { margin-bottom: 0.4rem; }
+.origin-card p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--bs-secondary-color, #6c757d);
+  margin: 0;
+}
+
+/* ── Languages progress bars ── */
+.lang-bar-container { margin-bottom: 1rem; }
+.lang-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+.lang-name { font-weight: 600; font-size: 0.95rem; }
+.lang-level {
+  font-size: 0.82rem;
+  color: var(--bs-secondary-color, #6c757d);
+}
+.lang-bar-track {
+  height: 0.45rem;
+  border-radius: 1rem;
+  background: var(--bs-tertiary-bg, rgba(0,0,0,0.08));
+  overflow: hidden;
+}
+.lang-bar-fill {
+  height: 100%;
+  border-radius: 1rem;
+  background: var(--about-accent);
+  width: 0%;
+  transition: width 1s ease-out;
+}
+
+/* ── Interests tags ── */
+.interests-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.interest-tag {
+  padding: 0.45rem 1rem;
+  border-radius: 2rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--bs-secondary-color, #6c757d);
+  background: transparent;
+  transition: border-color 0.2s, color 0.2s;
+  cursor: default;
+}
+.interest-tag:hover {
+  border-color: var(--about-accent);
+  color: var(--about-accent);
+}
+
+/* ── Journey timeline ── */
+.journey-timeline {
+  position: relative;
+  padding-left: 2.5rem;
+  margin-top: 1rem;
+}
+.journey-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--bs-border-color, #dee2e6);
+}
+.journey-stop {
+  position: relative;
+  margin-bottom: 2.25rem;
+}
+.journey-stop:last-child { margin-bottom: 0; }
+
+/* Dot on timeline */
+.journey-stop::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 0.3rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid var(--bs-body-bg, #fff);
+  box-sizing: border-box;
+}
+.journey-stop[data-color="red"]::before    { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
+.journey-stop[data-color="orange"]::before { background: #f97316; box-shadow: 0 0 0 2px #f97316; }
+.journey-stop[data-color="green"]::before  { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
+
+.journey-stop h4 {
+  margin: 0 0 0.15rem 0;
+  font-size: 1.05rem;
+}
+.journey-year {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--about-accent);
+  margin-bottom: 0.15rem;
+}
+.journey-role {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+.journey-desc {
+  font-size: 0.9rem;
+  color: var(--bs-secondary-color, #6c757d);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+  .origin-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+<div class="about-wrap">
+<p>Beyond the research papers and lab work, here’s a bit more about who I am, where I come from, and the path that brought me here.</p>
+<!-- ─── WHERE I'M FROM ─── -->
+<p class="about-section-heading">
+Where I’m From
+</p>
+<div class="origin-card">
+<div class="origin-emoji">
+🇵🇷
+</div>
+<div>
+<pre><code>&lt;h3&gt;Puerto Rico&lt;/h3&gt;
+&lt;p&gt;
+  Born and raised on the island. Puerto Rico shaped my values, my drive, and my identity.
+  It's a big part of why I co-founded &lt;strong&gt;BORI (Boricuas Organized for Impact)&lt;/strong&gt; at Georgia Tech — to make sure Puerto Rican students feel at home and stay connected to our culture, even far from the island.
+&lt;/p&gt;</code></pre>
+</div>
+</div>
+<!-- ─── JOURNEY ─── -->
+<p class="about-section-heading">
+Journey
+</p>
+<div class="journey-timeline">
+<div class="journey-stop" data-color="red">
+<pre><code>&lt;h4&gt;Puerto Rico 🇵🇷&lt;/h4&gt;
+&lt;div class="journey-year"&gt;Where it all began&lt;/div&gt;
+&lt;p class="journey-desc"&gt;
+  Growing up on the island gave me community, culture, and resilience.
+  It set the foundation for everything that came next.
+&lt;/p&gt;</code></pre>
+</div>
+<div class="journey-stop" data-color="orange">
+<pre><code>&lt;h4&gt;Arlington, TX — UT Arlington&lt;/h4&gt;
+&lt;div class="journey-year"&gt;Aug 2018 – May 2022&lt;/div&gt;
+&lt;div class="journey-role"&gt;Honors B.S. in Electrical Engineering · Minors in Math &amp;amp; Physics&lt;/div&gt;
+&lt;p class="journey-desc"&gt;
+  Graduated Summa Cum Laude as a National Merit Scholar and Goizueta Foundation scholar-to-be.
+  Got my start in research through Dr. Yan Wan's Dynamical Networks &amp;amp; Control Lab and Dr. Frank Lewis' Autonomous Systems Lab,
+  where I worked on learning-based path planning for multi-vehicle systems and reinforcement learning applied to quadrotor control.
+&lt;/p&gt;</code></pre>
+</div>
+<div class="journey-stop" data-color="green">
+<pre><code>&lt;h4&gt;Atlanta, GA — Georgia Tech&lt;/h4&gt;
+&lt;div class="journey-year"&gt;Aug 2022 – Present&lt;/div&gt;
+&lt;div class="journey-role"&gt;Ph.D. in Robotics · FACTS Lab · Advisor: Dr. Samuel Coogan&lt;/div&gt;
+&lt;p class="journey-desc"&gt;
+  Currently pursuing my doctorate as a Goizueta Fellow, researching safe autonomy and nonlinear control for quadrotor UAVs.
+  I also co-founded BORI, TA the Vertically Integrated Project in Robotics, and try to walk the tightrope between theory and hardware implementation every day.
+&lt;/p&gt;</code></pre>
+</div>
+</div>
+<!-- ─── LANGUAGES ─── -->
+<p class="about-section-heading">
+Languages
+</p>
+<div id="lang-bars">
+<div class="lang-bar-container">
+<pre><code>&lt;div class="lang-bar-header"&gt;
+  &lt;span class="lang-name"&gt;Spanish&lt;/span&gt;
+  &lt;span class="lang-level"&gt;Native&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class="lang-bar-track"&gt;
+  &lt;div class="lang-bar-fill" data-pct="100"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<div class="lang-bar-container">
+<pre><code>&lt;div class="lang-bar-header"&gt;
+  &lt;span class="lang-name"&gt;English&lt;/span&gt;
+  &lt;span class="lang-level"&gt;Native&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class="lang-bar-track"&gt;
+  &lt;div class="lang-bar-fill" data-pct="100"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<!-- ─── INTERESTS ─── -->
+<p class="about-section-heading">
+Interests
+</p>
+<div class="interests-grid">
+<p><span class="interest-tag">Safe Autonomy</span> <span class="interest-tag">Quadrotor UAVs</span> <span class="interest-tag">Nonlinear Control</span> <span class="interest-tag">Hardware Deployment</span> <span class="interest-tag">Cooking</span> <span class="interest-tag">Dance</span> <span class="interest-tag">Reading</span> <span class="interest-tag">Community Building</span></p>
+</div>
+</div>
+<script>
+// Animate language bars when they scroll into view
+document.addEventListener('DOMContentLoaded', function () {
+  var bars = document.querySelectorAll('.lang-bar-fill');
+  if (!bars.length) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.width = entry.target.getAttribute('data-pct') + '%';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  bars.forEach(function (bar) { observer.observe(bar); });
+});
+</script>
 
 
 
