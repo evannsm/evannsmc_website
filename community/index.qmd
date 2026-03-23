@@ -125,6 +125,12 @@ title-block-banner: true
   object-fit: cover;
 }
 
+.feature-figure.contain img {
+  object-fit: contain;
+  background: var(--bs-body-bg, #fff);
+  padding: 0.55rem;
+}
+
 .feature-figure figcaption {
   margin-top: 0.45rem;
   color: var(--community-text-secondary);
@@ -135,25 +141,53 @@ title-block-banner: true
 
 .feature-gallery-stack {
   display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
 }
 
 .community-events {
-  padding: 1.6rem;
+  padding: 0;
+  overflow: hidden;
   margin-bottom: 3rem;
 }
 
-.events-grid {
+.events-shell {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: 15rem minmax(0, 1fr);
+}
+
+.events-intro {
+  padding: 1.6rem;
+  border-right: 1px solid var(--community-border);
+}
+
+.events-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.events-scroll {
+  max-height: 34rem;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.season-block + .season-block {
+  margin-top: 1.25rem;
+}
+
+.season-header {
+  margin-bottom: 0.85rem;
 }
 
 .event-card {
-  padding: 1.15rem;
+  padding: 1.05rem;
   border-radius: 1rem;
   border: 1px solid var(--community-border);
   background: var(--bs-body-bg, #fff);
+}
+
+.event-card + .event-card {
+  margin-top: 0.8rem;
 }
 
 .event-season {
@@ -264,9 +298,21 @@ title-block-banner: true
 
 @media (max-width: 980px) {
   .community-feature,
-  .events-grid,
   .hobbies-grid {
     grid-template-columns: 1fr;
+  }
+
+  .events-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .events-intro {
+    border-right: none;
+    border-bottom: 1px solid var(--community-border);
+  }
+
+  .events-scroll {
+    max-height: none;
   }
 }
 
@@ -310,11 +356,11 @@ title-block-banner: true
         <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
       </figure>
       <div class="feature-gallery-stack">
-        <figure class="feature-figure">
+        <figure class="feature-figure contain">
           <img src="../files/BORI/bori_logo.jpg" alt="BORI logo">
           <figcaption>The BORI logo</figcaption>
         </figure>
-        <figure class="feature-figure">
+        <figure class="feature-figure contain">
           <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coquí with Coquito">
           <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
         </figure>
@@ -324,45 +370,153 @@ title-block-banner: true
 
   <p class="community-section-heading">BORI Moments</p>
   <section class="community-events">
-    <div class="events-grid">
-      <article class="event-card">
-        <p class="event-season">Fall 2024</p>
-        <p class="event-title">Starting the organization</p>
+    <div class="events-shell">
+      <div class="events-intro">
+        <p class="feature-title">Event history</p>
         <p class="event-copy">
-          The first semester was about turning the idea into something real and visible on campus.
+          The original list had much more detail than the compressed summary cards, so this section keeps the fuller event archive and makes it scrollable instead.
         </p>
-        <ul class="event-list">
-          <li>Launched the inaugural BORI presence at Georgia Tech.</li>
-          <li>Started building a recognizable Puerto Rican community space.</li>
-          <li>Set the tone for a culture-forward, people-first organization.</li>
-        </ul>
-      </article>
+      </div>
+      <div class="events-scroll">
+        <div class="season-block">
+          <div class="season-header">
+            <p class="event-season">Fall 2024</p>
+          </div>
 
-      <article class="event-card">
-        <p class="event-season">Spring 2025</p>
-        <p class="event-title">Kickoff and game nights</p>
-        <p class="event-copy">
-          The organization started to feel more established, with events that made it easier for people to keep showing up.
-        </p>
-        <ul class="event-list">
-          <li>Held a spring kickoff that brought people back together after the break.</li>
-          <li>Ran game-night style events that felt social and low-pressure.</li>
-          <li>Kept the focus on familiarity, friendship, and belonging.</li>
-        </ul>
-      </article>
+          <article class="event-card">
+            <p class="event-title">Inaugural BORI Event</p>
+            <ul class="event-list">
+              <li>Homemade coquito, sandwiches de mezclita, sorullitos.</li>
+              <li>Introduced everyone to the club and its purpose and vision.</li>
+            </ul>
+          </article>
 
-      <article class="event-card">
-        <p class="event-season">Fall 2025</p>
-        <p class="event-title">Welcoming newer students</p>
-        <p class="event-copy">
-          By the next fall, the emphasis was on helping newer Puerto Rican students settle into Atlanta and Georgia Tech.
-        </p>
-        <ul class="event-list">
-          <li>Made BORI a clearer landing point for new students.</li>
-          <li>Used events to connect people to each other and to campus resources.</li>
-          <li>Kept building something that could last beyond one semester.</li>
-        </ul>
-      </article>
+          <article class="event-card">
+            <p class="event-title">Trivia Night with Snacks</p>
+            <ul class="event-list">
+              <li>Puerto Rico trivia questions.</li>
+              <li>Snacks and a lower-pressure social setting.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="season-block">
+          <div class="season-header">
+            <p class="event-season">Spring 2025</p>
+          </div>
+
+          <article class="event-card">
+            <p class="event-title">Winter Org Fair · Enero 30 · 11am-1pm</p>
+            <ul class="event-list">
+              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">BORI Kickoff · Febrero 6 · 5pm</p>
+            <ul class="event-list">
+              <li>Coquito, sandwiches de mezclita, sorullitos.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Festival de Chocolate · Febrero 21</p>
+            <ul class="event-list">
+              <li>Fresas con chocolate, tierrita, start-stop running game, papa caliente.</li>
+              <li>The Standard rooftop area.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">March Gladness · Marzo 6</p>
+            <ul class="event-list">
+              <li>Tabling event with a traditional Puerto Rican jacks game.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">BORI Game Night · Marzo 13</p>
+            <ul class="event-list">
+              <li>Traditional Puerto Rican games and Puerto Rico-themed games.</li>
+              <li>Snacks.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="season-block">
+          <div class="season-header">
+            <p class="event-season">Fall 2025</p>
+          </div>
+
+          <article class="event-card">
+            <p class="event-title">Freshman Kickoff · Agosto 12 · 1:15pm · Skiles 169</p>
+            <ul class="event-list">
+              <li>Bienvenidos a GT and Atlanta, with an emphasis on being a resource for new students from Puerto Rico.</li>
+              <li>Krispy Kreme donuts.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Fall Org Fair · Agosto 27 · 11am-1pm · Tech Green</p>
+            <ul class="event-list">
+              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">BORI KickOff · Septiembre 3 · 5:30pm · Boggs 103</p>
+            <ul class="event-list">
+              <li>Publix cookies, snacks tipicos, dulcecitos.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC</p>
+            <ul class="event-list">
+              <li>Prepared questions and participant gifts.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda</p>
+            <ul class="event-list">
+              <li>Funding request for $200.</li>
+              <li>Dominoes, Papi's Cuban catered empanadas, prizes.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Vamo a Jugal' · Octubre 10 · 4pm · Piedmont Park</p>
+            <ul class="event-list">
+              <li>Limber de parcha, cherry, and coco.</li>
+              <li>Soccer, volleyball, football, and a bocina for an active outdoor event.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Movie Night · Noviembre 13 · 7pm · The Connector</p>
+            <ul class="event-list">
+              <li>Reserved the big screen on the 7th floor.</li>
+              <li>Puerto Rican film, popcorn, snacks.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Taller Coquito · Noviembre · 7pm · TBD apartment</p>
+            <ul class="event-list">
+              <li>Leche evaporada, leche condensada, crema de coco, canela molida, vainilla.</li>
+              <li>Glass bottles so people could take home the coquito they made.</li>
+            </ul>
+          </article>
+
+          <article class="event-card">
+            <p class="event-title">Coffee/Chocolate Event with BRASA · TBD</p>
+            <ul class="event-list">
+              <li>Planned collaboration event with BRASA.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
     </div>
   </section>
 

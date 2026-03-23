@@ -385,6 +385,10 @@ ul.task-list li input[type="checkbox"] {
     margin-right: 0.25rem;
   }
 
+  .publist ol > li p {
+    margin: 0;
+  }
+
   .publist a {
     font-weight: 700;
   }
@@ -411,7 +415,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var marker = document.createElement('span');
     marker.className = 'pub-marker';
     marker.textContent = '[' + (total - index) + '] ';
-    item.insertBefore(marker, item.firstChild);
+    var paragraph = item.querySelector(':scope > p');
+    if (paragraph) {
+      paragraph.insertBefore(marker, paragraph.firstChild);
+    } else {
+      item.insertBefore(marker, item.firstChild);
+    }
   });
 });
 </script>
