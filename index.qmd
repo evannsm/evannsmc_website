@@ -40,9 +40,7 @@ page-layout: full
               <p class="home-meta-subtle">Summa Cum Laude · Minors in Math & Physics · Certificate in Unmanned Vehicle Systems</p>
             </div>
           </div>
-          <span class="home-meta-badge">Mentored by <a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a></span>
-          <span class="home-meta-badge">World #1 in Optimal Control & Reinforcement Learning</span>
-          <span class="home-meta-badge">Top 1% Cited Researcher in the World</span>
+          <span class="home-meta-badge">Mentored by <a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a><br>World #1 in Optimal Control & Reinforcement Learning<br>Top 1% Cited Researcher in the World</span>
         </div>
       </div>
       <div class="home-contact-list">
