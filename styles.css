@@ -6,10 +6,16 @@ body.quarto-light {
 }
 
 body.quarto-light #quarto-content {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
   background: #fff;
 }
 
 body.quarto-light .footer {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
   background: #fff;
 }
 
