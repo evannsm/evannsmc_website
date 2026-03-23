@@ -108,7 +108,7 @@ title-block-banner: true
   <p class="pubs-kicker">Publications</p>
   <p class="pubs-title">Research Output.</p>
   <p class="pubs-intro">
-    Published and in-progress work, including the undergraduate honors thesis for nostalgia.
+    Published work, including the undergraduate honors thesis for nostalgia.
   </p>
 
   <div class="pubs-card" id="pubs-card">

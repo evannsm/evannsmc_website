@@ -350,7 +350,7 @@ main.content.column-page {
     <!-- LEFT COLUMN: Research Projects -->
     <div>
       <p class="projects-column-heading">Research Projects</p>
-      <p class="projects-column-title">Published and in-progress research work.</p>
+      <p class="projects-column-title">Published research work.</p>
       <p class="projects-column-intro">
         Core research projects behind the quadrotor safety, control, and formal-methods work.
       </p>
