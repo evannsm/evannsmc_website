@@ -53,6 +53,10 @@ title-block-banner: true
   line-height: 1.75;
 }
 
+#quarto-margin-sidebar {
+  padding-top: 3rem;
+}
+
 @media (max-width: 640px) {
   .blog-shell {
     padding: 2.5rem 1rem 1rem;
