@@ -41,9 +41,10 @@ page-layout: full
         <a class="home-link-pill primary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
-    <div class="home-hero-sidebar">
+    <figure class="home-hero-sidebar">
       <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
-    </div>
+      <figcaption class="home-hero-caption">C'est Moi.</figcaption>
+    </figure>
   </section>
 </div>
 ```

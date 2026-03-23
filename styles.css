@@ -1,8 +1,8 @@
 /* css styles */
 
-/* ── Warm beige side margins (light mode only) ── */
+/* ── Side margins (light mode only) ── */
 body.quarto-light {
-  background-color: #e8ddd3;
+  background-color: #e2e6ed;
 }
 
 body.quarto-light #quarto-content {
@@ -97,16 +97,30 @@ body.quarto-light .footer {
 
 .home-hero-sidebar {
   flex-shrink: 0;
-  width: 13rem;
+  width: 14rem;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 1.15rem;
+  background: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.03));
 }
 
 .home-hero-photo {
   width: 100%;
   aspect-ratio: 3 / 4;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   object-fit: cover;
   object-position: 50% 16%;
   display: block;
+}
+
+.home-hero-caption {
+  margin: 0.5rem 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--bs-secondary-color, #6c757d);
 }
 
 .home-hero-copy {
