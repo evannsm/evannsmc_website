@@ -1,6 +1,18 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "about/*.qmd"
+    - "blog/**/*.qmd"
+    - "community/*.qmd"
+    - "cv/**/*.qmd"
+    - "independent-projects/*.qmd"
+    - "journey/*.qmd"
+    - "projects/**/*.qmd"
+    - "publications/*.qmd"
+    - "!Agents.md"
   post-render: bash fix-listing-urls.sh
   resources:
     - CNAME
