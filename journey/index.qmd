@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
       countryId: '630',
       coordinates: [-66.5, 18.2],
       zoom: { center: [-66.5, 18.2], scale: 2450 },
-      year: 'Before college',
+      year: 'Early Years',
       role: 'Home, culture, and resilience',
       description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
       color: '#ef3340',
