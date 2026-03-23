@@ -15,6 +15,14 @@ title-block-banner: true
   grid-template-columns: [screen-start] 0 [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 0 [screen-end] !important;
 }
 
+#quarto-document-content {
+  grid-column: screen-start / screen-end !important;
+  width: 100%;
+  max-width: none;
+  padding-left: clamp(0.55rem, 1vw, 1.25rem) !important;
+  padding-right: clamp(0.55rem, 1vw, 1.25rem) !important;
+}
+
 main.content.column-page {
   padding-left: 0 !important;
   padding-right: 0 !important;
@@ -32,7 +40,7 @@ main.content.column-page {
 .journey-page {
   max-width: none;
   margin: 0 auto;
-  padding: 0.9rem 0.35rem 4.5rem;
+  padding: 0.9rem 0 4.5rem;
 }
 
 .journey-page.page-columns {
@@ -74,7 +82,7 @@ main.content.column-page {
 
 .journey-layout {
   display: flex;
-  gap: 0.9rem;
+  gap: clamp(0.7rem, 1vw, 0.95rem);
   align-items: start;
 }
 
@@ -95,8 +103,8 @@ main.content.column-page {
 }
 
 .journey-detail {
-  flex: 0 0 10rem;
-  max-width: 10rem;
+  flex: 0 0 9.25rem;
+  max-width: 9.25rem;
   padding: 1rem;
   min-height: 0;
   align-self: start;
@@ -237,8 +245,8 @@ main.content.column-page {
 }
 
 .journey-sidebar {
-  flex: 0 0 10.75rem;
-  max-width: 10.75rem;
+  flex: 0 0 10rem;
+  max-width: 10rem;
   padding: 0.1rem 0 0;
 }
 
