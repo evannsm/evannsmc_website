@@ -26,11 +26,11 @@ page-layout: full
             <img src="./files/about/Georgia_Tech_Yellow_Jackets_logo.svg.png" alt="Georgia Tech logo" class="home-meta-logo">
             <div>
               <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
-              <p class="home-meta-subtle">Advised by Dr. Sam Coogan · 4.0 GPA · Summa Cum Laude · Deploy Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
+              <p class="home-meta-subtle">4.0 GPA · Summa Cum Laude · Deploy Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
-          <!-- <span class="home-meta-badge">Mentored by Eckman Award winner</span> -->
+          <span class="home-meta-badge">Avised for my Ph.D. by Eckman Award winner Dr. Samuel Coogan</span>
         </div>
         <div class="home-meta-card">
           <div class="home-meta-card-header">
