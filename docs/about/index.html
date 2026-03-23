@@ -496,9 +496,9 @@ ul.task-list li input[type="checkbox"] {
   border: 3px solid var(--bs-body-bg, #fff);
   box-sizing: border-box;
 }
-.journey-stop[data-color="red"]::before    { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
-.journey-stop[data-color="orange"]::before { background: #f97316; box-shadow: 0 0 0 2px #f97316; }
-.journey-stop[data-color="green"]::before  { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
+.journey-stop.stop-red::before    { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
+.journey-stop.stop-orange::before { background: #f97316; box-shadow: 0 0 0 2px #f97316; }
+.journey-stop.stop-green::before  { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
 
 .journey-stop h4 {
   margin: 0 0 0.15rem 0;
@@ -530,95 +530,112 @@ ul.task-list li input[type="checkbox"] {
   }
 }
 </style>
+
 <div class="about-wrap">
-<p>Beyond the research papers and lab work, here’s a bit more about who I am, where I come from, and the path that brought me here.</p>
-<!-- ─── WHERE I'M FROM ─── -->
-<p class="about-section-heading">
-Where I’m From
+
+<p style="font-size:1rem; line-height:1.7; color:var(--bs-secondary-color,#6c757d);">
+Beyond the research papers and lab work, here's a bit more about who I am, where I come from, and the path that brought me here.
 </p>
+
+<!-- WHERE I'M FROM -->
+<p class="about-section-heading">Where I'm From</p>
+
 <div class="origin-card">
-<div class="origin-emoji">
-🇵🇷
+  <div class="origin-emoji">🇵🇷</div>
+  <div>
+    <h3 class="anchored">Puerto Rico</h3>
+    <p>
+      Born and raised on the island. Puerto Rico shaped my values, my drive, and my identity.
+      It's a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech
+      — to make sure Puerto Rican students feel at home and stay connected to our culture, even far from the island.
+    </p>
+  </div>
 </div>
-<div>
-<pre><code>&lt;h3&gt;Puerto Rico&lt;/h3&gt;
-&lt;p&gt;
-  Born and raised on the island. Puerto Rico shaped my values, my drive, and my identity.
-  It's a big part of why I co-founded &lt;strong&gt;BORI (Boricuas Organized for Impact)&lt;/strong&gt; at Georgia Tech — to make sure Puerto Rican students feel at home and stay connected to our culture, even far from the island.
-&lt;/p&gt;</code></pre>
-</div>
-</div>
-<!-- ─── JOURNEY ─── -->
-<p class="about-section-heading">
-Journey
-</p>
+
+<!-- JOURNEY -->
+<p class="about-section-heading">Journey</p>
+
 <div class="journey-timeline">
-<div class="journey-stop" data-color="red">
-<pre><code>&lt;h4&gt;Puerto Rico 🇵🇷&lt;/h4&gt;
-&lt;div class="journey-year"&gt;Where it all began&lt;/div&gt;
-&lt;p class="journey-desc"&gt;
-  Growing up on the island gave me community, culture, and resilience.
-  It set the foundation for everything that came next.
-&lt;/p&gt;</code></pre>
+
+  <div class="journey-stop stop-red">
+    <h4 class="anchored">Puerto Rico 🇵🇷</h4>
+    <div class="journey-year">Where it all began</div>
+    <p class="journey-desc">
+      Growing up on the island gave me community, culture, and resilience.
+      It set the foundation for everything that came next.
+    </p>
+  </div>
+
+  <div class="journey-stop stop-orange">
+    <h4 class="anchored">Arlington, TX — UT Arlington</h4>
+    <div class="journey-year">Aug 2018 – May 2022</div>
+    <div class="journey-role">Honors B.S. in Electrical Engineering · Minors in Math &amp; Physics</div>
+    <p class="journey-desc">
+      Graduated Summa Cum Laude as a National Merit Scholar.
+      Got my start in research through Dr. Yan Wan's Dynamical Networks &amp; Control Lab
+      and Dr. Frank Lewis' Autonomous Systems Lab, working on learning-based path planning
+      for multi-vehicle systems and reinforcement learning applied to quadrotor control.
+    </p>
+  </div>
+
+  <div class="journey-stop stop-green">
+    <h4 class="anchored">Atlanta, GA — Georgia Tech</h4>
+    <div class="journey-year">Aug 2022 – Present</div>
+    <div class="journey-role">Ph.D. in Robotics · FACTS Lab · Advisor: Dr. Samuel Coogan</div>
+    <p class="journey-desc">
+      Currently pursuing my doctorate as a Goizueta Fellow, researching safe autonomy
+      and nonlinear control for quadrotor UAVs. I also co-founded BORI, TA the Vertically
+      Integrated Project in Robotics, and try to walk the tightrope between theory and
+      hardware implementation every day.
+    </p>
+  </div>
+
 </div>
-<div class="journey-stop" data-color="orange">
-<pre><code>&lt;h4&gt;Arlington, TX — UT Arlington&lt;/h4&gt;
-&lt;div class="journey-year"&gt;Aug 2018 – May 2022&lt;/div&gt;
-&lt;div class="journey-role"&gt;Honors B.S. in Electrical Engineering · Minors in Math &amp;amp; Physics&lt;/div&gt;
-&lt;p class="journey-desc"&gt;
-  Graduated Summa Cum Laude as a National Merit Scholar and Goizueta Foundation scholar-to-be.
-  Got my start in research through Dr. Yan Wan's Dynamical Networks &amp;amp; Control Lab and Dr. Frank Lewis' Autonomous Systems Lab,
-  where I worked on learning-based path planning for multi-vehicle systems and reinforcement learning applied to quadrotor control.
-&lt;/p&gt;</code></pre>
-</div>
-<div class="journey-stop" data-color="green">
-<pre><code>&lt;h4&gt;Atlanta, GA — Georgia Tech&lt;/h4&gt;
-&lt;div class="journey-year"&gt;Aug 2022 – Present&lt;/div&gt;
-&lt;div class="journey-role"&gt;Ph.D. in Robotics · FACTS Lab · Advisor: Dr. Samuel Coogan&lt;/div&gt;
-&lt;p class="journey-desc"&gt;
-  Currently pursuing my doctorate as a Goizueta Fellow, researching safe autonomy and nonlinear control for quadrotor UAVs.
-  I also co-founded BORI, TA the Vertically Integrated Project in Robotics, and try to walk the tightrope between theory and hardware implementation every day.
-&lt;/p&gt;</code></pre>
-</div>
-</div>
-<!-- ─── LANGUAGES ─── -->
-<p class="about-section-heading">
-Languages
-</p>
+
+<!-- LANGUAGES -->
+<p class="about-section-heading">Languages</p>
+
 <div id="lang-bars">
-<div class="lang-bar-container">
-<pre><code>&lt;div class="lang-bar-header"&gt;
-  &lt;span class="lang-name"&gt;Spanish&lt;/span&gt;
-  &lt;span class="lang-level"&gt;Native&lt;/span&gt;
-&lt;/div&gt;
-&lt;div class="lang-bar-track"&gt;
-  &lt;div class="lang-bar-fill" data-pct="100"&gt;&lt;/div&gt;
-&lt;/div&gt;</code></pre>
+  <div class="lang-bar-container">
+    <div class="lang-bar-header">
+      <span class="lang-name">Spanish</span>
+      <span class="lang-level">Native</span>
+    </div>
+    <div class="lang-bar-track">
+      <div class="lang-bar-fill" data-pct="100"></div>
+    </div>
+  </div>
+  <div class="lang-bar-container">
+    <div class="lang-bar-header">
+      <span class="lang-name">English</span>
+      <span class="lang-level">Native</span>
+    </div>
+    <div class="lang-bar-track">
+      <div class="lang-bar-fill" data-pct="100"></div>
+    </div>
+  </div>
 </div>
-<div class="lang-bar-container">
-<pre><code>&lt;div class="lang-bar-header"&gt;
-  &lt;span class="lang-name"&gt;English&lt;/span&gt;
-  &lt;span class="lang-level"&gt;Native&lt;/span&gt;
-&lt;/div&gt;
-&lt;div class="lang-bar-track"&gt;
-  &lt;div class="lang-bar-fill" data-pct="100"&gt;&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</div>
-</div>
-<!-- ─── INTERESTS ─── -->
-<p class="about-section-heading">
-Interests
-</p>
+
+<!-- INTERESTS -->
+<p class="about-section-heading">Interests</p>
+
 <div class="interests-grid">
-<p><span class="interest-tag">Safe Autonomy</span> <span class="interest-tag">Quadrotor UAVs</span> <span class="interest-tag">Nonlinear Control</span> <span class="interest-tag">Hardware Deployment</span> <span class="interest-tag">Cooking</span> <span class="interest-tag">Dance</span> <span class="interest-tag">Reading</span> <span class="interest-tag">Community Building</span></p>
+  <span class="interest-tag">Safe Autonomy</span>
+  <span class="interest-tag">Quadrotor UAVs</span>
+  <span class="interest-tag">Nonlinear Control</span>
+  <span class="interest-tag">Hardware Deployment</span>
+  <span class="interest-tag">Cooking</span>
+  <span class="interest-tag">Dance</span>
+  <span class="interest-tag">Reading</span>
+  <span class="interest-tag">Community Building</span>
 </div>
+
 </div>
+
 <script>
-// Animate language bars when they scroll into view
 document.addEventListener('DOMContentLoaded', function () {
   var bars = document.querySelectorAll('.lang-bar-fill');
   if (!bars.length) return;
-
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
@@ -627,7 +644,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }, { threshold: 0.3 });
-
   bars.forEach(function (bar) { observer.observe(bar); });
 });
 </script>
