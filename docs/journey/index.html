@@ -371,6 +371,10 @@ ul.task-list li input[type="checkbox"] {
   display: none;
 }
 
+#quarto-document-content.column-page {
+  max-width: min(99vw, 110rem) !important;
+}
+
 :root {
   --journey-accent: #2563eb;
   --journey-bg-primary: var(--bs-body-bg, #ffffff);
@@ -381,9 +385,9 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-page {
-  max-width: 96rem;
+  max-width: none;
   margin: 0 auto;
-  padding: 1.45rem 0.7rem 5rem;
+  padding: 1.1rem 0.15rem 5rem;
 }
 
 .journey-page.page-columns {
@@ -417,7 +421,7 @@ ul.task-list li input[type="checkbox"] {
 
 .journey-intro {
   max-width: 36rem;
-  margin: 0 0 0.7rem;
+  margin: 0 0 0.55rem;
   color: var(--journey-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
@@ -425,7 +429,7 @@ ul.task-list li input[type="checkbox"] {
 
 .journey-layout {
   display: flex;
-  gap: 0.9rem;
+  gap: 0.65rem;
   align-items: start;
 }
 
@@ -446,8 +450,8 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-detail {
-  flex: 0 0 12rem;
-  max-width: 12rem;
+  flex: 0 0 10.75rem;
+  max-width: 10.75rem;
   padding: 1rem;
   min-height: 0;
   align-self: start;
@@ -502,7 +506,7 @@ ul.task-list li input[type="checkbox"] {
 .journey-map-panel {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0 0.45rem 0.45rem;
+  padding: 0;
 }
 
 .journey-map-shell {
@@ -587,8 +591,8 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-sidebar {
-  flex: 0 0 13rem;
-  max-width: 13rem;
+  flex: 0 0 11.75rem;
+  max-width: 11.75rem;
   padding: 0.1rem 0 0;
 }
 
@@ -865,7 +869,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var HEIGHT = 540;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-52, 36], scale: 290 };
+  var OVERVIEW = { center: [-86, 31.5], scale: 560 };
 
   var stops = [
     {
@@ -1006,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return d3.geoMercator()
       .center(currentCenter)
       .scale(currentScale)
-      .translate([WIDTH / 2, HEIGHT / 2 - 68]);
+      .translate([WIDTH / 2, HEIGHT / 2 - 34]);
   }
 
   function animateTo(targetCenter, targetScale) {
