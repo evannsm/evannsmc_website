@@ -106,7 +106,7 @@ title-block-banner: true
 
 <div class="pubs-shell">
   <p class="pubs-kicker">Publications</p>
-  <p class="pubs-title">Research Output.</p>
+  <p class="pubs-title">Research Papers.</p>
   <p class="pubs-intro">
     Published work, including the undergraduate honors thesis for nostalgia.
   </p>

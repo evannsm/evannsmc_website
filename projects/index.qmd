@@ -344,7 +344,7 @@ main.content.column-page {
 </style>
 
 <div class="projects-shell">
-  <p class="projects-page-title">Projects.</p>
+  <p class="projects-page-title">Research & Open-Source Builds.</p>
 
   <div class="projects-columns">
     <!-- LEFT COLUMN: Research Projects -->
