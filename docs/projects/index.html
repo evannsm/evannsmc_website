@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Open-Source Projects – evannsmc</title>
+<title>Research Projects – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -113,11 +113,11 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Open-Source Projects – evannsmc">
+<meta property="og:title" content="Research Projects – evannsmc">
 <meta property="og:image" content="https://evannsmc.com/projects/rtd-rax/gap_compare.gif">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="RTD-RAX gap scenario animation">
-<meta name="twitter:title" content="Open-Source Projects – evannsmc">
+<meta name="twitter:title" content="Research Projects – evannsmc">
 <meta name="twitter:image" content="https://evannsmc.com/projects/rtd-rax/gap_compare.gif">
 <meta name="twitter:image:alt" content="RTD-RAX gap scenario animation">
 <meta name="twitter:card" content="summary_large_image">
@@ -319,7 +319,11 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../projects"> 
-<span class="menu-text">Projects</span></a>
+<span class="menu-text">Research Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../independent-projects"> 
+<span class="menu-text">Independent Projects</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../blog"> 
@@ -345,7 +349,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page">
-      <h1 class="title">Open-Source Projects</h1>
+      <h1 class="title">Research Projects</h1>
                       </div>
   </div>
     
@@ -687,10 +691,10 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 <div class="projects-shell">
-  <p class="projects-kicker">Projects</p>
-  <p class="projects-title">Open-source work built for real research use.</p>
+  <p class="projects-kicker">Research Projects</p>
+  <p class="projects-title">Published and in-progress research work.</p>
   <p class="projects-intro">
-    These are the tools and codebases behind a lot of the quadrotor work, infrastructure, and writing workflow on this site. Each card gives a preview first, then expands into the fuller context.
+    These are the core research projects behind the quadrotor safety, control, and formal-methods work. Each card gives a preview first, then expands into the fuller context.
   </p>
 
   <div class="project-stack">
@@ -748,240 +752,6 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">ROS 2</span>
-              <span class="project-tag">Robotics</span>
-              <span class="project-tag">C++</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">02</span>
-                <p class="project-name">Motion Capture → PX4 Pipelines</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              Indoor flight infrastructure for getting Vicon or OptiTrack state estimates into PX4 cleanly, without rebuilding the same experiment plumbing each time.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Mocap to PX4 EKF2 Pipelines</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Vicon → EKF fusion</div>
-                <div class="project-preview-line">OptiTrack → EKF fusion</div>
-                <div class="project-preview-line">ENU → NED conversion</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">ROS 2</span>
-                <span class="project-preview-metric">PX4</span>
-                <span class="project-preview-metric">C++17</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              These companion packages handle coordinate transforms, external-vision message publishing, and optional state relays so indoor quadrotor experiments can focus on control instead of motion-capture integration overhead.
-            </p>
-            <ul class="project-detail-list">
-              <li>Shared architecture across both Vicon and OptiTrack pipelines.</li>
-              <li>Supports multiple launch modes depending on how much of the stack you need.</li>
-              <li>Used by Georgia Tech's Indoor Flight Lab as part of its official codebase.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/mocap4px4/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/vicon4px4" target="_blank">Vicon4PX4 ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/optitrack4px4" target="_blank">OptiTrack4PX4 ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Quarto</span>
-              <span class="project-tag">LaTeX</span>
-              <span class="project-tag">Tools</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">03</span>
-                <p class="project-name">QuartoCV</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Build once, reuse everywhere</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Shared sections</div>
-                <div class="project-preview-line">Incremental PDF rebuilds</div>
-                <div class="project-preview-line">Academic + consulting styles</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Quarto</span>
-                <span class="project-preview-metric">XeLaTeX</span>
-                <span class="project-preview-metric">Make</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
-            </p>
-            <ul class="project-detail-list">
-              <li>One source section can feed multiple document variants.</li>
-              <li>Dependency-aware incremental builds keep edits fast.</li>
-              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Control</span>
-              <span class="project-tag">Python</span>
-              <span class="project-tag">JAX</span>
-              <span class="project-tag">Research</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">04</span>
-                <p class="project-name">Newton-Raphson Flow for PX4</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A research-grade quadrotor controller that reframes tracking as a Newton-Raphson optimization problem and runs on real onboard hardware.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Fast, Efficient Control Algorithm</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">ACC 2024</div>
-                <div class="project-preview-line">TCST 2025</div>
-                <div class="project-preview-line">Onboard Quadrotor Deployment</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">JAX JIT</span>
-                <span class="project-preview-metric">ROS 2</span>
-                <span class="project-preview-metric">PX4</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              NR Flow uses iterative Jacobian inversion for fast feedback linearization and folds integral control barrier functions into the controller to enforce actuator limits smoothly. It is meant to be practical, not just theoretical.
-            </p>
-            <ul class="project-detail-list">
-              <li>Runs comfortably on a Raspberry Pi 4 onboard a quadrotor.</li>
-              <li>Supports both simulation and hardware workflows.</li>
-              <li>Backed by multiple peer-reviewed papers rather than a one-off demo implementation.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
-            <a class="project-action" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
-            <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Control</span>
-              <span class="project-tag">Python</span>
-              <span class="project-tag">Research</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">05</span>
-                <p class="project-name">NMPC Acados PX4</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A clean NMPC baseline for quadrotor research built around Acados and QPOASES, with a full ROS 2 interface and real-time-ready generated code.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Custom NMPC Implementation</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Fast Computation</div>
-                <div class="project-preview-line">Aggressive Trajectory Control</div>
-                <div class="project-preview-line">Smart, De-Coupled Yaw Tracking</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Acados</span>
-                <span class="project-preview-metric">QPOASES</span>
-                <span class="project-preview-metric">ROS 2</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              This controller served as the main comparison baseline for the Newton-Raphson Flow work. It is a solid reference implementation if you want a rigorous NMPC starting point rather than a highly specialized demo.
-            </p>
-            <ul class="project-detail-list">
-              <li>Jointly tracks position, velocity, and Euler angles.</li>
-              <li>Handles wrapped yaw error correctly.</li>
-              <li>Uses hard thrust and body-rate constraints with a clean command-line interface.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/nmpc-acados/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
               <span class="project-tag">Safety</span>
               <span class="project-tag">Formal Methods</span>
               <span class="project-tag">Hybrid Systems</span>
@@ -989,7 +759,7 @@ ul.task-list li input[type="checkbox"] {
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">06</span>
+                <span class="project-number">02</span>
                 <p class="project-name">Interval STL Runtime Assurance</p>
               </div>
               <span class="project-toggle"></span>
@@ -1041,32 +811,34 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">Quarto</span>
-              <span class="project-tag">Tools</span>
+              <span class="project-tag">Control</span>
+              <span class="project-tag">Python</span>
+              <span class="project-tag">JAX</span>
+              <span class="project-tag">Research</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">07</span>
-                <p class="project-name">Quarto Georgia Tech Slides</p>
+                <span class="project-number">03</span>
+                <p class="project-name">Newton-Raphson Flow for PX4</p>
               </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
-              A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command.
+              A research-grade quadrotor controller that reframes tracking as a Newton-Raphson optimization problem and runs on real onboard hardware.
             </p>
           </div>
           <div class="project-preview-panel">
             <div class="project-preview-custom">
-              <p class="project-preview-title">Slide branding</p>
+              <p class="project-preview-title">Fast, Efficient Control Algorithm</p>
               <div class="project-preview-lines">
-                <div class="project-preview-line">Official GT palette</div>
-                <div class="project-preview-line">Title + section backgrounds</div>
-                <div class="project-preview-line">RevealJS fragments + callouts</div>
+                <div class="project-preview-line">ACC 2024</div>
+                <div class="project-preview-line">TCST 2025</div>
+                <div class="project-preview-line">Onboard Quadrotor Deployment</div>
               </div>
               <div class="project-preview-metrics">
-                <span class="project-preview-metric">Quarto</span>
-                <span class="project-preview-metric">RevealJS</span>
-                <span class="project-preview-metric">SCSS</span>
+                <span class="project-preview-metric">JAX JIT</span>
+                <span class="project-preview-metric">ROS 2</span>
+                <span class="project-preview-metric">PX4</span>
               </div>
             </div>
           </div>
@@ -1076,17 +848,20 @@ ul.task-list li input[type="checkbox"] {
         <div class="project-body-grid">
           <div class="project-detail-copy">
             <p>
-              This extension packages Georgia Tech colors, backgrounds, typography, and presentation utilities so branded slides can be spun up quickly in a normal Quarto workflow.
+              NR Flow uses iterative Jacobian inversion for fast feedback linearization and folds integral control barrier functions into the controller to enforce actuator limits smoothly. It is meant to be practical, not just theoretical.
             </p>
             <ul class="project-detail-list">
-              <li>Built to be installed into an existing project with a single template command.</li>
-              <li>Includes branded title and section slide treatments.</li>
-              <li>Designed for presentations that still feel like Quarto, not a hard-coded slide deck.</li>
+              <li>Runs comfortably on a Raspberry Pi 4 onboard a quadrotor.</li>
+              <li>Supports both simulation and hardware workflows.</li>
+              <li>Backed by multiple peer-reviewed papers rather than a one-off demo implementation.</li>
             </ul>
           </div>
           <div class="project-actions">
-            <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/quarto-gatech-slides" target="_blank">GitHub ↗</a>
+            <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
+            <a class="project-action" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
+            <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
           </div>
         </div>
       </div>

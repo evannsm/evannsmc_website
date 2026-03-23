@@ -34,7 +34,9 @@ website:
       - href: publications
         text: Publications
       - href: projects
-        text: Projects
+        text: Research Projects
+      - href: independent-projects
+        text: Independent Projects
       - href: blog
         text: Research Blog
       - href: about

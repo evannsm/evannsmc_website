@@ -1,5 +1,5 @@
 ---
-title: "Research Projects"
+title: "Independent Projects"
 page-layout: full
 title-block-banner: true
 ---
@@ -164,27 +164,6 @@ title-block-banner: true
   overflow: hidden;
 }
 
-.project-preview-panel img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.project-preview-panel.rtd-preview img {
-  width: 105.5%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-  object-position: left center;
-  background: var(--bs-body-bg, #fff);
-}
-
-.project-preview-panel.rtd-preview {
-  min-height: 0;
-  aspect-ratio: 2.22 / 1;
-}
-
 .project-preview-custom {
   width: 100%;
   padding: 1.15rem;
@@ -322,10 +301,10 @@ title-block-banner: true
 </style>
 
 <div class="projects-shell">
-  <p class="projects-kicker">Research Projects</p>
-  <p class="projects-title">Published and in-progress research work.</p>
+  <p class="projects-kicker">Independent Projects</p>
+  <p class="projects-title">Open-source tools and infrastructure.</p>
   <p class="projects-intro">
-    These are the core research projects behind the quadrotor safety, control, and formal-methods work. Each card gives a preview first, then expands into the fuller context.
+    Standalone codebases, utilities, and templates that grew out of day-to-day research needs. Each card gives a preview first, then expands into the fuller context.
   </p>
 
   <div class="project-stack">
@@ -334,25 +313,35 @@ title-block-banner: true
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">Robotics</span>
-              <span class="project-tag">Safety</span>
+              <span class="project-tag">Control</span>
               <span class="project-tag">Python</span>
-              <span class="project-tag">JAX</span>
               <span class="project-tag">Research</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
                 <span class="project-number">01</span>
-                <p class="project-name">RTD-RAX</p>
+                <p class="project-name">NMPC Acados PX4</p>
               </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
-              Runtime-assurance trajectory planning for quadrotors, with online reachability verification and repair instead of overly conservative offline safety buffers.
+              A clean NMPC baseline for quadrotor research built around Acados and QPOASES, with a full ROS 2 interface and real-time-ready generated code.
             </p>
           </div>
-          <div class="project-preview-panel rtd-preview">
-            <img src="../projects/rtd-rax/gap_compare.gif" alt="RTD-RAX gap scenario animation">
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Custom NMPC Implementation</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Fast Computation</div>
+                <div class="project-preview-line">Aggressive Trajectory Control</div>
+                <div class="project-preview-line">Smart, De-Coupled Yaw Tracking</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Acados</span>
+                <span class="project-preview-metric">QPOASES</span>
+                <span class="project-preview-metric">ROS 2</span>
+              </div>
+            </div>
           </div>
         </div>
       </summary>
@@ -360,19 +349,18 @@ title-block-banner: true
         <div class="project-body-grid">
           <div class="project-detail-copy">
             <p>
-              RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution.
+              This controller served as the main comparison baseline for the Newton-Raphson Flow work. It is a solid reference implementation if you want a rigorous NMPC starting point rather than a highly specialized demo.
             </p>
             <ul class="project-detail-list">
-              <li>Mixed-monotone reachability verification at runtime via <code>immrax</code>.</li>
-              <li>Hybrid repair loop when a candidate cannot be certified safe.</li>
-              <li>Three case studies with manuscript-ready figure generation and Dockerized reproducibility.</li>
+              <li>Jointly tracks position, velocity, and Euler angles.</li>
+              <li>Handles wrapped yaw error correctly.</li>
+              <li>Uses hard thrust and body-rate constraints with a clean command-line interface.</li>
             </ul>
           </div>
           <div class="project-actions">
-            <a class="project-action primary" href="../projects/rtd-rax/">Open Project Page</a>
-            <!-- <a class="project-action" href="" target="_blank">MECC-ALDSC 2026 Paper (Preprint PDF) ↗</a> -->
-            <a class="project-action" href="https://github.com/evannsm/rtd-rax" target="_blank">GitHub ↗</a>
-            <a class="project-action" href="https://evannsm.github.io/ws_RTD" target="_blank">Dedicated Website ↗</a>
+            <a class="project-action primary" href="../projects/nmpc-acados/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
           </div>
         </div>
       </div>
@@ -383,34 +371,33 @@ title-block-banner: true
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">Safety</span>
-              <span class="project-tag">Formal Methods</span>
-              <span class="project-tag">Hybrid Systems</span>
-              <span class="project-tag">Research</span>
+              <span class="project-tag">Quarto</span>
+              <span class="project-tag">LaTeX</span>
+              <span class="project-tag">Tools</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
                 <span class="project-number">02</span>
-                <p class="project-name">Interval STL Runtime Assurance</p>
+                <p class="project-name">QuartoCV</p>
               </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
-              Safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty, using interval STL and runtime assurance with real-time MILP-based correction.
+              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
             </p>
           </div>
           <div class="project-preview-panel">
             <div class="project-preview-custom">
-              <p class="project-preview-title">NAHS 2025 submission</p>
+              <p class="project-preview-title">Build once, reuse everywhere</p>
               <div class="project-preview-lines">
-                <div class="project-preview-line">Linear systems with bounded uncertainty</div>
-                <div class="project-preview-line">Minimal runtime input correction</div>
-                <div class="project-preview-line">Miniature autonomous blimp demo</div>
+                <div class="project-preview-line">Shared sections</div>
+                <div class="project-preview-line">Incremental PDF rebuilds</div>
+                <div class="project-preview-line">Academic + consulting styles</div>
               </div>
               <div class="project-preview-metrics">
-                <span class="project-preview-metric">iSTL</span>
-                <span class="project-preview-metric">MILP</span>
-                <span class="project-preview-metric">NAHS</span>
+                <span class="project-preview-metric">Quarto</span>
+                <span class="project-preview-metric">XeLaTeX</span>
+                <span class="project-preview-metric">Make</span>
               </div>
             </div>
           </div>
@@ -420,18 +407,17 @@ title-block-banner: true
         <div class="project-body-grid">
           <div class="project-detail-copy">
             <p>
-              This project addresses safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty in a static environment. A runtime-assurance layer evaluates the nominal controller's proposed input at each update step and minimally adjusts it whenever needed to maintain specification satisfaction under all realizations of the uncertainty.
+              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
             </p>
             <ul class="project-detail-list">
-              <li>Leverages interval signal temporal logic so uncertainty can be handled directly with only a modest program-size increase.</li>
-              <li>Solves a mixed-integer linear program at each controller update step and includes conditions that guarantee long-horizon feasibility.</li>
-              <li>Ensures a safe backup input is always available if a computation deadline is ever missed, and demonstrates real-time tractability on a miniature autonomous blimp.</li>
+              <li>One source section can feed multiple document variants.</li>
+              <li>Dependency-aware incremental builds keep edits fast.</li>
+              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
             </ul>
           </div>
           <div class="project-actions">
-            <a class="project-action primary" href="../projects/nahs/">Open Project Page</a>
-            <a class="project-action" href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587" target="_blank">NAHS 2025 Paper (Preprint PDF) ↗</a>
-            <a class="project-action" href="../publications/">Publications ↗</a>
+            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
           </div>
         </div>
       </div>
@@ -442,34 +428,32 @@ title-block-banner: true
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
-              <span class="project-tag">Control</span>
-              <span class="project-tag">Python</span>
-              <span class="project-tag">JAX</span>
-              <span class="project-tag">Research</span>
+              <span class="project-tag">Quarto</span>
+              <span class="project-tag">Tools</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
                 <span class="project-number">03</span>
-                <p class="project-name">Newton-Raphson Flow for PX4</p>
+                <p class="project-name">Quarto Georgia Tech Slides</p>
               </div>
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
-              A research-grade quadrotor controller that reframes tracking as a Newton-Raphson optimization problem and runs on real onboard hardware.
+              A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command.
             </p>
           </div>
           <div class="project-preview-panel">
             <div class="project-preview-custom">
-              <p class="project-preview-title">Fast, Efficient Control Algorithm</p>
+              <p class="project-preview-title">Slide branding</p>
               <div class="project-preview-lines">
-                <div class="project-preview-line">ACC 2024</div>
-                <div class="project-preview-line">TCST 2025</div>
-                <div class="project-preview-line">Onboard Quadrotor Deployment</div>
+                <div class="project-preview-line">Official GT palette</div>
+                <div class="project-preview-line">Title + section backgrounds</div>
+                <div class="project-preview-line">RevealJS fragments + callouts</div>
               </div>
               <div class="project-preview-metrics">
-                <span class="project-preview-metric">JAX JIT</span>
-                <span class="project-preview-metric">ROS 2</span>
-                <span class="project-preview-metric">PX4</span>
+                <span class="project-preview-metric">Quarto</span>
+                <span class="project-preview-metric">RevealJS</span>
+                <span class="project-preview-metric">SCSS</span>
               </div>
             </div>
           </div>
@@ -479,20 +463,17 @@ title-block-banner: true
         <div class="project-body-grid">
           <div class="project-detail-copy">
             <p>
-              NR Flow uses iterative Jacobian inversion for fast feedback linearization and folds integral control barrier functions into the controller to enforce actuator limits smoothly. It is meant to be practical, not just theoretical.
+              This extension packages Georgia Tech colors, backgrounds, typography, and presentation utilities so branded slides can be spun up quickly in a normal Quarto workflow.
             </p>
             <ul class="project-detail-list">
-              <li>Runs comfortably on a Raspberry Pi 4 onboard a quadrotor.</li>
-              <li>Supports both simulation and hardware workflows.</li>
-              <li>Backed by multiple peer-reviewed papers rather than a one-off demo implementation.</li>
+              <li>Built to be installed into an existing project with a single template command.</li>
+              <li>Includes branded title and section slide treatments.</li>
+              <li>Designed for presentations that still feel like Quarto, not a hard-coded slide deck.</li>
             </ul>
           </div>
           <div class="project-actions">
-            <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
-            <a class="project-action" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
-            <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
-            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
+            <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/quarto-gatech-slides" target="_blank">GitHub ↗</a>
           </div>
         </div>
       </div>
