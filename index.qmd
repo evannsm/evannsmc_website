@@ -1,36 +1,54 @@
 ---
 title: "Evanns Morales-Cuadrado"
 description: "@evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech."
-about:
-  template: solana
-  image: /files/LabPhoto.png
-  links:
-    - icon: github
-      text: Github
-      href: https://github.com/evannsm
-    - icon: linkedin
-      text: LinkedIn
-      href: https://www.linkedin.com/in/evanns-morales/
-    - text: "{{< ai google-scholar >}} Google Scholar"
-      href: https://scholar.google.com/citations?user=FY9tS9oAAAAJ&hl=en
-    - text: "{{< ai orcid >}} ORCID"
-      href: https://orcid.org/0009-0000-3928-6243
+page-layout: full
 ---
 
+```{=html}
+<style>
+#title-block-header {
+  display: none;
+}
+</style>
 
-# Welcome to Evannsmc
-
-egm \[at\] gatech \[dot\] edu
-
-evannsmc \[at\] gmail \[dot\] com
-
-Georgia Institute of Technology | Atlanta, GA
-PhD in Robotics | Aug 2022 - Present
-
-University of Texas at Arlington | Arlington, TX
-Honors B.S in Electrical Engineering | Aug 2018 - May 2022
-Minors in Mathematics and Physics
-Summa Cum Laude
+<div class="home-page">
+  <section class="home-hero">
+    <div class="home-hero-media">
+      <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
+    </div>
+    <div class="home-hero-copy">
+      <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
+      <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
+      <p class="home-hero-summary">
+        I work on safe autonomy for hardware systems, especially quadrotor UAVs, with an emphasis on nonlinear control, trajectory planning, and getting theory to survive contact with real platforms.
+      </p>
+      <div class="home-meta-grid">
+        <div class="home-meta-card">
+          <p class="home-meta-label">Now</p>
+          <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
+          <p class="home-meta-subtle">FACTS Lab · Aug 2022 - Present</p>
+        </div>
+        <div class="home-meta-card">
+          <p class="home-meta-label">Before</p>
+          <p class="home-meta-value">Honors B.S. in Electrical Engineering · UT Arlington</p>
+          <p class="home-meta-subtle">Minors in Mathematics and Physics · Summa Cum Laude</p>
+        </div>
+      </div>
+      <div class="home-contact-list">
+        <span class="home-contact-item">egm [at] gatech [dot] edu</span>
+        <span class="home-contact-item">evannsmc [at] gmail [dot] com</span>
+        <span class="home-contact-item">Atlanta, GA</span>
+      </div>
+      <div class="home-link-row">
+        <a class="home-link-pill primary" href="https://github.com/evannsm" target="_blank">GitHub</a>
+        <a class="home-link-pill" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
+        <a class="home-link-pill" href="https://scholar.google.com/citations?user=FY9tS9oAAAAJ&hl=en" target="_blank">Google Scholar</a>
+        <a class="home-link-pill" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
+      </div>
+    </div>
+  </section>
+</div>
+```
 
 
 ## Inside the Lab

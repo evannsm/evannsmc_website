@@ -186,28 +186,28 @@
     "href": "index.html",
     "title": "Evanns Morales-Cuadrado",
     "section": "",
-    "text": "egm [at] gatech [dot] edu\nevannsmc [at] gmail [dot] com\nGeorgia Institute of Technology | Atlanta, GA PhD in Robotics | Aug 2022 - Present\nUniversity of Texas at Arlington | Arlington, TX Honors B.S in Electrical Engineering | Aug 2018 - May 2022 Minors in Mathematics and Physics Summa Cum Laude\n\n\nI am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unmanned ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end.\nI hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career.\n\n\n\n\n  \n    My latest project\n    RTD-RAX is my latest work.\n    \n      Runtime-assurance trajectory planning for quadrotors, with online verification and repair instead of conservative offline safety buffers.\n    \n    Open RTD-RAX\n  \n  \n    \n  \n\n\n\n\n\n  \n    \n      Roots\n      Puerto Rico is still central.\n      \n        I was born and raised in Puerto Rico until I was 9, and that sense of home still shapes how I think about culture, belonging, and community.\n      \n    \n    \n      Community\n      BORI matters as much as the research.\n      \n        At Georgia Tech I helped co-found BORI to make campus feel more welcoming and culturally familiar for Puerto Rican students.\n      \n    \n    \n      Journey\n      The path keeps widening.\n      \n        From UT Arlington to Georgia Tech, then Toronto for ACC 2024, and next to Albuquerque for a Summer 2026 internship at Sandia National Laboratories.\n      \n    \n  \n  \n    More About Me\n    Open Journey Map"
+    "text": "Robotics Ph.D student · Georgia Tech\n      \n      \n        I work on safe autonomy for hardware systems, especially quadrotor UAVs, with an emphasis on nonlinear control, trajectory planning, and getting theory to survive contact with real platforms.\n      \n      \n        \n          Now\n          Ph.D. in Robotics · Georgia Tech\n          FACTS Lab · Aug 2022 - Present\n        \n        \n          Before\n          Honors B.S. in Electrical Engineering · UT Arlington\n          Minors in Mathematics and Physics · Summa Cum Laude\n        \n      \n      \n        egm [at] gatech [dot] edu\n        evannsmc [at] gmail [dot] com\n        Atlanta, GA\n      \n      \n        GitHub\n        LinkedIn\n        Google Scholar\n        ORCID"
   },
   {
     "objectID": "index.html#inside-the-lab",
     "href": "index.html#inside-the-lab",
     "title": "Evanns Morales-Cuadrado",
-    "section": "",
-    "text": "I am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unmanned ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end.\nI hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career."
+    "section": "Inside the Lab",
+    "text": "Inside the Lab\nI am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unmanned ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end.\nI hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career."
   },
   {
     "objectID": "index.html#my-latest-project",
     "href": "index.html#my-latest-project",
     "title": "Evanns Morales-Cuadrado",
-    "section": "",
-    "text": "My latest project\n    RTD-RAX is my latest work.\n    \n      Runtime-assurance trajectory planning for quadrotors, with online verification and repair instead of conservative offline safety buffers.\n    \n    Open RTD-RAX"
+    "section": "My Latest Project",
+    "text": "My Latest Project\n\n  \n    My latest project\n    RTD-RAX is my latest work.\n    \n      Runtime-assurance trajectory planning for quadrotors, with online verification and repair instead of conservative offline safety buffers.\n    \n    Open RTD-RAX"
   },
   {
     "objectID": "index.html#beyond-the-lab",
     "href": "index.html#beyond-the-lab",
     "title": "Evanns Morales-Cuadrado",
-    "section": "",
-    "text": "Roots\n      Puerto Rico is still central.\n      \n        I was born and raised in Puerto Rico until I was 9, and that sense of home still shapes how I think about culture, belonging, and community.\n      \n    \n    \n      Community\n      BORI matters as much as the research.\n      \n        At Georgia Tech I helped co-found BORI to make campus feel more welcoming and culturally familiar for Puerto Rican students.\n      \n    \n    \n      Journey\n      The path keeps widening.\n      \n        From UT Arlington to Georgia Tech, then Toronto for ACC 2024, and next to Albuquerque for a Summer 2026 internship at Sandia National Laboratories.\n      \n    \n  \n  \n    More About Me\n    Open Journey Map"
+    "section": "Beyond the Lab",
+    "text": "Beyond the Lab\n\n  \n    \n      Roots\n      Puerto Rico is still central.\n      \n        I was born and raised in Puerto Rico until I was 9, and that sense of home still shapes how I think about culture, belonging, and community.\n      \n    \n    \n      Community\n      BORI matters as much as the research.\n      \n        At Georgia Tech I helped co-found BORI to make campus feel more welcoming and culturally familiar for Puerto Rican students.\n      \n    \n    \n      Journey\n      The path keeps widening.\n      \n        From UT Arlington to Georgia Tech, then Toronto for ACC 2024, and next to Albuquerque for a Summer 2026 internship at Sandia National Laboratories.\n      \n    \n  \n  \n    More About Me\n    Open Journey Map"
   },
   {
     "objectID": "JOURNEY_FAILURE_ANALYSIS.html",
