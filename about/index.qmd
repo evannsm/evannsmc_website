@@ -512,6 +512,7 @@ title-block-banner: true
       Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: cooking for people, dancing, reading, writing, film, and finding ways to stay connected to community.
     </p>
     <div class="interests-grid">
+      <span class="interest-tag">Fitness</span>
       <span class="interest-tag">Cooking</span>
       <span class="interest-tag">Dance</span>
       <span class="interest-tag">Reading</span>
