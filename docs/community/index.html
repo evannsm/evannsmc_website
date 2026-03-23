@@ -475,7 +475,7 @@ ul.task-list li input[type="checkbox"] {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
   gap: 0.9rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .feature-figure {
@@ -492,6 +492,8 @@ ul.task-list li input[type="checkbox"] {
 
 .feature-figure.contain img {
   object-fit: contain;
+  height: auto;
+  max-height: 10.75rem;
   background: var(--bs-body-bg, #fff);
   padding: 0.55rem;
 }
@@ -505,9 +507,14 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .feature-gallery-stack {
-  display: grid;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 0.9rem;
+  align-self: start;
+}
+
+.feature-gallery-stack .feature-figure {
+  flex: 0 0 auto;
 }
 
 .community-events {
@@ -589,7 +596,7 @@ ul.task-list li input[type="checkbox"] {
 
 .hobbies-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 1.25rem;
 }
@@ -889,10 +896,14 @@ ul.task-list li input[type="checkbox"] {
   <section class="hobbies-feature">
     <p class="hobbies-title">What keeps me grounded</p>
     <p class="hobbies-copy">
-      A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
+      A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means staying active, cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
     </p>
 
     <div class="hobbies-grid">
+      <article class="hobby-card">
+        <h3 class="anchored">Fitness</h3>
+        <p>Staying active helps me reset, keep some balance, and make sure life does not collapse entirely into code, papers, and lab work.</p>
+      </article>
       <article class="hobby-card">
         <h3 class="anchored">Cooking</h3>
         <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
@@ -908,6 +919,7 @@ ul.task-list li input[type="checkbox"] {
     </div>
 
     <div class="interest-tags">
+      <span class="interest-tag">Fitness</span>
       <span class="interest-tag">Cooking</span>
       <span class="interest-tag">Dance</span>
       <span class="interest-tag">Reading</span>

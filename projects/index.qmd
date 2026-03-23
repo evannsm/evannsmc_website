@@ -150,7 +150,12 @@ title-block-banner: true
 }
 
 .project-preview-panel.rtd-preview img {
-  object-fit: contain;
+  width: 122%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  transform: translateX(-1%);
   background: var(--bs-body-bg, #fff);
 }
 
