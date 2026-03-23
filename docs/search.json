@@ -221,7 +221,7 @@
     "href": "index.html#my-latest-project",
     "title": "Evanns Morales-Cuadrado",
     "section": "My Latest Project",
-    "text": "My Latest Project\n\n  \n    My latest project\n    RTD-RAX.\n    \n      Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.\n      RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. \n    \n    Open RTD-RAX"
+    "text": "My Latest Project\n\n  \n    \n    'RTD-RAX.'\n    \n      Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.\n      RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. \n    \n    Open RTD-RAX"
   },
   {
     "objectID": "index.html#beyond-the-lab",
