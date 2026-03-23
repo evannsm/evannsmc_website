@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
       zoom: { center: [-97.1081, 32.7357], scale: 1750 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering',
-      description: 'UT Arlington is where I built the foundation: summa cum laude, honors thesis, electrical engineering honors scholar, minors in mathematics and physics, and early research experiences under the mentorship of Dr.Yan Wan and Dr. Frank Lewis.',
+      description: 'UT Arlington is where I built the foundation: honors thesis, summa cum laude, electrical engineering honors scholar, minors in mathematics and physics, and early research experiences under the mentorship of Dr.Yan Wan and Dr. Frank Lewis.',
       color: '#f97316',
       tint: 'rgba(249, 115, 22, 0.1)',
       highlightFill: 'rgba(249, 115, 22, 0.2)',
