@@ -13,12 +13,14 @@ page-layout: full
 
 <div class="home-page">
   <section class="home-hero">
-    <div class="home-hero-media">
-      <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
-    </div>
     <div class="home-hero-copy">
-      <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
-      <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
+      <div class="home-hero-name-row">
+        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
+        <div>
+          <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
+          <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
+        </div>
+      </div>
       <p class="home-hero-summary">
         I work on safe autonomy for hardware systems, especially quadrotor UAVs, with an emphasis on nonlinear control, trajectory planning, and getting theory to survive contact with real platforms.
       </p>
