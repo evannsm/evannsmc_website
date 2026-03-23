@@ -402,11 +402,12 @@ ul.task-list li input[type="checkbox"] {
             <img src="./files/about/Georgia_Tech_Yellow_Jackets_logo.svg.png" alt="Georgia Tech logo" class="home-meta-logo">
             <div>
               <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
-              <p class="home-meta-subtle">4.0 GPA · Summa Cum Laude · Deploy Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
+              <p class="home-meta-subtle">4.0 GPA · Summa Cum Laude · Deploying Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
-          <span class="home-meta-badge">Ph.D. under <a href="https://scholar.google.com/citations?user=jVFH7asAAAAJ" target="_blank">Dr. Samuel Coogan</a>, Eckman Award recipient</span>
+          <span class="home-meta-badge">Ph.D. under Eckman Award winner, <a href="https://scholar.google.com/citations?user=jVFH7asAAAAJ" target="_blank">Dr. Samuel Coogan</a></span>
+          <!-- , Eckman Award recipient</span> -->
         </div>
         <div class="home-meta-card">
           <div class="home-meta-card-header">
@@ -436,19 +437,6 @@ ul.task-list li input[type="checkbox"] {
         <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo figure-img">
         <figcaption class="home-hero-caption">C'est Moi.</figcaption>
       </figure>
-      <div class="home-focus-card">
-        <p class="home-focus-kicker">Focus areas</p>
-        <p class="home-focus-title">What currently takes up the whiteboard.</p>
-        <div class="home-focus-tags" aria-label="Research focus areas">
-          <span class="home-focus-tag">Robotics</span>
-          <span class="home-focus-tag">Safety</span>
-          <span class="home-focus-tag">Python</span>
-          <span class="home-focus-tag">JAX</span>
-          <span class="home-focus-tag">Research</span>
-          <span class="home-focus-tag">Quadrotors</span>
-          <span class="home-focus-tag">Control</span>
-        </div>
-      </div>
     </aside>
   </section>
 </div>
@@ -462,11 +450,20 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="my-latest-project">My Latest Project</h2>
 <a class="home-latest-project" href="./projects/rtd-rax/">
   <div class="home-latest-project-copy">
-    <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
-    <p class="home-latest-project-text">
-      Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
-      RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
-    </p>
+    <div class="home-latest-project-main">
+      <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
+      <div class="home-latest-project-tags" aria-label="RTD-RAX topic tags">
+        <span class="home-latest-project-tag">Robotics</span>
+        <span class="home-latest-project-tag">Safety</span>
+        <span class="home-latest-project-tag">Python</span>
+        <span class="home-latest-project-tag">JAX</span>
+        <span class="home-latest-project-tag">Research</span>
+      </div>
+      <p class="home-latest-project-text">
+        Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
+        RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
+      </p>
+    </div>
     <span class="home-latest-project-link">Open RTD-RAX</span>
   </div>
   <div class="home-latest-project-preview">
