@@ -26,12 +26,6 @@ body.quarto-light .footer {
   margin-right: 10px;
 }
 
-/* Let full-width pages use the entire screen */
-.page-layout-full .column-page {
-  max-width: 100% !important;
-  padding-left: clamp(1rem, 2vw, 2rem) !important;
-  padding-right: clamp(1rem, 2vw, 2rem) !important;
-}
 
 /* ── Day/Night toggle: sun/moon icon button ── */
 .quarto-color-scheme-toggle {
