@@ -197,7 +197,7 @@ body.quarto-light .footer {
 
 .home-meta-badge-mentor .home-meta-badge-subline {
   padding-left: 1rem;
-  font-size: 0.84em;
+  font-size: calc(0.84em + 2pt);
 }
 
 .home-meta-badge a {
