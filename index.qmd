@@ -42,6 +42,25 @@ My research is centered around safe autonomy of hardware systems, primarily focu
 I hope to walk the tightrope between theory and hardware implementation as seamlessly as possible and make contributions on both ends throughout my career.
 
 
+## My Latest Project
+
+```{=html}
+<a class="home-latest-project" href="./projects/rtd-rax/">
+  <div class="home-latest-project-copy">
+    <p class="home-snapshot-kicker">My latest project</p>
+    <p class="home-latest-project-title">RTD-RAX is my latest work.</p>
+    <p class="home-latest-project-text">
+      Runtime-assurance trajectory planning for quadrotors, with online verification and repair instead of conservative offline safety buffers.
+    </p>
+    <span class="home-latest-project-link">Open RTD-RAX</span>
+  </div>
+  <div class="home-latest-project-preview">
+    <img src="./projects/rtd-rax/gap_compare.gif" alt="RTD-RAX gap scenario animation">
+  </div>
+</a>
+```
+
+
 ## Beyond the Lab
 
 ```{=html}
@@ -69,19 +88,6 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
       </p>
     </div>
   </div>
-  <a class="home-latest-project" href="./projects/rtd-rax/">
-    <div class="home-latest-project-copy">
-      <p class="home-snapshot-kicker">My latest project</p>
-      <p class="home-latest-project-title">RTD-RAX is the current one I am most excited about.</p>
-      <p class="home-latest-project-text">
-        Runtime-assurance trajectory planning for quadrotors, with online verification and repair instead of conservative offline safety buffers.
-      </p>
-      <span class="home-latest-project-link">Open RTD-RAX</span>
-    </div>
-    <div class="home-latest-project-preview">
-      <img src="./projects/rtd-rax/gap_compare.gif" alt="RTD-RAX gap scenario animation">
-    </div>
-  </a>
   <div class="home-snapshot-links">
     <a class="home-snapshot-link primary" href="./about/">More About Me</a>
     <a class="home-snapshot-link" href="./journey/">Open Journey Map</a>

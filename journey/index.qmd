@@ -11,7 +11,7 @@ title-block-banner: true
 }
 
 #quarto-document-content.column-page {
-  max-width: min(99.4vw, 124rem) !important;
+  max-width: min(98vw, 75rem) !important;
 }
 
 :root {
@@ -24,9 +24,9 @@ title-block-banner: true
 }
 
 .journey-page {
-  max-width: none;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0.8rem 0.05rem 5rem;
+  padding: 2.5rem 1.5rem 5rem;
 }
 
 .journey-page.page-columns {
@@ -60,7 +60,7 @@ title-block-banner: true
 
 .journey-intro {
   max-width: 36rem;
-  margin: 0 0 0.55rem;
+  margin: 0 0 1.5rem;
   color: var(--journey-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
@@ -68,7 +68,7 @@ title-block-banner: true
 
 .journey-layout {
   display: flex;
-  gap: 0.5rem;
+  gap: 1.5rem;
   align-items: start;
 }
 
@@ -89,9 +89,9 @@ title-block-banner: true
 }
 
 .journey-detail {
-  flex: 0 0 9.75rem;
-  max-width: 9.75rem;
-  padding: 0.95rem;
+  flex: 0 0 11.5rem;
+  max-width: 11.5rem;
+  padding: 1.25rem;
   min-height: 0;
   align-self: start;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -99,7 +99,7 @@ title-block-banner: true
 
 .journey-detail-year {
   margin: 0 0 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
@@ -114,7 +114,7 @@ title-block-banner: true
 
 .journey-detail-title {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
@@ -131,14 +131,14 @@ title-block-banner: true
 
 .journey-detail-role {
   margin: 0 0 0.85rem;
-  font-size: 0.92rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .journey-detail-copy {
   margin: 0;
   color: var(--journey-text-secondary);
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   line-height: 1.7;
 }
 
@@ -230,8 +230,8 @@ title-block-banner: true
 }
 
 .journey-sidebar {
-  flex: 0 0 10.75rem;
-  max-width: 10.75rem;
+  flex: 0 0 12.5rem;
+  max-width: 12.5rem;
   padding: 0.1rem 0 0;
 }
 
@@ -434,7 +434,7 @@ title-block-banner: true
         <svg
           class="journey-map-svg"
           id="journey-map-svg"
-          viewBox="0 0 960 540"
+          viewBox="0 0 1120 700"
           role="img"
           aria-labelledby="journey-map-title"
         >
@@ -511,10 +511,10 @@ title-block-banner: true
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var WIDTH = 1120;
-  var HEIGHT = 590;
+  var HEIGHT = 700;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-86, 31.5], scale: 700 };
+  var OVERVIEW = { center: [-84, 34], scale: 650 };
 
   var stops = [
     {
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Home',
       countryId: '630',
       coordinates: [-66.5, 18.2],
-      zoom: { center: [-66.5, 18.2], scale: 1800 },
+      zoom: { center: [-66.5, 18.2], scale: 1900 },
       year: 'Before college',
       role: 'Home, culture, and resilience',
       description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
@@ -541,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'UT Arlington',
       stateName: 'Texas',
       coordinates: [-97.1081, 32.7357],
-      zoom: { center: [-97.1081, 32.7357], scale: 1350 },
+      zoom: { center: [-97.1081, 32.7357], scale: 1500 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering',
       description: 'UT Arlington is where I built the foundation: summa cum laude, minors in mathematics and physics, and early research experience with the Wan and Lewis labs.',
@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Georgia Tech',
       stateName: 'Georgia',
       coordinates: [-84.3963, 33.7756],
-      zoom: { center: [-84.3963, 33.7756], scale: 1500 },
+      zoom: { center: [-84.3963, 33.7756], scale: 1700 },
       year: 'Aug 2022 - Present',
       role: 'Ph.D. in Robotics, FACTS Lab',
       description: 'Georgia Tech is home base now: safe autonomy research, nonlinear control for quadrotor UAVs, robotics teaching, and co-founding BORI to build Puerto Rican community on campus.',
@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'ACC 2024',
       countryId: '124',
       coordinates: [-79.3832, 43.6532],
-      zoom: { center: [-79.3832, 43.6532], scale: 1650 },
+      zoom: { center: [-79.3832, 43.6532], scale: 1800 },
       year: '2024',
       role: 'Presented ACC paper in Toronto',
       description: 'I presented my paper, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control," at the 2024 American Control Conference in Toronto.',
@@ -592,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Sandia',
       stateName: 'New Mexico',
       coordinates: [-106.6504, 35.0844],
-      zoom: { center: [-106.6504, 35.0844], scale: 1500 },
+      zoom: { center: [-106.6504, 35.0844], scale: 1700 },
       year: 'Summer 2026',
       role: 'Incoming intern at Sandia National Laboratories',
       description: 'This upcoming summer I will be in Albuquerque, New Mexico for an internship at Sandia National Laboratories.',
@@ -655,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return d3.geoMercator()
       .center(currentCenter)
       .scale(currentScale)
-      .translate([WIDTH / 2, HEIGHT / 2 - 46]);
+      .translate([WIDTH / 2, HEIGHT / 2]);
   }
 
   function animateTo(targetCenter, targetScale) {

@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -352,12 +387,77 @@ ul.task-list li input[type="checkbox"] {
 
 
 <ol type="1">
-<li>Crop out the right side just a bit more again it’s almost how I need it to be</li>
+<li><p>Crop out the right side just a bit more again it’s almost how I need it to be</p></li>
+<li><p>Put my latest project thing above the beyond the lab thing in the home page.</p></li>
+<li><p>Use the abstract to improve the NAHS project entry:” This paper addresses the problem of safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty in a static environment. We leverage the recently developed framework of interval signal temporal logic to accommodate uncertainty. We then propose a runtime assurance algorithm that, at each controller update step, considers the proposed input from a nominal controller and minimally adjusts the proposed input to maintain satisfaction of the safety specification at all times under all realizations of the uncertainty. Similar to related methods for control synthesis from temporal logic constraints with or without uncertainty, our algorithm requires solving a mixed integer linear program at each control update step. We equip our solution with necessary conditions to guarantee its feasibility for all time. The efficiencies afforded by interval signal temporal logic imply that our algorithm incurs a modest increase in the size of the program to accommodate uncertainty, and we demonstrate via experiments the real-time computational tractability of this approach. Moreover, we prove that, if a computation deadline is ever missed, our solution approach ensures that a safe backup input is always available. We demonstrate our approach on a miniature autonomous blimp.”</p>
+<p>And here’s a figure from the paper I want to have on the NAHS project page itself please adapt it for use on the website: “</p>
+<p>” I have put the two images in the figure in root for you to place where needed to make this happen.</p></li>
+<li><p>Make <code>RTD-RAX</code> Render Like LaTeX <code>\texttt{}</code> Across Website</p></li>
 </ol>
-<p>Ignore everything below here. Future: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page<br>
-3. YOU DIDN’T FIX THIS: journey page: The layout is now correct. However, the map is way too small. Expand the margins so that the page is well utilized and everything is the proper size that it needs to be. Use the example from my friend’s website if needed (at /home/egmc/resume_portfolio).</p>
+<section id="goal" class="level2">
+<h2 class="anchored" data-anchor-id="goal">Goal</h2>
+<p>Ensure that every instance of <strong>RTD-RAX</strong> on the website is displayed in a LaTeX-style typewriter (monospace) format, similar to <code>\texttt{RTD-RAX}</code>.</p>
+<hr>
+</section>
+<section id="step-1-add-css-class" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-add-css-class">Step 1 — Add CSS Class</h2>
+<p>Add the following CSS to the global stylesheet:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode css code-with-copy"><code class="sourceCode css"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.tt</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-family</span><span class="ch">:</span> <span class="st">"Fira Code"</span><span class="op">,</span> <span class="st">"JetBrains Mono"</span><span class="op">,</span> <span class="st">"Courier New"</span><span class="op">,</span> <span class="dv">monospace</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-size</span><span class="ch">:</span> <span class="dv">0.95</span><span class="dt">em</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">letter-spacing</span><span class="ch">:</span> <span class="dv">0.03</span><span class="dt">em</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="step-2-replace-all-instances-in-html" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-replace-all-instances-in-html">Step 2 — Replace All Instances in HTML</h2>
+<p>Find every occurrence of:</p>
+<pre><code>RTD-RAX</code></pre>
+<p>Replace it with:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span><span class="ot"> class</span><span class="op">=</span><span class="st">"tt"</span><span class="dt">&gt;</span>RTD-RAX<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="step-3-scope-of-replacement" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-scope-of-replacement">Step 3 — Scope of Replacement</h2>
+<p>Apply this change consistently across:</p>
+<ul>
+<li>Home page</li>
+<li>Project pages</li>
+<li>Blog posts</li>
+<li>Navigation / banners</li>
+<li>Any dynamically rendered content (if applicable)</li>
+</ul>
+<hr>
+</section>
+<section id="step-4-important-notes" class="level2">
+<h2 class="anchored" data-anchor-id="step-4-important-notes">Step 4 — Important Notes</h2>
+<ul>
+<li>Do <strong>not</strong> use <code>&lt;code&gt;</code> tags unless specifically desired for semantic code blocks.</li>
+<li>Always use the <code>&lt;span class="tt"&gt;...&lt;/span&gt;</code> approach for styling consistency.</li>
+<li>Ensure no duplicate wrapping occurs (i.e., avoid nesting <code>.tt</code> inside <code>.tt</code>).</li>
+</ul>
+<hr>
+</section>
+<section id="step-5-optional-advanced-consistency" class="level2">
+<h2 class="anchored" data-anchor-id="step-5-optional-advanced-consistency">Step 5 — Optional (Advanced Consistency)</h2>
+<p>If using a component framework (React, etc.), create a reusable component:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode jsx code-with-copy"><code class="sourceCode javascriptreact"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TT <span class="op">=</span> ({ children }) <span class="kw">=&gt;</span> (</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;span</span> <span class="ot">className</span><span class="op">=</span><span class="st">"tt"</span><span class="kw">&gt;</span><span class="va">{</span>children<span class="va">}</span><span class="kw">&lt;/span&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then replace instances with:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode jsx code-with-copy"><code class="sourceCode javascriptreact"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;TT&gt;</span>RTD-RAX<span class="fu">&lt;/TT&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="result" class="level2">
+<h2 class="anchored" data-anchor-id="result">Result</h2>
+<p>All instances of <strong>RTD-RAX</strong> will visually match LaTeX <code>\texttt{}</code> styling across the site.</p>
+<p>Ignore everything below here. Future: 1. How does the AI thing (via claude API I believe) work in /home/egmc/resume_portfolio my friend’s website code? How could I integrate something similar? 2. Improve the “Beyond the Lab” part in the home page</p>
+<ol start="2" type="1">
+<li>Expand margins across all pages</li>
+</ol>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

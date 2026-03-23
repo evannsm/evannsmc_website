@@ -172,7 +172,7 @@ title-block-banner: true
 }
 
 .project-preview-panel.rtd-preview img {
-  width: 104.5%;
+  width: 105.5%;
   height: 100%;
   max-width: none;
   object-fit: cover;
@@ -627,21 +627,21 @@ title-block-banner: true
               <span class="project-toggle"></span>
             </div>
             <p class="project-preview-copy">
-              Runtime assurance for uncertain systems using interval signal temporal logic, focused on reasoning about temporal specifications under bounded uncertainty.
+              Safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty, using interval STL and runtime assurance with real-time MILP-based correction.
             </p>
           </div>
           <div class="project-preview-panel">
             <div class="project-preview-custom">
               <p class="project-preview-title">NAHS 2025 submission</p>
               <div class="project-preview-lines">
-                <div class="project-preview-line">Interval Signal Temporal Logic</div>
-                <div class="project-preview-line">Uncertain nonlinear systems</div>
-                <div class="project-preview-line">Runtime assurance guarantees</div>
+                <div class="project-preview-line">Linear systems with bounded uncertainty</div>
+                <div class="project-preview-line">Minimal runtime input correction</div>
+                <div class="project-preview-line">Miniature autonomous blimp demo</div>
               </div>
               <div class="project-preview-metrics">
                 <span class="project-preview-metric">iSTL</span>
+                <span class="project-preview-metric">MILP</span>
                 <span class="project-preview-metric">NAHS</span>
-                <span class="project-preview-metric">Safety</span>
               </div>
             </div>
           </div>
@@ -651,12 +651,12 @@ title-block-banner: true
         <div class="project-body-grid">
           <div class="project-detail-copy">
             <p>
-              This project studies how to certify uncertain system behavior against temporal logic requirements without collapsing everything into worst-case conservatism. The core idea is to use interval signal temporal logic to reason directly about bounded uncertainty and preserve meaningful runtime-assurance guarantees.
+              This project addresses safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty in a static environment. A runtime-assurance layer evaluates the nominal controller's proposed input at each update step and minimally adjusts it whenever needed to maintain specification satisfaction under all realizations of the uncertainty.
             </p>
             <ul class="project-detail-list">
-              <li>Targets uncertain systems where temporal requirements matter, not just pointwise state constraints.</li>
-              <li>Builds on interval reasoning to keep guarantees interpretable under bounded uncertainty.</li>
-              <li>Represents the formal-methods side of the same safe-autonomy thread that shows up in the planning and control work.</li>
+              <li>Leverages interval signal temporal logic so uncertainty can be handled directly with only a modest program-size increase.</li>
+              <li>Solves a mixed-integer linear program at each controller update step and includes conditions that guarantee long-horizon feasibility.</li>
+              <li>Ensures a safe backup input is always available if a computation deadline is ever missed, and demonstrates real-time tractability on a miniature autonomous blimp.</li>
             </ul>
           </div>
           <div class="project-actions">
