@@ -7,6 +7,10 @@ project:
     - overleaf_presentations
     - files/site_icon/apple-touch-icon.png
     - files/about/PR_flag_island.png
+    - files/journey/js/d3.min.js
+    - files/journey/js/topojson-client.min.js
+    - files/journey/data/countries-110m.json
+    - files/journey/data/us-states.json
     - googleffaf8e4b1a20676c.html
 
 website:

@@ -147,17 +147,9 @@ title-block-banner: true
 }
 
 .journey-link-title {
-  margin: 0 0 0.35rem;
+  margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
-}
-
-.journey-link-copy {
-  margin: 0;
-  color: var(--about-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  max-width: 40rem;
 }
 
 .journey-link-button {
@@ -296,19 +288,19 @@ title-block-banner: true
   <div class="about-metrics">
     <div class="metric-card">
       <p class="metric-value">4</p>
-      <p class="metric-label">Languages studied</p>
+      <p class="metric-label">Languages</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">3</p>
-      <p class="metric-label">Places anchoring the journey</p>
+      <p class="metric-label">Locations</p>
     </div>
     <div class="metric-card">
-      <p class="metric-value">3</p>
-      <p class="metric-label">Research labs across the path</p>
+      <p class="metric-value">4</p>
+      <p class="metric-label">Research Labs</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">1</p>
-      <p class="metric-label">Community organization co-founded</p>
+      <p class="metric-label">Community Organization Founded</p>
     </div>
   </div>
 
@@ -320,19 +312,14 @@ title-block-banner: true
     <div>
       <p class="origin-title">Puerto Rico</p>
       <p class="origin-copy">
-        I was born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters so much to me.
+        I was born and raised on the island until I was 9. Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters to me.
       </p>
     </div>
   </div>
 
   <p class="about-section-heading">Journey</p>
   <div class="journey-link-card">
-    <div>
-      <p class="journey-link-title">The map has its own page now.</p>
-      <p class="journey-link-copy">
-        Your friend's site keeps Journey as a separate map-based experience, so this site does too now. Open the dedicated page to see the Puerto Rico - Arlington - Atlanta path in a map layout instead of the old text-only timeline.
-      </p>
-    </div>
+    <p class="journey-link-title">Open the interactive journey map.</p>
     <a class="journey-link-button" href="../journey/">Open Journey Map</a>
   </div>
 
@@ -378,14 +365,12 @@ title-block-banner: true
 
   <p class="about-section-heading">Interests</p>
   <div class="interests-grid">
-    <span class="interest-tag">Safe Autonomy</span>
-    <span class="interest-tag">Quadrotor UAVs</span>
-    <span class="interest-tag">Nonlinear Control</span>
-    <span class="interest-tag">Hardware Deployment</span>
     <span class="interest-tag">Cooking</span>
     <span class="interest-tag">Dance</span>
     <span class="interest-tag">Reading</span>
+    <span class="interest-tag">Writing</span>
     <span class="interest-tag">Community Building</span>
+    <span class="interest-tag">Film</span>
   </div>
 </div>
 

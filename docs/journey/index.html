@@ -377,12 +377,11 @@ ul.task-list li input[type="checkbox"] {
 
 :root {
   --journey-accent: #2563eb;
+  --journey-bg-primary: var(--bs-body-bg, #ffffff);
   --journey-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --journey-text-primary: var(--bs-body-color, #1c1917);
   --journey-text-secondary: var(--bs-secondary-color, #57534e);
   --journey-border: var(--bs-border-color, #e7e5e4);
-  --journey-map-water: rgba(37, 99, 235, 0.06);
-  --journey-map-land: rgba(148, 163, 184, 0.18);
-  --journey-map-stroke: rgba(100, 116, 139, 0.4);
 }
 
 .journey-page {
@@ -412,7 +411,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-intro {
-  max-width: 38rem;
+  max-width: 36rem;
   margin: 0 0 2rem;
   color: var(--journey-text-secondary);
   font-size: 1rem;
@@ -421,7 +420,7 @@ ul.task-list li input[type="checkbox"] {
 
 .journey-layout {
   display: grid;
-  grid-template-columns: 18rem minmax(0, 1fr) 17rem;
+  grid-template-columns: 18rem minmax(0, 1fr) 18rem;
   gap: 1.25rem;
   align-items: start;
 }
@@ -435,21 +434,41 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-detail {
-  padding: 1.35rem;
+  padding: 1.3rem;
+  min-height: 14rem;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .journey-detail-year {
   margin: 0 0 0.4rem;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+}
+
+.journey-detail-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
 }
 
 .journey-detail-title {
-  margin: 0 0 0.35rem;
-  font-size: 1.25rem;
+  margin: 0;
+  font-size: 1.2rem;
   font-weight: 700;
+}
+
+.journey-detail-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .journey-detail-role {
@@ -469,96 +488,81 @@ ul.task-list li input[type="checkbox"] {
   padding: 1rem;
 }
 
-.journey-map-frame {
+.journey-map-shell {
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
+  border: 1px solid rgba(100, 116, 139, 0.18);
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
     linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02));
-  border: 1px solid rgba(100, 116, 139, 0.16);
 }
 
-.journey-map {
+.journey-reset {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  z-index: 3;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--journey-border);
+  border-radius: 0.8rem;
+  background: var(--journey-bg-primary);
+  color: var(--journey-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.journey-reset:hover,
+.journey-reset:focus {
+  color: var(--journey-text-primary);
+}
+
+.journey-map-svg {
   display: block;
   width: 100%;
   height: auto;
+  color: var(--journey-text-primary);
 }
 
-.journey-map-caption {
-  margin: 0.75rem 0 0;
+.journey-map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
   color: var(--journey-text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.5;
-}
-
-.map-grid line {
-  stroke: rgba(100, 116, 139, 0.12);
-  stroke-width: 1;
-}
-
-.map-landmass {
-  fill: var(--journey-map-land);
-  stroke: var(--journey-map-stroke);
-  stroke-width: 2;
-}
-
-.map-region {
-  fill: transparent;
-  stroke: transparent;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.map-region.is-active {
-  opacity: 1;
-  fill: var(--stop-tint);
-  stroke: var(--stop-color);
-  stroke-width: 2;
-}
-
-.route-line {
-  fill: none;
-  stroke: rgba(100, 116, 139, 0.45);
-  stroke-width: 2.5;
-  stroke-dasharray: 10 8;
-  stroke-linecap: round;
-}
-
-.map-stop {
-  cursor: pointer;
-  outline: none;
-}
-
-.map-stop .stop-ring {
-  fill: transparent;
-  stroke: var(--stop-color);
-  stroke-width: 2;
-  opacity: 0.35;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.map-stop .stop-core {
-  fill: var(--stop-color);
-  stroke: #fff;
-  stroke-width: 2;
-}
-
-.map-stop .stop-label {
-  font-size: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
-  fill: currentColor;
+  backdrop-filter: blur(2px);
 }
 
-.map-stop .stop-subtitle {
-  font-size: 10px;
-  fill: var(--journey-text-secondary);
+.journey-map-loading[hidden] {
+  display: none;
 }
 
-.map-stop.is-active .stop-ring,
-.map-stop:hover .stop-ring,
-.map-stop:focus .stop-ring {
-  opacity: 0.75;
+.journey-map-photo {
+  position: absolute;
+  z-index: 2;
+  width: 10.5rem;
+  height: 7rem;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.journey-map-photo[hidden] {
+  display: none;
+}
+
+.journey-map-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .journey-sidebar {
@@ -567,7 +571,7 @@ ul.task-list li input[type="checkbox"] {
 
 .journey-sidebar-heading {
   color: var(--journey-text-secondary);
-  margin: 0 0 0.8rem;
+  margin: 0 0 0.85rem;
 }
 
 .journey-stops {
@@ -581,6 +585,11 @@ ul.task-list li input[type="checkbox"] {
   padding: 0.9rem 1rem;
   text-align: left;
   transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.timeline-stop:hover,
+.timeline-stop:focus {
+  background: var(--journey-bg-primary);
 }
 
 .timeline-stop.is-active {
@@ -603,10 +612,28 @@ ul.task-list li input[type="checkbox"] {
   background: var(--stop-color);
 }
 
+.timeline-city-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
 .timeline-city {
   margin: 0;
   font-size: 0.96rem;
   font-weight: 700;
+}
+
+.timeline-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .timeline-label,
@@ -617,21 +644,77 @@ ul.task-list li input[type="checkbox"] {
   line-height: 1.45;
 }
 
+.map-country,
+.map-state,
+.route-line,
+.map-stop .stop-ring,
+.map-stop .stop-core,
+.map-stop .marker-emoji,
+.map-stop .marker-city,
+.map-stop .marker-label {
+  transition: all 0.2s ease;
+}
+
+.route-line {
+  fill: none;
+  stroke: rgba(100, 116, 139, 0.22);
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+  stroke-linecap: round;
+}
+
+.map-stop {
+  cursor: pointer;
+}
+
+.map-stop .stop-ring {
+  fill: transparent;
+  stroke: var(--stop-color);
+  stroke-width: 1.4;
+  opacity: 0.4;
+}
+
+.map-stop .stop-core {
+  fill: var(--stop-color);
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.map-stop .marker-emoji,
+.map-stop .marker-city,
+.map-stop .marker-label {
+  user-select: none;
+  pointer-events: none;
+}
+
+.map-stop .marker-emoji {
+  font-size: 13px;
+}
+
+.map-stop .marker-city {
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--journey-text-primary);
+}
+
+.map-stop .marker-label {
+  font-size: 10px;
+  fill: var(--journey-text-secondary);
+}
+
+.map-stop.is-active .stop-ring,
+.map-stop:hover .stop-ring,
+.map-stop:focus .stop-ring {
+  opacity: 0.8;
+}
+
 @media (max-width: 1080px) {
   .journey-layout {
     grid-template-columns: 1fr;
   }
 
-  .journey-sidebar {
-    order: 3;
-  }
-
   .journey-detail {
-    order: 1;
-  }
-
-  .journey-map-panel {
-    order: 2;
+    min-height: 0;
   }
 }
 
@@ -640,203 +723,573 @@ ul.task-list li input[type="checkbox"] {
     padding: 2.5rem 1rem 4rem;
   }
 
-  .journey-map-panel {
-    padding: 0.75rem;
+  .journey-map-panel,
+  .journey-sidebar,
+  .journey-detail {
+    padding: 0.95rem;
   }
 }
 </style>
 
 <div class="journey-page page-columns page-full">
   <p class="journey-kicker">Journey</p>
-  <p class="journey-title">From Puerto Rico to the lab.</p>
+  <p class="journey-title">From the island to the lab.</p>
   <p class="journey-intro">
-    This now follows the same structure as your friend's site: a dedicated Journey page with a map, a focused detail card, and a clickable timeline. Click a marker or stop to shift the spotlight.
+    Every stop shaped how I work and who I am. Click a marker or stop to zoom in.
   </p>
 
   <div class="journey-layout page-columns page-full">
     <aside class="journey-panel journey-detail" id="journey-detail">
-      <p class="journey-detail-year" id="journey-detail-year">Where it all began</p>
-      <p class="journey-detail-title" id="journey-detail-title">Puerto Rico</p>
+      <p class="journey-detail-year" id="journey-detail-year">Before college</p>
+      <div class="journey-detail-title-row">
+        <p class="journey-detail-title" id="journey-detail-title">Puerto Rico</p>
+        <span class="journey-detail-badge" id="journey-detail-badge" hidden="">Upcoming</span>
+      </div>
       <p class="journey-detail-role" id="journey-detail-role">Home, culture, and resilience</p>
       <p class="journey-detail-copy" id="journey-detail-copy">
-        Growing up on the island gave me community, identity, and the kind of resilience that still shapes how I work. It is the reason BORI mattered enough to build once I got to Georgia Tech.
+        Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.
       </p>
     </aside>
 
     <div class="journey-panel journey-map-panel">
-      <div class="journey-map-frame">
-        <svg class="journey-map" viewbox="0 0 960 540" role="img" aria-labelledby="journey-map-title">
-          <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, and Atlanta</title>
-
-          <g class="map-grid" aria-hidden="true">
-            <line x1="120" y1="70" x2="120" y2="460"></line>
-            <line x1="240" y1="70" x2="240" y2="460"></line>
-            <line x1="360" y1="70" x2="360" y2="460"></line>
-            <line x1="480" y1="70" x2="480" y2="460"></line>
-            <line x1="600" y1="70" x2="600" y2="460"></line>
-            <line x1="720" y1="70" x2="720" y2="460"></line>
-            <line x1="840" y1="70" x2="840" y2="460"></line>
-            <line x1="80" y1="110" x2="900" y2="110"></line>
-            <line x1="80" y1="190" x2="900" y2="190"></line>
-            <line x1="80" y1="270" x2="900" y2="270"></line>
-            <line x1="80" y1="350" x2="900" y2="350"></line>
-            <line x1="80" y1="430" x2="900" y2="430"></line>
-          </g>
-
-          <path class="map-landmass" d="M100 95 C96 154 108 201 145 238 C178 272 232 313 304 332 C354 345 404 365 447 392 C481 413 529 418 567 402 C607 386 638 357 646 317 C652 287 642 255 617 226 C602 208 592 183 598 156 C606 119 653 92 705 102 C744 109 785 137 805 171 C821 197 842 209 870 214 C889 218 903 232 900 249 C892 281 858 307 814 312 C773 316 737 326 714 342 C689 361 653 369 614 362 C575 355 545 340 516 317 C490 297 459 285 420 279 C381 273 347 264 318 246 C286 227 251 220 223 231 C194 242 171 236 153 214 C133 190 123 164 117 129 C115 114 109 103 100 95 Z"></path>
-
-          <path class="map-region" id="region-uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.2);" d="M274 244 L334 252 L360 286 L346 322 L306 338 L271 308 L274 271 Z"></path>
-          <path class="map-region" id="region-gt" style="--stop-color:#b3a369; --stop-tint:rgba(179, 163, 105, 0.24);" d="M463 239 L516 237 L532 262 L516 291 L479 287 L462 260 Z"></path>
-          <path class="map-region" id="region-pr" style="--stop-color:#ef4444; --stop-tint:rgba(239, 68, 68, 0.22);" d="M744 390 C757 380 780 378 796 388 C808 397 808 410 793 417 C775 426 748 421 739 406 C735 399 737 395 744 390 Z"></path>
-
-          <path class="route-line" d="M768 398 C664 355 462 314 319 286"></path>
-          <path class="route-line" d="M319 286 C385 242 452 223 497 260"></path>
-
-          <g class="map-stop is-active" data-stop="pr" tabindex="0" role="button" aria-label="Focus Puerto Rico" style="--stop-color:#ef4444;">
-            <circle class="stop-ring" cx="768" cy="398" r="18"></circle>
-            <circle class="stop-core" cx="768" cy="398" r="7"></circle>
-            <text class="stop-label" x="768" y="373" text-anchor="middle">Puerto Rico</text>
-            <text class="stop-subtitle" x="768" y="386" text-anchor="middle">Where it all began</text>
-          </g>
-
-          <g class="map-stop" data-stop="uta" tabindex="0" role="button" aria-label="Focus Arlington, Texas" style="--stop-color:#f97316;">
-            <circle class="stop-ring" cx="319" cy="286" r="18"></circle>
-            <circle class="stop-core" cx="319" cy="286" r="7"></circle>
-            <text class="stop-label" x="319" y="258" text-anchor="middle">Arlington</text>
-            <text class="stop-subtitle" x="319" y="271" text-anchor="middle">UT Arlington</text>
-          </g>
-
-          <g class="map-stop" data-stop="gt" tabindex="0" role="button" aria-label="Focus Atlanta, Georgia" style="--stop-color:#b3a369;">
-            <circle class="stop-ring" cx="497" cy="260" r="18"></circle>
-            <circle class="stop-core" cx="497" cy="260" r="7"></circle>
-            <text class="stop-label" x="548" y="244" text-anchor="start">Atlanta</text>
-            <text class="stop-subtitle" x="548" y="257" text-anchor="start">Georgia Tech</text>
-          </g>
+      <div class="journey-map-shell">
+        <button type="button" class="journey-reset" id="journey-reset" hidden="">← Full map</button>
+        <div class="journey-map-photo" id="journey-map-photo" hidden="">
+          <img id="journey-map-photo-img" alt="">
+        </div>
+        <div class="journey-map-loading" id="journey-map-loading">Loading map...</div>
+        <svg class="journey-map-svg" id="journey-map-svg" viewbox="0 0 960 540" role="img" aria-labelledby="journey-map-title">
+          <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, Atlanta, Toronto, and Albuquerque</title>
         </svg>
       </div>
-      <p class="journey-map-caption">Puerto Rico - Arlington - Atlanta. A simpler Quarto implementation, but now the page behaves like a map-based Journey tab rather than a plain vertical timeline.</p>
     </div>
 
     <aside class="journey-sidebar">
       <p class="journey-sidebar-heading">Timeline</p>
       <div class="journey-stops">
-        <button class="timeline-stop is-active" data-stop="pr" style="--stop-color:#ef4444; --stop-tint:rgba(239, 68, 68, 0.1);">
+        <button type="button" class="timeline-stop is-active" data-stop="pr" style="--stop-color:#ef3340; --stop-tint:rgba(239, 51, 64, 0.1);">
           <div class="timeline-topline">
             <span class="timeline-dot"></span>
-            <p class="timeline-city">Puerto Rico</p>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Puerto Rico</p>
+            </div>
           </div>
-          <p class="timeline-label">Home base</p>
+          <p class="timeline-label">Home</p>
           <p class="timeline-year">Before college</p>
         </button>
 
-        <button class="timeline-stop" data-stop="uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.1);">
+        <button type="button" class="timeline-stop" data-stop="uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.1);">
           <div class="timeline-topline">
             <span class="timeline-dot"></span>
-            <p class="timeline-city">Arlington, TX</p>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Arlington, TX</p>
+            </div>
           </div>
           <p class="timeline-label">UT Arlington</p>
           <p class="timeline-year">Aug 2018 - May 2022</p>
         </button>
 
-        <button class="timeline-stop" data-stop="gt" style="--stop-color:#b3a369; --stop-tint:rgba(179, 163, 105, 0.14);">
+        <button type="button" class="timeline-stop" data-stop="gt" style="--stop-color:#b3a369; --stop-tint:rgba(179, 163, 105, 0.14);">
           <div class="timeline-topline">
             <span class="timeline-dot"></span>
-            <p class="timeline-city">Atlanta, GA</p>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Atlanta, GA</p>
+            </div>
           </div>
           <p class="timeline-label">Georgia Tech</p>
           <p class="timeline-year">Aug 2022 - Present</p>
+        </button>
+
+        <button type="button" class="timeline-stop" data-stop="tor" style="--stop-color:#dc2626; --stop-tint:rgba(220, 38, 38, 0.1);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Toronto, ON</p>
+            </div>
+          </div>
+          <p class="timeline-label">ACC 2024</p>
+          <p class="timeline-year">2024</p>
+        </button>
+
+        <button type="button" class="timeline-stop" data-stop="snl" style="--stop-color:#0f766e; --stop-tint:rgba(15, 118, 110, 0.1);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Albuquerque, NM</p>
+              <span class="timeline-badge">Upcoming</span>
+            </div>
+          </div>
+          <p class="timeline-label">Sandia National Laboratories</p>
+          <p class="timeline-year">Summer 2026</p>
         </button>
       </div>
     </aside>
   </div>
 </div>
 
+<script src="../files/journey/js/d3.min.js"></script>
+<script src="../files/journey/js/topojson-client.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var stops = {
-    pr: {
-      year: 'Where it all began',
-      title: 'Puerto Rico',
-      role: 'Home, culture, and resilience',
-      copy: 'Growing up on the island gave me community, identity, and the kind of resilience that still shapes how I work. It is the reason BORI mattered enough to build once I got to Georgia Tech.',
-      color: '#ef4444',
-      tint: 'rgba(239, 68, 68, 0.1)'
-    },
-    uta: {
-      year: 'Aug 2018 - May 2022',
-      title: 'Arlington, TX - UT Arlington',
-      role: 'Honors B.S. in Electrical Engineering',
-      copy: 'UTA is where I built the formal engineering foundation. I graduated summa cum laude, added minors in math and physics, and got my start in research through the Wan and Lewis labs.',
-      color: '#f97316',
-      tint: 'rgba(249, 115, 22, 0.1)'
-    },
-    gt: {
-      year: 'Aug 2022 - Present',
-      title: 'Atlanta, GA - Georgia Tech',
-      role: 'Ph.D. in Robotics, FACTS Lab',
-      copy: 'Georgia Tech is where the work became both more theoretical and more personal: safe autonomy research, quadrotor hardware, teaching in robotics, and co-founding BORI to build Puerto Rican community on campus.',
-      color: '#b3a369',
-      tint: 'rgba(179, 163, 105, 0.14)'
-    }
-  };
+  var WIDTH = 960;
+  var HEIGHT = 540;
+  var GEO_URL = '../files/journey/data/countries-110m.json';
+  var US_STATES_URL = '../files/journey/data/us-states.json';
+  var OVERVIEW = { center: [-52, 36], scale: 290 };
 
+  var stops = [
+    {
+      id: 'pr',
+      city: 'Puerto Rico',
+      label: 'Home',
+      countryId: '630',
+      coordinates: [-66.5, 18.2],
+      zoom: { center: [-66.5, 18.2], scale: 1800 },
+      year: 'Before college',
+      role: 'Home, culture, and resilience',
+      description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
+      color: '#ef3340',
+      tint: 'rgba(239, 51, 64, 0.1)',
+      highlightFill: 'rgba(239, 51, 64, 0.18)',
+      emoji: '🇵🇷',
+      image: '../files/about/PR_flag_island.png',
+      overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
+    },
+    {
+      id: 'uta',
+      city: 'Arlington, TX',
+      label: 'UT Arlington',
+      stateName: 'Texas',
+      coordinates: [-97.1081, 32.7357],
+      zoom: { center: [-97.1081, 32.7357], scale: 1350 },
+      year: 'Aug 2018 - May 2022',
+      role: 'Honors B.S. in Electrical Engineering',
+      description: 'UT Arlington is where I built the foundation: summa cum laude, minors in mathematics and physics, and early research experience with the Wan and Lewis labs.',
+      color: '#f97316',
+      tint: 'rgba(249, 115, 22, 0.1)',
+      highlightFill: 'rgba(249, 115, 22, 0.2)',
+      emoji: '🎓',
+      overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
+    },
+    {
+      id: 'gt',
+      city: 'Atlanta, GA',
+      label: 'Georgia Tech',
+      stateName: 'Georgia',
+      coordinates: [-84.3963, 33.7756],
+      zoom: { center: [-84.3963, 33.7756], scale: 1500 },
+      year: 'Aug 2022 - Present',
+      role: 'Ph.D. in Robotics, FACTS Lab',
+      description: 'Georgia Tech is home base now: safe autonomy research, nonlinear control for quadrotor UAVs, robotics teaching, and co-founding BORI to build Puerto Rican community on campus.',
+      color: '#b3a369',
+      tint: 'rgba(179, 163, 105, 0.14)',
+      highlightFill: 'rgba(179, 163, 105, 0.24)',
+      emoji: '🐝',
+      image: '../files/LabPhoto.png',
+      overviewLabel: { anchor: 'start', x: 16, emojiY: -10, labelY: 5 }
+    },
+    {
+      id: 'tor',
+      city: 'Toronto, ON',
+      label: 'ACC 2024',
+      countryId: '124',
+      coordinates: [-79.3832, 43.6532],
+      zoom: { center: [-79.3832, 43.6532], scale: 1650 },
+      year: '2024',
+      role: 'Presented ACC paper in Toronto',
+      description: 'I presented my paper, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control," at the 2024 American Control Conference in Toronto.',
+      color: '#dc2626',
+      tint: 'rgba(220, 38, 38, 0.1)',
+      highlightFill: 'rgba(220, 38, 38, 0.18)',
+      emoji: '📄',
+      overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
+    },
+    {
+      id: 'snl',
+      city: 'Albuquerque, NM',
+      label: 'Sandia',
+      stateName: 'New Mexico',
+      coordinates: [-106.6504, 35.0844],
+      zoom: { center: [-106.6504, 35.0844], scale: 1500 },
+      year: 'Summer 2026',
+      role: 'Incoming intern at Sandia National Laboratories',
+      description: 'This upcoming summer I will be in Albuquerque, New Mexico for an internship at Sandia National Laboratories.',
+      color: '#0f766e',
+      tint: 'rgba(15, 118, 110, 0.1)',
+      highlightFill: 'rgba(15, 118, 110, 0.18)',
+      emoji: '🔬',
+      upcoming: true,
+      overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
+    }
+  ];
+
+  var journeyLines = [
+    ['pr', 'uta'],
+    ['uta', 'gt'],
+    ['gt', 'tor'],
+    ['tor', 'gt'],
+    ['gt', 'snl']
+  ];
+
+  var activeId = 'pr';
+  var zoomed = false;
+  var currentCenter = OVERVIEW.center.slice();
+  var currentScale = OVERVIEW.scale;
+  var animationFrame = null;
+  var worldFeatures = [];
+  var stateFeatures = [];
+
+  var svg = d3.select('#journey-map-svg');
+  var loading = document.getElementById('journey-map-loading');
+  var resetButton = document.getElementById('journey-reset');
   var detail = document.getElementById('journey-detail');
   var detailYear = document.getElementById('journey-detail-year');
   var detailTitle = document.getElementById('journey-detail-title');
+  var detailBadge = document.getElementById('journey-detail-badge');
   var detailRole = document.getElementById('journey-detail-role');
   var detailCopy = document.getElementById('journey-detail-copy');
   var timelineStops = Array.prototype.slice.call(document.querySelectorAll('.timeline-stop'));
-  var mapStops = Array.prototype.slice.call(document.querySelectorAll('.map-stop'));
-  var mapRegions = {
-    pr: document.getElementById('region-pr'),
-    uta: document.getElementById('region-uta'),
-    gt: document.getElementById('region-gt')
-  };
+  var photoCard = document.getElementById('journey-map-photo');
+  var photoImg = document.getElementById('journey-map-photo-img');
 
-  function setActive(id) {
-    var stop = stops[id];
-    if (!stop) return;
+  var routeLayer = svg.append('g');
+  var countryLayer = svg.append('g');
+  var stateLayer = svg.append('g');
+  var markerLayer = svg.append('g');
 
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function isDarkMode() {
+    return document.body.classList.contains('quarto-dark');
+  }
+
+  function getStop(id) {
+    return stops.find(function (stop) { return stop.id === id; }) || null;
+  }
+
+  function buildProjection() {
+    return d3.geoMercator()
+      .center(currentCenter)
+      .scale(currentScale)
+      .translate([WIDTH / 2, HEIGHT / 2]);
+  }
+
+  function animateTo(targetCenter, targetScale) {
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+    }
+
+    var startCenter = currentCenter.slice();
+    var startScale = currentScale;
+    var startTime = performance.now();
+    var duration = 900;
+
+    function frame(now) {
+      var t = Math.min((now - startTime) / duration, 1);
+      var eased = easeInOutCubic(t);
+
+      currentCenter = [
+        startCenter[0] + (targetCenter[0] - startCenter[0]) * eased,
+        startCenter[1] + (targetCenter[1] - startCenter[1]) * eased
+      ];
+      currentScale = startScale + (targetScale - startScale) * eased;
+
+      renderMap();
+
+      if (t < 1) {
+        animationFrame = requestAnimationFrame(frame);
+      } else {
+        animationFrame = null;
+      }
+    }
+
+    animationFrame = requestAnimationFrame(frame);
+  }
+
+  function updateDetail(stop) {
     detailYear.textContent = stop.year;
-    detailTitle.textContent = stop.title;
+    detailYear.style.color = stop.color;
+    detailTitle.textContent = stop.city;
     detailRole.textContent = stop.role;
-    detailCopy.textContent = stop.copy;
-    detail.style.borderColor = stop.color;
+    detailCopy.textContent = stop.description;
+    detail.style.borderColor = stop.color + '55';
     detail.style.backgroundColor = stop.tint;
 
+    if (stop.upcoming) {
+      detailBadge.hidden = false;
+      detailBadge.style.backgroundColor = stop.tint;
+      detailBadge.style.color = stop.color;
+    } else {
+      detailBadge.hidden = true;
+    }
+  }
+
+  function updateTimeline() {
     timelineStops.forEach(function (button) {
-      button.classList.toggle('is-active', button.getAttribute('data-stop') === id);
-    });
-
-    mapStops.forEach(function (marker) {
-      marker.classList.toggle('is-active', marker.getAttribute('data-stop') === id);
-    });
-
-    Object.keys(mapRegions).forEach(function (key) {
-      mapRegions[key].classList.toggle('is-active', key === id);
+      button.classList.toggle('is-active', button.getAttribute('data-stop') === activeId);
     });
   }
 
-  timelineStops.forEach(function (button) {
-    button.addEventListener('click', function () {
-      setActive(button.getAttribute('data-stop'));
-    });
-  });
+  function updatePhoto(projection) {
+    var stop = getStop(activeId);
+    if (!zoomed || !stop || !stop.image) {
+      photoCard.hidden = true;
+      return;
+    }
 
-  mapStops.forEach(function (marker) {
-    marker.addEventListener('click', function () {
-      setActive(marker.getAttribute('data-stop'));
-    });
+    var point = projection(stop.coordinates);
+    var left = point[0] + 18;
+    var top = point[1] - 130;
 
-    marker.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        setActive(marker.getAttribute('data-stop'));
+    left = Math.max(10, Math.min(left, WIDTH - 178));
+    top = Math.max(10, Math.min(top, HEIGHT - 118));
+
+    photoImg.src = stop.image;
+    photoImg.alt = stop.city;
+    photoCard.style.left = left + 'px';
+    photoCard.style.top = top + 'px';
+    photoCard.hidden = false;
+  }
+
+  function renderMap() {
+    if (!worldFeatures.length || !stateFeatures.length) {
+      return;
+    }
+
+    var activeStop = getStop(activeId);
+    var projection = buildProjection();
+    var path = d3.geoPath(projection);
+    var defaultCountryFill = isDarkMode() ? '#2a2a2a' : '#c8cdd5';
+    var defaultStroke = isDarkMode() ? '#3a3a3a' : '#a0a8b4';
+    var routeStroke = isDarkMode() ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.15)';
+
+    countryLayer
+      .selectAll('path')
+      .data(worldFeatures)
+      .join('path')
+      .attr('class', 'map-country')
+      .attr('d', path)
+      .attr('fill', function (feature) {
+        return activeStop && activeStop.countryId === String(feature.id)
+          ? activeStop.highlightFill
+          : defaultCountryFill;
+      })
+      .attr('stroke', function (feature) {
+        return activeStop && activeStop.countryId === String(feature.id)
+          ? activeStop.color
+          : defaultStroke;
+      })
+      .attr('stroke-width', function (feature) {
+        return activeStop && activeStop.countryId === String(feature.id) ? 1.5 : 0.5;
+      });
+
+    stateLayer
+      .selectAll('path')
+      .data(stateFeatures)
+      .join('path')
+      .attr('class', 'map-state')
+      .attr('d', path)
+      .attr('fill', function (feature) {
+        return activeStop && activeStop.stateName === feature.properties.name
+          ? activeStop.highlightFill
+          : 'transparent';
+      })
+      .attr('stroke', function (feature) {
+        return activeStop && activeStop.stateName === feature.properties.name
+          ? activeStop.color
+          : defaultStroke;
+      })
+      .attr('stroke-width', function (feature) {
+        return activeStop && activeStop.stateName === feature.properties.name ? 1.5 : 0.5;
+      });
+
+    routeLayer
+      .selectAll('path')
+      .data(journeyLines.map(function (segment) {
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              getStop(segment[0]).coordinates,
+              getStop(segment[1]).coordinates
+            ]
+          }
+        };
+      }))
+      .join('path')
+      .attr('class', 'route-line')
+      .attr('d', path)
+      .attr('stroke', routeStroke)
+      .attr('opacity', zoomed ? 0 : 1);
+
+    var markers = markerLayer
+      .selectAll('g')
+      .data(stops, function (stop) { return stop.id; })
+      .join(function (enter) {
+        var group = enter.append('g')
+          .attr('class', 'map-stop')
+          .attr('tabindex', 0)
+          .attr('role', 'button');
+
+        group.append('circle').attr('class', 'stop-ring');
+        group.append('circle').attr('class', 'stop-core');
+        group.append('text').attr('class', 'marker-emoji');
+        group.append('text').attr('class', 'marker-city');
+        group.append('text').attr('class', 'marker-label');
+
+        return group;
+      });
+
+    markers
+      .attr('data-stop', function (stop) { return stop.id; })
+      .attr('transform', function (stop) {
+        var point = projection(stop.coordinates);
+        return 'translate(' + point[0] + ',' + point[1] + ')';
+      })
+      .classed('is-active', function (stop) {
+        return stop.id === activeId;
+      })
+      .style('--stop-color', function (stop) {
+        return stop.color;
+      })
+      .on('click', function (event, stop) {
+        selectStop(stop.id, true);
+      })
+      .on('keydown', function (event, stop) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectStop(stop.id, true);
+        }
+      });
+
+    markers.select('.stop-ring')
+      .attr('r', function (stop) {
+        return stop.id === activeId ? 13 : 9;
+      });
+
+    markers.select('.stop-core')
+      .attr('r', function (stop) {
+        return stop.id === activeId ? 6 : 4;
+      });
+
+    markers.select('.marker-emoji')
+      .attr('display', zoomed ? 'none' : null)
+      .attr('text-anchor', function (stop) {
+        return stop.overviewLabel.anchor;
+      })
+      .attr('x', function (stop) {
+        return stop.overviewLabel.x;
+      })
+      .attr('y', function (stop) {
+        return stop.overviewLabel.emojiY;
+      })
+      .text(function (stop) {
+        return stop.emoji;
+      });
+
+    markers.select('.marker-city')
+      .attr('display', function (stop) {
+        return zoomed && stop.id === activeId ? null : 'none';
+      })
+      .attr('text-anchor', 'middle')
+      .attr('x', 0)
+      .attr('y', 28)
+      .text(function (stop) {
+        return stop.city;
+      });
+
+    markers.select('.marker-label')
+      .attr('display', function (stop) {
+        return zoomed && stop.id === activeId ? null : null;
+      })
+      .attr('text-anchor', function (stop) {
+        if (zoomed && stop.id === activeId) {
+          return 'middle';
+        }
+        return stop.overviewLabel.anchor;
+      })
+      .attr('x', function (stop) {
+        if (zoomed && stop.id === activeId) {
+          return 0;
+        }
+        return stop.overviewLabel.x;
+      })
+      .attr('y', function (stop) {
+        if (zoomed && stop.id === activeId) {
+          return 43;
+        }
+        return stop.overviewLabel.labelY;
+      })
+      .text(function (stop) {
+        return zoomed && stop.id === activeId ? stop.label : stop.label;
+      });
+
+    markers.each(function (stop) {
+      if (zoomed && stop.id !== activeId) {
+        d3.select(this).select('.marker-label').attr('display', 'none');
       }
     });
+
+    resetButton.hidden = !zoomed;
+    updatePhoto(projection);
+  }
+
+  function selectStop(id, shouldZoom) {
+    var stop = getStop(id);
+    if (!stop) {
+      return;
+    }
+
+    activeId = id;
+    updateDetail(stop);
+    updateTimeline();
+
+    if (shouldZoom) {
+      zoomed = true;
+      animateTo(stop.zoom.center, stop.zoom.scale);
+    } else {
+      renderMap();
+    }
+  }
+
+  function zoomOut() {
+    zoomed = false;
+    animateTo(OVERVIEW.center, OVERVIEW.scale);
+  }
+
+  resetButton.addEventListener('click', zoomOut);
+
+  timelineStops.forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectStop(button.getAttribute('data-stop'), true);
+    });
   });
 
-  setActive('pr');
+  new MutationObserver(function () {
+    renderMap();
+  }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+  Promise.all([
+    d3.json(GEO_URL),
+    d3.json(US_STATES_URL)
+  ]).then(function (results) {
+    var worldData = results[0];
+    var statesData = results[1];
+
+    worldFeatures = topojson.feature(worldData, worldData.objects.countries).features;
+    stateFeatures = statesData.features;
+
+    loading.hidden = true;
+    updateDetail(getStop(activeId));
+    updateTimeline();
+    renderMap();
+  }).catch(function () {
+    loading.hidden = false;
+    loading.textContent = 'Map failed to load.';
+  });
 });
 </script>
 
