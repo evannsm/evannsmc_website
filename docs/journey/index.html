@@ -372,7 +372,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 #quarto-document-content.column-page {
-  max-width: min(98vw, 75rem) !important;
+  max-width: min(98vw, 95rem) !important;
 }
 
 :root {
@@ -385,7 +385,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-page {
-  max-width: 1200px;
+  max-width: 1520px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 5rem;
 }
@@ -450,8 +450,8 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-detail {
-  flex: 0 0 11.5rem;
-  max-width: 11.5rem;
+  flex: 0 0 12.5rem;
+  max-width: 12.5rem;
   padding: 1.25rem;
   min-height: 0;
   align-self: start;
@@ -591,8 +591,8 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-sidebar {
-  flex: 0 0 12.5rem;
-  max-width: 12.5rem;
+  flex: 0 0 13.5rem;
+  max-width: 13.5rem;
   padding: 0.1rem 0 0;
 }
 
@@ -792,7 +792,7 @@ ul.task-list li input[type="checkbox"] {
           <img id="journey-map-photo-img" alt="">
         </div>
         <div class="journey-map-loading" id="journey-map-loading">Loading map...</div>
-        <svg class="journey-map-svg" id="journey-map-svg" viewbox="0 0 1120 700" role="img" aria-labelledby="journey-map-title">
+        <svg class="journey-map-svg" id="journey-map-svg" viewbox="0 0 1120 800" role="img" aria-labelledby="journey-map-title">
           <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, Atlanta, Toronto, and Albuquerque</title>
         </svg>
       </div>
@@ -866,10 +866,10 @@ ul.task-list li input[type="checkbox"] {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var WIDTH = 1120;
-  var HEIGHT = 700;
+  var HEIGHT = 800;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-84, 34], scale: 650 };
+  var OVERVIEW = { center: [-84, 34], scale: 950 };
 
   var stops = [
     {
@@ -878,7 +878,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Home',
       countryId: '630',
       coordinates: [-66.5, 18.2],
-      zoom: { center: [-66.5, 18.2], scale: 1900 },
+      zoom: { center: [-66.5, 18.2], scale: 2200 },
       year: 'Before college',
       role: 'Home, culture, and resilience',
       description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'UT Arlington',
       stateName: 'Texas',
       coordinates: [-97.1081, 32.7357],
-      zoom: { center: [-97.1081, 32.7357], scale: 1500 },
+      zoom: { center: [-97.1081, 32.7357], scale: 1600 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering',
       description: 'UT Arlington is where I built the foundation: summa cum laude, minors in mathematics and physics, and early research experience with the Wan and Lewis labs.',
@@ -912,7 +912,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Georgia Tech',
       stateName: 'Georgia',
       coordinates: [-84.3963, 33.7756],
-      zoom: { center: [-84.3963, 33.7756], scale: 1700 },
+      zoom: { center: [-84.3963, 33.7756], scale: 1800 },
       year: 'Aug 2022 - Present',
       role: 'Ph.D. in Robotics, FACTS Lab',
       description: 'Georgia Tech is home base now: safe autonomy research, nonlinear control for quadrotor UAVs, robotics teaching, and co-founding BORI to build Puerto Rican community on campus.',
@@ -931,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'ACC 2024',
       countryId: '124',
       coordinates: [-79.3832, 43.6532],
-      zoom: { center: [-79.3832, 43.6532], scale: 1800 },
+      zoom: { center: [-79.3832, 43.6532], scale: 1900 },
       year: '2024',
       role: 'Presented ACC paper in Toronto',
       description: 'I presented my paper, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control," at the 2024 American Control Conference in Toronto.',
@@ -947,7 +947,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Sandia',
       stateName: 'New Mexico',
       coordinates: [-106.6504, 35.0844],
-      zoom: { center: [-106.6504, 35.0844], scale: 1700 },
+      zoom: { center: [-106.6504, 35.0844], scale: 1800 },
       year: 'Summer 2026',
       role: 'Incoming intern at Sandia National Laboratories',
       description: 'This upcoming summer I will be in Albuquerque, New Mexico for an internship at Sandia National Laboratories.',
