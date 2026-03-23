@@ -430,7 +430,7 @@ main.content.column-page {
 
   <div class="journey-layout">
     <aside class="journey-panel journey-detail" id="journey-detail">
-      <p class="journey-detail-year" id="journey-detail-year">Before college</p>
+      <!-- <p class="journey-detail-year" id="journey-detail-year">Before college</p> -->
       <div class="journey-detail-title-row">
         <p class="journey-detail-title" id="journey-detail-title">Puerto Rico</p>
         <span class="journey-detail-badge" id="journey-detail-badge" hidden>Upcoming</span>
@@ -454,7 +454,7 @@ main.content.column-page {
           role="img"
           aria-labelledby="journey-map-title"
         >
-          <title id="journey-map-title">Journey map connecting Puerto Rico, Arlington, Atlanta, Toronto, and Albuquerque</title>
+          <title id="journey-map-title">Journey map connecting Puerto Rico, Colleyville, Arlington, Atlanta, Toronto, and Albuquerque</title>
         </svg>
       </div>
     </div>
@@ -471,6 +471,17 @@ main.content.column-page {
           </div>
           <p class="timeline-label">Home</p>
           <p class="timeline-year">Before college</p>
+        </button>
+
+        <button type="button" class="timeline-stop" data-stop="chhs" style="--stop-color:#2563eb; --stop-tint:rgba(37, 99, 235, 0.1);">
+          <div class="timeline-topline">
+            <span class="timeline-dot"></span>
+            <div class="timeline-city-row">
+              <p class="timeline-city">Colleyville, TX</p>
+            </div>
+          </div>
+          <p class="timeline-label">Colleyville Heritage HS</p>
+          <p class="timeline-year">High school</p>
         </button>
 
         <button type="button" class="timeline-stop" data-stop="uta" style="--stop-color:#f97316; --stop-tint:rgba(249, 115, 22, 0.1);">
@@ -552,6 +563,22 @@ document.addEventListener('DOMContentLoaded', function () {
       overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
     },
     {
+      id: 'chhs',
+      city: 'Colleyville, TX',
+      label: 'CHHS',
+      stateName: 'Texas',
+      coordinates: [-97.1031, 32.8874],
+      zoom: { center: [-97.1031, 32.8874], scale: 2100 },
+      year: 'High school',
+      role: 'Colleyville Heritage High School',
+      description: 'At Colleyville Heritage High School, I graduated 15th out of 495 students in my class and was recognized as both a National Merit Scholar and a National Hispanic Scholar.',
+      color: '#2563eb',
+      tint: 'rgba(37, 99, 235, 0.1)',
+      highlightFill: 'rgba(37, 99, 235, 0.18)',
+      emoji: '🏫',
+      overviewLabel: { anchor: 'end', x: -14, emojiY: -24, labelY: -8 }
+    },
+    {
       id: 'uta',
       city: 'Arlington, TX',
       label: 'UT Arlington',
@@ -559,13 +586,13 @@ document.addEventListener('DOMContentLoaded', function () {
       coordinates: [-97.1081, 32.7357],
       zoom: { center: [-97.1081, 32.7357], scale: 1750 },
       year: 'Aug 2018 - May 2022',
-      role: 'Honors B.S. in Electrical Engineering',
+      role: 'Honors B.S. in Electrical Engineering & Full Ride Scholarship',
       description: 'UT Arlington is where I built the foundation: honors thesis, summa cum laude, electrical engineering honors scholar, minors in mathematics and physics, and early research experiences under the mentorship of Dr.Yan Wan and Dr. Frank Lewis.',
       color: '#f97316',
       tint: 'rgba(249, 115, 22, 0.1)',
       highlightFill: 'rgba(249, 115, 22, 0.2)',
       emoji: '🎓',
-      overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
+      overviewLabel: { anchor: 'start', x: 14, emojiY: -22, labelY: -8 }
     },
     {
       id: 'gt',
@@ -622,7 +649,8 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   var journeyLines = [
-    ['pr', 'uta'],
+    ['pr', 'chhs'],
+    ['chhs', 'uta'],
     ['uta', 'gt'],
     ['gt', 'tor'],
     ['tor', 'gt'],
