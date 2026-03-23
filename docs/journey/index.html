@@ -1094,8 +1094,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateDetail(stop) {
-    detailYear.textContent = stop.year;
-    detailYear.style.color = stop.color;
+    if (detailYear) {
+      detailYear.textContent = stop.year;
+      detailYear.style.color = stop.color;
+    }
     detailTitle.textContent = stop.city;
     detailRole.textContent = stop.role;
     detailCopy.textContent = stop.description;
