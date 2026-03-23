@@ -292,7 +292,7 @@ title-block-banner: true
     </div>
     <div class="metric-card">
       <p class="metric-value">3</p>
-      <p class="metric-label">Locations</p>
+      <p class="metric-label">Places That Shaped My Journey</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">4</p>
