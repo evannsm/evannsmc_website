@@ -205,7 +205,7 @@ main.content.column-page {
 
 .project-preview-panel.rtd-preview {
   min-height: 0;
-  aspect-ratio: 2.22 / 1;
+  aspect-ratio: 1.4 / 1;
 }
 
 .project-preview-custom {
