@@ -190,9 +190,9 @@ title-block-banner: true
 
 .community-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
-  gap: 1.75rem;
-  padding: 1.6rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(24rem, 0.9fr);
+  gap: 2rem;
+  padding: 2rem;
   margin-bottom: 3rem;
 }
 

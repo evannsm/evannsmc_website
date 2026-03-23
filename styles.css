@@ -1,5 +1,18 @@
 /* css styles */
 
+/* ── Dark side margins (light mode only) ── */
+body.quarto-light {
+  background-color: #1a1a1a;
+}
+
+body.quarto-light #quarto-content {
+  background: #fff;
+}
+
+body.quarto-light .footer {
+  background: #fff;
+}
+
 /* Make navbar logo bigger */
 .navbar-brand img {
   height: 50px !important;  /* Default is around 30px, this makes it bigger */
