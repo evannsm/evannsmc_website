@@ -26,12 +26,12 @@ body.quarto-light .footer {
   margin-right: 10px;
 }
 
-/* Let all pages use the entire screen */
+/* Let all pages use the entire screen — shells handle their own padding */
 .column-page,
 .page-layout-full .column-page {
   max-width: 100% !important;
-  padding-left: clamp(1rem, 2vw, 2rem) !important;
-  padding-right: clamp(1rem, 2vw, 2rem) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 /* ── Day/Night toggle: sun/moon icon button ── */
@@ -97,7 +97,6 @@ body.quarto-light .footer {
 
 .home-hero-sidebar {
   flex-shrink: 0;
-  margin-left: -14rem;
   width: 13rem;
 }
 
