@@ -387,7 +387,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .about-shell {
-  max-width: 68rem;
+  max-width: 76rem;
   margin: 0 auto;
   padding: 3rem 1.5rem 5rem;
 }
@@ -400,11 +400,11 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .about-avatar {
-  width: 104px;
-  height: 104px;
+  width: 112px;
+  height: 112px;
   border-radius: 999px;
   object-fit: cover;
-  object-position: 50% 18%;
+  object-position: 50% 16%;
   flex-shrink: 0;
 }
 
@@ -429,7 +429,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .about-bio {
-  max-width: 48rem;
+  max-width: 50rem;
   margin-bottom: 2.5rem;
   color: var(--about-text-secondary);
   font-size: 1rem;
@@ -480,8 +480,8 @@ ul.task-list li input[type="checkbox"] {
 .origin-card {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
+  gap: 1.75rem;
+  padding: 1.6rem;
   margin-bottom: 3rem;
 }
 
@@ -506,7 +506,8 @@ ul.task-list li input[type="checkbox"] {
 
 .origin-copy,
 .community-copy,
-.hobbies-copy {
+.hobbies-copy,
+.section-link-copy {
   margin: 0;
   color: var(--about-text-secondary);
   font-size: 0.95rem;
@@ -523,12 +524,19 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-link-title {
-  margin: 0;
+  margin: 0 0 0.3rem;
   font-size: 1.15rem;
   font-weight: 700;
 }
 
-.journey-link-button {
+.journey-link-copy {
+  margin: 0;
+  color: var(--about-text-secondary);
+  line-height: 1.65;
+}
+
+.journey-link-button,
+.section-link-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -542,16 +550,18 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-link-button:hover,
-.journey-link-button:focus {
+.journey-link-button:focus,
+.section-link-button:hover,
+.section-link-button:focus {
   color: #fff;
   opacity: 0.92;
 }
 
 .community-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-  gap: 1.5rem;
-  padding: 1.5rem;
+  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
+  gap: 1.75rem;
+  padding: 1.6rem;
   margin-bottom: 3rem;
 }
 
@@ -564,7 +574,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .community-list {
-  margin: 0;
+  margin: 0 0 1.2rem;
   padding-left: 1.2rem;
   color: var(--about-text-secondary);
 }
@@ -573,9 +583,19 @@ ul.task-list li input[type="checkbox"] {
   margin-top: 0.55rem;
 }
 
+.section-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.3rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--about-border);
+}
+
 .community-gallery {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
   gap: 0.85rem;
   align-items: stretch;
 }
@@ -606,46 +626,6 @@ ul.task-list li input[type="checkbox"] {
 .community-figure.small img {
   height: 100%;
   object-fit: cover;
-}
-
-.about-deeper {
-  margin-top: 1.15rem;
-  border: 1px solid var(--about-border);
-  border-radius: 0.95rem;
-  background: var(--bs-body-bg, #fff);
-}
-
-.about-deeper summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.9rem 1rem;
-  font-size: 0.92rem;
-  font-weight: 700;
-}
-
-.about-deeper summary::-webkit-details-marker {
-  display: none;
-}
-
-.about-deeper-content {
-  padding: 0 1rem 1rem;
-  color: var(--about-text-secondary);
-}
-
-.about-deeper-content p:last-child {
-  margin-bottom: 0;
-}
-
-.hobby-columns {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.hobby-columns strong {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--bs-body-color, #1a1a1a);
 }
 
 .lang-stack {
@@ -690,7 +670,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .hobbies-card {
-  padding: 1.5rem;
+  padding: 1.6rem;
 }
 
 .interests-grid {
@@ -720,7 +700,8 @@ ul.task-list li input[type="checkbox"] {
     grid-template-columns: 1fr;
   }
 
-  .journey-link-card {
+  .journey-link-card,
+  .section-link-row {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -747,10 +728,6 @@ ul.task-list li input[type="checkbox"] {
   }
 
   .community-gallery {
-    grid-template-columns: 1fr;
-  }
-
-  .hobby-columns {
     grid-template-columns: 1fr;
   }
 
@@ -815,7 +792,12 @@ ul.task-list li input[type="checkbox"] {
 
   <p class="about-section-heading">Journey</p>
   <div class="journey-link-card">
-    <p class="journey-link-title">Open the interactive journey map.</p>
+    <div>
+      <p class="journey-link-title">Open the interactive journey map.</p>
+      <p class="journey-link-copy">
+        The map traces Puerto Rico, UT Arlington, Georgia Tech, Toronto for ACC 2024, and Albuquerque for Sandia.
+      </p>
+    </div>
     <a class="journey-link-button" href="../journey/">Open Journey Map</a>
   </div>
 
@@ -828,20 +810,15 @@ ul.task-list li input[type="checkbox"] {
       </p>
       <ul class="community-list">
         <li>We create spaces that feel culturally familiar, from kickoff events to game nights and shared Puerto Rican food.</li>
-        <li>We try to be useful, not just social - helping newer students find people, resources, and a sense of belonging.</li>
+        <li>We try to be useful, not just social, helping newer students find people, resources, and a sense of belonging.</li>
         <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li>
       </ul>
-      <details class="about-deeper">
-        <summary>Go deeper into Community &amp; Hobbies</summary>
-        <div class="about-deeper-content">
-          <p>
-            Some of the BORI moments that best capture the spirit of the group are the inaugural event in Fall 2024, the Spring 2025 kickoff and game night, and the Fall 2025 events that focused on helping newer students settle into Georgia Tech and Atlanta.
-          </p>
-          <p>
-            The throughline across all of them is the same: making Puerto Rican students feel recognized, connected, and at home.
-          </p>
-        </div>
-      </details>
+      <div class="section-link-row">
+        <p class="section-link-copy">
+          The longer version, including BORI events and the non-research side, lives on the standalone page.
+        </p>
+        <a class="section-link-button" href="../community/">Open Community &amp; Hobbies</a>
+      </div>
     </div>
     <div class="community-gallery">
       <figure class="community-figure figure">
@@ -850,7 +827,7 @@ ul.task-list li input[type="checkbox"] {
       </figure>
       <figure class="community-figure small figure">
         <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coqui with Coquito" class="figure-img">
-        <figcaption>The BORI mascot: Coquí with Coquito </figcaption>
+        <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
       </figure>
     </div>
   </div>
@@ -899,7 +876,7 @@ ul.task-list li input[type="checkbox"] {
   <div class="hobbies-card">
     <p class="hobbies-title">What I come back to.</p>
     <p class="hobbies-copy">
-      Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: cooking for people, dancing, reading, writing, and finding ways to stay connected to community.
+      Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: cooking for people, dancing, reading, writing, film, and finding ways to stay connected to community.
     </p>
     <div class="interests-grid">
       <span class="interest-tag">Cooking</span>
@@ -909,25 +886,12 @@ ul.task-list li input[type="checkbox"] {
       <span class="interest-tag">Film</span>
       <span class="interest-tag">Community Building</span>
     </div>
-    <details class="about-deeper">
-      <summary>Go deeper into the non-research side</summary>
-      <div class="about-deeper-content">
-        <div class="hobby-columns">
-          <div>
-            <strong>Cooking</strong>
-            <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
-          </div>
-          <div>
-            <strong>Dance</strong>
-            <p>Dance is one of the ways I stay expressive and connected to culture rather than letting everything become only work and theory.</p>
-          </div>
-          <div>
-            <strong>Reading &amp; Writing</strong>
-            <p>Those are usually where I go when I want to slow down, think clearly, and return to ideas in a less technical way.</p>
-          </div>
-        </div>
-      </div>
-    </details>
+    <div class="section-link-row">
+      <p class="section-link-copy">
+        That fuller side of the story now lives with the BORI material on the standalone Community &amp; Hobbies page.
+      </p>
+      <a class="section-link-button" href="../community/">Go Deeper</a>
+    </div>
   </div>
 </div>
 

@@ -367,33 +367,54 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>These are my publications (even my undergraduate honors thesis for nostalgia)</p>
+<p>These are my publications, including the undergraduate honors thesis for nostalgia.</p>
 <style>
   .publist ol {
-    list-style-type: none;
-    counter-reset: item;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .publist ol > li {
+    margin-bottom: 1rem;
     padding-left: 0;
   }
-  .publist ol > li {
-    counter-increment: item;
-    margin-bottom: 1rem;
+
+  .pub-marker {
+    font-weight: 700;
+    margin-right: 0.25rem;
   }
-  .publist ol > li::before {
-    content: "[" counter(item) "]  ";
+
+  .publist a {
     font-weight: 700;
   }
-  .publist a {font-weight: bold;}
 </style>
 <div class="publist">
 <ol type="1">
-<li><strong>Evanns Morales-Cuadrado</strong>, “<a href="https://mavmatrix.uta.edu/honors_spring2022/60/">Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance</a>” Undergraduate Honors College Thesis at UT Arlington, 2022.</li>
-<li><strong>E. Morales-Cuadrado</strong>, C. Llanes, Y. Wardi and S. Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” <a href="https://arxiv.org/abs/2408.11197"><em>2024 American Control Conference (ACC)</em></a></li>
-<li>L. Baird, <strong>E. Morales-Cuadrado</strong>, and S. Coogan, “Runtime Assurance for Uncertain Systems from Interval Signal Temporal Logic.” Submitted to IFAC Nonlinear Analysis: Hybrid Systems (NAHS), 2025. <em>(under revision)</em></li>
-<li><strong>E. Morales-Cuadrado</strong>, L. Baird, Y. Wardi and S. Coogan, “Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method.” Submitted to IEEE Transactions on Control Systems Technology, 2026. <em>(under revision)</em> <a href="https://arxiv.org/abs/2508.14185"><em>arXiv preprint available.</em></a></li>
-<li><strong>E. Morales-Cuadrado</strong>, L. Chung, S. Kousik and S. Coogan, “Fast, Safe Trajectory Planning for Systems under Unknown Disturbances.” Joint Submission to 2026 Modeling, Estimation and Control Conference (MECC) and ASME Letters in Dynamic Systems and Control (ALDSC). <em>(under revision)</em></li>
+<li><p><strong>E. Morales-Cuadrado</strong>, L. Chung, S. Kousik and S. Coogan, “Fast, Safe Trajectory Planning for Systems under Unknown Disturbances.” Joint Submission to 2026 Modeling, Estimation and Control Conference (MECC) and ASME Letters in Dynamic Systems and Control (ALDSC). <em>(under revision)</em></p></li>
+<li><p><strong>E. Morales-Cuadrado</strong>, L. Baird, Y. Wardi and S. Coogan, “Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method.” Submitted to IEEE Transactions on Control Systems Technology, 2026. <em>(under revision)</em> <a href="https://arxiv.org/abs/2508.14185"><em>arXiv preprint available.</em></a></p></li>
+<li><p>L. Baird, <strong>E. Morales-Cuadrado</strong>, and S. Coogan, “Runtime Assurance for Uncertain Systems from Interval Signal Temporal Logic.” Submitted to IFAC Nonlinear Analysis: Hybrid Systems (NAHS), 2025. <em>(under revision)</em></p></li>
+<li><p><strong>E. Morales-Cuadrado</strong>, C. Llanes, Y. Wardi and S. Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” <a href="https://arxiv.org/abs/2408.11197"><em>2024 American Control Conference (ACC)</em></a></p></li>
+<li><p><strong>Evanns Morales-Cuadrado</strong>, “<a href="https://mavmatrix.uta.edu/honors_spring2022/60/">Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance</a>” Undergraduate Honors College Thesis at UT Arlington, 2022.</p></li>
 </ol>
 </div>
 <p>* <em>indicates equal contribution</em></p>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var list = document.querySelector('.publist ol');
+  if (!list) return;
+
+  var items = Array.prototype.slice.call(list.children);
+  var total = items.length;
+
+  items.forEach(function (item, index) {
+    var marker = document.createElement('span');
+    marker.className = 'pub-marker';
+    marker.textContent = '[' + (total - index) + '] ';
+    item.insertBefore(marker, item.firstChild);
+  });
+});
+</script>
 
 
 

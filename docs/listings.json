@@ -1,16 +1,5 @@
 [
   {
-    "listing": "/projects/index.html",
-    "items": [
-      "/projects/rtd-rax/index.html",
-      "/projects/quartocv/index.html",
-      "/projects/mocap4px4/index.html",
-      "/projects/nr-flow/index.html",
-      "/projects/nmpc-acados/index.html",
-      "/projects/gatech-slides/index.html"
-    ]
-  },
-  {
     "listing": "/blog/index.html",
     "items": [
       "/blog/posts/2025-10-15-UnderstandingPX4/index.html",

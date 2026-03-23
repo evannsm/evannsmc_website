@@ -31,8 +31,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -74,35 +72,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
 <script type="application/ld+json">
 {
@@ -142,43 +111,16 @@ ul.task-list li input[type="checkbox"] {
 }
 </script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Open-Source Projects – evannsmc">
-<meta property="og:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
+<meta property="og:image" content="https://evannsmc.com/projects/rtd-rax/gap_compare.gif">
 <meta property="og:site_name" content="evannsmc">
+<meta property="og:image:alt" content="RTD-RAX gap scenario animation">
 <meta name="twitter:title" content="Open-Source Projects – evannsmc">
-<meta name="twitter:description" content="evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech.">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://evannsmc.com/projects/rtd-rax/gap_compare.gif">
+<meta name="twitter:image:alt" content="RTD-RAX gap scenario animation">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -428,152 +370,617 @@ window.Quarto = {
 
 
 
-<p>A collection of open-source tools developed through my research at Georgia Tech’s FACTS Lab and beyond.</p>
+<style>
+#title-block-header {
+  display: none;
+}
 
+:root {
+  --projects-accent: #2563eb;
+  --projects-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --projects-text-secondary: var(--bs-secondary-color, #57534e);
+  --projects-border: var(--bs-border-color, #e7e5e4);
+}
 
+.projects-shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
 
+.projects-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--projects-accent);
+}
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Um9ib3RpY3MlMkNTYWZldHklMkNQeXRob24lMkNKQVglMkNSZXNlYXJjaA==" data-listing-file-modified-sort="1773992794711" data-listing-reading-time-sort="2" data-listing-word-count-sort="377">
-<a href="../projects/rtd-rax/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-RTD-RAX
-</h5>
-<div class="listing-categories">
+.projects-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
 
-<div class="listing-category" onclick="window.quartoListingCategory('Um9ib3RpY3M='); return false;">Robotics</div>
+.projects-intro {
+  max-width: 52rem;
+  margin: 0 0 2.4rem;
+  color: var(--projects-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
 
-<div class="listing-category" onclick="window.quartoListingCategory('U2FmZXR5'); return false;">Safety</div>
+.project-stack {
+  display: grid;
+  gap: 1rem;
+}
 
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
+.project-card {
+  border: 1px solid var(--projects-border);
+  border-radius: 1.35rem;
+  background: var(--projects-bg-secondary);
+  overflow: hidden;
+}
 
-<div class="listing-category" onclick="window.quartoListingCategory('SkFY'); return false;">JAX</div>
+.project-card summary {
+  list-style: none;
+  cursor: pointer;
+}
 
-<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
+.project-card summary::-webkit-details-marker {
+  display: none;
+}
 
+.project-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
+  gap: 1.5rem;
+  padding: 1.55rem;
+}
+
+.project-copy {
+  min-width: 0;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 0.8rem;
+}
+
+.project-tag {
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--projects-border);
+  color: var(--projects-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--bs-body-bg, #fff);
+}
+
+.project-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.project-name {
+  margin: 0;
+  font-size: 1.28rem;
+  font-weight: 700;
+}
+
+.project-toggle {
+  color: var(--projects-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.project-card[open] .project-toggle::before {
+  content: "Hide details";
+}
+
+.project-card:not([open]) .project-toggle::before {
+  content: "Expand";
+}
+
+.project-preview-copy {
+  margin: 0;
+  color: var(--projects-text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+.project-preview-panel {
+  display: flex;
+  align-items: stretch;
+  min-height: 14rem;
+  border: 1px solid var(--projects-border);
+  border-radius: 1rem;
+  background: var(--bs-body-bg, #fff);
+  overflow: hidden;
+}
+
+.project-preview-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-preview-custom {
+  width: 100%;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 35%),
+    linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02));
+}
+
+.project-preview-title {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--projects-accent);
+}
+
+.project-preview-lines {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.project-preview-line {
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--projects-text-secondary);
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
+.project-preview-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.project-preview-metric {
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.8rem;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--projects-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.project-body {
+  padding: 0 1.55rem 1.55rem;
+  border-top: 1px solid var(--projects-border);
+}
+
+.project-body-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
+  gap: 1.25rem;
+  padding-top: 1.2rem;
+}
+
+.project-detail-copy {
+  color: var(--projects-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.72;
+}
+
+.project-detail-copy p {
+  margin: 0 0 0.9rem;
+}
+
+.project-detail-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.project-detail-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--projects-text-secondary);
+}
+
+.project-detail-list li + li {
+  margin-top: 0.45rem;
+}
+
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-content: flex-start;
+}
+
+.project-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--projects-border);
+  text-decoration: none;
+  font-weight: 600;
+  background: var(--bs-body-bg, #fff);
+}
+
+.project-action.primary {
+  background: var(--projects-accent);
+  border-color: var(--projects-accent);
+  color: #fff;
+}
+
+.project-action.primary:hover,
+.project-action.primary:focus {
+  color: #fff;
+  opacity: 0.92;
+}
+
+@media (max-width: 980px) {
+  .project-summary,
+  .project-body-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-name-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-shell {
+    padding: 2.5rem 1rem 4rem;
+  }
+}
+</style>
+
+<div class="projects-shell">
+  <p class="projects-kicker">Projects</p>
+  <p class="projects-title">Open-source work built for real research use.</p>
+  <p class="projects-intro">
+    These are the tools and codebases behind a lot of the quadrotor work, infrastructure, and writing workflow on this site. Each card gives a preview first, then expands into the fuller context.
+  </p>
+
+  <div class="project-stack">
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Robotics</span>
+              <span class="project-tag">Safety</span>
+              <span class="project-tag">Python</span>
+              <span class="project-tag">JAX</span>
+              <span class="project-tag">Research</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">RTD-RAX</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              Runtime-assurance trajectory planning for quadrotors, with online reachability verification and repair instead of overly conservative offline safety buffers.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <img src="../projects/rtd-rax/gap_compare.gif" alt="RTD-RAX gap scenario animation">
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution.
+            </p>
+            <ul class="project-detail-list">
+              <li>Mixed-monotone reachability verification at runtime via <code>immrax</code>.</li>
+              <li>Hybrid repair loop when a candidate cannot be certified safe.</li>
+              <li>Three case studies with manuscript-ready figure generation and Dockerized reproducibility.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/rtd-rax/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/rtd-rax" target="_blank">GitHub ↗</a>
+            <a class="project-action" href="https://evannsm.github.io/ws_RTD" target="_blank">Dedicated Website ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Quarto</span>
+              <span class="project-tag">LaTeX</span>
+              <span class="project-tag">Tools</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">QuartoCV</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Build once, reuse everywhere</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Shared sections</div>
+                <div class="project-preview-line">Incremental PDF rebuilds</div>
+                <div class="project-preview-line">Academic + consulting styles</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Quarto</span>
+                <span class="project-preview-metric">XeLaTeX</span>
+                <span class="project-preview-metric">Make</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
+            </p>
+            <ul class="project-detail-list">
+              <li>One source section can feed multiple document variants.</li>
+              <li>Dependency-aware incremental builds keep edits fast.</li>
+              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">ROS 2</span>
+              <span class="project-tag">Robotics</span>
+              <span class="project-tag">C++</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">Motion Capture → PX4 Pipelines</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              Indoor flight infrastructure for getting Vicon or OptiTrack state estimates into PX4 cleanly, without rebuilding the same experiment plumbing each time.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Mocap to estimator</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Vicon → EKF fusion</div>
+                <div class="project-preview-line">OptiTrack → EKF fusion</div>
+                <div class="project-preview-line">ENU → NED conversion</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">ROS 2</span>
+                <span class="project-preview-metric">PX4</span>
+                <span class="project-preview-metric">C++17</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              These companion packages handle coordinate transforms, external-vision message publishing, and optional state relays so indoor quadrotor experiments can focus on control instead of motion-capture integration overhead.
+            </p>
+            <ul class="project-detail-list">
+              <li>Shared architecture across both Vicon and OptiTrack pipelines.</li>
+              <li>Supports multiple launch modes depending on how much of the stack you need.</li>
+              <li>Used by Georgia Tech's Indoor Flight Lab as part of its official codebase.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/mocap4px4/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/vicon4px4" target="_blank">Vicon4PX4 ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/optitrack4px4" target="_blank">OptiTrack4PX4 ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Control</span>
+              <span class="project-tag">Python</span>
+              <span class="project-tag">JAX</span>
+              <span class="project-tag">Research</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">Newton-Raphson Flow for PX4</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A research-grade quadrotor controller that reframes tracking as a Newton-Raphson optimization problem and runs on real onboard hardware.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Academic foundation</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">ACC 2024</div>
+                <div class="project-preview-line">TCST 2025</div>
+                <div class="project-preview-line">Raspberry Pi 4 deployment</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">JAX JIT</span>
+                <span class="project-preview-metric">ROS 2</span>
+                <span class="project-preview-metric">PX4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              NR Flow uses iterative Jacobian inversion for fast feedback linearization and folds integral control barrier functions into the controller to enforce actuator limits smoothly. It is meant to be practical, not just theoretical.
+            </p>
+            <ul class="project-detail-list">
+              <li>Runs comfortably on a Raspberry Pi 4 onboard a quadrotor.</li>
+              <li>Supports both simulation and hardware workflows.</li>
+              <li>Backed by multiple peer-reviewed papers rather than a one-off demo implementation.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Control</span>
+              <span class="project-tag">Python</span>
+              <span class="project-tag">Research</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">NMPC Acados PX4</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A clean NMPC baseline for quadrotor research built around Acados and QPOASES, with a full ROS 2 interface and real-time-ready generated code.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Trajectory set</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Hover</div>
+                <div class="project-preview-line">Circle</div>
+                <div class="project-preview-line">Figure-8 + Helix</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Acados</span>
+                <span class="project-preview-metric">QPOASES</span>
+                <span class="project-preview-metric">ROS 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              This controller served as the main comparison baseline for the Newton-Raphson Flow work. It is a solid reference implementation if you want a rigorous NMPC starting point rather than a highly specialized demo.
+            </p>
+            <ul class="project-detail-list">
+              <li>Jointly tracks position, velocity, and Euler angles.</li>
+              <li>Handles wrapped yaw error correctly.</li>
+              <li>Uses hard thrust and body-rate constraints with a clean command-line interface.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/nmpc-acados/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
+            <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Quarto</span>
+              <span class="project-tag">Tools</span>
+            </div>
+            <div class="project-name-row">
+              <p class="project-name">Quarto Georgia Tech Slides</p>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Slide branding</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Official GT palette</div>
+                <div class="project-preview-line">Title + section backgrounds</div>
+                <div class="project-preview-line">RevealJS fragments + callouts</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Quarto</span>
+                <span class="project-preview-metric">RevealJS</span>
+                <span class="project-preview-metric">SCSS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              This extension packages Georgia Tech colors, backgrounds, typography, and presentation utilities so branded slides can be spun up quickly in a normal Quarto workflow.
+            </p>
+            <ul class="project-detail-list">
+              <li>Built to be installed into an existing project with a single template command.</li>
+              <li>Includes branded title and section slide treatments.</li>
+              <li>Designed for presentations that still feel like Quarto, not a hard-coded slide deck.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsm/quarto-gatech-slides" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
 </div>
-<div class="card-text listing-description delink">
-<p>Safe trajectory planning with runtime reachability verification and repair.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="UXVhcnRvJTJDTGFUZVglMkNUb29scw==" data-listing-file-modified-sort="1771730278976" data-listing-reading-time-sort="1" data-listing-word-count-sort="159">
-<a href="../projects/quartocv/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-QuartoCV
-</h5>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('TGFUZVg='); return false;">LaTeX</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A modular, build-system-driven CV and Résumé template for academics.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Uk9TJTIwMiUyQ1JvYm90aWNzJTJDQyUyQiUyQg==" data-listing-file-modified-sort="1771730280103" data-listing-reading-time-sort="1" data-listing-word-count-sort="195">
-<a href="../projects/mocap4px4/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Motion Capture → PX4 Pipelines
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Uk9TJTIwMg=='); return false;">ROS 2</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Um9ib3RpY3M='); return false;">Robotics</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QyUyQiUyQg=='); return false;">C++</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ0pBWCUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1773993085586" data-listing-reading-time-sort="1" data-listing-word-count-sort="185">
-<a href="../projects/nr-flow/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Newton-Raphson Flow for PX4
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('SkFY'); return false;">JAX</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A research-grade quadrotor controller backed by three peer-reviewed papers.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Q29udHJvbCUyQ1B5dGhvbiUyQ1Jlc2VhcmNo" data-listing-file-modified-sort="1773993089617" data-listing-reading-time-sort="1" data-listing-word-count-sort="163">
-<a href="../projects/nmpc-acados/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-NMPC Acados PX4
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29udHJvbA=='); return false;">Control</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UmVzZWFyY2g='); return false;">Research</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A production-ready Nonlinear Model Predictive Controller for quadrotors.</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-categories="UXVhcnRvJTJDVG9vbHM=" data-listing-file-modified-sort="1771730283564" data-listing-reading-time-sort="1" data-listing-word-count-sort="76">
-<a href="../projects/gatech-slides/" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Quarto Georgia Tech Slides
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UXVhcnRv'); return false;">Quarto</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VG9vbHM='); return false;">Tools</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Official Georgia Tech-branded RevealJS presentations, installable in one command.</p>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

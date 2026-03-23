@@ -1,21 +1,406 @@
 ---
 title: "Community & Hobbies"
 page-layout: full
-title-block-banner: false
+title-block-banner: true
 ---
 
 ```{=html}
-<meta http-equiv="refresh" content="0; url=../about/">
-<script>
-window.location.replace('../about/');
-</script>
+<style>
+#title-block-header {
+  display: none;
+}
 
-<div style="max-width: 42rem; margin: 4rem auto; padding: 0 1rem; text-align: center;">
-  <p style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #2563eb; margin-bottom: 0.5rem;">Moved</p>
-  <h1 style="margin-bottom: 0.75rem;">Community &amp; Hobbies now lives in About Me.</h1>
-  <p style="color: var(--bs-secondary-color, #6c757d); margin-bottom: 1.25rem;">
-    The BORI and hobbies content has been merged into the About page.
+:root {
+  --community-accent: #2563eb;
+  --community-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
+  --community-text-secondary: var(--bs-secondary-color, #57534e);
+  --community-border: var(--bs-border-color, #e7e5e4);
+}
+
+.community-shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.community-kicker,
+.community-section-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.community-kicker {
+  color: var(--community-accent);
+  margin: 0 0 0.45rem;
+}
+
+.community-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.community-intro {
+  max-width: 50rem;
+  margin: 0 0 2.5rem;
+  color: var(--community-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.community-section-heading {
+  color: var(--community-text-secondary);
+  margin: 0 0 1rem;
+}
+
+.community-feature,
+.community-events,
+.hobbies-feature {
+  border: 1px solid var(--community-border);
+  border-radius: 1.35rem;
+  background: var(--community-bg-secondary);
+}
+
+.community-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
+  gap: 1.75rem;
+  padding: 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.feature-title,
+.hobbies-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.feature-copy,
+.hobbies-copy,
+.event-copy,
+.event-list {
+  color: var(--community-text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+.feature-copy p {
+  margin: 0 0 1rem;
+}
+
+.feature-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.feature-points {
+  margin: 0 0 1.25rem;
+  padding-left: 1.2rem;
+  color: var(--community-text-secondary);
+}
+
+.feature-points li + li {
+  margin-top: 0.55rem;
+}
+
+.feature-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.feature-figure {
+  margin: 0;
+}
+
+.feature-figure img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.feature-figure figcaption {
+  margin-top: 0.45rem;
+  color: var(--community-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.feature-gallery-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.community-events {
+  padding: 1.6rem;
+  margin-bottom: 3rem;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.event-card {
+  padding: 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid var(--community-border);
+  background: var(--bs-body-bg, #fff);
+}
+
+.event-season {
+  margin: 0 0 0.35rem;
+  color: var(--community-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.event-title {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.event-copy {
+  margin: 0 0 0.8rem;
+}
+
+.event-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.event-list li + li {
+  margin-top: 0.45rem;
+}
+
+.hobbies-feature {
+  padding: 1.6rem;
+}
+
+.hobbies-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.hobby-card {
+  padding: 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid var(--community-border);
+  background: var(--bs-body-bg, #fff);
+}
+
+.hobby-card h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.hobby-card p {
+  margin: 0;
+  color: var(--community-text-secondary);
+  font-size: 0.94rem;
+  line-height: 1.68;
+}
+
+.interest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
+.interest-tag {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--community-border);
+  color: var(--community-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: transparent;
+}
+
+.community-links {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+}
+
+.community-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.05rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--community-border);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.community-link.primary {
+  background: var(--community-accent);
+  border-color: var(--community-accent);
+  color: #fff;
+}
+
+.community-link.primary:hover,
+.community-link.primary:focus {
+  color: #fff;
+  opacity: 0.92;
+}
+
+@media (max-width: 980px) {
+  .community-feature,
+  .events-grid,
+  .hobbies-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .community-shell {
+    padding: 2.5rem 1rem 4rem;
+  }
+
+  .feature-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="community-shell">
+  <p class="community-kicker">Community &amp; Hobbies</p>
+  <p class="community-title">The part of the story that is not just papers and control theory.</p>
+  <p class="community-intro">
+    Research is a big part of my life, but it is not the only part that matters. This page holds the longer version of the community work, culture, and everyday interests that keep the rest of it grounded.
   </p>
-  <a href="../about/" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.8rem 1.1rem; border-radius: 0.9rem; background: #2563eb; color: #fff; text-decoration: none; font-weight: 600;">Go to About Me</a>
+
+  <p class="community-section-heading">Community</p>
+  <section class="community-feature">
+    <div class="feature-copy">
+      <p class="feature-title">BORI at Georgia Tech</p>
+      <p>
+        I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> to make sure Puerto Rican students at Georgia Tech had a space that felt familiar, welcoming, and genuinely useful. The goal was never just to start another campus organization. It was to build something that could help people feel recognized and at home.
+      </p>
+      <ul class="feature-points">
+        <li>We built events around culture, food, and friendship rather than treating community as an afterthought.</li>
+        <li>We focused on making newer students feel less alone when arriving in Atlanta and Georgia Tech.</li>
+        <li>BORI gave me a way to stay connected to Puerto Rico while helping make campus feel more human for others too.</li>
+      </ul>
+      <p>
+        That side of my life matters for the same reason the research does: both are about building systems that people can trust.
+      </p>
+    </div>
+    <div class="feature-gallery">
+      <figure class="feature-figure">
+        <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together">
+        <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
+      </figure>
+      <div class="feature-gallery-stack">
+        <figure class="feature-figure">
+          <img src="../files/BORI/bori_logo.jpg" alt="BORI logo">
+          <figcaption>The BORI logo</figcaption>
+        </figure>
+        <figure class="feature-figure">
+          <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coquí with Coquito">
+          <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <p class="community-section-heading">BORI Moments</p>
+  <section class="community-events">
+    <div class="events-grid">
+      <article class="event-card">
+        <p class="event-season">Fall 2024</p>
+        <p class="event-title">Starting the organization</p>
+        <p class="event-copy">
+          The first semester was about turning the idea into something real and visible on campus.
+        </p>
+        <ul class="event-list">
+          <li>Launched the inaugural BORI presence at Georgia Tech.</li>
+          <li>Started building a recognizable Puerto Rican community space.</li>
+          <li>Set the tone for a culture-forward, people-first organization.</li>
+        </ul>
+      </article>
+
+      <article class="event-card">
+        <p class="event-season">Spring 2025</p>
+        <p class="event-title">Kickoff and game nights</p>
+        <p class="event-copy">
+          The organization started to feel more established, with events that made it easier for people to keep showing up.
+        </p>
+        <ul class="event-list">
+          <li>Held a spring kickoff that brought people back together after the break.</li>
+          <li>Ran game-night style events that felt social and low-pressure.</li>
+          <li>Kept the focus on familiarity, friendship, and belonging.</li>
+        </ul>
+      </article>
+
+      <article class="event-card">
+        <p class="event-season">Fall 2025</p>
+        <p class="event-title">Welcoming newer students</p>
+        <p class="event-copy">
+          By the next fall, the emphasis was on helping newer Puerto Rican students settle into Atlanta and Georgia Tech.
+        </p>
+        <ul class="event-list">
+          <li>Made BORI a clearer landing point for new students.</li>
+          <li>Used events to connect people to each other and to campus resources.</li>
+          <li>Kept building something that could last beyond one semester.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <p class="community-section-heading">Outside the Lab</p>
+  <section class="hobbies-feature">
+    <p class="hobbies-title">What keeps me grounded</p>
+    <p class="hobbies-copy">
+      A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
+    </p>
+
+    <div class="hobbies-grid">
+      <article class="hobby-card">
+        <h3>Cooking</h3>
+        <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
+      </article>
+      <article class="hobby-card">
+        <h3>Dance</h3>
+        <p>Dance keeps me expressive and connected to culture rather than letting everything collapse into work and theory.</p>
+      </article>
+      <article class="hobby-card">
+        <h3>Reading &amp; Writing</h3>
+        <p>That is where I usually go when I want to slow down, think clearly, and come back to ideas in a less technical way.</p>
+      </article>
+    </div>
+
+    <div class="interest-tags">
+      <span class="interest-tag">Cooking</span>
+      <span class="interest-tag">Dance</span>
+      <span class="interest-tag">Reading</span>
+      <span class="interest-tag">Writing</span>
+      <span class="interest-tag">Film</span>
+      <span class="interest-tag">Community Building</span>
+    </div>
+
+    <div class="community-links">
+      <a class="community-link primary" href="../about/">Back to About Me</a>
+      <a class="community-link" href="../journey/">Open Journey Map</a>
+    </div>
+  </section>
 </div>
 ```

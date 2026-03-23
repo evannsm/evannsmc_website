@@ -1,29 +1,51 @@
 ---
 title: Publications
 ---
-These are my publications (even my undergraduate honors thesis for nostalgia)
+These are my publications, including the undergraduate honors thesis for nostalgia.
 
 <style>
   .publist ol {
-    list-style-type: none;
-    counter-reset: item;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .publist ol > li {
+    margin-bottom: 1rem;
     padding-left: 0;
   }
-  .publist ol > li {
-    counter-increment: item;
-    margin-bottom: 1rem;
+
+  .pub-marker {
+    font-weight: 700;
+    margin-right: 0.25rem;
   }
-  .publist ol > li::before {
-    content: "[" counter(item) "]  ";
+
+  .publist a {
     font-weight: 700;
   }
-  .publist a {font-weight: bold;}
 </style>
 
 :::{.publist}
 
-1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022.
 {{< include ../cv/_sections/publications-shared.qmd >}}
+1. **Evanns Morales-Cuadrado**, "[Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance](https://mavmatrix.uta.edu/honors_spring2022/60/)" Undergraduate Honors College Thesis at UT Arlington, 2022.
 
 :::
 \* *indicates equal contribution*
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var list = document.querySelector('.publist ol');
+  if (!list) return;
+
+  var items = Array.prototype.slice.call(list.children);
+  var total = items.length;
+
+  items.forEach(function (item, index) {
+    var marker = document.createElement('span');
+    marker.className = 'pub-marker';
+    marker.textContent = '[' + (total - index) + '] ';
+    item.insertBefore(marker, item.firstChild);
+  });
+});
+</script>
