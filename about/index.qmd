@@ -380,14 +380,14 @@ title-block-banner: true
   <div class="about-hero">
     <img class="about-avatar" src="../files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab">
     <div>
-      <p class="about-kicker">About</p>
-      <p class="about-title">The full story.</p>
+      <!-- <p class="about-kicker">About</p> -->
+      <p class="about-title">A Bit of Backstory.</p>
     </div>
   </div>
 
   <div class="about-bio">
     <p>
-      I grew up in Puerto Rico, trained as an electrical engineer in Texas, and now spend my days at Georgia Tech working on safe autonomy for quadrotors. A lot of what matters to me sits at the intersection of rigorous control theory, hardware deployment, and community building, which is why BORI means just as much to me as the research itself.
+      I grew up in Puerto Rico, finished high school and got my Bachelors in electrical engineering with a focus on autonomous systems in Texas, and now spend my days at Georgia Tech working on safe autonomy for quadrotors. I spend a lot of time thinking about rigorous control theory, hardware deployment and, most importantly, community building, which is why BORI means just as much to me as the research I work on.
     </p>
   </div>
 

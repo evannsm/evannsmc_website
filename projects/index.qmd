@@ -544,6 +544,8 @@ title-block-banner: true
           </div>
           <div class="project-actions">
             <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
+            <a class="project-action" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
+            <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
             <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
             <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
           </div>
@@ -661,6 +663,7 @@ title-block-banner: true
           </div>
           <div class="project-actions">
             <a class="project-action primary" href="../projects/nahs/">Open Project Page</a>
+            <a class="project-action" href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587" target="_blank">NAHS 2025 Paper (PDF) ↗</a>
             <a class="project-action" href="../publications/">Publications ↗</a>
           </div>
         </div>
