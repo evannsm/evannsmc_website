@@ -195,6 +195,11 @@ body.quarto-light .footer {
   line-height: 1.4;
 }
 
+.home-meta-badge-mentor .home-meta-badge-subline {
+  padding-left: 1rem;
+  font-size: 0.84em;
+}
+
 .home-meta-badge a {
   color: #2563eb;
   text-decoration: underline;
