@@ -487,6 +487,21 @@ window.Quarto = {
   </p>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var sidebar = document.getElementById('quarto-margin-sidebar');
+  var filter = document.querySelector('.quarto-listing-filter');
+  if (sidebar && filter) {
+    var wrapper = filter.closest('.input-group');
+    if (wrapper) {
+      sidebar.insertBefore(wrapper, sidebar.firstChild);
+      wrapper.style.marginBottom = '1.5rem';
+      wrapper.style.marginTop = '0';
+    }
+  }
+});
+</script>
+
 
 
 
