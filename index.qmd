@@ -30,7 +30,7 @@ page-layout: full
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
-          <span class="home-meta-badge">Ph.D. advised by Eckman Award winner Dr. Samuel Coogan</span>
+          <span class="home-meta-badge">Advised during my Ph.D. by Eckman Award winner Dr. Samuel Coogan</span>
         </div>
         <div class="home-meta-card">
           <div class="home-meta-card-header">
