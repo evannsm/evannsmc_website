@@ -11,7 +11,7 @@ title-block-banner: true
 }
 
 #quarto-document-content.column-page {
-  max-width: min(98vw, 120rem) !important;
+  max-width: min(99.2vw, 132rem) !important;
 }
 
 :root {
@@ -24,9 +24,9 @@ title-block-banner: true
 }
 
 .journey-page {
-  max-width: 1920px;
+  max-width: none;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem 5rem;
+  padding: 0.9rem 0.35rem 4.5rem;
 }
 
 .journey-page.page-columns {
@@ -59,8 +59,8 @@ title-block-banner: true
 }
 
 .journey-intro {
-  max-width: 36rem;
-  margin: 0 0 1.5rem;
+  max-width: 44rem;
+  margin: 0 0 1.15rem;
   color: var(--journey-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
@@ -68,7 +68,7 @@ title-block-banner: true
 
 .journey-layout {
   display: flex;
-  gap: 1.5rem;
+  gap: 0.9rem;
   align-items: start;
 }
 
@@ -89,9 +89,9 @@ title-block-banner: true
 }
 
 .journey-detail {
-  flex: 0 0 11rem;
-  max-width: 11rem;
-  padding: 1.25rem;
+  flex: 0 0 10rem;
+  max-width: 10rem;
+  padding: 1rem;
   min-height: 0;
   align-self: start;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -143,7 +143,7 @@ title-block-banner: true
 }
 
 .journey-map-panel {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   padding: 0;
 }
@@ -152,7 +152,7 @@ title-block-banner: true
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
-  min-height: 800px;
+  aspect-ratio: 2.08 / 1;
   border: 1px solid rgba(100, 116, 139, 0.18);
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
@@ -182,7 +182,7 @@ title-block-banner: true
 .journey-map-svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   color: var(--journey-text-primary);
 }
 
@@ -231,8 +231,8 @@ title-block-banner: true
 }
 
 .journey-sidebar {
-  flex: 0 0 12rem;
-  max-width: 12rem;
+  flex: 0 0 10.75rem;
+  max-width: 10.75rem;
   padding: 0.1rem 0 0;
 }
 
@@ -378,7 +378,7 @@ title-block-banner: true
   opacity: 0.8;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 860px) {
   .journey-layout,
   .journey-layout.page-columns {
     flex-direction: column;
@@ -435,7 +435,7 @@ title-block-banner: true
         <svg
           class="journey-map-svg"
           id="journey-map-svg"
-          viewBox="0 0 1120 1000"
+          viewBox="0 0 1480 720"
           role="img"
           aria-labelledby="journey-map-title"
         >
@@ -511,11 +511,11 @@ title-block-banner: true
 <script src="../files/journey/js/topojson-client.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var WIDTH = 1120;
-  var HEIGHT = 1000;
+  var WIDTH = 1480;
+  var HEIGHT = 720;
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
-  var OVERVIEW = { center: [-84, 38], scale: 1500 };
+  var OVERVIEW = { center: [-85, 31.5], scale: 940 };
 
   var stops = [
     {
@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Home',
       countryId: '630',
       coordinates: [-66.5, 18.2],
-      zoom: { center: [-66.5, 18.2], scale: 3200 },
+      zoom: { center: [-66.5, 18.2], scale: 2450 },
       year: 'Before college',
       role: 'Home, culture, and resilience',
       description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'UT Arlington',
       stateName: 'Texas',
       coordinates: [-97.1081, 32.7357],
-      zoom: { center: [-97.1081, 32.7357], scale: 2200 },
+      zoom: { center: [-97.1081, 32.7357], scale: 1750 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering',
       description: 'UT Arlington is where I built the foundation: summa cum laude, minors in mathematics and physics, and early research experience with the Wan and Lewis labs.',
@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Georgia Tech',
       stateName: 'Georgia',
       coordinates: [-84.3963, 33.7756],
-      zoom: { center: [-84.3963, 33.7756], scale: 2600 },
+      zoom: { center: [-84.3963, 33.7756], scale: 1850 },
       year: 'Aug 2022 - Present',
       role: 'Ph.D. in Robotics, FACTS Lab',
       description: 'Georgia Tech is home base now: safe autonomy research, nonlinear control for quadrotor UAVs, robotics teaching, and co-founding BORI to build Puerto Rican community on campus.',
@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'ACC 2024',
       countryId: '124',
       coordinates: [-79.3832, 43.6532],
-      zoom: { center: [-79.3832, 43.6532], scale: 2800 },
+      zoom: { center: [-79.3832, 43.6532], scale: 1950 },
       year: '2024',
       role: 'Presented ACC paper in Toronto',
       description: 'I presented my paper, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control," at the 2024 American Control Conference in Toronto.',
@@ -593,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function () {
       label: 'Sandia',
       stateName: 'New Mexico',
       coordinates: [-106.6504, 35.0844],
-      zoom: { center: [-106.6504, 35.0844], scale: 2600 },
+      zoom: { center: [-106.6504, 35.0844], scale: 1800 },
       year: 'Summer 2026',
       role: 'Incoming intern at Sandia National Laboratories',
       description: 'This upcoming summer I will be in Albuquerque, New Mexico for an internship at Sandia National Laboratories.',
@@ -717,6 +717,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function updatePhoto(projection) {
     var stop = getStop(activeId);
+    var svgEl = document.getElementById('journey-map-svg');
     if (!zoomed || !stop || !stop.image) {
       photoCard.hidden = true;
       return;
@@ -725,11 +726,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var cardWidth = 188;
     var cardHeight = 128;
     var point = projection(stop.coordinates);
-    var left = point[0] + 18;
-    var top = point[1] - 140;
+    var renderedWidth = svgEl ? svgEl.clientWidth : WIDTH;
+    var renderedHeight = svgEl ? svgEl.clientHeight : HEIGHT;
+    var scaleX = renderedWidth / WIDTH;
+    var scaleY = renderedHeight / HEIGHT;
+    var left = point[0] * scaleX + 18;
+    var top = point[1] * scaleY - 140;
 
-    left = Math.max(10, Math.min(left, WIDTH - cardWidth - 10));
-    top = Math.max(10, Math.min(top, HEIGHT - cardHeight - 10));
+    left = Math.max(10, Math.min(left, renderedWidth - cardWidth - 10));
+    top = Math.max(10, Math.min(top, renderedHeight - cardHeight - 10));
 
     photoImg.src = stop.image;
     photoImg.alt = stop.city;
