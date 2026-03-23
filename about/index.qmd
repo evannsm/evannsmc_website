@@ -35,7 +35,7 @@ title-block-banner: true
   height: 104px;
   border-radius: 999px;
   object-fit: cover;
-  object-position: 50% 24%;
+  object-position: 50% 18%;
   flex-shrink: 0;
 }
 
@@ -239,6 +239,46 @@ title-block-banner: true
   object-fit: cover;
 }
 
+.about-deeper {
+  margin-top: 1.15rem;
+  border: 1px solid var(--about-border);
+  border-radius: 0.95rem;
+  background: var(--bs-body-bg, #fff);
+}
+
+.about-deeper summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.9rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.about-deeper summary::-webkit-details-marker {
+  display: none;
+}
+
+.about-deeper-content {
+  padding: 0 1rem 1rem;
+  color: var(--about-text-secondary);
+}
+
+.about-deeper-content p:last-child {
+  margin-bottom: 0;
+}
+
+.hobby-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.hobby-columns strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--bs-body-color, #1a1a1a);
+}
+
 .lang-stack {
   display: flex;
   flex-direction: column;
@@ -341,6 +381,10 @@ title-block-banner: true
     grid-template-columns: 1fr;
   }
 
+  .hobby-columns {
+    grid-template-columns: 1fr;
+  }
+
   .lang-bar-header {
     flex-direction: column;
     align-items: flex-start;
@@ -418,6 +462,17 @@ title-block-banner: true
         <li>We try to be useful, not just social - helping newer students find people, resources, and a sense of belonging.</li>
         <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li>
       </ul>
+      <details class="about-deeper">
+        <summary>Go deeper into Community &amp; Hobbies</summary>
+        <div class="about-deeper-content">
+          <p>
+            Some of the BORI moments that best capture the spirit of the group are the inaugural event in Fall 2024, the Spring 2025 kickoff and game night, and the Fall 2025 events that focused on helping newer students settle into Georgia Tech and Atlanta.
+          </p>
+          <p>
+            The throughline across all of them is the same: making Puerto Rican students feel recognized, connected, and at home.
+          </p>
+        </div>
+      </details>
     </div>
     <div class="community-gallery">
       <figure class="community-figure">
@@ -426,7 +481,7 @@ title-block-banner: true
       </figure>
       <figure class="community-figure small">
         <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coqui with Coquito">
-        <figcaption>Coqui with Coquito, the BORI mascot</figcaption>
+        <figcaption>The BORI mascot: Coquí with Coquito </figcaption>
       </figure>
     </div>
   </div>
@@ -485,6 +540,25 @@ title-block-banner: true
       <span class="interest-tag">Film</span>
       <span class="interest-tag">Community Building</span>
     </div>
+    <details class="about-deeper">
+      <summary>Go deeper into the non-research side</summary>
+      <div class="about-deeper-content">
+        <div class="hobby-columns">
+          <div>
+            <strong>Cooking</strong>
+            <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
+          </div>
+          <div>
+            <strong>Dance</strong>
+            <p>Dance is one of the ways I stay expressive and connected to culture rather than letting everything become only work and theory.</p>
+          </div>
+          <div>
+            <strong>Reading &amp; Writing</strong>
+            <p>Those are usually where I go when I want to slow down, think clearly, and return to ideas in a less technical way.</p>
+          </div>
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 

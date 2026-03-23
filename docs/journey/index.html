@@ -408,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
 
 .journey-intro {
   max-width: 36rem;
-  margin: 0 0 2rem;
+  margin: 0 0 1.35rem;
   color: var(--journey-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
@@ -481,7 +481,7 @@ ul.task-list li input[type="checkbox"] {
 }
 
 .journey-map-panel {
-  padding: 0.75rem 1rem 1rem;
+  padding: 0.35rem 1rem 1rem;
 }
 
 .journey-map-shell {
@@ -969,7 +969,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return d3.geoMercator()
       .center(currentCenter)
       .scale(currentScale)
-      .translate([WIDTH / 2, HEIGHT / 2 - 24]);
+      .translate([WIDTH / 2, HEIGHT / 2 - 40]);
   }
 
   function animateTo(targetCenter, targetScale) {

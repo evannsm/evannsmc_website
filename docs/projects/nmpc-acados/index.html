@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A production-ready Nonlinear Model Predictive Controller for quadrotors.">
 
-<title>About Me – evannsmc</title>
+<title>NMPC Acados PX4 – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,28 +24,28 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -112,22 +113,16 @@ ul.task-list li input[type="checkbox"] {
 </script>
 
 
-<link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="About Me – evannsmc">
-<meta property="og:image" content="https://evannsmc.com/files/LabPhoto.png">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="NMPC Acados PX4 – evannsmc">
+<meta property="og:description" content="A production-ready Nonlinear Model Predictive Controller for quadrotors.">
 <meta property="og:site_name" content="evannsmc">
-<meta property="og:image:alt" content="Evanns Morales-Cuadrado in the lab">
-<meta property="og:image:height" content="277">
-<meta property="og:image:width" content="182">
-<meta name="twitter:title" content="About Me – evannsmc">
-<meta name="twitter:image" content="https://evannsmc.com/files/LabPhoto.png">
-<meta name="twitter:image:alt" content="Evanns Morales-Cuadrado in the lab">
-<meta name="twitter:image-height" content="277">
-<meta name="twitter:image-width" content="182">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NMPC Acados PX4 – evannsmc">
+<meta name="twitter:description" content="A production-ready Nonlinear Model Predictive Controller for quadrotors.">
+<meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -292,14 +287,14 @@ ul.task-list li input[type="checkbox"] {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">evannsmc</span>
     </a>
   </div>
@@ -310,31 +305,31 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv"> 
+    <a class="nav-link" href="../../cv"> 
 <span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../publications"> 
+    <a class="nav-link" href="../../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../projects"> 
+    <a class="nav-link" href="../../projects"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog"> 
+    <a class="nav-link" href="../../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
+    <a class="nav-link" href="../../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../journey"> 
+    <a class="nav-link" href="../../journey"> 
 <span class="menu-text">Journey</span></a>
   </li>  
 </ul>
@@ -346,610 +341,60 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">About Me</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
-
-
-
-
-
-
-<style>
-#title-block-header {
-  display: none;
-}
-
-:root {
-  --about-accent: #2563eb;
-  --about-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
-  --about-text-secondary: var(--bs-secondary-color, #57534e);
-  --about-border: var(--bs-border-color, #e7e5e4);
-}
-
-.about-shell {
-  max-width: 68rem;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
-}
-
-.about-hero {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.about-avatar {
-  width: 104px;
-  height: 104px;
-  border-radius: 999px;
-  object-fit: cover;
-  object-position: 50% 18%;
-  flex-shrink: 0;
-}
-
-.about-kicker,
-.about-section-heading {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.about-kicker {
-  color: var(--about-accent);
-  margin: 0 0 0.35rem;
-}
-
-.about-title {
-  margin: 0;
-  font-size: clamp(2rem, 3.5vw, 3rem);
-  font-weight: 700;
-  line-height: 1.05;
-}
-
-.about-bio {
-  max-width: 48rem;
-  margin-bottom: 2.5rem;
-  color: var(--about-text-secondary);
-  font-size: 1rem;
-  line-height: 1.75;
-}
-
-.about-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.metric-card,
-.origin-card,
-.journey-link-card,
-.community-card,
-.hobbies-card {
-  border: 1px solid var(--about-border);
-  border-radius: 1.25rem;
-  background: var(--about-bg-secondary);
-}
-
-.metric-card {
-  padding: 1.25rem;
-  text-align: center;
-}
-
-.metric-value {
-  margin: 0 0 0.25rem;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.metric-label {
-  margin: 0;
-  color: var(--about-text-secondary);
-  font-size: 0.82rem;
-  line-height: 1.4;
-}
-
-.about-section-heading {
-  color: var(--about-text-secondary);
-  margin: 0 0 1rem;
-}
-
-.origin-card {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.origin-flag-wrap {
-  width: 14rem;
-  flex-shrink: 0;
-}
-
-.origin-flag {
-  width: 100%;
-  border-radius: 1rem;
-  display: block;
-}
-
-.origin-title,
-.community-title,
-.hobbies-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.origin-copy,
-.community-copy,
-.hobbies-copy {
-  margin: 0;
-  color: var(--about-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-
-.journey-link-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.journey-link-title {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-}
-
-.journey-link-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.15rem;
-  border-radius: 0.9rem;
-  background: var(--about-accent);
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.journey-link-button:hover,
-.journey-link-button:focus {
-  color: #fff;
-  opacity: 0.92;
-}
-
-.community-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-  gap: 1.5rem;
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.community-copy p {
-  margin: 0 0 1rem;
-}
-
-.community-copy p:last-child {
-  margin-bottom: 0;
-}
-
-.community-list {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: var(--about-text-secondary);
-}
-
-.community-list li + li {
-  margin-top: 0.55rem;
-}
-
-.community-gallery {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 0.85rem;
-  align-items: stretch;
-}
-
-.community-figure {
-  margin: 0;
-}
-
-.community-figure img {
-  width: 100%;
-  border-radius: 0.95rem;
-  display: block;
-}
-
-.community-figure figcaption {
-  margin-top: 0.45rem;
-  color: var(--about-text-secondary);
-  font-size: 0.8rem;
-  line-height: 1.45;
-  text-align: center;
-}
-
-.community-figure.small {
-  display: flex;
-  flex-direction: column;
-}
-
-.community-figure.small img {
-  height: 100%;
-  object-fit: cover;
-}
-
-.about-deeper {
-  margin-top: 1.15rem;
-  border: 1px solid var(--about-border);
-  border-radius: 0.95rem;
-  background: var(--bs-body-bg, #fff);
-}
-
-.about-deeper summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.9rem 1rem;
-  font-size: 0.92rem;
-  font-weight: 700;
-}
-
-.about-deeper summary::-webkit-details-marker {
-  display: none;
-}
-
-.about-deeper-content {
-  padding: 0 1rem 1rem;
-  color: var(--about-text-secondary);
-}
-
-.about-deeper-content p:last-child {
-  margin-bottom: 0;
-}
-
-.hobby-columns {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.hobby-columns strong {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--bs-body-color, #1a1a1a);
-}
-
-.lang-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.lang-bar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 0.35rem;
-}
-
-.lang-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.lang-level {
-  color: var(--about-text-secondary);
-  font-size: 0.82rem;
-  text-align: right;
-}
-
-.lang-bar-track {
-  height: 0.45rem;
-  border-radius: 999px;
-  background: rgba(127, 127, 127, 0.18);
-  overflow: hidden;
-}
-
-.lang-bar-fill {
-  width: 0;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--about-accent);
-  transition: width 1s ease-out;
-}
-
-.hobbies-card {
-  padding: 1.5rem;
-}
-
-.interests-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.interest-tag {
-  padding: 0.55rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--about-border);
-  color: var(--about-text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  background: transparent;
-}
-
-@media (max-width: 980px) {
-  .about-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .journey-link-card,
-  .community-card {
-    grid-template-columns: 1fr;
-  }
-
-  .journey-link-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 640px) {
-  .about-shell {
-    padding: 2.5rem 1rem 4rem;
-  }
-
-  .about-hero,
-  .origin-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .origin-flag-wrap,
-  .community-gallery {
-    width: 100%;
-  }
-
-  .about-metrics {
-    grid-template-columns: 1fr;
-  }
-
-  .community-gallery {
-    grid-template-columns: 1fr;
-  }
-
-  .hobby-columns {
-    grid-template-columns: 1fr;
-  }
-
-  .lang-bar-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.15rem;
-  }
-
-  .lang-level {
-    text-align: left;
-  }
-}
-</style>
-
-<div class="about-shell">
-  <div class="about-hero">
-    <img class="about-avatar" src="../files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab">
-    <div>
-      <p class="about-kicker">About</p>
-      <p class="about-title">The full story.</p>
-    </div>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">NMPC Acados PX4</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Control</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Research</div>
+  </div>
   </div>
 
-  <div class="about-bio">
-    <p>
-      I grew up in Puerto Rico, trained as an electrical engineer in Texas, and now spend my days at Georgia Tech working on safe autonomy for quadrotors. A lot of what matters to me sits at the intersection of rigorous control theory, hardware deployment, and community building, which is why BORI means just as much to me as the research itself.
-    </p>
-  </div>
-
-  <div class="about-metrics">
-    <div class="metric-card">
-      <p class="metric-value">4</p>
-      <p class="metric-label">Languages</p>
-    </div>
-    <div class="metric-card">
-      <p class="metric-value">5</p>
-      <p class="metric-label">Locations in the journey</p>
-    </div>
-    <div class="metric-card">
-      <p class="metric-value">4</p>
-      <p class="metric-label">Research labs along the way</p>
-    </div>
-    <div class="metric-card">
-      <p class="metric-value">1</p>
-      <p class="metric-label">Community organization founded</p>
-    </div>
-  </div>
-
-  <p class="about-section-heading">Where I'm From</p>
-  <div class="origin-card">
-    <div class="origin-flag-wrap">
-      <img class="origin-flag" src="../files/about/PR_flag_island.png" alt="Puerto Rico island filled with the Puerto Rican flag">
-    </div>
-    <div>
-      <p class="origin-title">Puerto Rico</p>
-      <p class="origin-copy">
-        I was born and raised on the island until I was 9. Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters to me.
-      </p>
-    </div>
-  </div>
-
-  <p class="about-section-heading">Journey</p>
-  <div class="journey-link-card">
-    <p class="journey-link-title">Open the interactive journey map.</p>
-    <a class="journey-link-button" href="../journey/">Open Journey Map</a>
-  </div>
-
-  <p class="about-section-heading">Community</p>
-  <div class="community-card">
-    <div class="community-copy">
-      <p class="community-title">BORI</p>
-      <p>
-        I helped co-found <strong>BORI (Boricuas Organized for Impact)</strong> to build community and celebrate Puerto Rican culture at Georgia Tech. It has become one of the main ways I stay connected to home while also making campus feel more welcoming for other Puerto Rican students.
-      </p>
-      <ul class="community-list">
-        <li>We create spaces that feel culturally familiar, from kickoff events to game nights and shared Puerto Rican food.</li>
-        <li>We try to be useful, not just social - helping newer students find people, resources, and a sense of belonging.</li>
-        <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li>
-      </ul>
-      <details class="about-deeper">
-        <summary>Go deeper into Community &amp; Hobbies</summary>
-        <div class="about-deeper-content">
-          <p>
-            Some of the BORI moments that best capture the spirit of the group are the inaugural event in Fall 2024, the Spring 2025 kickoff and game night, and the Fall 2025 events that focused on helping newer students settle into Georgia Tech and Atlanta.
-          </p>
-          <p>
-            The throughline across all of them is the same: making Puerto Rican students feel recognized, connected, and at home.
-          </p>
-        </div>
-      </details>
-    </div>
-    <div class="community-gallery">
-      <figure class="community-figure figure">
-        <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together" class="figure-img">
-        <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
-      </figure>
-      <figure class="community-figure small figure">
-        <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coqui with Coquito" class="figure-img">
-        <figcaption>The BORI mascot: Coquí with Coquito </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <p class="about-section-heading">Languages</p>
-  <div class="lang-stack" id="lang-bars">
-    <div class="lang-bar-container">
-      <div class="lang-bar-header">
-        <span class="lang-name">Spanish</span>
-        <span class="lang-level">Native</span>
-      </div>
-      <div class="lang-bar-track">
-        <div class="lang-bar-fill" data-pct="100"></div>
-      </div>
-    </div>
-    <div class="lang-bar-container">
-      <div class="lang-bar-header">
-        <span class="lang-name">English</span>
-        <span class="lang-level">Native</span>
-      </div>
-      <div class="lang-bar-track">
-        <div class="lang-bar-fill" data-pct="100"></div>
-      </div>
-    </div>
-    <div class="lang-bar-container">
-      <div class="lang-bar-header">
-        <span class="lang-name">French</span>
-        <span class="lang-level">Semi-conversational</span>
-      </div>
-      <div class="lang-bar-track">
-        <div class="lang-bar-fill" data-pct="45"></div>
-      </div>
-    </div>
-    <div class="lang-bar-container">
-      <div class="lang-bar-header">
-        <span class="lang-name">Portuguese</span>
-        <span class="lang-level">Reads well, speech still developing</span>
-      </div>
-      <div class="lang-bar-track">
-        <div class="lang-bar-fill" data-pct="30"></div>
-      </div>
-    </div>
-  </div>
-
-  <p class="about-section-heading">Outside the Lab</p>
-  <div class="hobbies-card">
-    <p class="hobbies-title">What I come back to.</p>
-    <p class="hobbies-copy">
-      Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: cooking for people, dancing, reading, writing, and finding ways to stay connected to community.
-    </p>
-    <div class="interests-grid">
-      <span class="interest-tag">Cooking</span>
-      <span class="interest-tag">Dance</span>
-      <span class="interest-tag">Reading</span>
-      <span class="interest-tag">Writing</span>
-      <span class="interest-tag">Film</span>
-      <span class="interest-tag">Community Building</span>
-    </div>
-    <details class="about-deeper">
-      <summary>Go deeper into the non-research side</summary>
-      <div class="about-deeper-content">
-        <div class="hobby-columns">
-          <div>
-            <strong>Cooking</strong>
-            <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
-          </div>
-          <div>
-            <strong>Dance</strong>
-            <p>Dance is one of the ways I stay expressive and connected to culture rather than letting everything become only work and theory.</p>
-          </div>
-          <div>
-            <strong>Reading &amp; Writing</strong>
-            <p>Those are usually where I go when I want to slow down, think clearly, and return to ideas in a less technical way.</p>
-          </div>
-        </div>
-      </div>
-    </details>
+<div>
+  <div class="description">
+    A production-ready Nonlinear Model Predictive Controller for quadrotors.
   </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var bars = document.querySelectorAll('.lang-bar-fill');
-  if (!bars.length) return;
 
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.style.width = entry.target.getAttribute('data-pct') + '%';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
+<div class="quarto-title-meta">
 
-  bars.forEach(function (bar) {
-    observer.observe(bar);
-  });
-});
-</script>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>GitHub Links:</strong></p>
+<div class="d-flex gap-2 mb-3">
+<p><a href="https://github.com/evannsm/nmpc_acados_px4" class="btn btn-sm btn-primary" target="_blank">View Python Version</a> <a href="https://github.com/evannsm/nmpc_acados_px4_cpp" class="btn btn-sm btn-primary" target="_blank">View C++ Version</a></p>
+</div>
+<p>This package implements a 9-state NMPC using the Acados solver with QPOASES — a rigorous, well-understood approach that was used as the primary comparison baseline for the Newton-Raphson Flow work. If you need a solid NMPC reference implementation for your own quadrotor research, this is a clean starting point.</p>
+<p>The controller tracks position, velocity, and Euler angles jointly with a configurable error-based cost formulation, wrapped yaw error handling to avoid angle discontinuities, and hard input constraints on thrust and body rates. C-code is generated by Acados for real-time computation.</p>
+<p><strong>Key features:</strong></p>
+<ul>
+<li>9-dimensional state tracking (position, velocity, Euler angles)</li>
+<li>Configurable stage and terminal cost weighting matrices</li>
+<li>Hard input constraints on thrust and body rates</li>
+<li>Wrapped yaw error handling via atan2</li>
+<li>Multiple built-in trajectory types: figure-8, circle, helix, hover</li>
+<li>Optional CSV data logging</li>
+<li>Clean ROS 2 node interface with <code>--platform {sim,hw}</code> flag</li>
+</ul>
+<p><strong>Built with:</strong> Python · Acados · QPOASES · ROS 2 · PX4</p>
 
 
 
