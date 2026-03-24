@@ -575,7 +575,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var GEO_URL = '../files/journey/data/countries-110m.json';
   var US_STATES_URL = '../files/journey/data/us-states.json';
   var OVERVIEW = { center: [-86.5752, 31.7951], scale: 1080 };
-
   var stops = [
     {
       id: 'pr',

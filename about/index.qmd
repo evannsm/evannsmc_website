@@ -113,6 +113,34 @@ body.quarto-dark {
   margin: 0 0 1rem;
 }
 
+.about-story-header {
+  margin: 0 0 1.6rem;
+}
+
+.about-story-kicker {
+  margin: 0 0 0.35rem;
+  color: var(--about-accent);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.about-story-title {
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.5rem, 2.3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.about-story-copy {
+  max-width: 50rem;
+  margin: 0;
+  color: var(--about-text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.72;
+}
+
 .origin-card {
   display: flex;
   align-items: center;
@@ -319,6 +347,202 @@ body.quarto-dark {
   padding: 1.6rem;
 }
 
+.about-feature-panel,
+.about-events-panel,
+.about-hobbies-panel {
+  border: 1px solid var(--about-border);
+  border-radius: 1.25rem;
+  background: var(--about-bg-secondary);
+}
+
+.about-feature-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
+  gap: 1.75rem;
+  padding: 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.about-feature-title,
+.about-events-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.about-feature-copy,
+.about-event-copy,
+.about-event-list,
+.about-hobby-card p {
+  color: var(--about-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.about-feature-copy p {
+  margin: 0 0 1rem;
+}
+
+.about-feature-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.about-feature-points {
+  margin: 0 0 1.2rem;
+  padding-left: 1.2rem;
+  color: var(--about-text-secondary);
+}
+
+.about-feature-points li + li {
+  margin-top: 0.55rem;
+}
+
+.about-feature-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.about-feature-figure {
+  margin: 0;
+}
+
+.about-feature-figure img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.about-feature-figure.contain img {
+  object-fit: contain;
+  height: auto;
+  max-height: 10.75rem;
+  background: var(--bs-body-bg, #fff);
+  padding: 0.55rem;
+}
+
+.about-feature-figure figcaption {
+  margin-top: 0.45rem;
+  color: var(--about-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.about-feature-gallery-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-self: start;
+}
+
+.about-events-panel {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.about-events-shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+}
+
+.about-events-intro {
+  padding: 1.6rem;
+  border-right: 1px solid var(--about-border);
+}
+
+.about-events-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.about-events-scroll {
+  max-height: 34rem;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.about-season-block + .about-season-block {
+  margin-top: 1.25rem;
+}
+
+.about-season-header {
+  margin-bottom: 0.85rem;
+}
+
+.about-event-card {
+  padding: 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid var(--about-border);
+  background: var(--bs-body-bg, #fff);
+}
+
+.about-event-card + .about-event-card {
+  margin-top: 0.8rem;
+}
+
+.about-event-season {
+  margin: 0 0 0.35rem;
+  color: var(--about-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.about-event-title {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.about-event-copy {
+  margin: 0 0 0.8rem;
+}
+
+.about-event-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.about-event-list li + li {
+  margin-top: 0.45rem;
+}
+
+.about-hobbies-panel {
+  padding: 1.6rem;
+}
+
+.about-hobbies-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.about-hobby-card {
+  padding: 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid var(--about-border);
+  background: var(--bs-body-bg, #fff);
+}
+
+.about-hobby-card-title {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.about-interest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
 .interests-grid {
   display: flex;
   flex-wrap: wrap;
@@ -337,20 +561,32 @@ body.quarto-dark {
 }
 
 body.quarto-dark .metric-value,
+body.quarto-dark .about-story-title,
 body.quarto-dark .origin-title,
 body.quarto-dark .journey-link-title,
 body.quarto-dark .community-title,
 body.quarto-dark .hobbies-title,
+body.quarto-dark .about-feature-title,
+body.quarto-dark .about-events-title,
+body.quarto-dark .about-event-title,
+body.quarto-dark .about-hobby-card-title,
 body.quarto-dark .lang-name {
   color: var(--bs-body-color);
 }
 
 body.quarto-dark .about-bio,
+body.quarto-dark .about-story-copy,
 body.quarto-dark .metric-label,
 body.quarto-dark .about-section-heading,
 body.quarto-dark .origin-copy,
 body.quarto-dark .community-copy,
 body.quarto-dark .hobbies-copy,
+body.quarto-dark .about-feature-copy,
+body.quarto-dark .about-feature-points,
+body.quarto-dark .about-feature-figure figcaption,
+body.quarto-dark .about-event-copy,
+body.quarto-dark .about-event-list,
+body.quarto-dark .about-hobby-card p,
 body.quarto-dark .section-link-copy,
 body.quarto-dark .journey-link-copy,
 body.quarto-dark .community-list,
@@ -361,6 +597,8 @@ body.quarto-dark .interest-tag {
 }
 
 body.quarto-dark .community-figure.small img,
+body.quarto-dark .about-feature-figure.contain img,
+body.quarto-dark .about-hobby-card,
 body.quarto-dark .interest-tag {
   background: rgba(15, 23, 42, 0.72);
 }
@@ -370,9 +608,24 @@ body.quarto-dark .interest-tag {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .about-feature-panel,
+  .about-hobbies-grid,
   .journey-link-card,
   .community-card {
     grid-template-columns: 1fr;
+  }
+
+  .about-events-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .about-events-intro {
+    border-right: none;
+    border-bottom: 1px solid var(--about-border);
+  }
+
+  .about-events-scroll {
+    max-height: none;
   }
 
   .journey-link-card,
@@ -404,6 +657,10 @@ body.quarto-dark .interest-tag {
   }
 
   .community-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .about-feature-gallery {
     grid-template-columns: 1fr;
   }
 
@@ -465,7 +722,7 @@ body.quarto-dark .interest-tag {
     <div>
       <p class="origin-title">Puerto Rico</p>
       <p class="origin-copy">
-        Puerto Rico shaped my values, my drive, and my sense of community. It is a big part of why I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> at Georgia Tech and why staying connected to Puerto Rican culture still matters to me.
+        My cultural roots shaped my values, my drive, and my sense of community.
       </p>
     </div>
   </div>
@@ -542,16 +799,254 @@ body.quarto-dark .interest-tag {
     </div> -->
   <!-- </div> -->
 
-  <p class="about-section-heading">Outside the Lab</p>
-  <div class="hobbies-card">
-    <div class="hobbies-header">
-      <p class="hobbies-title">What I come back to.</p>
-      <a class="section-link-button" href="../community/">Go Deeper</a>
-    </div>
-    <p class="hobbies-copy">
-      Outside research, I tend to gravitate toward things that still feel social, creative, and grounding: staying active, cooking for people, dancing, reading, writing, film, and finding ways to stay connected to community.
+  <div class="about-story-header">
+    <p class="about-story-kicker">Beyond Research</p>
+    <p class="about-story-title">Community &amp; Hobbies</p>
+    <p class="about-story-copy">
+      The part of the story that is not just papers and control theory.
     </p>
-    <div class="interests-grid">
+  </div>
+
+  <p class="about-section-heading">Community</p>
+  <section class="about-feature-panel">
+    <div class="about-feature-copy">
+      <p class="about-feature-title">BORI at Georgia Tech</p>
+      <p>
+        I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> to make sure Puerto Rican students at Georgia Tech had a space that felt familiar, welcoming, and genuinely useful. The goal was never just to start another campus organization. It was to build something that could help people feel recognized and at home.
+      </p>
+      <ul class="about-feature-points">
+        <li>We built events around culture, food, and friendship rather than treating community as an afterthought.</li>
+        <li>We focused on making newer students feel less alone when arriving in Atlanta and Georgia Tech.</li>
+        <li>BORI gave me a way to stay connected to Puerto Rico while helping make campus feel more human for others too.</li>
+      </ul>
+      <p>
+        That side of my life matters for the same reason the research does: both are about building systems that people can trust.
+      </p>
+    </div>
+    <div class="about-feature-gallery">
+      <figure class="about-feature-figure">
+        <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together">
+        <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
+      </figure>
+      <div class="about-feature-gallery-stack">
+        <figure class="about-feature-figure contain">
+          <img src="../files/BORI/bori_logo.jpg" alt="BORI logo">
+          <figcaption>The BORI logo</figcaption>
+        </figure>
+        <figure class="about-feature-figure contain">
+          <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coquí with Coquito">
+          <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <p class="about-section-heading">BORI Moments</p>
+  <section class="about-events-panel">
+    <div class="about-events-shell">
+      <div class="about-events-intro">
+        <p class="about-events-title">Event history</p>
+        <p class="about-event-copy">
+          I&apos;ll update these with pictures and videos as well coming up soon &#128578
+        </p>
+      </div>
+      <div class="about-events-scroll">
+        <div class="about-season-block">
+          <div class="about-season-header">
+            <p class="about-event-season">Fall 2024</p>
+          </div>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Inaugural BORI Event</p>
+            <ul class="about-event-list">
+              <li>Homemade coquito, sandwiches de mezclita, sorullitos.</li>
+              <li>Introduced everyone to the club and its purpose and vision.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Trivia Night with Snacks</p>
+            <ul class="about-event-list">
+              <li>Puerto Rico trivia questions.</li>
+              <li>Snacks and a lower-pressure social setting.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="about-season-block">
+          <div class="about-season-header">
+            <p class="about-event-season">Spring 2025</p>
+          </div>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Winter Org Fair · Enero 30 · 11am-1pm</p>
+            <ul class="about-event-list">
+              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">BORI Kickoff · Febrero 6 · 5pm</p>
+            <ul class="about-event-list">
+              <li>Coquito, sandwiches de mezclita, sorullitos.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Festival de Chocolate · Febrero 21</p>
+            <ul class="about-event-list">
+              <li>Fresas con chocolate, tierrita, start-stop running game, papa caliente.</li>
+              <li>The Standard rooftop area.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">March Gladness · Marzo 6</p>
+            <ul class="about-event-list">
+              <li>Tabling event with a traditional Puerto Rican jacks game.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">BORI Game Night · Marzo 13</p>
+            <ul class="about-event-list">
+              <li>Traditional Puerto Rican games and Puerto Rico-themed games.</li>
+              <li>Snacks.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="about-season-block">
+          <div class="about-season-header">
+            <p class="about-event-season">Fall 2025</p>
+          </div>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Freshman Kickoff · Agosto 12 · 1:15pm · Skiles 169</p>
+            <ul class="about-event-list">
+              <li>Bienvenidos a GT and Atlanta, with an emphasis on being a resource for new students from Puerto Rico.</li>
+              <li>Krispy Kreme donuts.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Fall Org Fair · Agosto 27 · 11am-1pm · Tech Green</p>
+            <ul class="about-event-list">
+              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">BORI KickOff · Septiembre 3 · 5:30pm · Boggs 103</p>
+            <ul class="about-event-list">
+              <li>Publix cookies, snacks tipicos, dulcecitos.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC Building</p>
+            <ul class="about-event-list">
+              <li>Prepared questions and participant gifts.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda Building</p>
+            <ul class="about-event-list">
+              <li>Funding request for $200.</li>
+              <li>Dominoes, Papi&apos;s Cuban catered empanadas, prizes.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Vamo a Jugal&apos; · Octubre 10 · 4pm · Piedmont Park</p>
+            <ul class="about-event-list">
+              <li>Limber de parcha, cherry, and coco.</li>
+              <li>Soccer, volleyball, football, and a bocina for an active outdoor event.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Movie Night · Noviembre 13 · 7pm · The Connector Apt</p>
+            <ul class="about-event-list">
+              <li>Reserved the big screen on the 7th floor.</li>
+              <li>Puerto Rican film, popcorn, snacks.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Taller Coquito · Noviembre · 7pm · The Standard Apt</p>
+            <ul class="about-event-list">
+              <li>Leche evaporada, leche condensada, crema de coco, canela molida, vainilla.</li>
+              <li>Glass bottles so people could take home the coquito they made.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="about-season-block">
+          <div class="about-season-header">
+            <p class="about-event-season">Spring 2026</p>
+          </div>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Resume Review Workshop · Enero 22, 2026 · Crossland 2157</p>
+            <ul class="about-event-list">
+              <li>Professional-development event focused on strengthening resumes and preparing members for internship and full-time applications.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Cafezinho com Brasa · Enero 29, 2026 · The Connector 7th Floor</p>
+            <ul class="about-event-list">
+              <li>Joint social event with the Brazilian student organization to socialize and taste-test coffees from each other&apos;s countries.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">Joint General Body Meeting with ALPFA and Cisco · Febrero 3, 2026 · Scheller 300</p>
+            <ul class="about-event-list">
+              <li>Collaborative event with ALPFA where we hosted recruiters from Cisco.</li>
+            </ul>
+          </article>
+
+          <article class="about-event-card">
+            <p class="about-event-title">World Baseball Classic Watch Party · Marzo 6, 2026 · Inspire Apt</p>
+            <ul class="about-event-list">
+              <li>Watched Team Puerto Rico take on Colombia together and turned it into a community hangout around baseball and home-team energy.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="about-section-heading">Outside the Lab</p>
+  <section class="about-hobbies-panel">
+    <p class="hobbies-title">What keeps me grounded</p>
+    <p class="hobbies-copy">
+      A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means staying active, cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
+    </p>
+
+    <div class="about-hobbies-grid">
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Fitness</p>
+        <p>Staying active helps me reset, keep some balance, and make sure life does not collapse entirely into code, papers, and lab work.</p>
+      </article>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Cooking</p>
+        <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
+      </article>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Dance</p>
+        <p>Dance keeps me expressive and connected to culture rather than letting everything collapse into work and theory.</p>
+      </article>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Reading &amp; Writing</p>
+        <p>That is where I usually go when I want to slow down, think clearly, and come back to ideas in a less technical way.</p>
+      </article>
+    </div>
+
+    <div class="about-interest-tags">
       <span class="interest-tag">Fitness</span>
       <span class="interest-tag">Cooking</span>
       <span class="interest-tag">Dance</span>
@@ -560,25 +1055,7 @@ body.quarto-dark .interest-tag {
       <span class="interest-tag">Film</span>
       <span class="interest-tag">Community Building</span>
     </div>
-    <!-- <div class="section-link-row"> -->
-      <!-- <p class="section-link-copy"> -->
-        <!-- That fuller side of the story now lives with the BORI material on the standalone Community &amp; Hobbies page. -->
-      <!-- </p> -->
-      <!-- <a class="section-link-button" href="../community/">Go Deeper</a> -->
-    <!-- </div> -->
-  <!-- <p class="about-section-heading">Journey</p>
-  <div class="journey-link-card">
-    <div>
-      <p class="journey-link-title">Open the interactive journey map.</p>
-      <p class="journey-link-copy">
-        The map traces Puerto Rico, my time in Texas, UT Arlington, Georgia Tech, Toronto for ACC 2024, and Albuquerque for Sandia.
-      </p>
-    </div>
-    <a class="journey-link-button" href="../journey/">Open Journey Map</a>
-  </div> -->
-
-
-  </div>
+  </section>
 </div>
 
 <script>
