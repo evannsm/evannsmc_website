@@ -11,4 +11,3 @@ Use the `publish` script to render the site and push to git:
 # Custom commit message
 ./publish -m "your commit message"
 ```
-

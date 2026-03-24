@@ -476,16 +476,16 @@ body.quarto-dark .interest-tag {
         I helped co-found <strong>BORI (Boricuas Organized for Impact)</strong> to build community and celebrate Puerto Rican culture at Georgia Tech. It has become one of the main ways I stay connected to home while also making campus feel more welcoming for other Puerto Rican students.
       </p>
       <ul class="community-list">
-        <li>We create spaces that feel culturally familiar, from kickoff events to game nights and shared Puerto Rican food.</li>
+        <li>We create spaces that feel culturally familiar. From bringing our traditional celebrations to Atlanta, to game and movie nights with Puerto Rican food.</li>
         <li>We try to be useful, not just social, helping newer students find people, resources, and a sense of belonging.</li>
-        <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li>
-      </ul>
-      <div class="section-link-row">
-        <p class="section-link-copy">
-          The longer version, including BORI events and the non-research side, lives on the standalone page.
-        </p>
+        <!-- <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li> -->
         <a class="section-link-button" href="../community/">Open Community &amp; Hobbies</a>
-      </div>
+      </ul>
+      <!-- <div class="section-link-row"> -->
+        <!-- <p class="section-link-copy"> -->
+          <!-- The longer version, including BORI events and the non-research side, lives on the standalone page. -->
+        <!-- </p> -->
+      <!-- </div> -->
     </div>
     <div class="community-gallery">
       <figure class="community-figure">
