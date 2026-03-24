@@ -11,6 +11,12 @@ page-layout: full
 #title-block-header {
   display: none;
 }
+
+.home-inside-links {
+  display: flex;
+  gap: 1rem;
+  margin: 0 0 1rem;
+}
 </style>
 
 <div class="home-page">
@@ -32,7 +38,7 @@ page-layout: full
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
-          <span class="home-meta-badge">Ph.D. under Eckman Award winner, <a href="https://scholar.google.com/citations?user=jVFH7asAAAAJ" target="_blank">Dr. Samuel Coogan</a></span>
+          <span class="home-meta-badge">Ph.D. under Eckman Award winner, <a href="https://scholar.google.com/citations?user=jVFH7asAAAAJ&hl=en" target="_blank">Dr. Samuel Coogan</a></span>
           <!-- , Eckman Award recipient</span> -->
         </div>
         <div class="home-meta-card">
@@ -70,6 +76,12 @@ page-layout: full
 
 
 ## Inside the Lab
+
+```{=html}
+<div class="home-inside-links">
+  <a class="home-link-pill primary" href="./projects/">See My Research</a>
+</div>
+```
 
 I am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems ([FACTS](https://coogan.ece.gatech.edu/)) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.
 
