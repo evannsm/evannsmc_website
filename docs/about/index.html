@@ -732,6 +732,14 @@ body.quarto-dark {
   margin-bottom: 3rem;
 }
 
+.about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) {
+  cursor: pointer;
+}
+
+.about-feature-panel.about-feature-panel-collapsible:not(.is-expanded):hover {
+  border-color: color-mix(in srgb, var(--about-accent) 28%, var(--about-border));
+}
+
 .about-feature-title,
 .about-events-title {
   margin: 0 0 0.55rem;
@@ -1234,7 +1242,7 @@ body.quarto-dark .interest-tag {
   </div>
 
   <p class="about-section-heading">Community</p>
-  <section class="about-feature-panel">
+  <section class="about-feature-panel about-feature-panel-collapsible" id="about-bori-panel">
     <div class="about-feature-copy">
       <button class="about-feature-title about-feature-toggle" type="button" aria-expanded="false" aria-controls="about-bori-moments">
         BORI at Georgia Tech
@@ -1489,14 +1497,31 @@ body.quarto-dark .interest-tag {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var bars = document.querySelectorAll('.lang-bar-fill');
+  var boriPanel = document.getElementById('about-bori-panel');
   var boriToggle = document.querySelector('.about-feature-toggle');
   var boriMoments = document.getElementById('about-bori-moments');
 
-  if (boriToggle && boriMoments) {
-    boriToggle.addEventListener('click', function () {
-      var isExpanded = boriToggle.getAttribute('aria-expanded') === 'true';
-      boriToggle.setAttribute('aria-expanded', String(!isExpanded));
-      boriMoments.hidden = isExpanded;
+  function setBoriExpanded(isExpanded) {
+    if (!boriToggle || !boriMoments || !boriPanel) return;
+    boriToggle.setAttribute('aria-expanded', String(isExpanded));
+    boriMoments.hidden = !isExpanded;
+    boriPanel.classList.toggle('is-expanded', isExpanded);
+  }
+
+  if (boriPanel && boriToggle && boriMoments) {
+    setBoriExpanded(false);
+
+    boriToggle.addEventListener('click', function (event) {
+      event.stopPropagation();
+      setBoriExpanded(boriToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    boriPanel.addEventListener('click', function (event) {
+      if (event.target.closest('.about-feature-moments')) return;
+      if (event.target.closest('button') && !event.target.closest('.about-feature-toggle')) return;
+      if (boriToggle.getAttribute('aria-expanded') !== 'true') {
+        setBoriExpanded(true);
+      }
     });
   }
 
