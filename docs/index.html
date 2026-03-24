@@ -386,11 +386,18 @@ ul.task-list li input[type="checkbox"] {
   display: none;
 }
 
-.home-inside-links {
-  display: flex;
-  gap: 1rem;
-  margin: 0 0 1rem;
-}
+  .home-section-heading-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .home-section-heading-row h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 2.3vw, 2rem);
+    font-weight: 700;
+  }
 </style>
 
 <div class="home-page page-columns page-full">
@@ -446,14 +453,14 @@ ul.task-list li input[type="checkbox"] {
     </aside>
   </section>
 </div>
-<section id="inside-the-lab" class="level2">
-<h2 class="anchored" data-anchor-id="inside-the-lab">Inside the Lab</h2>
-<div class="home-inside-links">
-  <a class="home-link-pill primary" href="./projects/">See My Research</a>
+<div class="home-section-heading-row">
+<h2 class="anchored">
+Inside the Lab
+</h2>
+<p><a class="home-link-pill primary" href="./projects/">See My Research</a></p>
 </div>
 <p>I am a Robotics/ECE Ph.D student in the Formal Methods &amp; Autonomous Control of Transportation Systems (<a href="https://coogan.ece.gatech.edu/">FACTS</a>) Lab at the Georgia Institute of Technology under the supervision of Dr.&nbsp;Samuel Coogan.</p>
 <p>My robotics work centers around hardware applications of safe autonomous control algorithms. In particular, I work on safe and efficient path planning and control synthesis in the face of onboard computational constraints. Much of my work involves hardware demonstrations of novel methods on quadrotor UAVs and unmanned ground vehicles (UGVs), so I’ve got some cool videos of drones flying autonomously and a lot of terrible videos of them crashing.</p>
-</section>
 <section id="my-latest-project" class="level2">
 <h2 class="anchored" data-anchor-id="my-latest-project">My Latest Project</h2>
 <a class="home-latest-project" href="./projects/rtd-rax/">

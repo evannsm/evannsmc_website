@@ -12,11 +12,18 @@ page-layout: full
   display: none;
 }
 
-.home-inside-links {
-  display: flex;
-  gap: 1rem;
-  margin: 0 0 1rem;
-}
+  .home-section-heading-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .home-section-heading-row h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 2.3vw, 2rem);
+    font-weight: 700;
+  }
 </style>
 
 <div class="home-page">
@@ -75,13 +82,10 @@ page-layout: full
 ```
 
 
-## Inside the Lab
-
-```{=html}
-<div class="home-inside-links">
+<div class="home-section-heading-row">
+  <h2>Inside the Lab</h2>
   <a class="home-link-pill primary" href="./projects/">See My Research</a>
 </div>
-```
 
 I am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems ([FACTS](https://coogan.ece.gatech.edu/)) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.
 
