@@ -317,6 +317,20 @@ body.quarto-dark .footer {
   opacity: 0.92;
 }
 
+.home-link-pill.tertiary {
+  border-color: rgba(37, 99, 235, 0.4);
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.home-link-pill.tertiary:hover,
+.home-link-pill.tertiary:focus {
+  background: rgba(37, 99, 235, 0.15);
+  text-decoration: none;
+}
+
 /* Home page snapshot cards */
 .home-snapshot {
   margin: 2rem 0 2.5rem;
