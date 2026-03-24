@@ -1,6 +1,8 @@
 ---
 title: "Evanns Morales-Cuadrado"
 description: "@evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech."
+image: "files/site_icon/favicon.png"
+image-alt: "evannsmc site logo"
 page-layout: full
 ---
 
