@@ -487,7 +487,7 @@ body.quarto-dark .journey-map-photo {
           role="img"
           aria-labelledby="journey-map-title"
         >
-          <title id="journey-map-title">Journey map connecting Puerto Rico, Colleyville, Arlington, Atlanta, Toronto, and Albuquerque</title>
+          <title id="journey-map-title">Journey map connecting Caguas, Grapevine, Arlington, Atlanta, Toronto, and Albuquerque</title>
         </svg>
       </div>
     </div>
@@ -499,7 +499,7 @@ body.quarto-dark .journey-map-photo {
           <div class="timeline-topline">
             <span class="timeline-dot"></span>
             <div class="timeline-city-row">
-              <p class="timeline-city">Puerto Rico</p>
+              <p class="timeline-city">Caguas, PR</p>
             </div>
           </div>
           <p class="timeline-label">Mi Patria</p>
@@ -579,11 +579,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var stops = [
     {
       id: 'pr',
-      city: 'Puerto Rico',
+      city: 'Caguas, PR',
       label: 'Home',
       countryId: '630',
-      coordinates: [-66.5, 18.2],
-      zoom: { center: [-66.5, 18.2], scale: 2450 },
+      coordinates: [-66.0485, 18.2341],
+      zoom: { center: [-66.0485, 18.2341], scale: 2450 },
       year: 'Early Years',
       role: 'Home, culture, and resilience',
       description: 'My upbringing in Caguas, Puerto Rico and my experience as an immigrant in Texas shaped my values, my drive, and my desire to connect with others and build community wherever I go.',
