@@ -136,6 +136,7 @@ body.quarto-dark {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
+  color: var(--journey-text-primary);
 }
 
 .journey-detail-badge {
@@ -153,6 +154,7 @@ body.quarto-dark {
   margin: 0 0 0.85rem;
   font-size: 0.85rem;
   font-weight: 700;
+  color: var(--journey-text-primary);
 }
 
 .journey-detail-copy {
@@ -287,6 +289,7 @@ body.quarto-dark .journey-map-photo {
   border: 1px solid transparent;
   border-radius: 1rem;
   background: transparent;
+  color: var(--journey-text-primary);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -326,6 +329,7 @@ body.quarto-dark .journey-map-photo {
   margin: 0;
   font-size: 0.96rem;
   font-weight: 700;
+  color: var(--journey-text-primary);
 }
 
 .timeline-badge {

@@ -84,7 +84,7 @@ I hope to walk the tightrope between theory and hardware implementation as seaml
 <a class="home-latest-project" href="./projects/rtd-rax/">
   <div class="home-latest-project-copy">
     <div class="home-latest-project-main">
-      <p class="home-latest-project-title"><code>RTD-RAX</code>.</p>
+      <p class="home-latest-project-title"><code>RTD-RAX</code></p>
       <div class="home-latest-project-tags" aria-label="RTD-RAX topic tags">
         <span class="home-latest-project-tag">Real-Time Planning</span>
         <span class="home-latest-project-tag">Disturbance Handling</span>
