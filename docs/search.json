@@ -298,7 +298,7 @@
     "href": "index.html#inside-the-lab",
     "title": "Evanns Morales-Cuadrado",
     "section": "Inside the Lab",
-    "text": "Inside the Lab\nI am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy research is centered around safe autonomy of hardware systems, primarily focusing on quadrotor unmanned aerial vehicles (UAVs), and some unmanned ground vehicles as well (UGVs). In particular, I work on safe and efficient path planning and control synthesis, often in the face of computational limitations on the hardware end."
+    "text": "Inside the Lab\nI am a Robotics/ECE Ph.D student in the Formal Methods & Autonomous Control of Transportation Systems (FACTS) Lab at the Georgia Institute of Technology under the supervision of Dr. Samuel Coogan.\nMy robotics work centers around hardware applications of safe autonomous control algorithms. In particular, I work on safe and efficient path planning and control synthesis in the face of onboard computational constraints. Much of my work involves hardware demonstrations of novel methods on quadrotor UAVs and unmanned ground vehicles (UGVs), so I’ve got some cool videos of drones flying autonomously and a lot of terrible videos of them crashing."
   },
   {
     "objectID": "index.html#my-latest-project",
@@ -312,7 +312,7 @@
     "href": "index.html#beyond-the-lab",
     "title": "Evanns Morales-Cuadrado",
     "section": "Beyond the Lab",
-    "text": "Beyond the Lab\n\n  \n    \n      Roots\n      Puerto Rico is still central.\n      \n        Born in Puerto Rico, my sense of home still shapes how I think about culture, belonging, and community.\n      \n    \n    \n      Journey\n      The path keeps widening.\n      \n        From UT Arlington to Georgia Tech, then Toronto for ACC 2024, and next to Albuquerque for a Summer 2026 internship at Sandia National Laboratories.\n      \n    \n    \n      Community\n      BORI matters as much as the research.\n      \n        At Georgia Tech I helped co-found \"BORI\" to provide a welcoming place for Puerto Rican students and promote our culture across campus.\n      \n    \n  \n  \n    More About Me\n    Open Journey Map"
+    "text": "Beyond the Lab\n\n  \n    \n      Roots\n      Boricua de pura cepa.\n      \n        Proud of where I'm from and always thinking of ways to give back to my community.\n        At Georgia Tech I helped co-found \"BORI\" to provide a welcoming place for Puerto Rican students and promote our culture across campus.\n      \n    \n    \n      Research\n      I love building cool things and making them work.\n      \n        From undergraduate research at UT Arlington to my PhD at Georgia Tech. My next stop is in Albuquerque, NM for a Summer 2026 internship at Sandia National Laboratories.\n      \n    \n    \n      R\n      BORI matters as much as the research.\n      \n        i\n      \n    \n  \n  \n    More About Me\n    Open Journey Map"
   },
   {
     "objectID": "projects/gatech-slides/index.html",
