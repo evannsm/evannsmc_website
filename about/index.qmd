@@ -462,7 +462,7 @@ body.quarto-dark .interest-tag {
     <div>
       <p class="journey-link-title">Open the interactive journey map.</p>
       <p class="journey-link-copy">
-        The map traces Puerto Rico, UT Arlington, Georgia Tech, Toronto for ACC 2024, and Albuquerque for Sandia.
+        The map traces Puerto Rico, my time in Texas, UT Arlington, Georgia Tech, Toronto for ACC 2024, and Albuquerque for Sandia.
       </p>
     </div>
     <a class="journey-link-button" href="../journey/">Open Journey Map</a>

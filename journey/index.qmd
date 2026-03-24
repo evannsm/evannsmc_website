@@ -464,9 +464,6 @@ body.quarto-dark .journey-map-photo {
         <span class="journey-detail-badge" id="journey-detail-badge" hidden>Upcoming</span>
       </div>
       <p class="journey-detail-role" id="journey-detail-role">Home, culture, and resilience</p>
-      <p class="journey-detail-copy" id="journey-detail-copy">
-        My upbringing in Puerto Rico and as an immigrant in Texas shaped my values, my drive, and my sense of community. It still grounds the work I care about most.
-      </p>
     </aside>
 
     <div class="journey-panel journey-map-panel">
@@ -581,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function () {
       zoom: { center: [-66.5, 18.2], scale: 2450 },
       year: 'Early Years',
       role: 'Home, culture, and resilience',
-      description: 'Born and raised on the island. Puerto Rico shaped my values, my drive, and my sense of community, and it still grounds the work I care about most.',
+      description: 'My upbringing in Puerto Rico and as an immigrant in Texas shaped my values, my drive, and my sense of community. It still grounds the work I care about most.',
       color: '#ef3340',
       tint: 'rgba(239, 51, 64, 0.1)',
       highlightFill: 'rgba(239, 51, 64, 0.18)',
