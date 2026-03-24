@@ -555,9 +555,9 @@ title-block-banner: true
     </div>
   </section>
 
-  <p class="community-section-heading">Outside the Lab</p>
+  <p class="community-section-heading">Hobbies</p>
   <section class="hobbies-feature">
-    <p class="hobbies-title">What keeps me grounded</p>
+    <p class="hobbies-title">Do Ph.D Students Have Lives?</p>
     <p class="hobbies-copy">
       A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means staying active, cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
     </p>

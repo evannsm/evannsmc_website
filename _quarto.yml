@@ -49,12 +49,12 @@ website:
         text: Publications
       - href: projects
         text: Projects
-      - href: blog
-        text: Research Blog
       - href: about
         text: About Me
       - href: journey
         text: Journey
+      - href: blog
+        text: Research Blog
 
 
 
