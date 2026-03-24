@@ -408,14 +408,6 @@ ul.task-list li input[type="checkbox"] {
   line-height: 1.75;
 }
 
-.pubs-card {
-  border: 1px solid var(--pubs-border);
-  border-radius: 1.35rem;
-  background: var(--pubs-bg-secondary);
-  padding: 1.75rem;
-  margin-bottom: 2rem;
-}
-
 .pubs-list {
   list-style: none;
   padding-left: 0;
@@ -471,8 +463,6 @@ ul.task-list li input[type="checkbox"] {
   <p class="pubs-intro">
     Published work, including the undergraduate honors thesis for nostalgia.
   </p>
-
-  <div class="pubs-card" id="pubs-card">
 <ol type="1">
 <li><strong>E. Morales-Cuadrado</strong>, L. Chung, S. Kousik and S. Coogan, “Fast, Safe Trajectory Planning for Systems under Unknown Disturbances.” Joint Submission to 2026 Modeling, Estimation and Control Conference (MECC) and ASME Letters in Dynamic Systems and Control (ALDSC). <em>(under revision)</em></li>
 <li><strong>E. Morales-Cuadrado</strong>, L. Baird, Y. Wardi and S. Coogan, “Lightweight Tracking Control for Computationally Constrained Aerial Systems with the Newton-Raphson Method.” Submitted to IEEE Transactions on Control Systems Technology, 2026. <em>(under revision)</em> <a href="https://arxiv.org/abs/2508.14185"><em>preprint available.</em></a></li>
@@ -480,15 +470,14 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>E. Morales-Cuadrado</strong>, C. Llanes, Y. Wardi and S. Coogan, “Newton-Raphson Flow for Aggressive Quadrotor Tracking Control.” <a href="https://arxiv.org/abs/2408.11197"><em>2024 American Control Conference (ACC)</em></a></li>
 <li><strong>Evanns Morales-Cuadrado</strong>, “<a href="https://mavmatrix.uta.edu/honors_spring2022/60/">Learning-Based Minimum Time-Energy Path Planning Through Integral Reinforcement Learning for a Multivehicle Nonlinear System Subject to Unknown Disturbances and Collision Avoidance</a>” Undergraduate Honors College Thesis at UT Arlington, 2022.</li>
 </ol>
-    <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
-  </div>
+  <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var card = document.getElementById('pubs-card');
-  if (!card) return;
-  var list = card.querySelector('ol');
+  var shell = document.querySelector('.pubs-shell');
+  if (!shell) return;
+  var list = shell.querySelector('ol');
   if (!list) return;
 
   list.classList.add('pubs-list');

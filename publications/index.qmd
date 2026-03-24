@@ -47,14 +47,6 @@ title-block-banner: true
   line-height: 1.75;
 }
 
-.pubs-card {
-  border: 1px solid var(--pubs-border);
-  border-radius: 1.35rem;
-  background: var(--pubs-bg-secondary);
-  padding: 1.75rem;
-  margin-bottom: 2rem;
-}
-
 .pubs-list {
   list-style: none;
   padding-left: 0;
@@ -110,22 +102,19 @@ title-block-banner: true
   <p class="pubs-intro">
     Published work, including the undergraduate honors thesis for nostalgia.
   </p>
-
-  <div class="pubs-card" id="pubs-card">
 ```
 
 {{< include ../cv/_sections/publications-shared.qmd >}}
 
 ```{=html}
-    <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
-  </div>
+  <p class="pubs-footnote">* <em>indicates equal contribution</em></p>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var card = document.getElementById('pubs-card');
-  if (!card) return;
-  var list = card.querySelector('ol');
+  var shell = document.querySelector('.pubs-shell');
+  if (!shell) return;
+  var list = shell.querySelector('ol');
   if (!list) return;
 
   list.classList.add('pubs-list');
