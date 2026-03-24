@@ -370,6 +370,12 @@ body.quarto-dark {
   font-weight: 700;
 }
 
+.about-feature-subtitle {
+  margin: 0 0 0.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
 .about-feature-copy,
 .about-event-copy,
 .about-event-list,
@@ -437,6 +443,20 @@ body.quarto-dark {
   flex-direction: column;
   gap: 0.9rem;
   align-self: start;
+}
+
+.about-feature-moments {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--about-border);
+}
+
+.about-feature-moments .about-events-shell {
+  border: 1px solid var(--about-border);
+  border-radius: 1rem;
+  background: var(--about-bg-secondary);
+  overflow: hidden;
 }
 
 .about-events-panel {
@@ -567,6 +587,7 @@ body.quarto-dark .journey-link-title,
 body.quarto-dark .community-title,
 body.quarto-dark .hobbies-title,
 body.quarto-dark .about-feature-title,
+body.quarto-dark .about-feature-subtitle,
 body.quarto-dark .about-events-title,
 body.quarto-dark .about-event-title,
 body.quarto-dark .about-hobby-card-title,
@@ -839,182 +860,181 @@ body.quarto-dark .interest-tag {
         </figure>
       </div>
     </div>
-  </section>
-
-  <p class="about-section-heading">BORI Moments</p>
-  <section class="about-events-panel">
-    <div class="about-events-shell">
-      <div class="about-events-intro">
-        <p class="about-events-title">Event history</p>
-        <p class="about-event-copy">
-          I&apos;ll update these with pictures and videos as well coming up soon &#128578
-        </p>
-      </div>
-      <div class="about-events-scroll">
-        <div class="about-season-block">
-          <div class="about-season-header">
-            <p class="about-event-season">Fall 2024</p>
-          </div>
-
-          <article class="about-event-card">
-            <p class="about-event-title">Inaugural BORI Event</p>
-            <ul class="about-event-list">
-              <li>Homemade coquito, sandwiches de mezclita, sorullitos.</li>
-              <li>Introduced everyone to the club and its purpose and vision.</li>
-            </ul>
-          </article>
-
-          <article class="about-event-card">
-            <p class="about-event-title">Trivia Night with Snacks</p>
-            <ul class="about-event-list">
-              <li>Puerto Rico trivia questions.</li>
-              <li>Snacks and a lower-pressure social setting.</li>
-            </ul>
-          </article>
+    <div class="about-feature-moments">
+      <p class="about-feature-subtitle">BORI Moments</p>
+      <div class="about-events-shell">
+        <div class="about-events-intro">
+          <p class="about-events-title">Event history</p>
+          <p class="about-event-copy">
+            I&apos;ll update these with pictures and videos as well coming up soon &#128578
+          </p>
         </div>
+        <div class="about-events-scroll">
+          <div class="about-season-block">
+            <div class="about-season-header">
+              <p class="about-event-season">Fall 2024</p>
+            </div>
 
-        <div class="about-season-block">
-          <div class="about-season-header">
-            <p class="about-event-season">Spring 2025</p>
+            <article class="about-event-card">
+              <p class="about-event-title">Inaugural BORI Event</p>
+              <ul class="about-event-list">
+                <li>Homemade coquito, sandwiches de mezclita, sorullitos.</li>
+                <li>Introduced everyone to the club and its purpose and vision.</li>
+              </ul>
+            </article>
+
+            <article class="about-event-card">
+              <p class="about-event-title">Trivia Night with Snacks</p>
+              <ul class="about-event-list">
+                <li>Puerto Rico trivia questions.</li>
+                <li>Snacks and a lower-pressure social setting.</li>
+              </ul>
+            </article>
           </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Winter Org Fair · Enero 30 · 11am-1pm</p>
-            <ul class="about-event-list">
-              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
-            </ul>
-          </article>
+          <div class="about-season-block">
+            <div class="about-season-header">
+              <p class="about-event-season">Spring 2025</p>
+            </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">BORI Kickoff · Febrero 6 · 5pm</p>
-            <ul class="about-event-list">
-              <li>Coquito, sandwiches de mezclita, sorullitos.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Winter Org Fair · Enero 30 · 11am-1pm</p>
+              <ul class="about-event-list">
+                <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Festival de Chocolate · Febrero 21</p>
-            <ul class="about-event-list">
-              <li>Fresas con chocolate, tierrita, start-stop running game, papa caliente.</li>
-              <li>The Standard rooftop area.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">BORI Kickoff · Febrero 6 · 5pm</p>
+              <ul class="about-event-list">
+                <li>Coquito, sandwiches de mezclita, sorullitos.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">March Gladness · Marzo 6</p>
-            <ul class="about-event-list">
-              <li>Tabling event with a traditional Puerto Rican jacks game.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Festival de Chocolate · Febrero 21</p>
+              <ul class="about-event-list">
+                <li>Fresas con chocolate, tierrita, start-stop running game, papa caliente.</li>
+                <li>The Standard rooftop area.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">BORI Game Night · Marzo 13</p>
-            <ul class="about-event-list">
-              <li>Traditional Puerto Rican games and Puerto Rico-themed games.</li>
-              <li>Snacks.</li>
-            </ul>
-          </article>
-        </div>
+            <article class="about-event-card">
+              <p class="about-event-title">March Gladness · Marzo 6</p>
+              <ul class="about-event-list">
+                <li>Tabling event with a traditional Puerto Rican jacks game.</li>
+              </ul>
+            </article>
 
-        <div class="about-season-block">
-          <div class="about-season-header">
-            <p class="about-event-season">Fall 2025</p>
+            <article class="about-event-card">
+              <p class="about-event-title">BORI Game Night · Marzo 13</p>
+              <ul class="about-event-list">
+                <li>Traditional Puerto Rican games and Puerto Rico-themed games.</li>
+                <li>Snacks.</li>
+              </ul>
+            </article>
           </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Freshman Kickoff · Agosto 12 · 1:15pm · Skiles 169</p>
-            <ul class="about-event-list">
-              <li>Bienvenidos a GT and Atlanta, with an emphasis on being a resource for new students from Puerto Rico.</li>
-              <li>Krispy Kreme donuts.</li>
-            </ul>
-          </article>
+          <div class="about-season-block">
+            <div class="about-season-header">
+              <p class="about-event-season">Fall 2025</p>
+            </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Fall Org Fair · Agosto 27 · 11am-1pm · Tech Green</p>
-            <ul class="about-event-list">
-              <li>Poster, banderitas, bocina, Hershey Kisses.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Freshman Kickoff · Agosto 12 · 1:15pm · Skiles 169</p>
+              <ul class="about-event-list">
+                <li>Bienvenidos a GT and Atlanta, with an emphasis on being a resource for new students from Puerto Rico.</li>
+                <li>Krispy Kreme donuts.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">BORI KickOff · Septiembre 3 · 5:30pm · Boggs 103</p>
-            <ul class="about-event-list">
-              <li>Publix cookies, snacks tipicos, dulcecitos.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Fall Org Fair · Agosto 27 · 11am-1pm · Tech Green</p>
+              <ul class="about-event-list">
+                <li>Poster, banderitas, bocina, Hershey Kisses.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC Building</p>
-            <ul class="about-event-list">
-              <li>Prepared questions and participant gifts.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">BORI KickOff · Septiembre 3 · 5:30pm · Boggs 103</p>
+              <ul class="about-event-list">
+                <li>Publix cookies, snacks tipicos, dulcecitos.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda Building</p>
-            <ul class="about-event-list">
-              <li>Funding request for $200.</li>
-              <li>Dominoes, Papi&apos;s Cuban catered empanadas, prizes.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">BORI Professional Panel · Septiembre 24 · 5pm · IC Building</p>
+              <ul class="about-event-list">
+                <li>Prepared questions and participant gifts.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Vamo a Jugal&apos; · Octubre 10 · 4pm · Piedmont Park</p>
-            <ul class="about-event-list">
-              <li>Limber de parcha, cherry, and coco.</li>
-              <li>Soccer, volleyball, football, and a bocina for an active outdoor event.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Dominos Tournament · Octubre · 11am-1pm · Kendeda Building</p>
+              <ul class="about-event-list">
+                <li>Funding request for $200.</li>
+                <li>Dominoes, Papi&apos;s Cuban catered empanadas, prizes.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Movie Night · Noviembre 13 · 7pm · The Connector Apt</p>
-            <ul class="about-event-list">
-              <li>Reserved the big screen on the 7th floor.</li>
-              <li>Puerto Rican film, popcorn, snacks.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Vamo a Jugal&apos; · Octubre 10 · 4pm · Piedmont Park</p>
+              <ul class="about-event-list">
+                <li>Limber de parcha, cherry, and coco.</li>
+                <li>Soccer, volleyball, football, and a bocina for an active outdoor event.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Taller Coquito · Noviembre · 7pm · The Standard Apt</p>
-            <ul class="about-event-list">
-              <li>Leche evaporada, leche condensada, crema de coco, canela molida, vainilla.</li>
-              <li>Glass bottles so people could take home the coquito they made.</li>
-            </ul>
-          </article>
-        </div>
+            <article class="about-event-card">
+              <p class="about-event-title">Movie Night · Noviembre 13 · 7pm · The Connector Apt</p>
+              <ul class="about-event-list">
+                <li>Reserved the big screen on the 7th floor.</li>
+                <li>Puerto Rican film, popcorn, snacks.</li>
+              </ul>
+            </article>
 
-        <div class="about-season-block">
-          <div class="about-season-header">
-            <p class="about-event-season">Spring 2026</p>
+            <article class="about-event-card">
+              <p class="about-event-title">Taller Coquito · Noviembre · 7pm · The Standard Apt</p>
+              <ul class="about-event-list">
+                <li>Leche evaporada, leche condensada, crema de coco, canela molida, vainilla.</li>
+                <li>Glass bottles so people could take home the coquito they made.</li>
+              </ul>
+            </article>
           </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Resume Review Workshop · Enero 22, 2026 · Crossland 2157</p>
-            <ul class="about-event-list">
-              <li>Professional-development event focused on strengthening resumes and preparing members for internship and full-time applications.</li>
-            </ul>
-          </article>
+          <div class="about-season-block">
+            <div class="about-season-header">
+              <p class="about-event-season">Spring 2026</p>
+            </div>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Cafezinho com Brasa · Enero 29, 2026 · The Connector 7th Floor</p>
-            <ul class="about-event-list">
-              <li>Joint social event with the Brazilian student organization to socialize and taste-test coffees from each other&apos;s countries.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Resume Review Workshop · Enero 22, 2026 · Crossland 2157</p>
+              <ul class="about-event-list">
+                <li>Professional-development event focused on strengthening resumes and preparing members for internship and full-time applications.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">Joint General Body Meeting with ALPFA and Cisco · Febrero 3, 2026 · Scheller 300</p>
-            <ul class="about-event-list">
-              <li>Collaborative event with ALPFA where we hosted recruiters from Cisco.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Cafezinho com Brasa · Enero 29, 2026 · The Connector 7th Floor</p>
+              <ul class="about-event-list">
+                <li>Joint social event with the Brazilian student organization to socialize and taste-test coffees from each other&apos;s countries.</li>
+              </ul>
+            </article>
 
-          <article class="about-event-card">
-            <p class="about-event-title">World Baseball Classic Watch Party · Marzo 6, 2026 · Inspire Apt</p>
-            <ul class="about-event-list">
-              <li>Watched Team Puerto Rico take on Colombia together and turned it into a community hangout around baseball and home-team energy.</li>
-            </ul>
-          </article>
+            <article class="about-event-card">
+              <p class="about-event-title">Joint General Body Meeting with ALPFA and Cisco · Febrero 3, 2026 · Scheller 300</p>
+              <ul class="about-event-list">
+                <li>Collaborative event with ALPFA where we hosted recruiters from Cisco.</li>
+              </ul>
+            </article>
+
+            <article class="about-event-card">
+              <p class="about-event-title">World Baseball Classic Watch Party · Marzo 6, 2026 · Inspire Apt</p>
+              <ul class="about-event-list">
+                <li>Watched Team Puerto Rico take on Colombia together and turned it into a community hangout around baseball and home-team energy.</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </div>
     </div>
