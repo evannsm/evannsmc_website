@@ -769,16 +769,16 @@ body.quarto-dark .about-feature-panel.about-feature-panel-collapsible:not(.is-ex
       <p class="metric-label">Languages</p>
     </div>
     <div class="metric-card">
-      <p class="metric-value">4</p>
+      <p class="metric-value">5</p>
       <p class="metric-label">Locations</p>
     </div>
     <div class="metric-card">
-      <p class="metric-value">4</p>
-      <p class="metric-label">Research labs along the way</p>
+      <p class="metric-value">5</p>
+      <p class="metric-label">Research Labs</p>
     </div>
     <div class="metric-card">
       <p class="metric-value">1</p>
-      <p class="metric-label">Community organization founded</p>
+      <p class="metric-label">Community Organization Founded</p>
     </div>
   </div>
 
