@@ -39,7 +39,7 @@ page-layout: full
           <div class="home-meta-card-header">
             <img src="./files/about/UTA_logomark.png" alt="UT Arlington logo" class="home-meta-logo">
             <div>
-              <p class="home-meta-value">Honors B.S. in EE · UT Arlington</p>
+              <p class="home-meta-value">Honors B.S. in EE · University of Texas</p>
               <p class="home-meta-subtle">Summa Cum Laude · Minors in Math & Physics · Certificate in Unmanned Vehicle Systems</p>
             </div>
           </div>
