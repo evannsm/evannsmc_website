@@ -59,9 +59,13 @@ title-block-banner: true
   border: 1px solid var(--pubs-border);
   border-radius: 1rem;
   background: var(--bs-body-bg, #fff);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.72;
   color: var(--pubs-text-secondary);
+}
+
+body.quarto-light .pubs-list > li {
+  color: #111827;
 }
 
 .pubs-list > li:last-child {
@@ -100,7 +104,7 @@ title-block-banner: true
   <p class="pubs-kicker">Publications</p>
   <p class="pubs-title">Research Papers.</p>
   <p class="pubs-intro">
-    Published work, including the undergraduate honors thesis for nostalgia.
+    Published work, including my undergraduate honors thesis for nostalgia.
   </p>
 ```
 
