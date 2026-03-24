@@ -559,29 +559,29 @@ title-block-banner: true
   <section class="hobbies-feature">
     <p class="hobbies-title">Do Ph.D Students Have Lives?</p>
     <p class="hobbies-copy">
-      A lot of the non-research side of my life still comes back to culture, creativity, and being with people. That usually means staying active, cooking, dancing, reading, writing, and making time for spaces that feel alive rather than purely technical.
+      When I'm not exercising my weak brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. When an find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
     </p>
 
     <div class="hobbies-grid">
       <article class="hobby-card">
         <h3>Fitness</h3>
-        <p>Staying active helps me reset, keep some balance, and make sure life does not collapse entirely into code, papers, and lab work.</p>
+        <p>To lift or not to lift, that is the question.</p>
       </article>
       <article class="hobby-card">
         <h3>Cooking</h3>
-        <p>Food is one of the easiest ways for me to bring people together, especially when I can cook something that feels tied to home.</p>
+        <p>I'm my own private chef. And my client has exotic taste.</p>
       </article>
       <article class="hobby-card">
         <h3>Dance</h3>
-        <p>Dance keeps me expressive and connected to culture rather than letting everything collapse into work and theory.</p>
+        <p>Meh I'm getting better.</p>
       </article>
       <article class="hobby-card">
-        <h3>Reading &amp; Writing</h3>
-        <p>That is where I usually go when I want to slow down, think clearly, and come back to ideas in a less technical way.</p>
+        <h3>Reading</h3>
+        <p>I do eventually finish books I start after the fifth time I try reading them.</p>
       </article>
     </div>
 
-    <div class="interest-tags">
+    <!-- <div class="interest-tags">
       <span class="interest-tag">Fitness</span>
       <span class="interest-tag">Cooking</span>
       <span class="interest-tag">Dance</span>
@@ -589,7 +589,7 @@ title-block-banner: true
       <span class="interest-tag">Writing</span>
       <span class="interest-tag">Film</span>
       <span class="interest-tag">Community Building</span>
-    </div>
+    </div> -->
 
     <div class="community-links">
       <a class="community-link primary" href="../about/">Back to About Me</a>
