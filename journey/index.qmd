@@ -494,8 +494,8 @@ body.quarto-dark .journey-map-photo {
               <p class="timeline-city">Puerto Rico</p>
             </div>
           </div>
-          <p class="timeline-label">Home</p>
-          <p class="timeline-year">Before college</p>
+          <p class="timeline-label">Mi Patria</p>
+          <p class="timeline-year">Early years</p>
         </button>
 
         <button type="button" class="timeline-stop" data-stop="chhs" style="--stop-color:#2563eb; --stop-tint:rgba(37, 99, 235, 0.1);">
