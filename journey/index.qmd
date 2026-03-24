@@ -547,7 +547,7 @@ body.quarto-dark .journey-map-photo {
               <p class="timeline-city">Toronto, ON</p>
             </div>
           </div>
-          <p class="timeline-label">American Control Conference 2024</p>
+          <p class="timeline-label">64<sup>th</sup> American Control Conference</p>
           <p class="timeline-year">2024</p>
         </button>
 
