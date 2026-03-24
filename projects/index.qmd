@@ -447,7 +447,7 @@ body.quarto-dark .project-toggle {
 </style>
 
 <div class="projects-shell">
-  <p class="projects-page-title">Research & Open-Source Builds. Click on the Panels to See Full Project Page.</p>
+  <p class="projects-page-title">Research & Open-Source Builds.<br>Click on a Panel to See Full Project Page.</p>
 
   <div class="projects-columns">
     <!-- LEFT COLUMN: Research Projects -->
