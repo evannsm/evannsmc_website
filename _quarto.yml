@@ -18,6 +18,7 @@ project:
     - CNAME
     - overleaf_presentations
     - files/site_icon/apple-touch-icon.png
+    - files/site_icon/home-share-preview.png
     - files/about/PR_flag_island.png
     - files/journey/js/d3.min.js
     - files/journey/js/topojson-client.min.js
