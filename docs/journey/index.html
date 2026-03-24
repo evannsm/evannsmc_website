@@ -827,12 +827,12 @@ body.quarto-dark .journey-map-photo {
     <aside class="journey-panel journey-detail" id="journey-detail">
       <!-- <p class="journey-detail-year" id="journey-detail-year">Before college</p> -->
       <div class="journey-detail-title-row">
-        <p class="journey-detail-title" id="journey-detail-title">Puerto Rico</p>
+        <p class="journey-detail-title" id="journey-detail-title">Select a stop</p>
         <span class="journey-detail-badge" id="journey-detail-badge" hidden="">Upcoming</span>
       </div>
-      <p class="journey-detail-role" id="journey-detail-role">Home, culture, and resilience</p>
+      <p class="journey-detail-role" id="journey-detail-role" hidden=""></p>
       <p class="journey-detail-copy" id="journey-detail-copy">
-        My upbringing in Puerto Rico and as an immigrant in Texas shaped my values, my drive, and my sense of community. It still grounds the work I care about most.
+        Every stop shaped how I work and who I am. Click a marker or stop to zoom in.
       </p>
     </aside>
 
@@ -850,9 +850,9 @@ body.quarto-dark .journey-map-photo {
     </div>
 
     <aside class="journey-sidebar">
-      <p class="journey-sidebar-heading">Timeline</p>
+      <p class="journey-sidebar-heading">Timeline: click on the stops below</p>
       <div class="journey-stops">
-        <button type="button" class="timeline-stop is-active" data-stop="pr" style="--stop-color:#ef3340; --stop-tint:rgba(239, 51, 64, 0.1);">
+        <button type="button" class="timeline-stop" data-stop="pr" style="--stop-color:#ef3340; --stop-tint:rgba(239, 51, 64, 0.1);">
           <div class="timeline-topline">
             <span class="timeline-dot"></span>
             <div class="timeline-city-row">
@@ -1054,7 +1054,9 @@ document.addEventListener('DOMContentLoaded', function () {
     ['gt', 'snl']
   ];
 
-  var activeId = 'pr';
+  var DEFAULT_DETAIL_TITLE = 'Select a stop';
+  var DEFAULT_DETAIL_COPY = 'Every stop shaped how I work and who I am. Click a marker or stop to zoom in.';
+  var activeId = null;
   var zoomed = false;
   var currentCenter = OVERVIEW.center.slice();
   var currentScale = OVERVIEW.scale;
@@ -1143,6 +1145,7 @@ document.addEventListener('DOMContentLoaded', function () {
       detailTitle.textContent = stop.city;
     }
     if (detailRole) {
+      detailRole.hidden = false;
       detailRole.textContent = stop.role;
     }
     if (detailCopy) {
@@ -1161,6 +1164,26 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         detailBadge.hidden = true;
       }
+    }
+  }
+
+  function resetDetail() {
+    if (detailTitle) {
+      detailTitle.textContent = DEFAULT_DETAIL_TITLE;
+    }
+    if (detailRole) {
+      detailRole.hidden = true;
+      detailRole.textContent = '';
+    }
+    if (detailCopy) {
+      detailCopy.textContent = DEFAULT_DETAIL_COPY;
+    }
+    if (detail) {
+      detail.style.borderColor = '';
+      detail.style.backgroundColor = '';
+    }
+    if (detailBadge) {
+      detailBadge.hidden = true;
     }
   }
 
@@ -1403,7 +1426,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function zoomOut() {
+    activeId = null;
     zoomed = false;
+    resetDetail();
+    updateTimeline();
     animateTo(OVERVIEW.center, OVERVIEW.scale);
   }
 
@@ -1430,7 +1456,7 @@ document.addEventListener('DOMContentLoaded', function () {
     stateFeatures = statesData.features;
 
     loading.hidden = true;
-    updateDetail(getStop(activeId));
+    resetDetail();
     updateTimeline();
     renderMap();
   }).catch(function () {
