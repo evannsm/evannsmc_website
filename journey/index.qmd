@@ -592,8 +592,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tint: 'rgba(239, 51, 64, 0.1)',
       highlightFill: 'rgba(239, 51, 64, 0.18)',
       emoji: '🇵🇷',
-      image: '../files/about/PR_flag_island.png',
-      imageFit: 'contain',
+      image: '../files/journey/stops/pr.webp',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
     },
     {
@@ -610,6 +610,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tint: 'rgba(37, 99, 235, 0.1)',
       highlightFill: 'rgba(37, 99, 235, 0.18)',
       emoji: '🏫',
+      image: '../files/journey/stops/chhs.webp',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'end', x: -14, emojiY: -24, labelY: -8 }
     },
     {
@@ -626,6 +628,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tint: 'rgba(249, 115, 22, 0.1)',
       highlightFill: 'rgba(249, 115, 22, 0.2)',
       emoji: '🎓',
+      image: '../files/journey/stops/uta.jpg',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'start', x: 14, emojiY: -22, labelY: -8 }
     },
     {
@@ -642,9 +646,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tint: 'rgba(179, 163, 105, 0.14)',
       highlightFill: 'rgba(179, 163, 105, 0.24)',
       emoji: '🐝',
-      image: '../files/LabPhoto.png',
-      imageFit: 'contain',
-      imagePosition: '50% 16%',
+      image: '../files/journey/stops/gt.jpg',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'start', x: 16, emojiY: -10, labelY: 5 }
     },
     {
@@ -661,6 +664,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tint: 'rgba(220, 38, 38, 0.1)',
       highlightFill: 'rgba(220, 38, 38, 0.18)',
       emoji: '📄',
+      image: '../files/journey/stops/tor.png',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
     },
     {
@@ -678,6 +683,8 @@ document.addEventListener('DOMContentLoaded', function () {
       highlightFill: 'rgba(15, 118, 110, 0.18)',
       emoji: '🔬',
       upcoming: true,
+      image: '../files/journey/stops/snl.png',
+      imageFit: 'cover',
       overviewLabel: { anchor: 'middle', x: 0, emojiY: -30, labelY: -14 }
     }
   ];

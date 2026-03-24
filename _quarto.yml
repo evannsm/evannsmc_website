@@ -24,6 +24,7 @@ project:
     - files/journey/js/topojson-client.min.js
     - files/journey/data/countries-110m.json
     - files/journey/data/us-states.json
+    - files/journey/stops
     - googleffaf8e4b1a20676c.html
 
 website:
