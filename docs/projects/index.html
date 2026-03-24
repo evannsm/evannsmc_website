@@ -590,6 +590,16 @@ body.quarto-dark .project-name {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.25s ease, max-height 0.25s ease;
+}
+
+.project-card:hover .project-cta-hint,
+.project-card:focus-within .project-cta-hint {
+  opacity: 1;
+  max-height: 2rem;
 }
 
 .project-preview-panel {
@@ -802,7 +812,7 @@ body.quarto-dark .project-toggle {
 </style>
 
 <div class="projects-shell">
-  <p class="projects-page-title">Research &amp; Open-Source Builds.</p>
+  <p class="projects-page-title">Research &amp; Open-Source Builds. Click on the Panels to See Full Project Page.</p>
 
   <div class="projects-columns">
     <!-- LEFT COLUMN: Research Projects -->
