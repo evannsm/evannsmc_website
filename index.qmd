@@ -32,7 +32,11 @@ page-layout: full
       <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
       <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
       <p class="home-hero-summary">
-        I work on safe autonomy for hardware systems, especially UAVs, with an emphasis on aggressive low-level control, trajectory planning, and getting theory from the page, to the code, to the real world. I have broken many drones, put them back together, and learned from every headache-incuding mistake.
+        I work on safe autonomy for hardware systems, especially UAVs, with an emphasis on aggressive low-level control, safe trajectory planning under uncertainty, and lightweight algorithms for computationally limited hardware.<br>
+
+        As part of my work I have also broken many drones, put them back together, and learned many lessons while working with hardware systems.
+
+        <!-- I get algorithms from the page, to the code, and onto hardware.  -->
       </p>
       <p class="home-edu-heading">Education</p>
       <div class="home-meta-grid">
@@ -108,8 +112,9 @@ My robotics work centers around hardware applications of safe autonomous control
         <span class="home-latest-project-tag">Research</span>
       </div>
       <p class="home-latest-project-text">
-        Runtime-assurance trajectory planning, with online verification and repair instead of conservative offline safety buffers.
-        RTD-RAX extends Reachability-based Trajectory Design by separating fast candidate generation from online safety certification. The planner stays agile, while a verifier certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
+        My Runtime-Assurance eXtension (RAX) of the Reachability-based Trajectory Design (RTD) framework for fast candidate trajectory generation paired with an online, disturbance-aware verification layer to produce trajectories that avoid obstacles and achieve mission objectives while facing uncertain dynamics and real-world disturbances.
+        
+        RTD-RAX extends traditional RTD by separating fast candidate generation from online safety certification. The planner stays agile, while a fast online verifier utilizing Mixed Monotone Reachability (MMR) certifies each trajectory under the actual measured conditions and repairs unsafe candidates before execution. 
       </p>
     </div>
     <span class="home-latest-project-link">Open RTD-RAX</span>
