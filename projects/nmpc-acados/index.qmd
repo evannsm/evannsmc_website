@@ -1,5 +1,5 @@
 ---
-title: "NMPC Acados PX4"
+title: "Aggressive NMPC for Quadrotors"
 description: "A production-ready Nonlinear Model Predictive Controller for quadrotors."
 categories: [Control, Python, Research]
 ---

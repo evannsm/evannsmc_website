@@ -474,6 +474,52 @@ body.quarto-dark .footer {
   opacity: 0.92;
 }
 
+/* Dark-mode contrast fixes for homepage cards and pills */
+body.quarto-dark .home-hero-portrait,
+body.quarto-dark .home-meta-card,
+body.quarto-dark .home-snapshot-card,
+body.quarto-dark .home-latest-project {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: rgba(31, 41, 55, 0.92);
+}
+
+body.quarto-dark .home-contact-item,
+body.quarto-dark .home-link-pill:not(.primary),
+body.quarto-dark .home-latest-project-tag,
+body.quarto-dark .home-latest-project-preview,
+body.quarto-dark .home-snapshot-link:not(.primary) {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.72);
+}
+
+body.quarto-dark .home-meta-value,
+body.quarto-dark .home-snapshot-title,
+body.quarto-dark .home-latest-project-title,
+body.quarto-dark .home-link-pill:not(.primary),
+body.quarto-dark .home-snapshot-link:not(.primary) {
+  color: var(--bs-body-color);
+}
+
+body.quarto-dark .home-hero-summary,
+body.quarto-dark .home-hero-caption,
+body.quarto-dark .home-meta-subtle,
+body.quarto-dark .home-contact-item,
+body.quarto-dark .home-snapshot-copy,
+body.quarto-dark .home-latest-project-text,
+body.quarto-dark .home-latest-project-tag {
+  color: rgba(226, 232, 240, 0.84);
+}
+
+body.quarto-dark .home-meta-badge {
+  background: rgba(59, 130, 246, 0.16);
+  color: #93c5fd;
+}
+
+body.quarto-dark .home-meta-badge a,
+body.quarto-dark .home-latest-project-link {
+  color: #93c5fd;
+}
+
 @media (max-width: 900px) {
   .home-hero {
     flex-direction: column;
