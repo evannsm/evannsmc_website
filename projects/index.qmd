@@ -658,7 +658,7 @@ body.quarto-dark .project-toggle {
                   <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
                 </div>
                 <p class="project-preview-copy">
-                  A research-grade quadrotor controller that reframes tracking as a Newton-Raphson optimization problem and runs on real onboard hardware.
+                  A research-grade quadrotor controller that reframes tracking as a continuous-time Newton-Raphson problem and runs on real onboard hardware.
                 </p>
                 <p class="project-cta-hint">Tap anywhere on this panel to open the project page.</p>
               </div>
@@ -683,7 +683,7 @@ body.quarto-dark .project-toggle {
             <div class="project-body-grid">
               <div class="project-detail-copy">
                 <p>
-                  NR Flow uses iterative Jacobian inversion for fast feedback linearization and folds integral control barrier functions into the controller to enforce actuator limits smoothly. It is meant to be practical, not just theoretical.
+                  NR Flow uses a continuous-time version of the traditional Newton-Raphson algorithm and poses it as a tracking controller. It is fast, computationally lightweight, and easily deployable on different kinds of systems with very little tuning or overhead required. Most importantly, it provides accurate tracking control even in comparison to powerful controllers such as NMPC. We utilize integral control barrier functions (I-CBFs) to smoothly enforce actuator limits.
                 </p>
                 <ul class="project-detail-list">
                   <li>Runs comfortably on a Raspberry Pi 4 onboard a quadrotor.</li>
@@ -730,7 +730,7 @@ body.quarto-dark .project-toggle {
                   <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
                 </div>
                 <p class="project-preview-copy">
-                  A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
+                  A Quarto-based joint CV-and-Resume build tool that updates shared sections once and propagates them across every output document automatically. Comes with docker/make infrastructure so you don't have to set anything up yourself or remember any commands. Just add new entries, update the content, and write 'make' on the command line and you're done!
                 </p>
                 <p class="project-cta-hint">Tap anywhere on this panel to open the project page.</p>
               </div>
@@ -740,7 +740,7 @@ body.quarto-dark .project-toggle {
                   <div class="project-preview-lines">
                     <div class="project-preview-line">Shared sections</div>
                     <div class="project-preview-line">Incremental PDF rebuilds</div>
-                    <div class="project-preview-line">Academic + consulting styles</div>
+                    <div class="project-preview-line">Academic + Industry Style Templates</div>
                   </div>
                   <div class="project-preview-metrics">
                     <span class="project-preview-metric">Quarto</span>
@@ -755,7 +755,9 @@ body.quarto-dark .project-toggle {
             <div class="project-body-grid">
               <div class="project-detail-copy">
                 <p>
-                  QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
+                  I made QuartoCV for my recurring problem of having to shift everything around on my Canva CV when I had a new entry to add, and then having to repeat my efforts multiple times for the shorter Resume version, and add/delete personal details for the public versions of these documents vs the private versions I give to recruiters.
+                  
+                  In QuartoCV, shared section files feed multiple outputs in a modular fashion so you edit one common source of truth, and all documents that highlight the information will be automatically updated. Moreover, my docker/make infrastructure allows you to rebuild documents when changes are made with a simple 'make' command, and to never have to download and set up any dependencies yourself. Check it out!  
                 </p>
                 <ul class="project-detail-list">
                   <li>One source section can feed multiple document variants.</li>
