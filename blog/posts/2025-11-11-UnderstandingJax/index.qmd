@@ -7,7 +7,7 @@ categories: [tools, software, jax, implementation]
 # image: "thumbnail.jpg"
 draft: false
 bibliography: references.bib
-csl: https://www.zotero.org/styles/ieee
+csl: ../../../ieee.csl
 ---
 
 ## Introduction

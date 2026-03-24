@@ -5,7 +5,7 @@ author: "Evanns Morales-Cuadrado"
 date: "2025-01-22"
 categories: [tutorial, example]
 bibliography: references.bib
-csl: https://www.zotero.org/styles/ieee
+csl: ../../../ieee.csl
 draft: true
 ---
 
@@ -56,7 +56,7 @@ When implementing controllers for robotic manipulators, @lynch2017 offer practic
 
 Notice the `csl:` field in the YAML frontmatter? This controls the citation style:
 
-- **IEEE** (currently used): `csl: https://www.zotero.org/styles/ieee`
+- **IEEE** (currently used): `csl: ../../../ieee.csl`
 - **APA**: `csl: https://www.zotero.org/styles/apa`
 - **Chicago**: `csl: https://www.zotero.org/styles/chicago-author-date`
 - **Nature**: `csl: https://www.zotero.org/styles/nature`

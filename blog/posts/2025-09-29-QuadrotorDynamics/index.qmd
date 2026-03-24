@@ -6,7 +6,7 @@ date: "2025-09-29"
 categories: [dynamical systems, control theory, quadrotor, geometric control, modeling]
 draft: false
 bibliography: references.bib
-csl: https://www.zotero.org/styles/ieee
+csl: ../../../ieee.csl
 ---
 
 ### I'll make this more in-depth and polished later, but here is a start.
