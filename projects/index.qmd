@@ -160,6 +160,10 @@ body.quarto-dark {
   font-weight: 700;
 }
 
+body.quarto-dark .project-name {
+  color: #fff;
+}
+
 .project-toggle {
   color: var(--projects-text-secondary);
   font-size: 0.82rem;
