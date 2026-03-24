@@ -115,8 +115,8 @@ body.quarto-dark {
 }
 
 .journey-detail {
-  flex: 0 0 15.0rem;
-  max-width: 15.0rem;
+  flex: 0 0 16.0rem;
+  max-width: 16.0rem;
   padding: 1rem;
   min-height: 0;
   align-self: start;
@@ -272,8 +272,8 @@ body.quarto-dark .journey-map-photo {
 }
 
 .journey-sidebar {
-  flex: 0 0 15.0rem;
-  max-width: 15.0rem;
+  flex: 0 0 16.0rem;
+  max-width: 16.0rem;
   padding: 0.1rem 0 0;
 }
 
