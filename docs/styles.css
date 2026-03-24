@@ -305,19 +305,19 @@ body.quarto-dark .footer {
   text-decoration: none;
 }
 
-.home-link-pill.primary {
+.home-link-pill.secondary {
   background: #2563eb;
   border-color: #2563eb;
   color: #fff;
 }
 
-.home-link-pill.primary:hover,
-.home-link-pill.primary:focus {
+.home-link-pill.secondary:hover,
+.home-link-pill.secondary:focus {
   color: #fff;
   opacity: 0.92;
 }
 
-.home-link-pill.tertiary {
+.home-link-pill.primary {
   border-color: rgba(37, 99, 235, 0.4);
   color: #2563eb;
   background: rgba(37, 99, 235, 0.08);
@@ -325,8 +325,8 @@ body.quarto-dark .footer {
   font-size: 0.9rem;
 }
 
-.home-link-pill.tertiary:hover,
-.home-link-pill.tertiary:focus {
+.home-link-pill.primary:hover,
+.home-link-pill.primary:focus {
   background: rgba(37, 99, 235, 0.15);
   text-decoration: none;
 }

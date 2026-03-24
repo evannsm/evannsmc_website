@@ -69,10 +69,10 @@ page-layout: full
         <span class="home-contact-item">Atlanta, GA</span>
       </div>
       <div class="home-link-row">
-        <a class="home-link-pill primary" href="https://github.com/evannsm" target="_blank">GitHub</a>
-        <a class="home-link-pill primary" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
-        <a class="home-link-pill primary" href="https://scholar.google.com/citations?user=FY9tS9oAAAAJ&hl=en" target="_blank">Google Scholar</a>
-        <a class="home-link-pill primary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
+        <a class="home-link-pill secondary" href="https://github.com/evannsm" target="_blank">GitHub</a>
+        <a class="home-link-pill secondary" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
+        <a class="home-link-pill secondary" href="https://scholar.google.com/citations?user=FY9tS9oAAAAJ&hl=en" target="_blank">Google Scholar</a>
+        <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
     <aside class="home-hero-sidebar">
@@ -156,7 +156,7 @@ My robotics work centers around hardware applications of safe autonomous control
   </div>
   <div class="home-snapshot-links">
     <a class="home-snapshot-link primary" href="./about/">More About Me</a>
-    <a class="home-snapshot-link" href="./journey/">Open Journey Map</a>
+    <a class="home-snapshot-link primary" href="./journey/">Open Journey Map</a>
   </div>
 </div>
 ```
