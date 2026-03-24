@@ -488,7 +488,7 @@ body.quarto-dark .interest-tag {
         <li>We create spaces that feel culturally familiar. From bringing our traditional celebrations to Atlanta, to game and movie nights with Puerto Rican food.</li>
         <li>We try to be useful, not just social, helping newer students find people, resources, and a sense of belonging.</li>
         <!-- <li>The organization reflects a part of me that matters just as much as the research: building community that lasts.</li> -->
-        <a class="section-link-button" href="../community/">Open Community &amp; Hobbies</a>
+        <a class="section-link-button" href="../community/">See Community &amp; Hobbies</a>
       </ul>
       <!-- <div class="section-link-row"> -->
         <!-- <p class="section-link-copy"> -->

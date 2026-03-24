@@ -721,25 +721,31 @@ body.quarto-dark .journey-map-photo {
 
 .map-country,
 .map-state,
-.route-line,
-.map-stop .stop-ring,
-.map-stop .stop-core,
-.map-stop .marker-emoji,
-.map-stop .marker-city,
-.map-stop .marker-label {
-  transition: all 0.2s ease;
+.route-line {
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease, opacity 0.2s ease;
 }
 
 .route-line {
   fill: none;
   stroke: rgba(100, 116, 139, 0.22);
-  stroke-width: 1.8;
+  stroke-width: 1;
   stroke-dasharray: 5 4;
   stroke-linecap: round;
 }
 
 .map-stop {
   cursor: pointer;
+}
+
+.map-stop .stop-ring,
+.map-stop .stop-core {
+  transition: r 0.2s ease, fill 0.2s ease, stroke 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+
+.map-stop .marker-emoji,
+.map-stop .marker-city,
+.map-stop .marker-label {
+  transition: fill 0.2s ease, opacity 0.2s ease, font-size 0.2s ease;
 }
 
 .map-stop .stop-ring {
@@ -1065,9 +1071,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var photoCard = document.getElementById('journey-map-photo');
   var photoImg = document.getElementById('journey-map-photo-img');
 
-  var routeLayer = svg.append('g');
   var countryLayer = svg.append('g');
   var stateLayer = svg.append('g');
+  var routeLayer = svg.append('g');
   var markerLayer = svg.append('g');
 
   function easeInOutCubic(t) {
@@ -1197,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var path = d3.geoPath(projection);
     var defaultCountryFill = isDarkMode() ? '#2a2a2a' : '#c8cdd5';
     var defaultStroke = isDarkMode() ? '#3a3a3a' : '#a0a8b4';
-    var routeStroke = isDarkMode() ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.15)';
+    var routeStroke = isDarkMode() ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
 
     countryLayer
       .selectAll('path')
