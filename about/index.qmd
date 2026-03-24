@@ -488,7 +488,7 @@ body.quarto-dark {
 }
 
 .about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) .about-feature-moments::after {
-  content: 'Click anywhere in this panel to open the full event history';
+  content: 'Click to Expand';
   position: absolute;
   right: 0;
   bottom: 0;
