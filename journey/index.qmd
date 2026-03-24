@@ -767,18 +767,28 @@ document.addEventListener('DOMContentLoaded', function () {
       detailYear.textContent = stop.year;
       detailYear.style.color = stop.color;
     }
-    detailTitle.textContent = stop.city;
-    detailRole.textContent = stop.role;
-    detailCopy.textContent = stop.description;
-    detail.style.borderColor = stop.color + '55';
-    detail.style.backgroundColor = stop.tint;
+    if (detailTitle) {
+      detailTitle.textContent = stop.city;
+    }
+    if (detailRole) {
+      detailRole.textContent = stop.role;
+    }
+    if (detailCopy) {
+      detailCopy.textContent = stop.description;
+    }
+    if (detail) {
+      detail.style.borderColor = stop.color + '55';
+      detail.style.backgroundColor = stop.tint;
+    }
 
-    if (stop.upcoming) {
-      detailBadge.hidden = false;
-      detailBadge.style.backgroundColor = stop.tint;
-      detailBadge.style.color = stop.color;
-    } else {
-      detailBadge.hidden = true;
+    if (detailBadge) {
+      if (stop.upcoming) {
+        detailBadge.hidden = false;
+        detailBadge.style.backgroundColor = stop.tint;
+        detailBadge.style.color = stop.color;
+      } else {
+        detailBadge.hidden = true;
+      }
     }
   }
 
