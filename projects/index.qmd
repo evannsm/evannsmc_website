@@ -651,7 +651,7 @@ body.quarto-dark .project-toggle {
                 <div class="project-name-row">
                   <div class="project-name-group">
                     <span class="project-number">04</span>
-                    <p class="project-name">Newton-Raphson Flow Control: Fast, Efficient, Modular Control Method</p>
+                    <p class="project-name">Newton-Raphson Flow Control: Fast, Efficient, & Modular Control Algorithm</p>
                   </div>
                   <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
                 </div>
