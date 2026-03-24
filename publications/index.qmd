@@ -108,7 +108,7 @@ body.quarto-dark .pubs-list > li {
   <p class="pubs-kicker">Publications</p>
   <p class="pubs-title">Research Papers.</p>
   <p class="pubs-intro">
-    Published work, including my undergraduate honors thesis for nostalgia.
+    Published work, including my undergraduate honors thesis for the sake of nostalgia.
   </p>
 ```
 
