@@ -396,11 +396,17 @@ main.content.column-page {
   --journey-text-primary: var(--bs-body-color, #1c1917);
   --journey-text-secondary: var(--bs-secondary-color, #57534e);
   --journey-border: var(--bs-border-color, #e7e5e4);
+  --journey-stop-idle-bg: rgba(148, 163, 184, 0.06);
+  --journey-stop-idle-border: rgba(100, 116, 139, 0.16);
+  --journey-stop-hover-bg: rgba(148, 163, 184, 0.12);
 }
 
 body.quarto-dark {
   --journey-bg-secondary: rgba(31, 41, 55, 0.92);
   --journey-border: rgba(148, 163, 184, 0.28);
+  --journey-stop-idle-bg: rgba(148, 163, 184, 0.08);
+  --journey-stop-idle-border: rgba(148, 163, 184, 0.2);
+  --journey-stop-hover-bg: rgba(148, 163, 184, 0.16);
 }
 
 .journey-page {
@@ -647,16 +653,17 @@ body.quarto-dark .journey-map-photo {
   width: 100%;
   padding: 0.9rem 1rem;
   text-align: left;
-  border: 1px solid transparent;
+  border: 1px solid var(--journey-stop-idle-border);
   border-radius: 1rem;
-  background: transparent;
+  background: var(--journey-stop-idle-bg);
   color: var(--journey-text-primary);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .timeline-stop:hover,
 .timeline-stop:focus {
-  background: var(--journey-bg-secondary);
+  border-color: rgba(100, 116, 139, 0.28);
+  background: var(--journey-stop-hover-bg);
 }
 
 .timeline-stop.is-active {
