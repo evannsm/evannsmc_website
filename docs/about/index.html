@@ -725,9 +725,6 @@ body.quarto-dark {
 }
 
 .about-feature-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
-  gap: 1.75rem;
   padding: 1.75rem;
   margin-bottom: 3rem;
 }
@@ -740,47 +737,24 @@ body.quarto-dark {
   border-color: color-mix(in srgb, var(--about-accent) 28%, var(--about-border));
 }
 
+.about-feature-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.about-feature-summary:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--about-accent) 55%, transparent);
+  outline-offset: 0.28rem;
+  border-radius: 1rem;
+}
+
 .about-feature-title,
 .about-events-title {
   margin: 0 0 0.55rem;
   font-size: 1.2rem;
   font-weight: 700;
-}
-
-.about-feature-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-
-.about-feature-toggle::after {
-  content: 'Show more';
-  color: var(--about-accent);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.about-feature-toggle[aria-expanded="true"]::after {
-  content: 'Hide details';
-}
-
-.about-feature-toggle:hover,
-.about-feature-toggle:focus-visible {
-  color: var(--about-accent);
-}
-
-.about-feature-toggle:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--about-accent) 55%, transparent);
-  outline-offset: 0.2rem;
-  border-radius: 0.35rem;
 }
 
 .about-feature-subtitle {
@@ -859,10 +833,10 @@ body.quarto-dark {
 }
 
 .about-feature-moments {
-  grid-column: 1 / -1;
   margin-top: 0.25rem;
   padding-top: 1.35rem;
   border-top: 1px solid var(--about-border);
+  position: relative;
 }
 
 .about-feature-moments .about-events-shell {
@@ -870,6 +844,33 @@ body.quarto-dark {
   border-radius: 1rem;
   background: var(--about-bg-secondary);
   overflow: hidden;
+}
+
+.about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) .about-feature-moments {
+  max-height: 12.5rem;
+  overflow: hidden;
+}
+
+.about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) .about-events-scroll {
+  max-height: none;
+  overflow: hidden;
+}
+
+.about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) .about-feature-moments::after {
+  content: 'Click anywhere in this panel to open the full event history';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 3.25rem 1rem 0.85rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--about-bg-secondary) 68%);
+  color: var(--about-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
 }
 
 .about-events-panel {
@@ -1037,12 +1038,16 @@ body.quarto-dark .interest-tag {
   background: rgba(15, 23, 42, 0.72);
 }
 
+body.quarto-dark .about-feature-panel.about-feature-panel-collapsible:not(.is-expanded) .about-feature-moments::after {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, var(--about-bg-secondary) 68%);
+}
+
 @media (max-width: 980px) {
   .about-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .about-feature-panel,
+  .about-feature-summary,
   .about-hobbies-grid,
   .journey-link-card,
   .community-card {
@@ -1243,39 +1248,39 @@ body.quarto-dark .interest-tag {
 
   <p class="about-section-heading">Community</p>
   <section class="about-feature-panel about-feature-panel-collapsible" id="about-bori-panel">
-    <div class="about-feature-copy">
-      <button class="about-feature-title about-feature-toggle" type="button" aria-expanded="false" aria-controls="about-bori-moments">
-        BORI at Georgia Tech
-      </button>
-      <p>
-        I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> to make sure Puerto Rican students at Georgia Tech had a space that felt familiar, welcoming, and (hopefully) professionally useful.
-      </p>
-      <ul class="about-feature-points">
-        <li>We build events around culture, food, and <del>fun</del> ...professional development</li>
-        <li>We host events focused on making new students feel comfortable in Atlanta and Georgia Tech.</li>
-        <li>BORI also helped me keep up with the latest slang since I left the island and no longer feel so distant from the culture I grew up with.</li>
-      </ul>
-      <!-- <p>
-        That side of my life matters for the same reason the research does: both are about building systems that people can trust.
-      </p> -->
-    </div>
-    <div class="about-feature-gallery">
-      <figure class="about-feature-figure figure">
-        <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together" class="figure-img">
-        <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
-      </figure>
-      <div class="about-feature-gallery-stack">
-        <figure class="about-feature-figure contain figure">
-          <img src="../files/BORI/bori_logo.jpg" alt="BORI logo" class="figure-img">
-          <figcaption>The BORI logo</figcaption>
+    <div class="about-feature-summary" role="button" tabindex="0" aria-expanded="false" aria-controls="about-bori-moments">
+      <div class="about-feature-copy">
+        <p class="about-feature-title">BORI at Georgia Tech</p>
+        <p>
+          I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> to make sure Puerto Rican students at Georgia Tech had a space that felt familiar, welcoming, and (hopefully) professionally useful.
+        </p>
+        <ul class="about-feature-points">
+          <li>We build events around culture, food, and <del>fun</del> ...professional development</li>
+          <li>We host events focused on making new students feel comfortable in Atlanta and Georgia Tech.</li>
+          <li>BORI also helped me keep up with the latest slang since I left the island and no longer feel so distant from the culture I grew up with.</li>
+        </ul>
+        <!-- <p>
+          That side of my life matters for the same reason the research does: both are about building systems that people can trust.
+        </p> -->
+      </div>
+      <div class="about-feature-gallery">
+        <figure class="about-feature-figure figure">
+          <img src="../files/BORI/BORI_cofounders.jpg" alt="BORI co-founders standing together" class="figure-img">
+          <figcaption>BORI co-founders, left to right: Gustavo, Camelia, Evanns</figcaption>
         </figure>
-        <figure class="about-feature-figure contain figure">
-          <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coquí with Coquito" class="figure-img">
-          <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
-        </figure>
+        <div class="about-feature-gallery-stack">
+          <figure class="about-feature-figure contain figure">
+            <img src="../files/BORI/bori_logo.jpg" alt="BORI logo" class="figure-img">
+            <figcaption>The BORI logo</figcaption>
+          </figure>
+          <figure class="about-feature-figure contain figure">
+            <img src="../files/BORI/mascot_coqui_coquito.webp" alt="BORI mascot Coquí with Coquito" class="figure-img">
+            <figcaption>The BORI mascot: Coquí with Coquito</figcaption>
+          </figure>
+        </div>
       </div>
     </div>
-    <div class="about-feature-moments" id="about-bori-moments" hidden="">
+    <div class="about-feature-moments" id="about-bori-moments">
       <p class="about-feature-subtitle">BORI Moments</p>
       <div class="about-events-shell">
         <div class="about-events-intro">
@@ -1455,33 +1460,33 @@ body.quarto-dark .interest-tag {
     </div>
   </section>
 
-  <p class="community-section-heading">Hobbies</p>
-  <section class="hobbies-feature">
+  <p class="about-section-heading">Hobbies</p>
+  <section class="about-hobbies-panel">
     <p class="hobbies-title">Do Ph.D Students Have Lives?</p>
     <p class="hobbies-copy">
       When I'm not exercising my weak brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. When an find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
     </p>
 
-    <div class="hobbies-grid">
-      <article class="hobby-card">
-        <h3 class="anchored">Fitness</h3>
+    <div class="about-hobbies-grid">
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Fitness</p>
         <p>To lift or not to lift, that is the question.</p>
       </article>
-      <article class="hobby-card">
-        <h3 class="anchored">Cooking</h3>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Cooking</p>
         <p>I'm my own private chef. And my client has exotic taste.</p>
       </article>
-      <article class="hobby-card">
-        <h3 class="anchored">Dance</h3>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Dance</p>
         <p>Meh I'm getting better.</p>
       </article>
-      <article class="hobby-card">
-        <h3 class="anchored">Reading</h3>
+      <article class="about-hobby-card">
+        <p class="about-hobby-card-title">Reading</p>
         <p>I do eventually finish books I start after the fifth time I try reading them.</p>
       </article>
     </div>
 
-    <!-- <div class="interest-tags">
+    <!-- <div class="about-interest-tags">
       <span class="interest-tag">Fitness</span>
       <span class="interest-tag">Cooking</span>
       <span class="interest-tag">Dance</span>
@@ -1498,29 +1503,34 @@ body.quarto-dark .interest-tag {
 document.addEventListener('DOMContentLoaded', function () {
   var bars = document.querySelectorAll('.lang-bar-fill');
   var boriPanel = document.getElementById('about-bori-panel');
-  var boriToggle = document.querySelector('.about-feature-toggle');
+  var boriSummary = document.querySelector('.about-feature-summary');
   var boriMoments = document.getElementById('about-bori-moments');
 
   function setBoriExpanded(isExpanded) {
-    if (!boriToggle || !boriMoments || !boriPanel) return;
-    boriToggle.setAttribute('aria-expanded', String(isExpanded));
-    boriMoments.hidden = !isExpanded;
+    if (!boriSummary || !boriMoments || !boriPanel) return;
+    boriSummary.setAttribute('aria-expanded', String(isExpanded));
     boriPanel.classList.toggle('is-expanded', isExpanded);
   }
 
-  if (boriPanel && boriToggle && boriMoments) {
+  if (boriPanel && boriSummary && boriMoments) {
     setBoriExpanded(false);
 
-    boriToggle.addEventListener('click', function (event) {
-      event.stopPropagation();
-      setBoriExpanded(boriToggle.getAttribute('aria-expanded') !== 'true');
+    boriSummary.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      setBoriExpanded(!boriPanel.classList.contains('is-expanded'));
     });
 
     boriPanel.addEventListener('click', function (event) {
-      if (event.target.closest('.about-feature-moments')) return;
-      if (event.target.closest('button') && !event.target.closest('.about-feature-toggle')) return;
-      if (boriToggle.getAttribute('aria-expanded') !== 'true') {
+      var clickedSummary = event.target.closest('.about-feature-summary');
+
+      if (!boriPanel.classList.contains('is-expanded')) {
         setBoriExpanded(true);
+        return;
+      }
+
+      if (clickedSummary) {
+        setBoriExpanded(false);
       }
     });
   }
