@@ -36,6 +36,14 @@ page-layout: full
         
         As part of my work I have also broken many drones, put them back together, and learned many lessons while working with hardware systems.
       </p>
+    </div>
+    <aside class="home-hero-sidebar">
+      <figure class="home-hero-portrait">
+        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
+        <figcaption class="home-hero-caption">C'est Moi.</figcaption>
+      </figure>
+    </aside>
+    <div class="home-hero-full">
       <p class="home-edu-heading">Education</p>
       <div class="home-meta-grid">
         <div class="home-meta-card">
@@ -80,12 +88,6 @@ page-layout: full
         <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
-    <aside class="home-hero-sidebar">
-      <figure class="home-hero-portrait">
-        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
-        <figcaption class="home-hero-caption">C'est Moi.</figcaption>
-      </figure>
-    </aside>
   </section>
 </div>
 ```
