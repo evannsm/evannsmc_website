@@ -14,7 +14,7 @@ page-layout: full
 
   .home-section-heading-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.6rem;
     margin-bottom: 0.33rem;
   }
@@ -36,17 +36,6 @@ page-layout: full
         
         As part of my work I have also broken many drones, put them back together, and learned many lessons while working with hardware systems.
       </p>
-      <div class="home-contact-list">
-        <span class="home-contact-item">egm [at] gatech [dot] edu</span>
-        <span class="home-contact-item">evannsmc [at] gmail [dot] com</span>
-        <span class="home-contact-item">Atlanta, GA</span>
-      </div>
-      <div class="home-link-row">
-        <a class="home-link-pill secondary" href="https://github.com/evannsm" target="_blank">GitHub</a>
-        <a class="home-link-pill secondary" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
-        <a class="home-link-pill secondary" href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
-        <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
-      </div>
       <p class="home-edu-heading">Education</p>
       <div class="home-meta-grid">
         <div class="home-meta-card">
@@ -69,13 +58,20 @@ page-layout: full
               <p class="home-meta-subtle">Summa Cum Laude · Minors in Math & Physics · Certificate in Unmanned Vehicle Systems</p>
             </div>
           </div>
-        <span class="home-meta-badge home-meta-badge-mentor">
-          Mentored by:
-          <br><a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a> —
-          <span class="home-meta-badge-subline">World #1 in Optimal Control & Reinforcement Learning · Top 1% Cited Researcher</span>
-          <br><a href="https://scholar.google.com/citations?user=SwJ_EToAAAAJ&hl=en" target="_blank">Dr. Yan Wan</a> —
-          <span class="home-meta-badge-subline">Distinguished Professor, NSF CAREER & IEEE Outstanding Contribution Awardee</span>
-        </span>
+          <span class="home-meta-badge home-meta-badge-mentor">Mentored by:<br><a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a> —<br><span class="home-meta-badge-subline">World #1 in Optimal Control & Reinforcement Learning</span><br><span class="home-meta-badge-subline">Top 1% Cited Researcher in the World</span><br><a href="https://scholar.google.com/citations?user=SwJ_EToAAAAJ&hl=en" target="_blank">Dr. Yan Wan</a> —<br><span class="home-meta-badge-subline">Distinguished Professor, NSF CAREER & IEEE Outstanding Contribution Awardee</span></span>
+        </div>
+      </div>
+      <div class="home-contact-list">
+        <span class="home-contact-item">egm [at] gatech [dot] edu</span>
+        <span class="home-contact-item">evannsmc [at] gmail [dot] com</span>
+        <span class="home-contact-item">Atlanta, GA</span>
+      </div>
+      <div class="home-link-row">
+        <a class="home-link-pill secondary" href="https://github.com/evannsm" target="_blank">GitHub</a>
+        <a class="home-link-pill secondary" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
+        <a class="home-link-pill secondary" href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
+        <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
+      </div>
     </div>
     <aside class="home-hero-sidebar">
       <figure class="home-hero-portrait">
