@@ -43,7 +43,7 @@ page-layout: full
             <img src="./files/about/Georgia_Tech_Yellow_Jackets_logo.svg.png" alt="Georgia Tech logo" class="home-meta-logo">
             <div>
               <p class="home-meta-value">Ph.D. in Robotics · Georgia Tech</p>
-              <p class="home-meta-subtle">4.0 GPA · Summa Cum Laude · Deploying Novel Safe Autonomy Algorithms on Hardware · Aug 2022 - Present</p>
+              <p class="home-meta-subtle">4.0 GPA · Summa Cum Laude · Doctoral minor in Optimization Methods · Deploying Novel Safe Autonomy Algorithms on Hardware · Current Role</p>
             </div>
           </div>
           <span class="home-meta-badge">#2 Public ECE Program in the U.S.</span>
