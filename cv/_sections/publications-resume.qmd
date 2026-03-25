@@ -1,7 +1,7 @@
 ### Selected Publications
 
-<ul style="list-style-type: none;">
+<ol reversed start="3">
 <li><strong>E. Morales-Cuadrado</strong>, L. Chung, S. Kousik and S. Coogan, "RTD-RAX: Fast, Safe Trajectory Planning for Systems under Unknown Disturbances." Joint Submission to 2026 MECC-ALDSC. <em>(under revision)</em></li>
 <li>L. Baird, <strong>E. Morales-Cuadrado</strong>, and S. Coogan, "Runtime Assurance for Uncertain Systems from Interval Signal Temporal Logic." Submitted to IFAC Nonlinear Analysis: Hybrid Systems (NAHS), 2025. <em>(under revision)</em> <a href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587"><em>preprint available.</em></a></li>
 <li><strong>E. Morales-Cuadrado</strong>, C. Llanes, Y. Wardi and S. Coogan, "Newton-Raphson Flow for Aggressive Quadrotor Tracking Control." <a href="https://arxiv.org/abs/2408.11197"><em>2024 American Control Conference (ACC)</em></a></li>
-</ul>
+</ol>
