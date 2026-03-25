@@ -63,7 +63,7 @@ page-layout: full
           <span class="home-meta-badge-subline">Top 1% Cited Researcher in the World</span><br>
           <a href="https://scholar.google.com/citations?user=SwJ_EToAAAAJ&hl=en" target="_blank">Dr. Yan Wan</a> —<br>
           <span class="home-meta-badge-subline">Distinguished Professor</span><br>
-          <span class="home-meta-badge-subline">NSF CAREER & IEEE Outstanding Contribution Awardee</span>
+          <span class="home-meta-badge-subline">NSF CAREER & IEEE Outstanding Contribution Awards</span>
           </span>
         </div>
       </div>
