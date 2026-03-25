@@ -331,32 +331,17 @@ body.quarto-dark .footer {
   opacity: 0.92;
 }
 
-.home-mentor-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin-top: 0.6rem;
-}
-
-.home-meta-badge-mentor-label {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--bs-text-color, #111);
-  border: none;
-  background: transparent;
-  padding: 0;
-}
-
-.home-mentor-row .home-meta-badge {
-  border-radius: 0.9rem;
-  padding: 0.85rem 1rem;
+.home-meta-badge.home-meta-badge-mentor {
+  display: block;
   border: 1px solid rgba(37, 99, 235, 0.35);
   background: rgba(37, 99, 235, 0.08);
   color: #2563eb;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  margin-top: 0.8rem;
 }
 
-.home-mentor-row .home-meta-badge-subline {
+.home-meta-badge.home-meta-badge-mentor .home-meta-badge-subline {
   display: block;
   font-size: 0.75rem;
   color: rgba(37, 99, 235, 0.85);
