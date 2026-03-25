@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
       zoom: { center: [-97.1081, 32.7357], scale: 1750 },
       year: 'Aug 2018 - May 2022',
       role: 'Honors B.S. in Electrical Engineering & Full Ride Scholarship',
-      description: 'UT Arlington is where I found my love of research.\n\nI defended my honors thesis, graduated summa cum laude as an electrical engineering honors scholar, and got minors in mathematics and physics.\n\nMost imporatnly, I got my early research experiences under the mentorship of Dr.Yan Wan and Dr. Frank Lewis.',
+      description: 'UT Arlington is where I found my love of research.\n\nI defended my honors thesis, graduated summa cum laude as an electrical engineering honors scholar, and got minors in mathematics and physics.\n\nMost imporatnly, I got my early research experiences under the mentorship of Dr. Yan Wan and Dr. Frank Lewis. (shout-out to my advisor Mrs. Mason for encouraging me to begin my research journey 🙂)',
       color: '#f97316',
       tint: 'rgba(249, 115, 22, 0.1)',
       highlightFill: 'rgba(249, 115, 22, 0.2)',

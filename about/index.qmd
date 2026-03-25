@@ -895,7 +895,7 @@ body.quarto-dark .about-feature-panel.about-feature-panel-collapsible:not(.is-ex
           I co-founded <strong>BORI (Boricuas Organized for Impact)</strong> to make sure Puerto Rican students at Georgia Tech had a space that felt familiar, welcoming, and (hopefully) professionally useful.
         </p>
         <ul class="about-feature-points">
-          <li>We build events around culture, food, and <del>fun</del> ...professional development</li>
+          <li>We build events around culture, food, and <del>fun</del> ... professional development</li>
           <li>We host events focused on making new students feel comfortable in Atlanta and at Georgia Tech.</li>
           <li>BORI also helped me keep up with the latest slang ever since I left the island, and to no longer feel so distant from the culture I grew up with.</li>
         </ul>
@@ -1104,7 +1104,7 @@ body.quarto-dark .about-feature-panel.about-feature-panel-collapsible:not(.is-ex
   <section class="about-hobbies-panel">
     <p class="hobbies-title">Do Ph.D Students Have Lives?</p>
     <p class="hobbies-copy">
-      When I'm not exercising my weak brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. When an find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
+      When I'm not exercising my weak brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. And when I find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
     </p>
 
     <div class="about-hobbies-grid">
