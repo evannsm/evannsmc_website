@@ -6,7 +6,7 @@
 - Advised by Dr. Samuel Coogan
 - Implemented novel aggressive tracking control methods on quadrotor hardware
 - Developed novel nonlinear control methods for safe autonomy
-- Published and presented novel research at top conferences and journals in the fields of robotics and control theory
+- Published novel research at top conferences and journals in the fields of robotics and control theory
 
 **Teaching Assistant** — Vertically Integrated Project in Robotics, Georgia Institute of Technology | Atlanta, GA\
 *January 2024 - Present*

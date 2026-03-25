@@ -3,6 +3,10 @@ title: "Résumé — Evanns Morales-Cuadrado"
 toc: true
 ---
 
+::: {.visually-hidden}
+resume
+:::
+
 ::: {.d-flex .gap-2 .mb-3}
 [← Back to CV & Résumé](index.qmd){.btn .btn-sm .btn-outline-secondary}
 <a href="../files/RESUME_EvannsMoralesCuadrado_NOPERSONALINFO.pdf" class="btn btn-sm btn-outline-primary" download>Download PDF</a>
