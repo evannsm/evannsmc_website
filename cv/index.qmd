@@ -4,6 +4,10 @@ page-layout: full
 title-block-banner: true
 ---
 
+::: {.visually-hidden}
+resume
+:::
+
 ```{=html}
 <style>
 #title-block-header {
