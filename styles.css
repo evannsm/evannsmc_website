@@ -103,20 +103,15 @@ body.quarto-dark .footer {
 }
 
 .home-hero {
-  display: grid;
-  grid-template-columns: 1fr 14rem;
-  column-gap: 2rem;
-  align-items: start;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
   margin: 0 0 2.25rem;
 }
 
 .home-hero-sidebar {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.home-hero-full {
-  grid-column: 1 / -1;
+  flex-shrink: 0;
+  width: 14rem;
 }
 
 .home-hero-portrait {
@@ -146,8 +141,6 @@ body.quarto-dark .footer {
 }
 
 .home-hero-copy {
-  grid-column: 1;
-  grid-row: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -230,7 +223,7 @@ body.quarto-dark .footer {
   display: block;
 }
 
-.home-meta-badge-mentor .home-meta-badge-mentor-name {
+.home-meta-badge-mentor > a {
   padding-left: 0.75rem;
 }
 
@@ -552,18 +545,13 @@ body.quarto-dark .home-latest-project-link {
 
 @media (max-width: 900px) {
   .home-hero {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 1rem;
   }
 
   .home-hero-sidebar {
-    grid-column: 1;
-    grid-row: 2;
+    margin-left: 0;
     width: 8rem;
-  }
-
-  .home-hero-full {
-    grid-column: 1;
   }
 
   .home-snapshot-grid {
