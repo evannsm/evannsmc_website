@@ -343,7 +343,8 @@ body.quarto-dark .footer {
 
 .home-meta-badge.home-meta-badge-mentor .home-meta-badge-subline {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
   color: rgba(37, 99, 235, 0.85);
 }
 

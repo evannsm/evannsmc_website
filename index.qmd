@@ -59,7 +59,7 @@ page-layout: full
             </div>
           </div>
         <span class="home-meta-badge home-meta-badge-mentor">
-          Mentored by
+          Mentored by:
           <br><a href="https://scholar.google.com/citations?user=rMRit3UAAAAJ" target="_blank">Dr. Frank Lewis</a> —
           <span class="home-meta-badge-subline">World #1 in Optimal Control & Reinforcement Learning · Top 1% Cited Researcher</span>
           <br><a href="https://scholar.google.com/citations?user=SwJ_EToAAAAJ&hl=en" target="_blank">Dr. Yan Wan</a> —
