@@ -67,7 +67,7 @@ page-layout: full
           <span class="home-meta-badge home-meta-badge-mentor">
             And Dr. Yan Wan —
             <br><span class="home-meta-badge-subline">RTCA William E. Jackson Award · NSF CAREER & IEEE Outstanding Contribution Award</span>
-            <br><span class="home-meta-badge-subline">FAA/NSF/ONR/ARO funding & industrial partners (Ford, Toyota, Lockheed, Dell, MITRE)</span>
+            <!-- <br><span class="home-meta-badge-subline">FAA/NSF/ONR/ARO funding & industrial partners (Ford, Toyota, Lockheed, Dell, MITRE)</span> -->
           </span>
       </div>
       <div class="home-contact-list">
