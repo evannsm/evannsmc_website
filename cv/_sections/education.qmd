@@ -1,7 +1,8 @@
 ### Education
 
 **Georgia Institute of Technology** | 2022-2027\
-Ph.D. in Robotics
+Ph.D. in Robotics\
+*Doctoral Minor in Optimization Methods*
 
 - GPA: 4.0/4.0
 - Advisor: Dr. Samuel Coogan
