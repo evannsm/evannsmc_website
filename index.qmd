@@ -67,7 +67,7 @@ page-layout: full
             </span>
             <span class="home-meta-badge home-meta-badge-mentor">
               <a href="https://scholar.google.com/citations?user=YanWanID" target="_blank">Dr. Yan Wan</a> —
-              <span class="home-meta-badge-subline">RTCA William E. Jackson Award, NSF CAREER, IEEE Outstanding Contribution</span>
+              <span class="home-meta-badge-subline">RTCA, NSF CAREER, IEEE Outstanding Contribution Awards</span>
             </span>
           </div>
       </div>
