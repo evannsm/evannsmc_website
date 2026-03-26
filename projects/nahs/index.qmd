@@ -47,12 +47,8 @@ categories: [Safety, Formal Methods, Hybrid Systems, Research]
 </style>
 ```
 
-**Links:**
-
 ::: {.d-flex .gap-2 .flex-wrap .mb-3}
 [NAHS 2025 Paper (PDF)](https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587){.btn .btn-sm .btn-primary target="_blank"}
-[View Publications Page](../../publications/){.btn .btn-sm .btn-outline-primary}
-[Back to Projects](../){.btn .btn-sm .btn-outline-primary}
 :::
 
 This paper addresses safe control from signal temporal logic safety specifications for linear systems with bounded uncertainty in a static environment. The core move is to use interval signal temporal logic (iSTL) so the runtime-assurance problem can explicitly accommodate uncertainty instead of pretending it is negligible or hiding it inside blunt worst-case margins.

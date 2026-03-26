@@ -5,8 +5,8 @@ categories: [Robotics, Safety, Python, JAX, Research]
 ---
 ::: {.d-flex .gap-2 .flex-wrap .mb-3}
 [MECC-ALDSC Paper (Preprint PDF)](https://arxiv.org/abs/2603.21635){.btn .btn-sm .btn-primary target="_blank"}
-[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-primary target="_blank"}
-[Dedicated Website (it's really nice)](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-primary target="_blank"}
+[View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-outline-primary target="_blank"}
+[Official RTD-RAX Website](https://evannsm.github.io/ws_RTD){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
 <!-- ::: {.d-flex .gap-2 .mb-3}
