@@ -1105,7 +1105,7 @@ body.quarto-dark .about-feature-panel.about-feature-panel-collapsible:not(.is-ex
   <section class="about-hobbies-panel">
     <p class="hobbies-title">Do Ph.D. Students Have Lives?</p>
     <p class="hobbies-copy">
-      When I'm not exercising my weak brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. And when I find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
+      When I'm not exercising my brain muscles I try to work out my other muscles, mainly so I can afford to indulge in my main hobby of cooking. And when I find the time and discipline, I also love practicing my salsa technique at my dance studio and out at socials, as well as reading books about history, psychology and, recently, memoirs.
     </p>
 
     <div class="about-hobbies-grid">
