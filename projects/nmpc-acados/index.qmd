@@ -6,7 +6,8 @@ categories: [Control, Python, Research]
 
 **GitHub Links:**
 
-::: {.d-flex .gap-2 .mb-3}
+::: {.d-flex .gap-2 .flex-wrap .mb-3}
+[TCST 2025 Paper (PDF)](https://arxiv.org/abs/2508.14185){.btn .btn-sm .btn-primary target="_blank"}
 [View Python Version](https://github.com/evannsm/nmpc_acados_px4){.btn .btn-sm .btn-primary target="_blank"}
 [View C++ Version](https://github.com/evannsm/nmpc_acados_px4_cpp){.btn .btn-sm .btn-primary target="_blank"}
 :::
