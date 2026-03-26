@@ -1,6 +1,6 @@
 ---
 title: "Evanns Morales-Cuadrado"
-description: "@evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D student at Georgia Tech."
+description: "@evannsmc is the personal research website of Evanns Morales, a Robotics Ph.D. student at Georgia Tech."
 image: "files/site_icon/home-share-preview.png"
 image-alt: "evannsmc site logo"
 page-layout: full
@@ -29,7 +29,7 @@ page-layout: full
 <div class="home-page">
   <section class="home-hero">
     <div class="home-hero-copy">
-      <p class="home-hero-kicker">Robotics Ph.D student · Georgia Tech</p>
+      <p class="home-hero-kicker">Robotics Ph.D. student · Georgia Tech</p>
       <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
       <p class="home-hero-summary">
         I work on safe autonomy for hardware systems (mainly UAVs) focusing on aggressive low-level control, uncertainty-aware trajectory planning, and lightweight algorithms for computationally constrained platforms.<br>

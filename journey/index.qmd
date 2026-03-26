@@ -640,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function () {
       zoom: { center: [-84.3963, 33.7756], scale: 1850 },
       year: 'Aug 2022 - Present',
       role: 'Ph.D. in Robotics, FACTS Lab',
-      description: 'Getting my Ph.D in beautiful Atlanta, GA.\n\nDoing research in safe autonomy, nonlinear control for quadrotor UAVs, teaching undergraduate students, and co-founding BORI to connect with my roots.',
+      description: 'Getting my Ph.D. in beautiful Atlanta, GA.\n\nDoing research in safe autonomy, nonlinear control for quadrotor UAVs, teaching undergraduate students, and co-founding BORI to connect with my roots.',
       color: '#b3a369',
       tint: 'rgba(179, 163, 105, 0.14)',
       highlightFill: 'rgba(179, 163, 105, 0.24)',
