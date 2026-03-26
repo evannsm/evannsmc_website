@@ -420,28 +420,39 @@ body.quarto-dark .project-toggle {
 }
 
 .project-action.secondary {
-  background: var(--projects-bg-secondary);
+  background: rgba(37, 99, 235, 0.1);
   border-color: var(--projects-accent);
   color: var(--projects-accent);
   font-weight: 700;
 }
 
+body.quarto-dark .project-action.secondary {
+  background: rgba(59, 130, 246, 0.18);
+}
+
 .project-action.secondary:hover,
 .project-action.secondary:focus {
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(37, 99, 235, 0.18);
   color: var(--projects-accent);
 }
 
 .project-action.paper {
-  border-color: var(--projects-accent);
+  border-color: rgba(37, 99, 235, 0.45);
   color: var(--projects-accent);
-  background: transparent;
-  border-style: dashed;
+  background: rgba(37, 99, 235, 0.04);
+  font-weight: 500;
+  font-size: 0.88em;
+}
+
+body.quarto-dark .project-action.paper {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .project-action.paper:hover,
 .project-action.paper:focus {
-  background: rgba(37, 99, 235, 0.06);
+  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--projects-accent);
   color: var(--projects-accent);
 }
 
