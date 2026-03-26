@@ -419,6 +419,19 @@ body.quarto-dark .project-toggle {
   opacity: 0.92;
 }
 
+.project-action.secondary {
+  background: var(--projects-bg-secondary);
+  border-color: var(--projects-accent);
+  color: var(--projects-accent);
+  font-weight: 700;
+}
+
+.project-action.secondary:hover,
+.project-action.secondary:focus {
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--projects-accent);
+}
+
 @media (max-width: 1100px) {
   .projects-columns {
     grid-template-columns: 1fr;
@@ -511,9 +524,11 @@ body.quarto-dark .project-toggle {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/rtd-rax/">Open Project Page</a>
+                <a class="project-action secondary" href="https://evannsm.github.io/ws_RTD" target="_blank">Dedicated Website ↗</a>
+              </div>
+              <div class="project-actions">
                 <a class="project-action" href="https://arxiv.org/abs/2603.21635" target="_blank">MECC-ALDSC Paper (Preprint PDF) ↗</a>
                 <a class="project-action" href="https://github.com/evannsm/rtd-rax" target="_blank">GitHub ↗</a>
-                <a class="project-action" href="https://evannsm.github.io/ws_RTD" target="_blank">Dedicated Website ↗</a>
               </div>
             </div>
           </div>
@@ -635,7 +650,6 @@ body.quarto-dark .project-toggle {
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/nahs/">Open Project Page</a>
                 <a class="project-action" href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587" target="_blank">NAHS 2025 Paper (Preprint PDF) ↗</a>
-                <a class="project-action" href="../publications/">Publications ↗</a>
               </div>
             </div>
           </div>
