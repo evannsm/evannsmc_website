@@ -432,6 +432,19 @@ body.quarto-dark .project-toggle {
   color: var(--projects-accent);
 }
 
+.project-action.paper {
+  border-color: var(--projects-accent);
+  color: var(--projects-accent);
+  background: transparent;
+  border-style: dashed;
+}
+
+.project-action.paper:hover,
+.project-action.paper:focus {
+  background: rgba(37, 99, 235, 0.06);
+  color: var(--projects-accent);
+}
+
 @media (max-width: 1100px) {
   .projects-columns {
     grid-template-columns: 1fr;
@@ -524,10 +537,10 @@ body.quarto-dark .project-toggle {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/rtd-rax/">Open Project Page</a>
-                <a class="project-action secondary" href="https://evannsm.github.io/ws_RTD" target="_blank">Dedicated Website ↗</a>
+                <a class="project-action secondary" href="https://evannsm.github.io/ws_RTD" target="_blank">Official RTD-RAX Website ↗</a>
               </div>
               <div class="project-actions">
-                <a class="project-action" href="https://arxiv.org/abs/2603.21635" target="_blank">MECC-ALDSC Paper (Preprint PDF) ↗</a>
+                <a class="project-action paper" href="https://arxiv.org/abs/2603.21635" target="_blank">MECC-ALDSC Paper (Preprint PDF) ↗</a>
                 <a class="project-action" href="https://github.com/evannsm/rtd-rax" target="_blank">GitHub ↗</a>
               </div>
             </div>
@@ -587,7 +600,9 @@ body.quarto-dark .project-toggle {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/nmpc-acados/">Open Project Page</a>
-                <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
+                <a class="project-action paper" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
+              </div>
+              <div class="project-actions">
                 <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
                 <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
               </div>
@@ -649,7 +664,7 @@ body.quarto-dark .project-toggle {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/nahs/">Open Project Page</a>
-                <a class="project-action" href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587" target="_blank">NAHS 2025 Paper (Preprint PDF) ↗</a>
+                <a class="project-action paper" href="https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=6168587" target="_blank">NAHS 2025 Paper (Preprint PDF) ↗</a>
               </div>
             </div>
           </div>
@@ -708,8 +723,8 @@ body.quarto-dark .project-toggle {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
-                <a class="project-action" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
-                <a class="project-action" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
+                <a class="project-action paper" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
+                <a class="project-action paper" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
                 <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
                 <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
               </div>
