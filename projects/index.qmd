@@ -789,7 +789,7 @@ body.quarto-dark .project-toggle {
                   <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
                 </div>
                 <p class="project-preview-copy">
-                  A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command. My fork of my labmate Brendan Gould's project with a whole set of custome features. Maybe one day we'll merge them :)
+                  A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command. This is a fork of my labmate Brendan Gould's project with a whole set of custom features. Maybe one day we'll merge them :)
                 </p>
                 <p class="project-cta-hint">Tap anywhere on this panel to open the project page.</p>
               </div>
