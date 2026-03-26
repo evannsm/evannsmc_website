@@ -7,41 +7,24 @@ categories: [Robotics, Safety, Python, JAX, Research]
 ```{=html}
 <style>
 .rtd-website-btn {
-  background: #1e293b !important;
-  border-color: #1e293b !important;
+  background: #c2410c !important;
+  border-color: #c2410c !important;
   color: #fff !important;
-  padding: 0.5rem 1.5rem !important;
-  font-size: 0.95rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.02em;
 }
 .rtd-website-btn:hover,
 .rtd-website-btn:focus {
-  background: #334155 !important;
-  border-color: #334155 !important;
+  background: #9a3412 !important;
+  border-color: #9a3412 !important;
   color: #fff !important;
-}
-body.quarto-dark .rtd-website-btn {
-  background: #e2e8f0 !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-body.quarto-dark .rtd-website-btn:hover,
-body.quarto-dark .rtd-website-btn:focus {
-  background: #cbd5e1 !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
 }
 </style>
 ```
 
 ::: {.d-flex .gap-2 .flex-wrap .mb-3}
+[Official RTD-RAX Website](https://evannsm.github.io/ws_RTD){.btn .btn-sm .rtd-website-btn target="_blank"}
 [MECC-ALDSC Paper (Preprint PDF)](https://arxiv.org/abs/2603.21635){.btn .btn-sm .btn-primary target="_blank"}
 [View on GitHub](https://github.com/evannsm/rtd-rax){.btn .btn-sm .btn-outline-primary target="_blank"}
-:::
-
-::: {.mb-3}
-[Official RTD-RAX Website](https://evannsm.github.io/ws_RTD){.btn .rtd-website-btn target="_blank"}
 :::
 
 <!-- ::: {.d-flex .gap-2 .mb-3}
