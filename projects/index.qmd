@@ -420,20 +420,20 @@ body.quarto-dark .project-toggle {
 }
 
 .project-action.secondary {
-  background: rgba(37, 99, 235, 0.1);
-  border-color: var(--projects-accent);
+  background: #fff;
+  border: 2px solid var(--projects-accent);
   color: var(--projects-accent);
   font-weight: 700;
 }
 
 body.quarto-dark .project-action.secondary {
-  background: rgba(59, 130, 246, 0.18);
+  background: rgba(15, 23, 42, 0.78);
 }
 
 .project-action.secondary:hover,
 .project-action.secondary:focus {
-  background: rgba(37, 99, 235, 0.18);
-  color: var(--projects-accent);
+  background: var(--projects-accent);
+  color: #fff;
 }
 
 .project-action.paper {
