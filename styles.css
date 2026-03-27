@@ -103,15 +103,19 @@ body.quarto-dark .footer {
 }
 
 .home-hero {
-  display: flex !important;
-  gap: 2rem;
-  align-items: flex-start;
+  position: relative;
   margin: 0 0 2.25rem;
 }
 
 .home-hero-sidebar {
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 14rem;
+}
+
+.home-hero-copy {
+  margin-right: calc(14rem + 2rem);
 }
 
 .home-hero-portrait {
@@ -141,9 +145,6 @@ body.quarto-dark .footer {
 }
 
 .home-hero-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   min-width: 0;
 }
 
@@ -544,9 +545,16 @@ body.quarto-dark .home-latest-project-link {
 }
 
 @media (max-width: 900px) {
-  /* Hero stays row — photo next to name/intro */
+  /* Photo floats right, text wraps around it */
+  .home-hero-copy {
+    margin-right: 0;
+  }
+
   .home-hero-sidebar {
+    position: static;
+    float: right;
     width: 10rem;
+    margin: 0 0 1rem 1.25rem;
   }
 
   /* Education cards stack: GT on top, UTA on bottom */
@@ -574,12 +582,9 @@ body.quarto-dark .home-latest-project-link {
     padding-top: 0.25rem;
   }
 
-  .home-hero {
-    gap: 1rem;
-  }
-
   .home-hero-sidebar {
-    width: 7.5rem;
+    width: 8rem;
+    margin: 0 0 0.75rem 1rem;
   }
 
   .home-snapshot-grid {

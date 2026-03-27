@@ -31,6 +31,12 @@ page-layout: full
     <div class="home-hero-copy">
       <p class="home-hero-kicker">Robotics Ph.D. student · Georgia Tech</p>
       <h1 class="home-hero-title">Evanns Morales-Cuadrado</h1>
+      <aside class="home-hero-sidebar">
+        <figure class="home-hero-portrait">
+          <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
+          <figcaption class="home-hero-caption">C'est Moi.</figcaption>
+        </figure>
+      </aside>
       <p class="home-hero-summary">
         I work on safe autonomy for hardware systems (mainly UAVs) focusing on aggressive low-level control, uncertainty-aware trajectory planning, and lightweight algorithms for computationally constrained platforms.<br>
         
@@ -79,12 +85,6 @@ page-layout: full
         <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>
       </div>
     </div>
-    <aside class="home-hero-sidebar">
-      <figure class="home-hero-portrait">
-        <img src="./files/LabPhoto.png" alt="Evanns Morales-Cuadrado in the lab" class="home-hero-photo">
-        <figcaption class="home-hero-caption">C'est Moi.</figcaption>
-      </figure>
-    </aside>
   </section>
 </div>
 ```
