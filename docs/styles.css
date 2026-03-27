@@ -103,19 +103,15 @@ body.quarto-dark .footer {
 }
 
 .home-hero {
-  position: relative;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
   margin: 0 0 2.25rem;
 }
 
 .home-hero-sidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
+  flex-shrink: 0;
   width: 14rem;
-}
-
-.home-hero-copy {
-  margin-right: calc(14rem + 2rem);
 }
 
 .home-hero-portrait {
@@ -145,6 +141,9 @@ body.quarto-dark .footer {
 }
 
 .home-hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   min-width: 0;
 }
 
@@ -545,16 +544,37 @@ body.quarto-dark .home-latest-project-link {
 }
 
 @media (max-width: 900px) {
-  /* Photo floats right, text wraps around it */
+  /*
+   * Hero becomes a 2-column grid.
+   * display:contents on .home-hero-copy promotes its children into the grid,
+   * so kicker + title span full width, while the sidebar sits to the right
+   * of the summary and remaining content.
+   */
+  .home-hero {
+    display: grid !important;
+    grid-template-columns: 1fr 10rem;
+    gap: 0 1.25rem;
+  }
+
   .home-hero-copy {
-    margin-right: 0;
+    display: contents;
+  }
+
+  .home-hero-kicker,
+  .home-hero-title {
+    grid-column: 1 / -1;
   }
 
   .home-hero-sidebar {
-    position: static;
-    float: right;
-    width: 10rem;
-    margin: 0 0 1rem 1.25rem;
+    grid-column: 2;
+    grid-row: 3 / span 5;
+    align-self: start;
+    width: auto;
+  }
+
+  /* Shrink title so full name fits on one line */
+  .home-hero-title {
+    font-size: clamp(1.2rem, 4.5vw, 2rem);
   }
 
   /* Education cards stack: GT on top, UTA on bottom */
@@ -582,9 +602,9 @@ body.quarto-dark .home-latest-project-link {
     padding-top: 0.25rem;
   }
 
-  .home-hero-sidebar {
-    width: 8rem;
-    margin: 0 0 0.75rem 1rem;
+  .home-hero {
+    grid-template-columns: 1fr 8rem;
+    gap: 0 1rem;
   }
 
   .home-snapshot-grid {
