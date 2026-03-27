@@ -544,31 +544,28 @@ body.quarto-dark .home-latest-project-link {
 }
 
 @media (max-width: 900px) {
-  /* Hero stacks but portrait comes FIRST (top) instead of after all the copy */
-  .home-hero {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
+  /* Hero stays row — photo next to name/intro */
   .home-hero-sidebar {
-    order: -1;
-    margin-left: 0;
     width: 10rem;
   }
 
-  /* Keep 2-column grids instead of collapsing to 1 */
+  /* Education cards stack: GT on top, UTA on bottom */
+  .home-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
   .home-snapshot-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
   }
 
-  /* Constrain the project GIF so it doesn't dominate */
+  /* Project goes single-column with capped GIF */
   .home-latest-project {
     grid-template-columns: 1fr;
   }
 
   .home-latest-project-preview {
-    max-height: 14rem;
+    max-height: 16rem;
   }
 }
 
@@ -577,8 +574,12 @@ body.quarto-dark .home-latest-project-link {
     padding-top: 0.25rem;
   }
 
+  .home-hero {
+    gap: 1rem;
+  }
+
   .home-hero-sidebar {
-    width: 8rem;
+    width: 7.5rem;
   }
 
   .home-snapshot-grid {
@@ -591,6 +592,6 @@ body.quarto-dark .home-latest-project-link {
   }
 
   .home-latest-project-preview {
-    max-height: 11rem;
+    max-height: 13rem;
   }
 }
