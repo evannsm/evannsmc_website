@@ -546,9 +546,9 @@ body.quarto-dark .home-latest-project-link {
 @media (max-width: 900px) {
   /*
    * Hero becomes a 2-column grid.
-   * display:contents on .home-hero-copy promotes its children into the grid,
-   * so kicker + title span full width, while the sidebar sits to the right
-   * of the summary and remaining content.
+   * display:contents on .home-hero-copy promotes its children into the grid.
+   * Name gets its own full-width line. Photo sits beside the summary only.
+   * Everything below the summary spans full width.
    */
   .home-hero {
     display: grid !important;
@@ -560,16 +560,26 @@ body.quarto-dark .home-latest-project-link {
     display: contents;
   }
 
+  /* Name and kicker span full width — unperturbed by photo */
   .home-hero-kicker,
   .home-hero-title {
     grid-column: 1 / -1;
   }
 
+  /* Photo sits beside the summary paragraph only */
   .home-hero-sidebar {
     grid-column: 2;
-    grid-row: 3 / span 5;
+    grid-row: 3;
     align-self: start;
     width: auto;
+  }
+
+  /* Everything from education down spans full width */
+  .home-edu-heading,
+  .home-meta-grid,
+  .home-contact-list,
+  .home-link-row {
+    grid-column: 1 / -1;
   }
 
   /* Shrink title so full name fits on one line */
