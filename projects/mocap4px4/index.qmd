@@ -12,7 +12,7 @@ categories: [ROS 2, C++, Robotics, PX4, Motion Capture]
 
 Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably.
 
-**Vicon4PX4** and **OptiTrack4PX4** are my ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing, regardless of the motion capture system your lab uses.
+**Vicon4PX4** and **OptiTrack4PX4** are my ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay for both of the major motion-capture systems in most research labs.
 
 <!-- Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack's Motive software. -->
 
