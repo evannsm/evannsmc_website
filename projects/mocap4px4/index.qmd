@@ -1,25 +1,117 @@
 ---
-title: "Motion Capture → PX4 Pipelines"
-description: "Production-ready ROS 2 packages for indoor quadrotor experiments with Vicon and OptiTrack."
-categories: [ROS 2, Robotics, C++]
+title: "MoCap4ROS2"
+description: "Production-ready ROS 2 C++ packages for streaming Vicon and OptiTrack motion-capture data into the PX4 EKF for indoor quadrotor experiments."
+categories: [ROS 2, C++, Robotics, PX4, Motion Capture]
 ---
 
-::: {.d-flex .gap-2 .mb-3}
+::: {.d-flex .gap-2 .flex-wrap .mb-3}
 [Vicon4PX4 on GitHub](https://github.com/evannsm/vicon4px4){.btn .btn-sm .btn-primary target="_blank"}
 [OptiTrack4PX4 on GitHub](https://github.com/evannsm/optitrack4px4){.btn .btn-sm .btn-primary target="_blank"}
+[GaTech IFL Codebase](https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
-Running indoor flight experiments means solving the same infrastructure problem every time: get your motion-capture system's position data into the drone's state estimator. These two companion packages handle all of it — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.
+Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably. **Vicon4PX4** and **OptiTrack4PX4** are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.
 
-**Vicon4PX4** connects to Vicon Tracker via the DataStream SDK (fully vendored — no system install needed), while **OptiTrack4PX4** connects to OptiTrack Motive via the NatNet protocol. Both packages share the same architecture and interface:
+Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack's Motive software.
 
-- ENU (East-North-Up) → NED (North-East-Down) coordinate conversion
-- Pose data published as both quaternions and Euler angles
-- `VehicleOdometry` messages for direct PX4 EKF external vision fusion
-- Optional full-state relay merging fused EKF outputs into a single topic for logging and control
+Vicon4PX4 has been adopted and showcased by **Georgia Tech's Indoor Flight Lab (IFL)** as part of its [official codebase](https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver).
 
-Three launch modes let you run exactly what you need: motion-capture client only, client + visual odometry relay, or all nodes including the full-state merger.
+---
 
-Vicon4PX4 has been adopted and showcased by Georgia Tech's Indoor Flight Lab as part of its official codebase.
+### The Problem
 
-**Built with:** ROS 2 (Jazzy / Humble) · C++17 · Ubuntu 22.04 / 24.04 · x86\_64 & ARM64
+PX4's EKF expects external-vision data in a very specific format: NED coordinates, a particular quaternion component ordering, microsecond timestamps, and a `VehicleOdometry` message on the right topic. Every lab doing indoor flight ends up writing bespoke glue code to get there — and it breaks whenever someone upgrades PX4, switches motion-capture vendors, or moves to a new ROS 2 distro. These packages solve that once and for all.
+
+### Data Pipeline
+
+Both packages follow the same three-stage pipeline:
+
+```
+MoCap System (ENU, mm)
+  → Client Node (ENU→NED, mm→m, publishes PoseStamped)
+    → Visual Odometry Relay (quat reorder, µs timestamps, 35 Hz)
+      → /fmu/in/vehicle_visual_odometry → PX4 EKF2
+        → Full-State Relay (merges EKF outputs, 40 Hz)
+          → /merge_odom_localpos/full_state_relay
+```
+
+The **client node** connects to the motion-capture system, converts ENU measurements to NED, and publishes pose data as both quaternions and Euler angles under the rigid body name defined in the MoCap software.
+
+The **visual odometry relay** takes the processed poses, reorders quaternion components to match PX4's convention, applies microsecond timestamps, and publishes `VehicleOdometry` messages at 35 Hz on `/fmu/in/vehicle_visual_odometry` for direct EKF external-vision fusion.
+
+The optional **full-state relay** merges the fused EKF output from `/fmu/out/vehicle_odometry` and `/fmu/out/vehicle_local_position` into a single topic at 40 Hz, giving controllers and loggers convenient access to all pose data including higher-order derivatives from the EKF.
+
+### Key Features
+
+- **ENU → NED coordinate conversion** with millimeters-to-meters scaling
+- **Pose published as both quaternions and Euler angles** under the rigid body name
+- **PX4-compatible `VehicleOdometry`** messages with correct quaternion ordering and timestamps
+- **Full-state relay** merging fused EKF outputs into a single topic for control and logging
+- **Multiple launch modes**: client only, client + relay, or all nodes including full-state merger
+- **Configurable networking**: set the MoCap system IP and the bridge handles the rest
+- **Vendored SDKs**: Vicon DataStream SDK and NatNet SDK are bundled per-architecture — no system installs
+
+### Quick Start
+
+Both packages use the same workspace structure:
+
+```bash
+# Source ROS 2
+source /opt/ros/$ROS_DISTRO/setup.bash
+
+# Create workspace
+mkdir -p ~/ws_mocap_px4_msgs_drivers/src && cd ~/ws_mocap_px4_msgs_drivers/src
+
+# Clone packages (use vicon4px4 or optitrack4px4 depending on your system)
+git clone git@github.com:evannsm/vicon4px4.git       # or optitrack4px4
+git clone -b v1.16_minimal_msgs git@github.com:evannsm/px4_msgs.git
+git clone git@github.com:evannsm/mocap_msgs.git
+git clone git@github.com:evannsm/mocap_px4_relays.git
+
+# Install dependencies and build
+cd ~/ws_mocap_px4_msgs_drivers
+rosdep install --from-paths src --rosdistro $ROS_DISTRO -y --ignore-src
+python3 -m colcon build --symlink-install \
+  --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+source install/setup.bash
+```
+
+Then launch with one of the available launch files:
+
+```bash
+# Vicon
+ros2 launch vicon4px4 client.launch.py
+ros2 launch mocap_px4_relays visual_odometry_relay.launch.py
+ros2 launch mocap_px4_relays full_state_relay.launch.py  # optional
+
+# OptiTrack (also offers combined launch files)
+ros2 launch optitrack4px4 client.launch.py
+ros2 launch optitrack4px4 client_and_visual_odometry.launch.py
+ros2 launch optitrack4px4 client_vision_full_all.launch.py
+```
+
+### OptiTrack Configuration
+
+OptiTrack4PX4 exposes additional parameters for NatNet connection tuning via `config/optitrack4px4_params.yaml`:
+
+| Parameter | Description |
+|---|---|
+| `connection_type` | Unicast or Multicast |
+| `server_address` | IP of the Motive machine |
+| `local_address` | IP of the Ubuntu machine |
+| `server_command_port` | NatNet command port (default 1510) |
+| `server_data_port` | NatNet data port (default 1511) |
+| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups |
+
+### Compatibility
+
+| | Vicon4PX4 | OptiTrack4PX4 |
+|---|---|---|
+| **ROS 2** | Jazzy / Humble | Jazzy / Humble |
+| **Ubuntu** | 22.04 / 24.04 | 22.04 / 24.04 |
+| **Architecture** | x86_64, ARM64 | x86_64 |
+| **SDK** | Vicon DataStream 1.12 (vendored) | NatNet 1.12 (vendored) |
+| **Build** | C++17, ament_cmake | C++17, ament_cmake |
+| **License** | GPL-3.0 | GPL-3.0 |
+
+**Built with:** ROS 2 (Jazzy / Humble) · C++17 · PX4 · Ubuntu 22.04 / 24.04 · x86\_64 & ARM64
