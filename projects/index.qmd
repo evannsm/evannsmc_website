@@ -798,7 +798,8 @@ body.quarto-dark .project-action.paper {
                   Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably. Vicon4PX4 and OptiTrack4PX4 handle the entire pipeline — coordinate frame conversion, quaternion reordering, PX4 timestamping, and optional full-state merging — so you can focus on your controller, not the plumbing.
                 </p>
                 <ul class="project-detail-list">
-                  <li>Vicon4PX4 connects via the DataStream SDK (vendored — no system install). OptiTrack4PX4 connects via NatNet.</li>
+                  <li>Vicon4PX4 connects via the DataStream SDK (vendored — no system install).
+                  <li>OptiTrack4PX4 connects via NatNet.</li>
                   <li>Both publish <code>VehicleOdometry</code> on <code>/fmu/in/vehicle_visual_odometry</code> for direct PX4 EKF external-vision fusion.</li>
                   <li>Adopted by Georgia Tech's Indoor Flight Lab as part of its official codebase.</li>
                 </ul>
