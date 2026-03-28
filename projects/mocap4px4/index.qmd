@@ -10,7 +10,7 @@ categories: [ROS 2, C++, Robotics, PX4, Motion Capture]
 [GaTech IFL Codebase](https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
-Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably. **Vicon4PX4** and **OptiTrack4PX4** are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.
+<!-- Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably. **Vicon4PX4** and **OptiTrack4PX4** are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing. -->
 
 Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack's Motive software.
 
@@ -22,7 +22,7 @@ Vicon4PX4 has been adopted and showcased by **Georgia Tech's Indoor Flight Lab (
 
 PX4's EKF expects external-vision data in a very specific format: NED coordinates, a particular quaternion component ordering, microsecond timestamps, and a `VehicleOdometry` message on the right topic. Every lab doing indoor flight ends up writing bespoke glue code to get there — and it breaks whenever someone upgrades PX4, switches motion-capture vendors, or moves to a new ROS 2 distro. These packages solve that once and for all.
 
-### Data Pipeline
+<!-- ### Data Pipeline -->
 
 Both packages follow the same three-stage pipeline:
 
@@ -51,7 +51,7 @@ The optional **full-state relay** merges the fused EKF output from `/fmu/out/veh
 - **Configurable networking**: set the MoCap system IP and the bridge handles the rest
 - **Vendored SDKs**: Vicon DataStream SDK and NatNet SDK are bundled per-architecture — no system installs
 
-### Quick Start
+<!-- ### Quick Start
 
 Both packages use the same workspace structure:
 
@@ -101,7 +101,7 @@ OptiTrack4PX4 exposes additional parameters for NatNet connection tuning via `co
 | `local_address` | IP of the Ubuntu machine |
 | `server_command_port` | NatNet command port (default 1510) |
 | `server_data_port` | NatNet data port (default 1511) |
-| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups |
+| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups | -->
 
 ### Compatibility
 
