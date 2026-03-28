@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -383,7 +418,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="d-flex gap-2 flex-wrap mb-3">
 <p><a href="https://github.com/evannsm/vicon4px4" class="btn btn-sm btn-primary" target="_blank">Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsm/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">OptiTrack4PX4 on GitHub</a> <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" class="btn btn-sm btn-outline-primary" target="_blank">GaTech IFL Codebase</a></p>
 </div>
-<!-- Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone's state estimator reliably. **Vicon4PX4** and **OptiTrack4PX4** are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing. -->
+<p>Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone’s state estimator reliably. <strong>Vicon4PX4</strong> and <strong>OptiTrack4PX4</strong> are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.</p>
 <p>Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack’s Motive software.</p>
 <p>Vicon4PX4 has been adopted and showcased by <strong>Georgia Tech’s Indoor Flight Lab (IFL)</strong> as part of its <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver">official codebase</a>.</p>
 <hr>
@@ -391,7 +426,10 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="the-problem">The Problem</h3>
 <p>PX4’s EKF expects external-vision data in a very specific format: NED coordinates, a particular quaternion component ordering, microsecond timestamps, and a <code>VehicleOdometry</code> message on the right topic. Every lab doing indoor flight ends up writing bespoke glue code to get there — and it breaks whenever someone upgrades PX4, switches motion-capture vendors, or moves to a new ROS 2 distro. These packages solve that once and for all.</p>
 <!-- ### Data Pipeline -->
-<p>Both packages follow the same three-stage pipeline:</p>
+</section>
+<section id="the-solution" class="level3">
+<h3 class="anchored" data-anchor-id="the-solution">The Solution</h3>
+<p>My three-stage pipeline:</p>
 <pre><code>MoCap System (ENU, mm)
   → Client Node (ENU→NED, mm→m, publishes PoseStamped)
     → Visual Odometry Relay (quat reorder, µs timestamps, 35 Hz)
@@ -413,57 +451,76 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Configurable networking</strong>: set the MoCap system IP and the bridge handles the rest</li>
 <li><strong>Vendored SDKs</strong>: Vicon DataStream SDK and NatNet SDK are bundled per-architecture — no system installs</li>
 </ul>
-<!-- ### Quick Start
-
-Both packages use the same workspace structure:
-
-```bash
-# Source ROS 2
-source /opt/ros/$ROS_DISTRO/setup.bash
-
-# Create workspace
-mkdir -p ~/ws_mocap_px4_msgs_drivers/src && cd ~/ws_mocap_px4_msgs_drivers/src
-
-# Clone packages (use vicon4px4 or optitrack4px4 depending on your system)
-git clone git@github.com:evannsm/vicon4px4.git       # or optitrack4px4
-git clone -b v1.16_minimal_msgs git@github.com:evannsm/px4_msgs.git
-git clone git@github.com:evannsm/mocap_msgs.git
-git clone git@github.com:evannsm/mocap_px4_relays.git
-
-# Install dependencies and build
-cd ~/ws_mocap_px4_msgs_drivers
-rosdep install --from-paths src --rosdistro $ROS_DISTRO -y --ignore-src
-python3 -m colcon build --symlink-install \
-  --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-source install/setup.bash
-```
-
-Then launch with one of the available launch files:
-
-```bash
-# Vicon
-ros2 launch vicon4px4 client.launch.py
-ros2 launch mocap_px4_relays visual_odometry_relay.launch.py
-ros2 launch mocap_px4_relays full_state_relay.launch.py  # optional
-
-# OptiTrack (also offers combined launch files)
-ros2 launch optitrack4px4 client.launch.py
-ros2 launch optitrack4px4 client_and_visual_odometry.launch.py
-ros2 launch optitrack4px4 client_vision_full_all.launch.py
-```
-
-### OptiTrack Configuration
-
-OptiTrack4PX4 exposes additional parameters for NatNet connection tuning via `config/optitrack4px4_params.yaml`:
-
-| Parameter | Description |
-|---|---|
-| `connection_type` | Unicast or Multicast |
-| `server_address` | IP of the Motive machine |
-| `local_address` | IP of the Ubuntu machine |
-| `server_command_port` | NatNet command port (default 1510) |
-| `server_data_port` | NatNet data port (default 1511) |
-| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups | -->
+</section>
+<section id="quick-start" class="level3">
+<h3 class="anchored" data-anchor-id="quick-start">Quick Start</h3>
+<p>Both packages use the same workspace structure:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Source ROS 2</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> /opt/ros/<span class="va">$ROS_DISTRO</span>/setup.bash</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create workspace</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/ws_mocap_px4_msgs_drivers/src <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> ~/ws_mocap_px4_msgs_drivers/src</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone packages (use vicon4px4 or optitrack4px4 depending on your system)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:evannsm/vicon4px4.git       <span class="co"># or optitrack4px4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> v1.16_minimal_msgs git@github.com:evannsm/px4_msgs.git</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:evannsm/mocap_msgs.git</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:evannsm/mocap_px4_relays.git</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Install dependencies and build</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/ws_mocap_px4_msgs_drivers</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ex">rosdep</span> install <span class="at">--from-paths</span> src <span class="at">--rosdistro</span> <span class="va">$ROS_DISTRO</span> <span class="at">-y</span> <span class="at">--ignore-src</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> colcon build <span class="at">--symlink-install</span> <span class="dt">\</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cmake-args</span> <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="at">-DCMAKE_EXPORT_COMPILE_COMMANDS</span><span class="op">=</span>ON</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> install/setup.bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then launch with one of the available launch files:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Vicon</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch vicon4px4 client.launch.py</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch mocap_px4_relays visual_odometry_relay.launch.py</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch mocap_px4_relays full_state_relay.launch.py  <span class="co"># optional</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># OptiTrack (also offers combined launch files)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch optitrack4px4 client.launch.py</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch optitrack4px4 client_and_visual_odometry.launch.py</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch optitrack4px4 client_vision_full_all.launch.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="optitrack-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="optitrack-configuration">OptiTrack Configuration</h3>
+<p>OptiTrack4PX4 exposes additional parameters for NatNet connection tuning via <code>config/optitrack4px4_params.yaml</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>connection_type</code></td>
+<td>Unicast or Multicast</td>
+</tr>
+<tr class="even">
+<td><code>server_address</code></td>
+<td>IP of the Motive machine</td>
+</tr>
+<tr class="odd">
+<td><code>local_address</code></td>
+<td>IP of the Ubuntu machine</td>
+</tr>
+<tr class="even">
+<td><code>server_command_port</code></td>
+<td>NatNet command port (default 1510)</td>
+</tr>
+<tr class="odd">
+<td><code>server_data_port</code></td>
+<td>NatNet data port (default 1511)</td>
+</tr>
+<tr class="even">
+<td><code>map_xyz</code> / <code>map_rpy</code></td>
+<td>Axis remapping for non-standard setups</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="compatibility" class="level3">
 <h3 class="anchored" data-anchor-id="compatibility">Compatibility</h3>
