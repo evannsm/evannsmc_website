@@ -383,8 +383,9 @@ ul.task-list li input[type="checkbox"] {
 <div class="d-flex gap-2 flex-wrap mb-3">
 <p><a href="https://github.com/evannsm/vicon4px4" class="btn btn-sm btn-primary" target="_blank">Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsm/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">OptiTrack4PX4 on GitHub</a> <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" class="btn btn-sm btn-outline-primary" target="_blank">GaTech IFL Codebase</a></p>
 </div>
-<p>Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone’s state estimator reliably. <strong>Vicon4PX4</strong> and <strong>OptiTrack4PX4</strong> are two companion ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing.</p>
-<p>Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack’s Motive software.</p>
+<p>Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone’s state estimator reliably.</p>
+<p><strong>Vicon4PX4</strong> and <strong>OptiTrack4PX4</strong> are my ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay — so you can focus on your controller, not the plumbing, regardless of the motion capture system your lab uses.</p>
+<!-- Both packages share the same architecture and provide an identical downstream interface. The only difference is how they connect to the motion-capture system: Vicon4PX4 uses the DataStream SDK (fully vendored — no system install required), while OptiTrack4PX4 uses the NatNet protocol to connect to OptiTrack's Motive software. -->
 <p>Vicon4PX4 has been adopted and showcased by <strong>Georgia Tech’s Indoor Flight Lab (IFL)</strong> as part of its <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver">official codebase</a>.</p>
 <hr>
 <section id="the-problem" class="level3">
