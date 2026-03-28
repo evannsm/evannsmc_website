@@ -52,7 +52,7 @@ The optional **full-state relay** merges the fused EKF output from `/fmu/out/veh
 - **Configurable networking**: set the MoCap system IP and the bridge handles the rest
 - **Vendored SDKs**: Vicon DataStream SDK and NatNet SDK are bundled per-architecture — no system installs
 
-### Quick Start
+<!-- ### Quick Start
 
 Both packages use the same workspace structure:
 
@@ -102,7 +102,7 @@ OptiTrack4PX4 exposes additional parameters for NatNet connection tuning via `co
 | `local_address` | IP of the Ubuntu machine |
 | `server_command_port` | NatNet command port (default 1510) |
 | `server_data_port` | NatNet data port (default 1511) |
-| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups |
+| `map_xyz` / `map_rpy` | Axis remapping for non-standard setups | -->
 
 ### Compatibility
 
