@@ -764,12 +764,12 @@ body.quarto-dark .project-action.paper {
                 <div class="project-name-row">
                   <div class="project-name-group">
                     <span class="project-number">01</span>
-                    <p class="project-name">MoCap4ROS2</p>
+                    <p class="project-name">MoCap4ROS2 Packages</p>
                   </div>
                   <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
                 </div>
                 <p class="project-preview-copy">
-                  Two companion ROS 2 C++ packages that bridge Vicon and OptiTrack motion-capture systems to the PX4 autopilot EKF for indoor quadrotor flight experiments. Handles coordinate conversion, quaternion reordering, timestamping, and full-state relay out of the box.
+                  My ROS 2 C++ packages that bridge Vicon and OptiTrack motion-capture systems to the PX4 autopilot EKF for indoor quadrotor flight experiments. They handle coordinate conversion, quaternion reordering, timestamping, and full-state relay out of the box.
                 </p>
                 <p class="project-cta-hint">Tap anywhere on this panel to open the project page.</p>
               </div>
