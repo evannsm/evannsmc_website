@@ -79,7 +79,7 @@ page-layout: full
         <span class="home-contact-item">Atlanta, GA</span>
       </div>
       <div class="home-link-row">
-        <a class="home-link-pill secondary" href="https://github.com/evannsm" target="_blank">GitHub</a>
+        <a class="home-link-pill secondary" href="https://github.com/evannsmc" target="_blank">GitHub</a>
         <a class="home-link-pill secondary" href="https://www.linkedin.com/in/evanns-morales/" target="_blank">LinkedIn</a>
         <a class="home-link-pill secondary" href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
         <a class="home-link-pill secondary" href="https://orcid.org/0009-0000-3928-6243" target="_blank">ORCID</a>

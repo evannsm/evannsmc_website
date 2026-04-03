@@ -545,11 +545,11 @@ body.quarto-dark .project-action.paper {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/rtd-rax/">Open Project Page</a>
-                <a class="project-action secondary" href="https://evannsm.github.io/ws_RTD" target="_blank">Official RTD-RAX Website ↗</a>
+                <a class="project-action secondary" href="https://evannsmc.github.io/ws_RTD" target="_blank">Official RTD-RAX Website ↗</a>
               </div>
               <div class="project-actions">
                 <a class="project-action paper" href="https://arxiv.org/abs/2603.21635" target="_blank">MECC-ALDSC Paper (Preprint PDF) ↗</a>
-                <a class="project-action" href="https://github.com/evannsm/rtd-rax" target="_blank">GitHub ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/rtd-rax" target="_blank">GitHub ↗</a>
               </div>
             </div>
           </div>
@@ -611,8 +611,8 @@ body.quarto-dark .project-action.paper {
                 <a class="project-action paper" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
               </div>
               <div class="project-actions">
-                <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4" target="_blank">Python Version ↗</a>
-                <a class="project-action" href="https://github.com/evannsm/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/nmpc_acados_px4" target="_blank">Python Version ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/nmpc_acados_px4_cpp" target="_blank">C++ Version ↗</a>
               </div>
             </div>
           </div>
@@ -733,8 +733,8 @@ body.quarto-dark .project-action.paper {
                 <a class="project-action primary" href="../projects/nr-flow/">Open Project Page</a>
                 <a class="project-action paper" href="https://arxiv.org/abs/2408.11197" target="_blank">ACC 2024 Paper (PDF) ↗</a>
                 <a class="project-action paper" href="https://arxiv.org/abs/2508.14185" target="_blank">TCST 2025 Paper (PDF) ↗</a>
-                <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4" target="_blank">Python Version ↗</a>
-                <a class="project-action" href="https://github.com/evannsm/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/newton_raphson_px4" target="_blank">Python Version ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/newton_raphson_px4_cpp" target="_blank">C++ Version ↗</a>
               </div>
             </div>
           </div>
@@ -809,8 +809,8 @@ body.quarto-dark .project-action.paper {
                 <a class="project-action secondary" href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" target="_blank">GaTech IFL Codebase ↗</a>
               </div>
               <div class="project-actions">
-                <a class="project-action" href="https://github.com/evannsm/vicon4px4" target="_blank">Vicon4PX4 GitHub ↗</a>
-                <a class="project-action" href="https://github.com/evannsm/optitrack4px4" target="_blank">OptiTrack4PX4 GitHub ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/vicon4px4" target="_blank">Vicon4PX4 GitHub ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/optitrack4px4" target="_blank">OptiTrack4PX4 GitHub ↗</a>
               </div>
             </div>
           </div>
@@ -870,7 +870,7 @@ body.quarto-dark .project-action.paper {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
-                <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/quartoCV" target="_blank">GitHub ↗</a>
               </div>
             </div>
           </div>
@@ -927,7 +927,7 @@ body.quarto-dark .project-action.paper {
               </div>
               <div class="project-actions">
                 <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
-                <a class="project-action" href="https://github.com/evannsm/quarto-gatech-slides" target="_blank">GitHub ↗</a>
+                <a class="project-action" href="https://github.com/evannsmc/quarto-gatech-slides" target="_blank">GitHub ↗</a>
               </div>
             </div>
           </div>

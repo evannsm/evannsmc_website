@@ -14,6 +14,6 @@ csl: ../../../ieee.csl
 
 Will fill in more when I have time :)
 
-In the meantime check out my open-source PX4-ROS2 offboard control package [here](https://github.com/evannsm/clean-px4-offboard-node) and my PX4 data logger package [here](https://github.com/evannsm/ROS2Logger).
+In the meantime check out my open-source PX4-ROS2 offboard control package [here](https://github.com/evannsmc/clean-px4-offboard-node) and my PX4 data logger package [here](https://github.com/evannsmc/ROS2Logger).
 
 I don't like rosbag or plotjugggler so despite my Logger not being very lightweight or polished yet, I still prefer it. It also very conveniently comes with a Python data analysis package to easily load and plot logged data that it moves into your ROS2 workspace and creates directories for itself and saves logs automatically into its data analysis directory ready for plotting, analysis, and comparisons.

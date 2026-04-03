@@ -359,7 +359,7 @@ title-block-banner: true
           </div>
           <div class="project-actions">
             <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/quartoCV" target="_blank">GitHub ↗</a>
+            <a class="project-action" href="https://github.com/evannsmc/quartoCV" target="_blank">GitHub ↗</a>
           </div>
         </div>
       </div>
@@ -415,7 +415,7 @@ title-block-banner: true
           </div>
           <div class="project-actions">
             <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsm/quarto-gatech-slides" target="_blank">GitHub ↗</a>
+            <a class="project-action" href="https://github.com/evannsmc/quarto-gatech-slides" target="_blank">GitHub ↗</a>
           </div>
         </div>
       </div>

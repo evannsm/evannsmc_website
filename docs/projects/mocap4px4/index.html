@@ -92,7 +92,7 @@ ul.task-list li input[type="checkbox"] {
       },
       "description": "Robotics and ECE Ph.D student at Georgia Tech researching safe autonomy, nonlinear control, and quadrotor UAVs.",
       "sameAs": [
-        "https://github.com/evannsm",
+        "https://github.com/evannsmc",
         "https://www.linkedin.com/in/evanns-morales/",
         "https://scholar.google.com/citations?user=FY9tS9oAAAAJ",
         "https://orcid.org/0009-0000-3928-6243"
@@ -381,7 +381,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="d-flex gap-2 flex-wrap mb-3">
-<p><a href="https://github.com/evannsm/vicon4px4" class="btn btn-sm btn-primary" target="_blank">Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsm/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">OptiTrack4PX4 on GitHub</a> <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" class="btn btn-sm btn-outline-primary" target="_blank">GaTech IFL Codebase</a></p>
+<p><a href="https://github.com/evannsmc/vicon4px4" class="btn btn-sm btn-primary" target="_blank">Vicon4PX4 on GitHub</a> <a href="https://github.com/evannsmc/optitrack4px4" class="btn btn-sm btn-primary" target="_blank">OptiTrack4PX4 on GitHub</a> <a href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" class="btn btn-sm btn-outline-primary" target="_blank">GaTech IFL Codebase</a></p>
 </div>
 <p>Running indoor flight experiments means solving the same infrastructure problem every time: getting motion-capture position data into the drone’s state estimator reliably.</p>
 <p><strong>Vicon4PX4</strong> and <strong>OptiTrack4PX4</strong> are my ROS 2 C++ packages that handle the entire pipeline — coordinate frame conversion, EKF fusion, and full-state relay for both of the major motion-capture systems in most research labs.</p>
@@ -429,10 +429,10 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 mkdir -p ~/ws_mocap_px4_msgs_drivers/src && cd ~/ws_mocap_px4_msgs_drivers/src
 
 # Clone packages (use vicon4px4 or optitrack4px4 depending on your system)
-git clone git@github.com:evannsm/vicon4px4.git       # or optitrack4px4
-git clone -b v1.16_minimal_msgs git@github.com:evannsm/px4_msgs.git
-git clone git@github.com:evannsm/mocap_msgs.git
-git clone git@github.com:evannsm/mocap_px4_relays.git
+git clone git@github.com:evannsmc/vicon4px4.git       # or optitrack4px4
+git clone -b v1.16_minimal_msgs git@github.com:evannsmc/px4_msgs.git
+git clone git@github.com:evannsmc/mocap_msgs.git
+git clone git@github.com:evannsmc/mocap_px4_relays.git
 
 # Install dependencies and build
 cd ~/ws_mocap_px4_msgs_drivers

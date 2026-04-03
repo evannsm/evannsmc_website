@@ -8,8 +8,8 @@ categories: [Control, Python, Research]
 
 ::: {.d-flex .gap-2 .flex-wrap .mb-3}
 [TCST 2025 Paper (PDF)](https://arxiv.org/abs/2508.14185){.btn .btn-sm .btn-primary target="_blank"}
-[View Python Version](https://github.com/evannsm/nmpc_acados_px4){.btn .btn-sm .btn-outline-primary target="_blank"}
-[View C++ Version](https://github.com/evannsm/nmpc_acados_px4_cpp){.btn .btn-sm .btn-outline-primary target="_blank"}
+[View Python Version](https://github.com/evannsmc/nmpc_acados_px4){.btn .btn-sm .btn-outline-primary target="_blank"}
+[View C++ Version](https://github.com/evannsmc/nmpc_acados_px4_cpp){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
 This package implements a 9-state NMPC using the Acados solver with QPOASES — a rigorous, well-understood approach that was used as the primary comparison baseline for the Newton-Raphson Flow work. If you need a solid NMPC reference implementation for your own quadrotor research, this is a clean starting point.

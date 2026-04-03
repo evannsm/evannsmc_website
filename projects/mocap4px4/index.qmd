@@ -5,8 +5,8 @@ categories: [ROS 2, C++, Robotics, PX4, Motion Capture]
 ---
 
 ::: {.d-flex .gap-2 .flex-wrap .mb-3}
-[Vicon4PX4 on GitHub](https://github.com/evannsm/vicon4px4){.btn .btn-sm .btn-primary target="_blank"}
-[OptiTrack4PX4 on GitHub](https://github.com/evannsm/optitrack4px4){.btn .btn-sm .btn-primary target="_blank"}
+[Vicon4PX4 on GitHub](https://github.com/evannsmc/vicon4px4){.btn .btn-sm .btn-primary target="_blank"}
+[OptiTrack4PX4 on GitHub](https://github.com/evannsmc/optitrack4px4){.btn .btn-sm .btn-primary target="_blank"}
 [GaTech IFL Codebase](https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver){.btn .btn-sm .btn-outline-primary target="_blank"}
 :::
 
@@ -66,10 +66,10 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 mkdir -p ~/ws_mocap_px4_msgs_drivers/src && cd ~/ws_mocap_px4_msgs_drivers/src
 
 # Clone packages (use vicon4px4 or optitrack4px4 depending on your system)
-git clone git@github.com:evannsm/vicon4px4.git       # or optitrack4px4
-git clone -b v1.16_minimal_msgs git@github.com:evannsm/px4_msgs.git
-git clone git@github.com:evannsm/mocap_msgs.git
-git clone git@github.com:evannsm/mocap_px4_relays.git
+git clone git@github.com:evannsmc/vicon4px4.git       # or optitrack4px4
+git clone -b v1.16_minimal_msgs git@github.com:evannsmc/px4_msgs.git
+git clone git@github.com:evannsmc/mocap_msgs.git
+git clone git@github.com:evannsmc/mocap_px4_relays.git
 
 # Install dependencies and build
 cd ~/ws_mocap_px4_msgs_drivers
