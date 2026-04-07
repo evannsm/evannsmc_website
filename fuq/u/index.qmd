@@ -167,13 +167,13 @@ body.quarto-dark .drone-arm {
   width: 0;
   height: 0;
   animation: spotlight-swing 2.2s ease-in-out infinite;
-  transform-origin: top center;
+  transform-origin: 0 0; /* apex of the border-bottom triangle */
 }
 
 @keyframes spotlight-swing {
-  0%   { transform: rotate(-35deg); }
-  50%  { transform: rotate(35deg); }
-  100% { transform: rotate(-35deg); }
+  0%   { transform: rotate(-15deg); }
+  50%  { transform: rotate(15deg); }
+  100% { transform: rotate(-15deg); }
 }
 
 .spotlight-beam {
