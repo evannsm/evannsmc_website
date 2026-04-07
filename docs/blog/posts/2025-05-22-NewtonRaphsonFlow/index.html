@@ -553,7 +553,7 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
 <h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
 <p>The NRF technique defines the derivative of the control input, <span class="math inline">\(\dot{u}(t)\)</span>. This rate <span class="math inline">\(\dot{u}(t)\)</span> must be integrated over time to yield the final control output <span class="math inline">\(u(t+\Delta t)\)</span>. In a real implementation loop, <span class="math inline">\(u(t+dt) = u(t) + \dot{u} \cdot \Delta t\)</span>.</p>
 <p>We note that the difficulty in implementation for real-world system comes from implementing the output predictor <span class="math inline">\(\rho\)</span>, its jacobian, and balancing stability of the closed-loop system and prediction accuraty via the lookahead <span class="math inline">\(T\)</span>, and the speedup factor <span class="math inline">\(\alpha\)</span>.</p>
-<div id="12698b78" class="cell" data-execution_count="1">
+<div id="68d4e74d" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> newton_raphson_flow_step(x, u, r_future, rho, J_rho_u, alpha, dt):</span>
@@ -1029,20 +1029,7 @@ u_{n} = u_{n-1} - \left( \frac{dg}{du} (u_{n-1}) \right)^{-1} g(u_{n-1})
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<div class="footer-content">
-<div class="footer-links">
-<pre><code>&lt;a href="https://github.com/evannsmc" target="_blank" rel="noopener"&gt;GitHub&lt;/a&gt;
-&lt;span class="footer-sep"&gt;·&lt;/span&gt;
-&lt;a href="https://www.linkedin.com/in/evanns-morales/" target="_blank" rel="noopener"&gt;LinkedIn&lt;/a&gt;
-&lt;span class="footer-sep"&gt;·&lt;/span&gt;
-&lt;a href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener"&gt;Scholar&lt;/a&gt;
-&lt;span class="footer-sep"&gt;·&lt;/span&gt;
-&lt;a href="https://orcid.org/0009-0000-3928-6243" target="_blank" rel="noopener"&gt;ORCID&lt;/a&gt;</code></pre>
-</div>
-<div class="footer-copy">
-© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved
-</div>
-</div>
+<p><a href="https://github.com/evannsmc" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/evanns-morales/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener">Scholar</a> · <a href="https://orcid.org/0009-0000-3928-6243" target="_blank" rel="noopener">ORCID</a> <br>© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;
