@@ -10,12 +10,7 @@ title-block-banner: true
   display: none;
 }
 
-:root {
-  --pubs-accent: #2563eb;
-  --pubs-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
-  --pubs-text-secondary: var(--bs-secondary-color, #57534e);
-  --pubs-border: var(--bs-border-color, #e7e5e4);
-}
+/* Uses shared tokens from styles.css: --accent, --bg-secondary, --text-secondary, --border */
 
 .pubs-shell {
   max-width: 100%;
@@ -29,7 +24,7 @@ title-block-banner: true
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--pubs-accent);
+  color: var(--accent);
 }
 
 .pubs-title {
@@ -42,7 +37,7 @@ title-block-banner: true
 .pubs-intro {
   max-width: 52rem;
   margin: 0 0 2.4rem;
-  color: var(--pubs-text-secondary);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -56,12 +51,18 @@ title-block-banner: true
 .pubs-list > li {
   margin-bottom: 1.25rem;
   padding: 1.1rem 1.25rem;
-  border: 1px solid var(--pubs-border);
+  border: 1px solid var(--border);
   border-radius: 1rem;
   background: var(--bs-body-bg, #fff);
   font-size: 1.05rem;
   line-height: 1.72;
-  color: var(--pubs-text-secondary);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pubs-list > li:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
 }
 
 body.quarto-light .pubs-list > li {
@@ -82,18 +83,18 @@ body.quarto-dark .pubs-list > li {
 
 .pubs-list a {
   font-weight: 700;
-  color: var(--pubs-accent);
+  color: var(--accent);
 }
 
 .pub-marker {
   font-weight: 800;
   margin-right: 0.35rem;
-  color: var(--pubs-accent);
+  color: var(--accent);
 }
 
 .pubs-footnote {
   margin-top: 1.25rem;
-  color: var(--pubs-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

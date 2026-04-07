@@ -361,6 +361,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content quarto-banner-title-block page-columns page-full column-page" id="quarto-document-content">
 
+<a class="skip-to-content" href="#quarto-content">Skip to main content</a>
 
 
 
@@ -389,21 +390,17 @@ main.content.column-page {
   padding-right: 0 !important;
 }
 
+/* Shared tokens from styles.css: --accent, --bg-secondary, --text-secondary, --border
+   Journey page adds its own primary-bg/text and stop-specific vars */
 :root {
-  --journey-accent: #2563eb;
   --journey-bg-primary: var(--bs-body-bg, #ffffff);
-  --journey-bg-secondary: var(--bs-tertiary-bg, #f5f5f4);
   --journey-text-primary: var(--bs-body-color, #1c1917);
-  --journey-text-secondary: var(--bs-secondary-color, #57534e);
-  --journey-border: var(--bs-border-color, #e7e5e4);
   --journey-stop-idle-bg: rgba(148, 163, 184, 0.06);
   --journey-stop-idle-border: rgba(100, 116, 139, 0.16);
   --journey-stop-hover-bg: rgba(148, 163, 184, 0.12);
 }
 
 body.quarto-dark {
-  --journey-bg-secondary: rgba(31, 41, 55, 0.92);
-  --journey-border: rgba(148, 163, 184, 0.28);
   --journey-stop-idle-bg: rgba(148, 163, 184, 0.08);
   --journey-stop-idle-border: rgba(148, 163, 184, 0.2);
   --journey-stop-hover-bg: rgba(148, 163, 184, 0.16);
@@ -435,7 +432,7 @@ body.quarto-dark {
 
 .journey-kicker {
   margin: 0 0 0.5rem;
-  color: var(--journey-accent);
+  color: var(--accent);
 }
 
 .journey-title {
@@ -448,7 +445,7 @@ body.quarto-dark {
 .journey-intro {
   max-width: 44rem;
   margin: 0 0 1.15rem;
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -470,9 +467,9 @@ body.quarto-dark {
 
 .journey-panel,
 .timeline-stop {
-  border: 1px solid var(--journey-border);
+  border: 1px solid var(--border);
   border-radius: 1.25rem;
-  background: var(--journey-bg-secondary);
+  background: var(--bg-secondary);
 }
 
 .journey-detail {
@@ -526,7 +523,7 @@ body.quarto-dark {
 
 .journey-detail-copy {
   margin: 0;
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   line-height: 1.7;
   white-space: pre-line;
@@ -562,10 +559,10 @@ body.quarto-dark .journey-map-shell {
   left: 0.85rem;
   z-index: 3;
   padding: 0.45rem 0.8rem;
-  border: 1px solid var(--journey-border);
+  border: 1px solid var(--border);
   border-radius: 0.8rem;
   background: var(--journey-bg-primary);
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 700;
   transition: color 0.2s ease, background-color 0.2s ease;
@@ -590,7 +587,7 @@ body.quarto-dark .journey-map-shell {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   font-weight: 600;
   backdrop-filter: blur(2px);
@@ -639,7 +636,7 @@ body.quarto-dark .journey-map-photo {
 }
 
 .journey-sidebar-heading {
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   margin: 0 0 0.85rem;
   text-align: center;
 }
@@ -715,7 +712,7 @@ body.quarto-dark .journey-map-photo {
 .timeline-label,
 .timeline-year {
   margin: 0;
-  color: var(--journey-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.45;
 }
@@ -781,7 +778,7 @@ body.quarto-dark .journey-map-photo {
 
 .map-stop .marker-label {
   font-size: 10px;
-  fill: var(--journey-text-secondary);
+  fill: var(--text-secondary);
 }
 
 .map-stop.is-active .stop-ring,
@@ -1887,7 +1884,20 @@ document.addEventListener('DOMContentLoaded', function () {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved</p>
+<div class="footer-content">
+<div class="footer-links">
+<pre><code>&lt;a href="https://github.com/evannsmc" target="_blank" rel="noopener"&gt;GitHub&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://www.linkedin.com/in/evanns-morales/" target="_blank" rel="noopener"&gt;LinkedIn&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener"&gt;Scholar&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://orcid.org/0009-0000-3928-6243" target="_blank" rel="noopener"&gt;ORCID&lt;/a&gt;</code></pre>
+</div>
+<div class="footer-copy">
+© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved
+</div>
+</div>
 </div>
     <div class="nav-footer-right">
       &nbsp;

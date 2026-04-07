@@ -365,6 +365,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
+<a class="skip-to-content" href="#quarto-content">Skip to main content</a>
 
 
 
@@ -385,10 +386,10 @@ main.content.column-page {
   padding-right: 0 !important;
 }
 
+/* Shared tokens from styles.css: --accent, --text-secondary
+   Projects page overrides bg and border with custom values */
 :root {
-  --projects-accent: #2563eb;
   --projects-bg-secondary: #e8eef8;
-  --projects-text-secondary: var(--bs-secondary-color, #57534e);
   --projects-border: #a8a4a0;
 }
 
@@ -431,7 +432,7 @@ body.quarto-dark {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--projects-accent);
+  color: var(--accent);
 }
 
 .projects-column-title {
@@ -443,7 +444,7 @@ body.quarto-dark {
 
 .projects-column-intro {
   margin: 0 0 1.4rem;
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.7;
 }
@@ -458,10 +459,12 @@ body.quarto-dark {
   border-radius: 1.35rem;
   background: var(--projects-bg-secondary);
   overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .project-card:hover {
-  border-color: color-mix(in srgb, var(--projects-accent) 28%, var(--projects-border));
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--projects-border));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .project-card summary {
@@ -500,7 +503,7 @@ body.quarto-dark {
   padding: 0.32rem 0.7rem;
   border-radius: 999px;
   border: 1.5px solid var(--projects-border);
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 600;
   background: var(--bs-body-bg, #fff);
@@ -529,7 +532,7 @@ body.quarto-dark {
   height: 2rem;
   border-radius: 999px;
   background: rgba(37, 99, 235, 0.1);
-  color: var(--projects-accent);
+  color: var(--accent);
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -554,7 +557,7 @@ body.quarto-dark .project-name {
   border: 1.5px solid var(--projects-border);
   border-radius: 999px;
   background: var(--bs-body-bg, #fff);
-  color: var(--projects-accent);
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -566,14 +569,14 @@ body.quarto-dark .project-name {
 
 .project-toggle:hover,
 .project-toggle:focus-visible {
-  border-color: var(--projects-accent);
+  border-color: var(--accent);
   background: rgba(37, 99, 235, 0.08);
-  color: var(--projects-accent);
+  color: var(--accent);
   transform: translateY(-1px);
 }
 
 .project-toggle:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--projects-accent) 45%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
   outline-offset: 0.12rem;
 }
 
@@ -587,14 +590,14 @@ body.quarto-dark .project-name {
 
 .project-preview-copy {
   margin: 0;
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.96rem;
   line-height: 1.72;
 }
 
 .project-cta-hint {
   margin: 0.8rem 0 0;
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -665,7 +668,7 @@ body.quarto-dark .project-preview-custom {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--projects-accent);
+  color: var(--accent);
 }
 
 .project-preview-lines {
@@ -677,7 +680,7 @@ body.quarto-dark .project-preview-custom {
   padding: 0.55rem 0.7rem;
   border-radius: 0.8rem;
   background: rgba(255, 255, 255, 0.92);
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.87rem;
   font-weight: 600;
 }
@@ -697,7 +700,7 @@ body.quarto-dark .project-preview-line {
   padding: 0.45rem 0.7rem;
   border-radius: 0.8rem;
   background: rgba(37, 99, 235, 0.08);
-  color: var(--projects-accent);
+  color: var(--accent);
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -730,7 +733,7 @@ body.quarto-dark .project-toggle {
 }
 
 .project-detail-copy {
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.72;
 }
@@ -746,7 +749,7 @@ body.quarto-dark .project-toggle {
 .project-detail-list {
   margin: 0;
   padding-left: 1.15rem;
-  color: var(--projects-text-secondary);
+  color: var(--text-secondary);
 }
 
 .project-detail-list li + li {
@@ -773,8 +776,8 @@ body.quarto-dark .project-toggle {
 }
 
 .project-action.primary {
-  background: var(--projects-accent);
-  border-color: var(--projects-accent);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -800,7 +803,7 @@ body.quarto-dark .project-toggle {
 
 .project-action.paper {
   border-color: rgba(37, 99, 235, 0.45);
-  color: var(--projects-accent);
+  color: var(--accent);
   background: rgba(37, 99, 235, 0.04);
   font-weight: 500;
   font-size: 0.88em;
@@ -814,8 +817,8 @@ body.quarto-dark .project-action.paper {
 .project-action.paper:hover,
 .project-action.paper:focus {
   background: rgba(37, 99, 235, 0.1);
-  border-color: var(--projects-accent);
-  color: var(--projects-accent);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 @media (max-width: 1100px) {
@@ -1772,7 +1775,20 @@ document.addEventListener('DOMContentLoaded', function () {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved</p>
+<div class="footer-content">
+<div class="footer-links">
+<pre><code>&lt;a href="https://github.com/evannsmc" target="_blank" rel="noopener"&gt;GitHub&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://www.linkedin.com/in/evanns-morales/" target="_blank" rel="noopener"&gt;LinkedIn&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener"&gt;Scholar&lt;/a&gt;
+&lt;span class="footer-sep"&gt;·&lt;/span&gt;
+&lt;a href="https://orcid.org/0009-0000-3928-6243" target="_blank" rel="noopener"&gt;ORCID&lt;/a&gt;</code></pre>
+</div>
+<div class="footer-copy">
+© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved
+</div>
+</div>
 </div>
     <div class="nav-footer-right">
       &nbsp;
