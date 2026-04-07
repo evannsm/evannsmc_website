@@ -12,6 +12,7 @@ project:
     - "journey/*.qmd"
     - "projects/**/*.qmd"
     - "publications/*.qmd"
+    - "fuq/u.qmd"
     - "!Agents.md"
     - "!plan.md"
   post-render: bash fix-listing-urls.sh
