@@ -1,0 +1,109 @@
+---
+title: "CodeGraph Live"
+description: "An always-on semantic code intelligence daemon for Claude Code — keeps a knowledge graph of your entire codebase fresh via inotify, even when Claude is closed."
+categories: [TypeScript, Node.js, Claude Code, MCP, Developer Tools]
+---
+
+::: {.d-flex .gap-2 .flex-wrap .mb-3}
+[GitHub ↗](https://github.com/evannsmc/codegraph-live){.btn .btn-sm .btn-primary target="_blank"}
+[Upstream: colbymchenry/codegraph](https://github.com/colbymchenry/codegraph){.btn .btn-sm .btn-outline-primary target="_blank"}
+:::
+
+Every time I opened Claude Code after an editing session in VS Code or a `git pull`, it would waste tokens re-reading files to orient itself. The upstream codegraph project builds a semantic graph of your codebase and exposes it to Claude via MCP — but only keeps it fresh when Claude Code is open. The moment you close it, the graph goes stale.
+
+**CodeGraph Live** fixes this with a persistent background daemon that watches all your projects simultaneously via Linux inotify. Every file save from any editor is detected and synced within a second, automatically, even when Claude Code is completely closed.
+
+---
+
+### What it adds over upstream
+
+The upstream [colbymchenry/codegraph](https://github.com/colbymchenry/codegraph) already builds a solid code knowledge graph and exposes it to Claude through an MCP server. What it doesn't do is keep that graph fresh outside of Claude Code sessions.
+
+| | upstream codegraph | CodeGraph Live |
+|---|---|---|
+| Sync on Claude's own edits | Yes (PostToolUse hook) | Yes |
+| Sync when editing outside Claude | No — manual `sync` only | **Always automatic** |
+| Graph fresh when Claude is closed | No | **Yes** |
+| Filesystem watcher | No | **@parcel/watcher (inotify)** |
+| Systemd user service | No | **Yes — starts at login** |
+| Auto-discover new projects | No | **Yes — scans \$HOME every 30s** |
+
+---
+
+### How it works
+
+```
+Boot → systemd starts codegraph-live daemon
+  │
+  ├── Scans $HOME for .codegraph/codegraph.db (initialized projects)
+  ├── Opens @parcel/watcher subscription on each project root
+  │
+  └── On file change → 1000ms debounce → CodeGraph.sync()
+        (incremental update — only re-indexes changed files)
+```
+
+The daemon runs alongside Claude Code's own sync hooks:
+
+- **`PostToolUse` hook** (Edit/Write) → `mark-dirty` — flags the project immediately after Claude edits a file
+- **`Stop` hook** → `sync-if-dirty` — runs a full sync before Claude's next response, so the graph reflects everything Claude just wrote
+
+Both paths write to the same SQLite database under `.codegraph/`, protected by CodeGraph's built-in `FileLock` so the daemon and MCP server never conflict.
+
+---
+
+### Claude Code integration
+
+Once installed, Claude Code queries the graph through seven MCP tools instead of reading source files:
+
+| Tool | What Claude uses it for |
+|---|---|
+| `codegraph_explore` | Deep exploration — comprehensive context for a topic in one call |
+| `codegraph_context` | Quick context for a task |
+| `codegraph_search` | Find symbols by name — functions, classes, types |
+| `codegraph_callers` | Everything that calls a given function |
+| `codegraph_callees` | Everything a function calls |
+| `codegraph_impact` | What breaks if a symbol changes |
+| `codegraph_node` | Full source + metadata for a single symbol |
+
+The global `~/.claude/CLAUDE.md` instructions (written by `codegraph-live install`) tell Claude to prefer these tools for structural questions rather than grepping through files, keeping the main session context lean.
+
+---
+
+### Setup
+
+```bash
+# 1. Clone and install
+git clone git@github.com:evannsmc/codegraph-live.git
+cd codegraph-live && npm install && npm run build && npm install -g .
+
+# 2. Register systemd service (starts daemon at every login)
+codegraph-live daemon install-service
+
+# 3. One-time global setup (writes ~/.claude/CLAUDE.md + MCP config)
+codegraph-live install
+
+# 4. Initialize each project
+cd ~/your-project
+codegraph-live init
+```
+
+After step 4 the daemon picks up the new project within 30 seconds — no restart needed.
+
+---
+
+### Architecture
+
+The fork adds four new source modules on top of upstream:
+
+| Module | Role |
+|---|---|
+| `src/daemon/index.ts` | Main daemon loop: inotify subscriptions, debounce, sync |
+| `src/daemon/discovery.ts` | Recursive `$HOME` scan for `.codegraph/codegraph.db` |
+| `src/daemon/pid.ts` | PID file management for start/stop/status CLI commands |
+| `src/daemon/logger.ts` | Timestamped log to `~/.local/share/codegraph-live/daemon.log` |
+
+The installer was split into `runGlobalInstaller()` (machine-wide, writes `~/.claude/`) and `runProjectInit()` (per-project, writes `.claude/` locally) to keep the setup semantics clean. In-depth documentation for each component lives in the repo's [`architecture/`](https://github.com/evannsmc/codegraph-live/tree/main/architecture) directory.
+
+---
+
+**Built with:** TypeScript · Node.js · @parcel/watcher · SQLite · MCP · systemd

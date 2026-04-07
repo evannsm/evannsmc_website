@@ -1279,6 +1279,66 @@ body.quarto-dark .project-action.paper:focus {
           </div>
         </details>
 
+        <details class="project-card" data-project-href="../projects/codegraph-live/">
+          <summary>
+            <div class="project-summary">
+              <div class="project-copy">
+                <div class="project-tags">
+                  <span class="project-tag">TypeScript</span>
+                  <span class="project-tag">Claude Code</span>
+                  <span class="project-tag">Developer Tools</span>
+                </div>
+                <div class="project-name-row">
+                  <div class="project-name-group">
+                    <span class="project-number">04</span>
+                    <p class="project-name">CodeGraph Live</p>
+                  </div>
+                  <button class="project-toggle" type="button" aria-label="Hide or show details"></button>
+                </div>
+                <p class="project-preview-copy">
+                  A fork of colbymchenry/codegraph that adds an always-on background daemon to keep a semantic code knowledge graph fresh across all your projects — even when Claude Code is closed. Claude queries it via MCP instead of reading files, saving tokens and giving it structural understanding of the codebase.
+                </p>
+                <p class="project-cta-hint">Tap anywhere on this panel to open the project page.</p>
+              </div>
+              <div class="project-preview-panel">
+                <div class="project-preview-custom">
+                  <p class="project-preview-title">Always-on code intelligence for Claude</p>
+                  <div class="project-preview-lines">
+                    <div class="project-preview-line">inotify daemon — syncs on every file save</div>
+                    <div class="project-preview-line">systemd user service — starts at login</div>
+                    <div class="project-preview-line">MCP tools — callers, callees, impact, explore</div>
+                  </div>
+                  <div class="project-preview-metrics">
+                    <span class="project-preview-metric">TypeScript</span>
+                    <span class="project-preview-metric">Node.js</span>
+                    <span class="project-preview-metric">SQLite</span>
+                    <span class="project-preview-metric">MCP</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </summary>
+          <div class="project-body">
+            <div class="project-body-grid">
+              <div class="project-detail-copy">
+                <p>
+                  CodeGraph Live solves the stale-graph problem in AI-assisted development: when you edit files outside Claude Code, the code graph falls behind, so Claude wastes tokens reading files it should already know. This fork adds a systemd user service that watches all your initialized projects simultaneously via Linux inotify — every save from any editor is detected and synced within one second.
+                </p>
+                <ul class="project-detail-list">
+                  <li>Background daemon discovers new projects automatically by scanning <code>$HOME</code> every 30s.</li>
+                  <li>Claude Code hooks (<code>PostToolUse</code> → mark-dirty, <code>Stop</code> → sync) keep Claude's own edits in sync mid-session.</li>
+                  <li>MCP server exposes graph query tools so Claude navigates call graphs and impact radii instead of grepping source files.</li>
+                  <li>Two-phase install: <code>codegraph-live install</code> writes global Claude Code config once; <code>codegraph-live init</code> per project.</li>
+                </ul>
+              </div>
+              <div class="project-actions">
+                <a class="project-action primary" href="../projects/codegraph-live/">Open Project Page</a>
+                <a class="project-action" href="https://github.com/evannsmc/codegraph-live" target="_blank">GitHub ↗</a>
+              </div>
+            </div>
+          </div>
+        </details>
+
         <details class="project-card" data-project-href="../projects/gatech-slides/" open="">
           <summary>
             <div class="project-summary">
