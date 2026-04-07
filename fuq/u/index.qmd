@@ -142,12 +142,28 @@ body.quarto-dark .drone-arm {
   to   { transform: rotate(360deg); }
 }
 
-/* Spotlight — sweeps then locks on */
+/* Spotlight — two-element wrapper so translateY and rotate don't conflict */
+
+/* Outer: bobs vertically in sync with the drone, pinned at scene center */
+.spotlight-bob {
+  position: absolute;
+  top: 2.9rem;   /* bottom of drone body at rest: 8% of 16rem + 1.6rem ≈ 2.9rem */
+  left: 50%;     /* 50% of drone-scene (16rem) = exact scene center */
+  width: 0;
+  height: 0;
+  animation: spotlight-bob-anim 2.2s ease-in-out infinite;
+}
+
+@keyframes spotlight-bob-anim {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-0.6rem); }
+}
+
+/* Inner: swings left/right from the apex */
 .spotlight-wrap {
   position: absolute;
-  top: 2.8rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
   width: 0;
   height: 0;
   animation: spotlight-swing 2.2s ease-in-out infinite;
@@ -155,9 +171,9 @@ body.quarto-dark .drone-arm {
 }
 
 @keyframes spotlight-swing {
-  0%   { transform: translateX(-50%) rotate(-35deg); }
-  50%  { transform: translateX(-50%) rotate(35deg); }
-  100% { transform: translateX(-50%) rotate(-35deg); }
+  0%   { transform: rotate(-35deg); }
+  50%  { transform: rotate(35deg); }
+  100% { transform: rotate(-35deg); }
 }
 
 .spotlight-beam {
@@ -311,10 +327,12 @@ body.quarto-dark .secret-link:not(.primary):hover {
     <div class="alarm-ring alarm-ring-1"></div>
     <div class="alarm-ring alarm-ring-2"></div>
     <div class="alarm-ring alarm-ring-3"></div>
-    <div class="drone-hover">
+    <div class="spotlight-bob">
       <div class="spotlight-wrap">
         <div class="spotlight-beam"></div>
       </div>
+    </div>
+    <div class="drone-hover">
       <div class="drone-body">
         <div class="drone-arm drone-arm-1"></div>
         <div class="drone-arm drone-arm-2"></div>
