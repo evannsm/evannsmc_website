@@ -326,7 +326,7 @@ body.quarto-dark .secret-link:not(.primary):hover {
     And yet, here you are — poking around URLs like it's a hobby.<br>
     I respect it. I do not endorse it. Now go away.
   </p>
-  <p class="secret-subtext">
+  <p class="secret-subtext" id="ip-log">
     (my surveillance drone has already logged your visit. it knows.)
   </p>
   <div class="secret-links">
@@ -335,4 +335,37 @@ body.quarto-dark .secret-link:not(.primary):hover {
     <a class="secret-link" href="/blog/">Blog</a>
   </div>
 </div>
+
+<style>
+.ip-tag {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.85em;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  letter-spacing: 0.03em;
+}
+body.quarto-dark .ip-tag {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+</style>
+
+<script>
+fetch('https://api.ipify.org?format=json')
+  .then(r => r.json())
+  .then(data => {
+    const el = document.getElementById('ip-log');
+    if (!el || !data.ip) return;
+    const tag = document.createElement('span');
+    tag.className = 'ip-tag';
+    tag.textContent = data.ip;
+    el.textContent = '';
+    el.append('(logged: ', tag, '. yeah, we know.)');
+  })
+  .catch(function() {});
+</script>
 ```
