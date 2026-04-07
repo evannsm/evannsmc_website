@@ -1,5 +1,6 @@
 ---
 title: "Research Blog"
+description: "Posts on robotics, control theory, optimal control, JAX, and lessons from hardware experiments by Evanns Morales-Cuadrado."
 listing:
   contents: posts
   sort: "date desc"

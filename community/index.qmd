@@ -1,5 +1,6 @@
 ---
 title: "Community & Hobbies"
+description: "BORI at Georgia Tech, community building, and hobbies outside of research — fitness, cooking, salsa, and reading."
 page-layout: full
 title-block-banner: true
 ---

@@ -1,5 +1,6 @@
 ---
 title: "About Me"
+description: "The story behind the research — background, metrics, origin, community involvement, and hobbies of Evanns Morales-Cuadrado."
 page-layout: full
 title-block-banner: true
 ---

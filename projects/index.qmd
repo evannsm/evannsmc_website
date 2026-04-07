@@ -1,5 +1,6 @@
 ---
 title: "Projects"
+description: "Research projects in safe autonomy, nonlinear control, and quadrotor UAVs by Evanns Morales-Cuadrado at Georgia Tech."
 page-layout: full
 title-block-banner: true
 ---
@@ -443,16 +444,26 @@ body.quarto-dark .project-toggle {
   font-size: 0.88em;
 }
 
-body.quarto-dark .project-action.paper {
-  background: rgba(59, 130, 246, 0.08);
-  border-color: rgba(59, 130, 246, 0.35);
-}
-
 .project-action.paper:hover,
 .project-action.paper:focus {
   background: rgba(37, 99, 235, 0.1);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Dark mode: paper/preprint buttons only */
+body.quarto-dark .project-action.paper {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.28);
+  color: var(--bs-body-color);
+  font-weight: 600;
+}
+
+body.quarto-dark .project-action.paper:hover,
+body.quarto-dark .project-action.paper:focus {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: var(--bs-body-color);
 }
 
 @media (max-width: 1100px) {

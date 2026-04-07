@@ -1,0 +1,310 @@
+---
+title: "Page Not Found"
+page-layout: full
+title-block-banner: true
+description: "This page doesn't exist — but don't worry, the rest of the site does."
+---
+
+```{=html}
+<style>
+#title-block-header {
+  display: none;
+}
+
+.error-shell {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 8rem;
+  text-align: center;
+}
+
+/* ── Drone crash illustration ── */
+.drone-scene {
+  position: relative;
+  width: 14rem;
+  height: 14rem;
+  margin: 0 auto 2rem;
+}
+
+/* Smoke puffs */
+.smoke {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.25);
+  animation: smoke-rise 2.5s ease-out infinite;
+}
+
+body.quarto-dark .smoke {
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.smoke-1 { width: 2.5rem; height: 2.5rem; bottom: 55%; left: 38%; animation-delay: 0s; }
+.smoke-2 { width: 1.8rem; height: 1.8rem; bottom: 60%; left: 50%; animation-delay: 0.8s; }
+.smoke-3 { width: 2rem; height: 2rem; bottom: 50%; left: 30%; animation-delay: 1.6s; }
+
+@keyframes smoke-rise {
+  0%   { opacity: 0.7; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-3rem) scale(1.8); }
+}
+
+/* Ground */
+.ground {
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  right: 5%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.ground::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 10%;
+  right: 10%;
+  height: 1.5rem;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, transparent 70%);
+}
+
+body.quarto-dark .ground::after {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 70%);
+}
+
+/* Drone body — tilted and crashed */
+.drone {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%) rotate(28deg);
+}
+
+.drone-body {
+  width: 4.5rem;
+  height: 1.6rem;
+  background: var(--text-secondary);
+  border-radius: 0.8rem;
+  position: relative;
+}
+
+body.quarto-dark .drone-body {
+  background: rgba(226, 232, 240, 0.7);
+}
+
+/* Center dot (camera/sensor) */
+.drone-body::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Arms */
+.drone-arm {
+  position: absolute;
+  width: 3.5rem;
+  height: 3px;
+  background: var(--text-secondary);
+  top: 50%;
+  transform-origin: center;
+}
+
+body.quarto-dark .drone-arm {
+  background: rgba(226, 232, 240, 0.6);
+}
+
+.drone-arm-1 { left: -2.5rem; transform: translateY(-50%) rotate(-30deg); }
+.drone-arm-2 { left: -2.5rem; transform: translateY(-50%) rotate(30deg); }
+.drone-arm-3 { right: -2.5rem; transform: translateY(-50%) rotate(-30deg); }
+.drone-arm-4 { right: -2.5rem; transform: translateY(-50%) rotate(30deg); }
+
+/* Propellers */
+.prop {
+  position: absolute;
+  width: 1.8rem;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* Left props — one still, one detached and flying off */
+.prop-1 {
+  top: -0.8rem;
+  left: -3.8rem;
+  transform: rotate(15deg);
+}
+
+.prop-2 {
+  top: 1.2rem;
+  left: -3.5rem;
+  transform: rotate(-60deg);
+  animation: prop-fly-off 3s ease-out infinite;
+}
+
+/* Right props — one drooping, one bent */
+.prop-3 {
+  top: -0.6rem;
+  right: -3.8rem;
+  transform: rotate(-20deg);
+}
+
+.prop-4 {
+  top: 1rem;
+  right: -3.2rem;
+  transform: rotate(75deg);
+  opacity: 0.4;
+}
+
+@keyframes prop-fly-off {
+  0%   { opacity: 0.6; transform: rotate(-60deg) translate(0, 0); }
+  30%  { opacity: 0.5; transform: rotate(-90deg) translate(-0.8rem, -1.5rem); }
+  100% { opacity: 0; transform: rotate(-180deg) translate(-2rem, -4rem); }
+}
+
+/* Impact lines */
+.impact-line {
+  position: absolute;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.3;
+  border-radius: 1px;
+}
+
+.impact-line-1 {
+  width: 1.2rem;
+  bottom: 14%;
+  left: 22%;
+  transform: rotate(-35deg);
+}
+
+.impact-line-2 {
+  width: 0.8rem;
+  bottom: 18%;
+  right: 25%;
+  transform: rotate(40deg);
+}
+
+.impact-line-3 {
+  width: 1rem;
+  bottom: 11%;
+  right: 32%;
+  transform: rotate(-15deg);
+}
+
+.error-code {
+  margin: 0 0 0.5rem;
+  font-size: clamp(4rem, 10vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.25;
+}
+
+.error-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.error-copy {
+  margin: 0 0 2rem;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.error-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.error-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.15rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.error-link.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.error-link.primary:hover,
+.error-link.primary:focus {
+  color: #fff;
+  opacity: 0.92;
+}
+
+.error-link:not(.primary) {
+  color: var(--accent);
+  background: rgba(37, 99, 235, 0.06);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.error-link:not(.primary):hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+body.quarto-dark .error-link:not(.primary) {
+  color: #93c5fd;
+  background: rgba(147, 197, 253, 0.08);
+  border-color: rgba(147, 197, 253, 0.25);
+}
+
+body.quarto-dark .error-link:not(.primary):hover {
+  background: rgba(147, 197, 253, 0.15);
+}
+</style>
+
+<div class="error-shell">
+  <div class="drone-scene" aria-hidden="true">
+    <div class="smoke smoke-1"></div>
+    <div class="smoke smoke-2"></div>
+    <div class="smoke smoke-3"></div>
+    <div class="drone">
+      <div class="drone-body">
+        <div class="drone-arm drone-arm-1"></div>
+        <div class="drone-arm drone-arm-2"></div>
+        <div class="drone-arm drone-arm-3"></div>
+        <div class="drone-arm drone-arm-4"></div>
+        <div class="prop prop-1"></div>
+        <div class="prop prop-2"></div>
+        <div class="prop prop-3"></div>
+        <div class="prop prop-4"></div>
+      </div>
+    </div>
+    <div class="impact-line impact-line-1"></div>
+    <div class="impact-line impact-line-2"></div>
+    <div class="impact-line impact-line-3"></div>
+    <div class="ground"></div>
+  </div>
+  <p class="error-code">404</p>
+  <p class="error-title">This page crashed harder than my drones.</p>
+  <p class="error-copy">
+    Whatever you were looking for isn't here — but unlike a mid-flight failure, this one has an easy recovery.
+  </p>
+  <div class="error-links">
+    <a class="error-link primary" href="./">Back to Home</a>
+    <a class="error-link" href="./projects/">Projects</a>
+    <a class="error-link" href="./publications/">Publications</a>
+    <a class="error-link" href="./blog/">Research Blog</a>
+  </div>
+</div>
+```

@@ -1,5 +1,6 @@
 ---
 title: "Independent Projects"
+description: "Open-source tools and templates built from day-to-day research needs — QuartoCV, Georgia Tech slides, and more."
 page-layout: full
 title-block-banner: true
 ---

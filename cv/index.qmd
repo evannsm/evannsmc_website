@@ -1,5 +1,6 @@
 ---
 title: "CV & Résumé"
+description: "Academic CV and professional résumé of Evanns Morales-Cuadrado — education, publications, research experience, and skills."
 page-layout: full
 title-block-banner: true
 ---

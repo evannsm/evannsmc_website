@@ -130,6 +130,16 @@ body.quarto-dark .navbar {
   border-radius: 1px;
 }
 
+body.quarto-dark .navbar .nav-link.active,
+body.quarto-dark .navbar .nav-link[aria-current="page"] {
+  color: #fff !important;
+}
+
+body.quarto-dark .navbar .nav-link.active::after,
+body.quarto-dark .navbar .nav-link[aria-current="page"]::after {
+  background: #fff;
+}
+
 .navbar .nav-link {
   transition: color 0.15s ease, background-color 0.15s ease;
   border-radius: 0.5rem;

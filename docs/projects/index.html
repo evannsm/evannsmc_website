@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Research projects in safe autonomy, nonlinear control, and quadrotor UAVs by Evanns Morales-Cuadrado at Georgia Tech.">
 
 <title>Projects – evannsmc</title>
 <style>
@@ -124,14 +125,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+<script data-goatcounter="https://evannsmc.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
 
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Projects – evannsmc">
+<meta property="og:description" content="Research projects in safe autonomy, nonlinear control, and quadrotor UAVs by Evanns Morales-Cuadrado at Georgia Tech.">
 <meta property="og:image" content="https://evannsmc.com/projects/rtd-rax/angled_repair_view_two_repairs.gif">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="RTD-RAX angled obstacles with repair animation">
 <meta name="twitter:title" content="Projects – evannsmc">
+<meta name="twitter:description" content="Research projects in safe autonomy, nonlinear control, and quadrotor UAVs by Evanns Morales-Cuadrado at Georgia Tech.">
 <meta name="twitter:image" content="https://evannsmc.com/projects/rtd-rax/angled_repair_view_two_repairs.gif">
 <meta name="twitter:image:alt" content="RTD-RAX angled obstacles with repair animation">
 <meta name="twitter:card" content="summary_large_image">
@@ -360,7 +364,12 @@ document.addEventListener('DOMContentLoaded', function () {
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page">
       <h1 class="title">Projects</h1>
-                      </div>
+                  <div>
+        <div class="description">
+          Research projects in safe autonomy, nonlinear control, and quadrotor UAVs by Evanns Morales-Cuadrado at Georgia Tech.
+        </div>
+      </div>
+                </div>
   </div>
     
   
@@ -823,16 +832,26 @@ body.quarto-dark .project-toggle {
   font-size: 0.88em;
 }
 
-body.quarto-dark .project-action.paper {
-  background: rgba(59, 130, 246, 0.08);
-  border-color: rgba(59, 130, 246, 0.35);
-}
-
 .project-action.paper:hover,
 .project-action.paper:focus {
   background: rgba(37, 99, 235, 0.1);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Dark mode: paper/preprint buttons only */
+body.quarto-dark .project-action.paper {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.28);
+  color: var(--bs-body-color);
+  font-weight: 600;
+}
+
+body.quarto-dark .project-action.paper:hover,
+body.quarto-dark .project-action.paper:focus {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: var(--bs-body-color);
 }
 
 @media (max-width: 1100px) {

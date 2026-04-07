@@ -1,5 +1,6 @@
 ---
 title: "Publications"
+description: "Peer-reviewed papers on safe autonomy, reachability-based planning, and nonlinear control by Evanns Morales-Cuadrado."
 page-layout: full
 title-block-banner: true
 ---

@@ -1,5 +1,6 @@
 ---
 title: "Journey"
+description: "An interactive map of the places that have shaped Evanns Morales-Cuadrado's path — from Puerto Rico to Georgia Tech and beyond."
 page-layout: full
 title-block-banner: true
 ---
