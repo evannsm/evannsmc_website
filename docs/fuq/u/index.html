@@ -550,13 +550,13 @@ body.quarto-dark .drone-arm {
   width: 0;
   height: 0;
   animation: spotlight-swing 2.2s ease-in-out infinite;
-  transform-origin: top center;
+  transform-origin: 0 0; /* apex of the border-bottom triangle */
 }
 
 @keyframes spotlight-swing {
-  0%   { transform: rotate(-35deg); }
-  50%  { transform: rotate(35deg); }
-  100% { transform: rotate(-35deg); }
+  0%   { transform: rotate(-15deg); }
+  50%  { transform: rotate(15deg); }
+  100% { transform: rotate(-15deg); }
 }
 
 .spotlight-beam {
@@ -710,10 +710,12 @@ body.quarto-dark .secret-link:not(.primary):hover {
     <div class="alarm-ring alarm-ring-1"></div>
     <div class="alarm-ring alarm-ring-2"></div>
     <div class="alarm-ring alarm-ring-3"></div>
-    <div class="drone-hover">
+    <div class="spotlight-bob">
       <div class="spotlight-wrap">
         <div class="spotlight-beam"></div>
       </div>
+    </div>
+    <div class="drone-hover">
       <div class="drone-body">
         <div class="drone-arm drone-arm-1"></div>
         <div class="drone-arm drone-arm-2"></div>
