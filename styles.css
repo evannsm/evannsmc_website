@@ -799,3 +799,57 @@ body.quarto-dark .home-latest-project-link {
     max-height: 16rem;
   }
 }
+
+/* ── Preprint buttons: green in light mode (dark mode untouched) ── */
+body.quarto-light .btn-primary {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+body.quarto-light .btn-primary:hover,
+body.quarto-light .btn-primary:focus {
+  background-color: #15803d;
+  border-color: #15803d;
+  color: #fff;
+}
+
+body.quarto-dark .btn-primary {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+body.quarto-dark .btn-primary:hover,
+body.quarto-dark .btn-primary:focus {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+/* ── GitHub outline buttons: filled blue (light), filled green (dark) ── */
+.btn-outline-primary {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+body.quarto-dark .btn-outline-primary {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+body.quarto-dark .btn-outline-primary:hover,
+body.quarto-dark .btn-outline-primary:focus {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
