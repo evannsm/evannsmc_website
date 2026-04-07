@@ -44,14 +44,14 @@ description: "You weren't supposed to find this."
 .drone-body {
   width: 4.5rem;
   height: 1.6rem;
-  background: var(--text-secondary);
+  background: #64748b;
   border-radius: 0.8rem;
   position: relative;
   margin: 0 auto;
 }
 
 body.quarto-dark .drone-body {
-  background: rgba(226, 232, 240, 0.7);
+  background: rgba(226, 232, 240, 0.8);
 }
 
 /* Red eye / camera — pulses alarm */
@@ -172,12 +172,12 @@ body.quarto-dark .spotlight {
   50%       { background-color: rgba(239, 68, 68, 0.25); }
 }
 
-/* Alarm rings */
+/* Alarm rings — centered on the drone body (top 8% + half body height = ~13%) */
 .alarm-ring {
   position: absolute;
   border-radius: 50%;
   border: 2px solid rgba(239, 68, 68, 0.4);
-  top: 50%;
+  top: 13%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
