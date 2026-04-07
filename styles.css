@@ -133,6 +133,17 @@ body.quarto-dark .navbar {
 .navbar .nav-link {
   transition: color 0.15s ease, background-color 0.15s ease;
   border-radius: 0.5rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.navbar .nav-link:hover {
+  background-color: rgba(37, 99, 235, 0.08);
+  color: #2563eb !important;
+}
+
+body.quarto-dark .navbar .nav-link:hover {
+  background-color: rgba(147, 197, 253, 0.1);
+  color: #93c5fd !important;
 }
 
 .navbar .nav-link:focus-visible {
@@ -623,7 +634,8 @@ body.quarto-dark .nav-footer-center a {
   background: var(--bs-body-bg, #fff);
 }
 
-.home-latest-project-preview img {
+.home-latest-project-preview img,
+.home-latest-project-preview video {
   width: 100%;
   height: 100%;
   object-fit: cover;

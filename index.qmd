@@ -130,7 +130,9 @@ My robotics work centers around hardware applications of safe autonomous control
     <span class="home-latest-project-link">Open RTD-RAX</span>
   </div>
   <div class="home-latest-project-preview">
-    <img src="./projects/rtd-rax/angled_repair_view_two_repairs.gif" alt="RTD-RAX angled obstacles with repair animation" loading="lazy">
+    <video autoplay loop muted playsinline aria-label="RTD-RAX angled obstacles with repair animation" loading="lazy">
+      <source src="./projects/rtd-rax/angled_repair_view_two_repairs.mp4" type="video/mp4">
+    </video>
   </div>
 </a>
 ```
