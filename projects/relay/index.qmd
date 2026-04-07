@@ -1,0 +1,168 @@
+---
+title: "relay"
+description: "A fault-tolerant multi-agent coding pipeline — Plan → Code → Review → Cleanup, in a loop, until your task list is done."
+categories: [Bash, Claude Code, Codex, Developer Tools]
+---
+
+::: {.d-flex .gap-2 .flex-wrap .mb-3}
+[GitHub ↗](https://github.com/evannsmc/relay){.btn .btn-sm .btn-primary target="_blank"}
+:::
+
+Agent-based coding tools are powerful but fragile: they accumulate context rot, lose track of inter-task state, miss acceptance criteria, and silently ignore rate limits. **relay** is a bash orchestration script that wraps Claude and Codex in a structured four-step loop and handles all of that automatically — token limits, context rot, task dependencies, and commit discipline — without a daemon, a server, or a config file.
+
+---
+
+### How it works
+
+For every task in your project's `prd.json` (resolved in dependency order via Beads):
+
+```
+  ┌─────────────────────────────────────────────────────────┐
+  │ Step 1  PLAN     claude -p  (fresh process, medium effort)│
+  │         Reads: AGENTS.md, context.json, prd.json        │
+  │         Writes: .claude/plans/<id>_plan.md              │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 2  CODE     codex exec  (fresh process)             │
+  │         Reads: plan.md                                   │
+  │         Writes: source files (uncommitted)              │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 3  REVIEW   codex review --base main  (fresh)       │
+  │         Reads: git diff                                  │
+  │         Writes: .claude/plans/<id>_review.md            │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 4  CLEANUP  claude -p  (fresh, 10m cap)             │
+  │         Reads: review.md, acceptance criteria           │
+  │         Writes: source files, git commits               │
+  └─────────────────────────────────────────────────────────┘
+
+  Post-task: bd update --done → save context.json → git push → next task
+```
+
+Every step is a **separate subprocess** — no state leaks between steps or between tasks. All shared state lives in files: `prd.json`, `context.json`, and git.
+
+You define the tasks and acceptance criteria, run the script, and walk away.
+
+---
+
+### How it differs from Ralphy
+
+[Ralphy](https://github.com/michaelshimeles/ralphy) was the inspiration — it runs a single agent against a flat task list. relay adds structure at every layer:
+
+| | Ralphy | relay |
+|--|--------|-------|
+| Agent pipeline | Single agent | Plan → Code → Review → Cleanup |
+| Adversarial review | ✗ | ✓ Codex reviews Codex |
+| Context-rot guard | ✗ | ✓ 10m cap, git-state handoff, fresh restart |
+| Inter-task memory | ✗ | ✓ `context.json` — compact cross-task notes |
+| Token exhaustion | Basic | Codex: exact reset time. Claude: exponential backoff. Max 16h wait. |
+| Task dependencies | ✗ | ✓ Beads graph — nothing runs before its blockers |
+| Acceptance criteria | ✗ | ✓ Per-task, verified before marking done |
+| Commit discipline | ✗ | ✓ Incremental commits + `feat: complete <task>` on completion |
+
+---
+
+### Context-rot guard
+
+Long agent sessions degrade. relay uses three mechanisms to prevent this:
+
+**1. Fresh subprocesses per step**
+`claude -p` and `codex exec` each spawn a new process with an empty context. Rot cannot accumulate across tasks or steps.
+
+**2. Session cap with git-state handoff**
+Step 4 (cleanup) is the only step that can run long. It is capped at `MAX_SESSION_MINUTES` (default: 10 minutes). On timeout, relay captures the live git state and injects it as structured context into a fresh session:
+
+```
+timeout → git log --oneline -5
+        → git status --short
+        → git diff HEAD --stat
+        → inject into next fresh claude -p session
+```
+
+The new session picks up from git ground truth, not in-context memory. Up to `MAX_RESUME_ATTEMPTS=3` restarts per task.
+
+**3. Inter-task `context.json`**
+After every completed task, relay writes `.claude/context.json` — a compact record of what was done, what was committed, and a 500-char rolling summary of key decisions. Each new task's planning step reads this file, giving Claude cross-task memory without reopening old context.
+
+```json
+{
+  "updated_at": "ISO timestamp",
+  "completed_count": 3,
+  "last_completed": {
+    "id": "task-id",
+    "title": "task title",
+    "commit": "abc1234 message",
+    "files_changed": ["file1.py", "file2.py"]
+  },
+  "cumulative_notes": "500-char rolling summary of key decisions"
+}
+```
+
+---
+
+### Token exhaustion handling
+
+relay monitors both providers and recovers automatically:
+
+**Codex** — parses the exact reset timestamp from the error message and sleeps until then (+60s buffer). No guessing.
+
+**Claude** — exponential backoff: 2m → 5m → 10m → 15m → 30m, max 16h total wait. Probes both providers after each interval, resumes on whichever responds first.
+
+Token exhaustion waits don't count against `MAX_RESUME_ATTEMPTS`. If Codex fails a non-quota task, `CODEX_AVAILABLE=false` is set for the rest of the run and Claude handles Steps 2–4.
+
+---
+
+### Setup
+
+```bash
+# Prerequisites
+npm install -g @beads/bd        # task queue with dependency graph
+apt install jq coreutils        # JSON + timeout
+
+# 1. Copy templates into your project
+cp path/to/relay/AGENTS.md.template  ./AGENTS.md
+cp path/to/relay/prd.template.json   ./prd.json
+mkdir -p .claude
+cp path/to/relay/pipeline.sh         ./.claude/pipeline.sh
+chmod +x .claude/pipeline.sh
+
+# 2. Fill in AGENTS.md — project name, stack, rules, tasks + acceptance criteria
+
+# 3. Generate prd.json from AGENTS.md
+claude -p "Read AGENTS.md ## Tasks and generate prd.json. ..." > prd.json
+
+# 4. Commit and run
+git add AGENTS.md prd.json .claude/pipeline.sh
+git commit -m "chore: add relay pipeline"
+bash .claude/pipeline.sh
+```
+
+---
+
+### Monitoring while it runs
+
+```bash
+bd list                                               # task states
+bd show <id>                                          # full audit trail
+jq '.tasks[] | {id, status, completed_at}' prd.json  # prd.json view
+cat .claude/context.json | jq .                       # inter-task memory
+ls .claude/plans/                                     # plan + review artifacts
+```
+
+Tasks can be added mid-run by editing `prd.json` directly — the pipeline re-reads it on each iteration.
+
+---
+
+### File layout
+
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | Per-project agent instructions + task descriptions |
+| `prd.json` | Task graph — source of truth (committed, versioned) |
+| `.claude/pipeline.sh` | The loop script |
+| `.claude/context.json` | Inter-task memory (committed after each task) |
+| `.claude/plans/<id>_plan.md` | Step 1 plan artifact |
+| `.claude/plans/<id>_review.md` | Step 3 review artifact |
+
+---
+
+**Built with:** Bash · Claude Code · Codex · Beads (`bd`) · jq

@@ -316,13 +316,74 @@ title-block-banner: true
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
+              <span class="project-tag">ROS 2</span>
+              <span class="project-tag">C++</span>
+              <span class="project-tag">Motion Capture</span>
+              <span class="project-tag">PX4</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">01</span>
+                <p class="project-name">MoCap4ROS2 Packages</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              ROS 2 C++ packages that bridge Vicon and OptiTrack motion-capture systems to the PX4 autopilot EKF for indoor quadrotor flight experiments.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Motion Capture → PX4 EKF Pipeline</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">ENU → NED frame conversion</div>
+                <div class="project-preview-line">External vision EKF fusion</div>
+                <div class="project-preview-line">Full-state relay for control & logging</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Vicon</span>
+                <span class="project-preview-metric">OptiTrack</span>
+                <span class="project-preview-metric">ROS 2</span>
+                <span class="project-preview-metric">PX4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              Vicon4PX4 and OptiTrack4PX4 handle the full pipeline — coordinate frame conversion, quaternion reordering, PX4 timestamping, and full-state merging — so you can focus on your controller, not the plumbing. Adopted by Georgia Tech's Indoor Flight Lab as part of its official codebase.
+            </p>
+            <ul class="project-detail-list">
+              <li>Connects via DataStream SDK (Vicon) or NatNet (OptiTrack) — vendored, no system install.</li>
+              <li>Publishes <code>VehicleOdometry</code> on <code>/fmu/in/vehicle_visual_odometry</code> for direct EKF fusion.</li>
+              <li>Both packages share the same ROS 2 interface design.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/mocap4px4/">Open Project Page</a>
+            <a class="project-action secondary" href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" target="_blank">GaTech IFL Codebase ↗</a>
+            <a class="project-action" href="https://github.com/evannsmc/vicon4px4" target="_blank">Vicon4PX4 GitHub ↗</a>
+            <a class="project-action" href="https://github.com/evannsmc/optitrack4px4" target="_blank">OptiTrack4PX4 GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
               <span class="project-tag">Quarto</span>
               <span class="project-tag">LaTeX</span>
               <span class="project-tag">Tools</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">01</span>
+                <span class="project-number">02</span>
                 <p class="project-name">QuartoCV</p>
               </div>
               <span class="project-toggle"></span>
@@ -373,12 +434,126 @@ title-block-banner: true
         <div class="project-summary">
           <div class="project-copy">
             <div class="project-tags">
+              <span class="project-tag">Claude Code</span>
+              <span class="project-tag">MCP</span>
+              <span class="project-tag">Developer Tools</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">03</span>
+                <p class="project-name">CodeGraph Live</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A fork of colbymchenry/codegraph that adds an always-on background daemon to keep a semantic code knowledge graph fresh across all your projects — even when Claude Code is closed.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Always-on code intelligence for Claude</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">inotify daemon — syncs on every file save</div>
+                <div class="project-preview-line">systemd user service — starts at login</div>
+                <div class="project-preview-line">MCP tools — callers, callees, impact, explore</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">TypeScript</span>
+                <span class="project-preview-metric">Node.js</span>
+                <span class="project-preview-metric">MCP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              CodeGraph Live fixes the stale-graph problem in AI-assisted development. This fork adds a systemd user service that watches all your initialized projects simultaneously via Linux inotify — every save from any editor is detected and synced within one second, even when Claude Code is completely closed.
+            </p>
+            <ul class="project-detail-list">
+              <li>Background daemon auto-discovers new projects by scanning <code>$HOME</code> every 30s.</li>
+              <li>Claude Code hooks keep Claude's own edits in sync mid-session.</li>
+              <li>MCP server exposes graph query tools so Claude navigates call graphs instead of grepping files.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/codegraph-live/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsmc/codegraph-live" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
+              <span class="project-tag">Claude Code</span>
+              <span class="project-tag">Codex</span>
+              <span class="project-tag">Developer Tools</span>
+            </div>
+            <div class="project-name-row">
+              <div class="project-name-group">
+                <span class="project-number">04</span>
+                <p class="project-name">relay</p>
+              </div>
+              <span class="project-toggle"></span>
+            </div>
+            <p class="project-preview-copy">
+              A bash orchestration script that runs a four-step Plan → Code → Review → Cleanup loop over a dependency-ordered task list, dispatching each step to a fresh Claude or Codex subprocess so nothing leaks between tasks.
+            </p>
+          </div>
+          <div class="project-preview-panel">
+            <div class="project-preview-custom">
+              <p class="project-preview-title">Multi-agent pipeline, no config required</p>
+              <div class="project-preview-lines">
+                <div class="project-preview-line">Plan → Code → Review → Cleanup per task</div>
+                <div class="project-preview-line">Beads (<code>bd</code>) for dependency-ordered task tracking</div>
+                <div class="project-preview-line">Drop-in: copy pipeline.sh, run it</div>
+              </div>
+              <div class="project-preview-metrics">
+                <span class="project-preview-metric">Bash</span>
+                <span class="project-preview-metric">Claude Code</span>
+                <span class="project-preview-metric">Codex</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </summary>
+      <div class="project-body">
+        <div class="project-body-grid">
+          <div class="project-detail-copy">
+            <p>
+              relay automates the full agentic development loop. Each task from <code>prd.json</code> is handed to a fresh Claude subprocess to plan, a fresh Codex subprocess to implement, another to adversarially review the diff, and a final Claude pass to clean up — with no state leaking between steps.
+            </p>
+            <ul class="project-detail-list">
+              <li>Uses Beads (<code>bd</code>) to resolve task dependencies and claim tasks atomically before starting.</li>
+              <li>Context-rot guard: 10m session cap with git-state handoff into a fresh subprocess.</li>
+              <li>No daemon, no server, no install — just copy <code>pipeline.sh</code> into your project's <code>.claude/</code> directory.</li>
+            </ul>
+          </div>
+          <div class="project-actions">
+            <a class="project-action primary" href="../projects/relay/">Open Project Page</a>
+            <a class="project-action" href="https://github.com/evannsmc/relay" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="project-card">
+      <summary>
+        <div class="project-summary">
+          <div class="project-copy">
+            <div class="project-tags">
               <span class="project-tag">Quarto</span>
               <span class="project-tag">Tools</span>
             </div>
             <div class="project-name-row">
               <div class="project-name-group">
-                <span class="project-number">02</span>
+                <span class="project-number">05</span>
                 <p class="project-name">Quarto Georgia Tech Slides</p>
               </div>
               <span class="project-toggle"></span>

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Open-source tools and templates built from day-to-day research needs — QuartoCV, Georgia Tech slides, and more.">
+<meta name="description" content="A fault-tolerant multi-agent coding pipeline — Plan → Code → Review → Cleanup, in a loop, until your task list is done.">
 
-<title>Independent Projects – evannsmc</title>
+<title>relay – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,31 +21,66 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -128,16 +163,16 @@ document.addEventListener('DOMContentLoaded', function () {
 <script data-goatcounter="https://evannsmc.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
 
 
-<link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Independent Projects – evannsmc">
-<meta property="og:description" content="Open-source tools and templates built from day-to-day research needs — QuartoCV, Georgia Tech slides, and more.">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="relay – evannsmc">
+<meta property="og:description" content="A fault-tolerant multi-agent coding pipeline — Plan → Code → Review → Cleanup, in a loop, until your task list is done.">
 <meta property="og:site_name" content="evannsmc">
-<meta name="twitter:title" content="Independent Projects – evannsmc">
-<meta name="twitter:description" content="Open-source tools and templates built from day-to-day research needs — QuartoCV, Georgia Tech slides, and more.">
+<meta name="twitter:title" content="relay – evannsmc">
+<meta name="twitter:description" content="A fault-tolerant multi-agent coding pipeline — Plan → Code → Review → Cleanup, in a loop, until your task list is done.">
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -302,14 +337,14 @@ document.addEventListener('DOMContentLoaded', function () {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">evannsmc</span>
     </a>
   </div>
@@ -320,31 +355,31 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv"> 
+    <a class="nav-link" href="../../cv"> 
 <span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../publications"> 
+    <a class="nav-link" href="../../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../projects"> 
+    <a class="nav-link" href="../../projects"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
+    <a class="nav-link" href="../../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../journey"> 
+    <a class="nav-link" href="../../journey"> 
 <span class="menu-text">Journey</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog"> 
+    <a class="nav-link" href="../../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
 </ul>
@@ -356,636 +391,248 @@ document.addEventListener('DOMContentLoaded', function () {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Independent Projects</h1>
-                  <div>
-        <div class="description">
-          Open-source tools and templates built from day-to-day research needs — QuartoCV, Georgia Tech slides, and more.
-        </div>
-      </div>
-                </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <a class="skip-to-content" href="#quarto-content">Skip to main content</a>
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">relay</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Bash</div>
+    <div class="quarto-category">Claude Code</div>
+    <div class="quarto-category">Codex</div>
+    <div class="quarto-category">Developer Tools</div>
+  </div>
+  </div>
 
-
-
-
-<style>
-#title-block-header {
-  display: none;
-}
-
-/* Uses shared tokens from styles.css: --accent, --bg-secondary, --text-secondary, --border */
-
-.projects-shell {
-  max-width: 96rem;
-  margin: 0 auto;
-  padding: 3rem clamp(1.5rem, 3vw, 3.5rem) 5rem;
-}
-
-.projects-kicker {
-  margin: 0 0 0.45rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-}
-
-.projects-title {
-  margin: 0 0 0.9rem;
-  font-size: clamp(2rem, 3.6vw, 3rem);
-  font-weight: 700;
-  line-height: 1.05;
-}
-
-.projects-intro {
-  max-width: 52rem;
-  margin: 0 0 2.4rem;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.75;
-}
-
-.project-stack {
-  display: grid;
-  gap: 1rem;
-}
-
-.project-card {
-  border: 1px solid var(--border);
-  border-radius: 1.35rem;
-  background: var(--bg-secondary);
-  overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.project-card:hover {
-  border-color: rgba(37, 99, 235, 0.3);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-}
-
-.project-card summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.project-card summary::-webkit-details-marker {
-  display: none;
-}
-
-.project-summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
-  gap: 1.5rem;
-  padding: 1.55rem;
-}
-
-.project-copy {
-  min-width: 0;
-}
-
-.project-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  margin-bottom: 0.8rem;
-}
-
-.project-tag {
-  padding: 0.32rem 0.7rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 600;
-  background: var(--bs-body-bg, #fff);
-}
-
-.project-name-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
-}
-
-.project-name-group {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-}
-
-.project-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 999px;
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  flex-shrink: 0;
-}
-
-.project-name {
-  margin: 0;
-  font-size: 1.28rem;
-  font-weight: 700;
-}
-
-.project-toggle {
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.project-card[open] .project-toggle::before {
-  content: "Hide details";
-}
-
-.project-card:not([open]) .project-toggle::before {
-  content: "Expand";
-}
-
-.project-preview-copy {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.96rem;
-  line-height: 1.72;
-}
-
-.project-preview-panel {
-  display: flex;
-  align-items: stretch;
-  min-height: 14rem;
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  background: var(--bs-body-bg, #fff);
-  overflow: hidden;
-}
-
-.project-preview-custom {
-  width: 100%;
-  padding: 1.15rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-  background:
-    radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 35%),
-    linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02));
-}
-
-.project-preview-title {
-  margin: 0;
-  font-size: 0.84rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.project-preview-lines {
-  display: grid;
-  gap: 0.45rem;
-}
-
-.project-preview-line {
-  padding: 0.55rem 0.7rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--text-secondary);
-  font-size: 0.87rem;
-  font-weight: 600;
-}
-
-.project-preview-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.project-preview-metric {
-  padding: 0.45rem 0.7rem;
-  border-radius: 0.8rem;
-  background: rgba(37, 99, 235, 0.08);
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.project-body {
-  padding: 0 1.55rem 1.55rem;
-  border-top: 1px solid var(--border);
-}
-
-.project-body-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
-  gap: 1.25rem;
-  padding-top: 1.2rem;
-}
-
-.project-detail-copy {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.72;
-}
-
-.project-detail-copy p {
-  margin: 0 0 0.9rem;
-}
-
-.project-detail-copy p:last-child {
-  margin-bottom: 0;
-}
-
-.project-detail-list {
-  margin: 0;
-  padding-left: 1.15rem;
-  color: var(--text-secondary);
-}
-
-.project-detail-list li + li {
-  margin-top: 0.45rem;
-}
-
-.project-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-content: flex-start;
-}
-
-.project-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.8rem 1rem;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border);
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-  background: var(--bs-body-bg, #fff);
-}
-
-.project-action.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.project-action.primary:hover,
-.project-action.primary:focus {
-  color: #fff;
-  opacity: 0.92;
-}
-
-@media (max-width: 980px) {
-  .project-summary,
-  .project-body-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .project-name-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 640px) {
-  .projects-shell {
-    padding: 2.5rem 1rem 4rem;
-  }
-}
-</style>
-
-<div class="projects-shell">
-  <p class="projects-kicker">Independent Projects</p>
-  <p class="projects-title">Open-source tools and infrastructure.</p>
-  <p class="projects-intro">
-    Standalone codebases, utilities, and templates that grew out of day-to-day research needs. Each card gives a preview first, then expands into the fuller context.
-  </p>
-
-  <div class="project-stack">
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">ROS 2</span>
-              <span class="project-tag">C++</span>
-              <span class="project-tag">Motion Capture</span>
-              <span class="project-tag">PX4</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">01</span>
-                <p class="project-name">MoCap4ROS2 Packages</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              ROS 2 C++ packages that bridge Vicon and OptiTrack motion-capture systems to the PX4 autopilot EKF for indoor quadrotor flight experiments.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Motion Capture → PX4 EKF Pipeline</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">ENU → NED frame conversion</div>
-                <div class="project-preview-line">External vision EKF fusion</div>
-                <div class="project-preview-line">Full-state relay for control &amp; logging</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Vicon</span>
-                <span class="project-preview-metric">OptiTrack</span>
-                <span class="project-preview-metric">ROS 2</span>
-                <span class="project-preview-metric">PX4</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              Vicon4PX4 and OptiTrack4PX4 handle the full pipeline — coordinate frame conversion, quaternion reordering, PX4 timestamping, and full-state merging — so you can focus on your controller, not the plumbing. Adopted by Georgia Tech's Indoor Flight Lab as part of its official codebase.
-            </p>
-            <ul class="project-detail-list">
-              <li>Connects via DataStream SDK (Vicon) or NatNet (OptiTrack) — vendored, no system install.</li>
-              <li>Publishes <code>VehicleOdometry</code> on <code>/fmu/in/vehicle_visual_odometry</code> for direct EKF fusion.</li>
-              <li>Both packages share the same ROS 2 interface design.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/mocap4px4/">Open Project Page</a>
-            <a class="project-action secondary" href="https://gtae.gitbook.io/ifl/ifl-codebase/px4+ros2-vicon-receiver" target="_blank">GaTech IFL Codebase ↗</a>
-            <a class="project-action" href="https://github.com/evannsmc/vicon4px4" target="_blank">Vicon4PX4 GitHub ↗</a>
-            <a class="project-action" href="https://github.com/evannsmc/optitrack4px4" target="_blank">OptiTrack4PX4 GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Quarto</span>
-              <span class="project-tag">LaTeX</span>
-              <span class="project-tag">Tools</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">02</span>
-                <p class="project-name">QuartoCV</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A modular Quarto and Make-based CV workflow that updates shared sections once and propagates them across every output document automatically.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Build once, reuse everywhere</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Shared sections</div>
-                <div class="project-preview-line">Incremental PDF rebuilds</div>
-                <div class="project-preview-line">Academic + consulting styles</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Quarto</span>
-                <span class="project-preview-metric">XeLaTeX</span>
-                <span class="project-preview-metric">Make</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              QuartoCV is for the recurring academic problem of maintaining multiple CV and resume variants without duplicating the same content everywhere. Shared section files feed multiple outputs, and the Makefile rebuilds only the documents affected by an edit.
-            </p>
-            <ul class="project-detail-list">
-              <li>One source section can feed multiple document variants.</li>
-              <li>Dependency-aware incremental builds keep edits fast.</li>
-              <li>Layouts are designed for both compact academic and cleaner standard resume styles.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/quartocv/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsmc/quartoCV" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Claude Code</span>
-              <span class="project-tag">MCP</span>
-              <span class="project-tag">Developer Tools</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">03</span>
-                <p class="project-name">CodeGraph Live</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A fork of colbymchenry/codegraph that adds an always-on background daemon to keep a semantic code knowledge graph fresh across all your projects — even when Claude Code is closed.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Always-on code intelligence for Claude</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">inotify daemon — syncs on every file save</div>
-                <div class="project-preview-line">systemd user service — starts at login</div>
-                <div class="project-preview-line">MCP tools — callers, callees, impact, explore</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">TypeScript</span>
-                <span class="project-preview-metric">Node.js</span>
-                <span class="project-preview-metric">MCP</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              CodeGraph Live fixes the stale-graph problem in AI-assisted development. This fork adds a systemd user service that watches all your initialized projects simultaneously via Linux inotify — every save from any editor is detected and synced within one second, even when Claude Code is completely closed.
-            </p>
-            <ul class="project-detail-list">
-              <li>Background daemon auto-discovers new projects by scanning <code>$HOME</code> every 30s.</li>
-              <li>Claude Code hooks keep Claude's own edits in sync mid-session.</li>
-              <li>MCP server exposes graph query tools so Claude navigates call graphs instead of grepping files.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/codegraph-live/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsmc/codegraph-live" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Claude Code</span>
-              <span class="project-tag">Codex</span>
-              <span class="project-tag">Developer Tools</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">04</span>
-                <p class="project-name">relay</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A bash orchestration script that runs a four-step Plan → Code → Review → Cleanup loop over a dependency-ordered task list, dispatching each step to a fresh Claude or Codex subprocess so nothing leaks between tasks.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Multi-agent pipeline, no config required</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Plan → Code → Review → Cleanup per task</div>
-                <div class="project-preview-line">Beads (<code>bd</code>) for dependency-ordered task tracking</div>
-                <div class="project-preview-line">Drop-in: copy pipeline.sh, run it</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Bash</span>
-                <span class="project-preview-metric">Claude Code</span>
-                <span class="project-preview-metric">Codex</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              relay automates the full agentic development loop. Each task from <code>prd.json</code> is handed to a fresh Claude subprocess to plan, a fresh Codex subprocess to implement, another to adversarially review the diff, and a final Claude pass to clean up — with no state leaking between steps.
-            </p>
-            <ul class="project-detail-list">
-              <li>Uses Beads (<code>bd</code>) to resolve task dependencies and claim tasks atomically before starting.</li>
-              <li>Context-rot guard: 10m session cap with git-state handoff into a fresh subprocess.</li>
-              <li>No daemon, no server, no install — just copy <code>pipeline.sh</code> into your project's <code>.claude/</code> directory.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/relay/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsmc/relay" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="project-card">
-      <summary>
-        <div class="project-summary">
-          <div class="project-copy">
-            <div class="project-tags">
-              <span class="project-tag">Quarto</span>
-              <span class="project-tag">Tools</span>
-            </div>
-            <div class="project-name-row">
-              <div class="project-name-group">
-                <span class="project-number">05</span>
-                <p class="project-name">Quarto Georgia Tech Slides</p>
-              </div>
-              <span class="project-toggle"></span>
-            </div>
-            <p class="project-preview-copy">
-              A Georgia Tech-branded RevealJS presentation theme that installs into an existing Quarto project in one command.
-            </p>
-          </div>
-          <div class="project-preview-panel">
-            <div class="project-preview-custom">
-              <p class="project-preview-title">Slide branding</p>
-              <div class="project-preview-lines">
-                <div class="project-preview-line">Official GT palette</div>
-                <div class="project-preview-line">Title + section backgrounds</div>
-                <div class="project-preview-line">RevealJS fragments + callouts</div>
-              </div>
-              <div class="project-preview-metrics">
-                <span class="project-preview-metric">Quarto</span>
-                <span class="project-preview-metric">RevealJS</span>
-                <span class="project-preview-metric">SCSS</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </summary>
-      <div class="project-body">
-        <div class="project-body-grid">
-          <div class="project-detail-copy">
-            <p>
-              This extension packages Georgia Tech colors, backgrounds, typography, and presentation utilities so branded slides can be spun up quickly in a normal Quarto workflow.
-            </p>
-            <ul class="project-detail-list">
-              <li>Built to be installed into an existing project with a single template command.</li>
-              <li>Includes branded title and section slide treatments.</li>
-              <li>Designed for presentations that still feel like Quarto, not a hard-coded slide deck.</li>
-            </ul>
-          </div>
-          <div class="project-actions">
-            <a class="project-action primary" href="../projects/gatech-slides/">Open Project Page</a>
-            <a class="project-action" href="https://github.com/evannsmc/quarto-gatech-slides" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </details>
+<div>
+  <div class="description">
+    A fault-tolerant multi-agent coding pipeline — Plan → Code → Review → Cleanup, in a loop, until your task list is done.
   </div>
 </div>
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="d-flex gap-2 flex-wrap mb-3">
+<p><a href="https://github.com/evannsmc/relay" class="btn btn-sm btn-primary" target="_blank">GitHub ↗</a></p>
+</div>
+<p>Agent-based coding tools are powerful but fragile: they accumulate context rot, lose track of inter-task state, miss acceptance criteria, and silently ignore rate limits. <strong>relay</strong> is a bash orchestration script that wraps Claude and Codex in a structured four-step loop and handles all of that automatically — token limits, context rot, task dependencies, and commit discipline — without a daemon, a server, or a config file.</p>
+<hr>
+<section id="how-it-works" class="level3">
+<h3 class="anchored" data-anchor-id="how-it-works">How it works</h3>
+<p>For every task in your project’s <code>prd.json</code> (resolved in dependency order via Beads):</p>
+<pre><code>  ┌─────────────────────────────────────────────────────────┐
+  │ Step 1  PLAN     claude -p  (fresh process, medium effort)│
+  │         Reads: AGENTS.md, context.json, prd.json        │
+  │         Writes: .claude/plans/&lt;id&gt;_plan.md              │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 2  CODE     codex exec  (fresh process)             │
+  │         Reads: plan.md                                   │
+  │         Writes: source files (uncommitted)              │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 3  REVIEW   codex review --base main  (fresh)       │
+  │         Reads: git diff                                  │
+  │         Writes: .claude/plans/&lt;id&gt;_review.md            │
+  ├─────────────────────────────────────────────────────────┤
+  │ Step 4  CLEANUP  claude -p  (fresh, 10m cap)             │
+  │         Reads: review.md, acceptance criteria           │
+  │         Writes: source files, git commits               │
+  └─────────────────────────────────────────────────────────┘
+
+  Post-task: bd update --done → save context.json → git push → next task</code></pre>
+<p>Every step is a <strong>separate subprocess</strong> — no state leaks between steps or between tasks. All shared state lives in files: <code>prd.json</code>, <code>context.json</code>, and git.</p>
+<p>You define the tasks and acceptance criteria, run the script, and walk away.</p>
+<hr>
+</section>
+<section id="how-it-differs-from-ralphy" class="level3">
+<h3 class="anchored" data-anchor-id="how-it-differs-from-ralphy">How it differs from Ralphy</h3>
+<p><a href="https://github.com/michaelshimeles/ralphy">Ralphy</a> was the inspiration — it runs a single agent against a flat task list. relay adds structure at every layer:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 47%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ralphy</th>
+<th>relay</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Agent pipeline</td>
+<td>Single agent</td>
+<td>Plan → Code → Review → Cleanup</td>
+</tr>
+<tr class="even">
+<td>Adversarial review</td>
+<td>✗</td>
+<td>✓ Codex reviews Codex</td>
+</tr>
+<tr class="odd">
+<td>Context-rot guard</td>
+<td>✗</td>
+<td>✓ 10m cap, git-state handoff, fresh restart</td>
+</tr>
+<tr class="even">
+<td>Inter-task memory</td>
+<td>✗</td>
+<td>✓ <code>context.json</code> — compact cross-task notes</td>
+</tr>
+<tr class="odd">
+<td>Token exhaustion</td>
+<td>Basic</td>
+<td>Codex: exact reset time. Claude: exponential backoff. Max 16h wait.</td>
+</tr>
+<tr class="even">
+<td>Task dependencies</td>
+<td>✗</td>
+<td>✓ Beads graph — nothing runs before its blockers</td>
+</tr>
+<tr class="odd">
+<td>Acceptance criteria</td>
+<td>✗</td>
+<td>✓ Per-task, verified before marking done</td>
+</tr>
+<tr class="even">
+<td>Commit discipline</td>
+<td>✗</td>
+<td>✓ Incremental commits + <code>feat: complete &lt;task&gt;</code> on completion</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="context-rot-guard" class="level3">
+<h3 class="anchored" data-anchor-id="context-rot-guard">Context-rot guard</h3>
+<p>Long agent sessions degrade. relay uses three mechanisms to prevent this:</p>
+<p><strong>1. Fresh subprocesses per step</strong> <code>claude -p</code> and <code>codex exec</code> each spawn a new process with an empty context. Rot cannot accumulate across tasks or steps.</p>
+<p><strong>2. Session cap with git-state handoff</strong> Step 4 (cleanup) is the only step that can run long. It is capped at <code>MAX_SESSION_MINUTES</code> (default: 10 minutes). On timeout, relay captures the live git state and injects it as structured context into a fresh session:</p>
+<pre><code>timeout → git log --oneline -5
+        → git status --short
+        → git diff HEAD --stat
+        → inject into next fresh claude -p session</code></pre>
+<p>The new session picks up from git ground truth, not in-context memory. Up to <code>MAX_RESUME_ATTEMPTS=3</code> restarts per task.</p>
+<p><strong>3. Inter-task <code>context.json</code></strong> After every completed task, relay writes <code>.claude/context.json</code> — a compact record of what was done, what was committed, and a 500-char rolling summary of key decisions. Each new task’s planning step reads this file, giving Claude cross-task memory without reopening old context.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"updated_at"</span><span class="fu">:</span> <span class="st">"ISO timestamp"</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"completed_count"</span><span class="fu">:</span> <span class="dv">3</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"last_completed"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"task-id"</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"task title"</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"commit"</span><span class="fu">:</span> <span class="st">"abc1234 message"</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"files_changed"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"file1.py"</span><span class="ot">,</span> <span class="st">"file2.py"</span><span class="ot">]</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"cumulative_notes"</span><span class="fu">:</span> <span class="st">"500-char rolling summary of key decisions"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="token-exhaustion-handling" class="level3">
+<h3 class="anchored" data-anchor-id="token-exhaustion-handling">Token exhaustion handling</h3>
+<p>relay monitors both providers and recovers automatically:</p>
+<p><strong>Codex</strong> — parses the exact reset timestamp from the error message and sleeps until then (+60s buffer). No guessing.</p>
+<p><strong>Claude</strong> — exponential backoff: 2m → 5m → 10m → 15m → 30m, max 16h total wait. Probes both providers after each interval, resumes on whichever responds first.</p>
+<p>Token exhaustion waits don’t count against <code>MAX_RESUME_ATTEMPTS</code>. If Codex fails a non-quota task, <code>CODEX_AVAILABLE=false</code> is set for the rest of the run and Claude handles Steps 2–4.</p>
+<hr>
+</section>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prerequisites</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> @beads/bd        <span class="co"># task queue with dependency graph</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> install jq coreutils        <span class="co"># JSON + timeout</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Copy templates into your project</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> path/to/relay/AGENTS.md.template  ./AGENTS.md</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> path/to/relay/prd.template.json   ./prd.json</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .claude</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> path/to/relay/pipeline.sh         ./.claude/pipeline.sh</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x .claude/pipeline.sh</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Fill in AGENTS.md — project name, stack, rules, tasks + acceptance criteria</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Generate prd.json from AGENTS.md</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">-p</span> <span class="st">"Read AGENTS.md ## Tasks and generate prd.json. ..."</span> <span class="op">&gt;</span> prd.json</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Commit and run</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add AGENTS.md prd.json .claude/pipeline.sh</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"chore: add relay pipeline"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> .claude/pipeline.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="monitoring-while-it-runs" class="level3">
+<h3 class="anchored" data-anchor-id="monitoring-while-it-runs">Monitoring while it runs</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bd</span> list                                               <span class="co"># task states</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bd</span> show <span class="op">&lt;</span>id<span class="op">&gt;</span>                                          <span class="co"># full audit trail</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">jq</span> <span class="st">'.tasks[] | {id, status, completed_at}'</span> prd.json  <span class="co"># prd.json view</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .claude/context.json <span class="kw">|</span> <span class="ex">jq</span> .                       <span class="co"># inter-task memory</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> .claude/plans/                                     <span class="co"># plan + review artifacts</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Tasks can be added mid-run by editing <code>prd.json</code> directly — the pipeline re-reads it on each iteration.</p>
+<hr>
+</section>
+<section id="file-layout" class="level3">
+<h3 class="anchored" data-anchor-id="file-layout">File layout</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>AGENTS.md</code></td>
+<td>Per-project agent instructions + task descriptions</td>
+</tr>
+<tr class="even">
+<td><code>prd.json</code></td>
+<td>Task graph — source of truth (committed, versioned)</td>
+</tr>
+<tr class="odd">
+<td><code>.claude/pipeline.sh</code></td>
+<td>The loop script</td>
+</tr>
+<tr class="even">
+<td><code>.claude/context.json</code></td>
+<td>Inter-task memory (committed after each task)</td>
+</tr>
+<tr class="odd">
+<td><code>.claude/plans/&lt;id&gt;_plan.md</code></td>
+<td>Step 1 plan artifact</td>
+</tr>
+<tr class="even">
+<td><code>.claude/plans/&lt;id&gt;_review.md</code></td>
+<td>Step 3 review artifact</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Built with:</strong> Bash · Claude Code · Codex · Beads (<code>bd</code>) · jq</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
