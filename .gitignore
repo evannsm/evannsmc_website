@@ -3,6 +3,7 @@
 .quarto
 log/
 *.quarto_ipynb
+.playwright-mcp/
 
 # Ignore all .md files except README.md
 *.md
