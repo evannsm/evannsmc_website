@@ -800,56 +800,58 @@ body.quarto-dark .home-latest-project-link {
   }
 }
 
-/* ── Preprint buttons: green in light mode (dark mode untouched) ── */
+/* ── Project detail page buttons: muted tonal palette ── */
+
+/* Paper/preprint (.btn-primary): soft sage green */
 body.quarto-light .btn-primary {
-  background-color: #16a34a;
-  border-color: #16a34a;
-  color: #fff;
+  background-color: rgba(22, 163, 74, 0.1);
+  border-color: rgba(22, 163, 74, 0.2);
+  color: #15803d;
 }
 
 body.quarto-light .btn-primary:hover,
 body.quarto-light .btn-primary:focus {
-  background-color: #15803d;
-  border-color: #15803d;
-  color: #fff;
+  background-color: rgba(22, 163, 74, 0.18);
+  border-color: rgba(22, 163, 74, 0.35);
+  color: #166534;
 }
 
 body.quarto-dark .btn-primary {
-  background-color: #22c55e;
-  border-color: #22c55e;
-  color: #fff;
+  background-color: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.25);
+  color: #86efac;
 }
 
 body.quarto-dark .btn-primary:hover,
 body.quarto-dark .btn-primary:focus {
-  background-color: #16a34a;
-  border-color: #16a34a;
-  color: #fff;
+  background-color: rgba(74, 222, 128, 0.2);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #bbf7d0;
 }
 
-/* ── GitHub outline buttons: filled blue (light), filled green (dark) ── */
+/* GitHub (.btn-outline-primary): soft slate blue */
 .btn-outline-primary {
-  background-color: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
+  background-color: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #1e40af;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
-  background-color: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #fff;
+  background-color: rgba(37, 99, 235, 0.18);
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #1e3a8a;
 }
 
 body.quarto-dark .btn-outline-primary {
-  background-color: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
+  background-color: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.25);
+  color: #93c5fd;
 }
 
 body.quarto-dark .btn-outline-primary:hover,
 body.quarto-dark .btn-outline-primary:focus {
-  background-color: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #fff;
+  background-color: rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #bfdbfe;
 }
