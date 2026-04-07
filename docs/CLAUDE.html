@@ -110,6 +110,20 @@ ul.task-list li input[type="checkbox"] {
   ]
 }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var path = window.location.pathname.replace(/\/index\.html$/, '/');
+  document.querySelectorAll('.navbar .nav-link').forEach(function (link) {
+    var href = link.getAttribute('href');
+    if (!href) return;
+    var linkPath = new URL(href, window.location.origin).pathname.replace(/\/index\.html$/, '/');
+    if (path === linkPath || (linkPath !== '/' && path.startsWith(linkPath))) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
+    }
+  });
+});
+</script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -358,6 +372,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Site is Quarto-based — edit <code>.qmd</code> source, never the rendered output in <code>docs/</code></li>
 <li>Build with <code>quarto render</code>; preview with <code>quarto preview</code></li>
 <li>Check for post-render hooks before modifying the build pipeline</li>
+<li><strong>Never push to remote until the user has previewed and approved the changes.</strong> <code>main</code> is the live site — pushing is deploying. Always render, ask the user to <code>quarto preview</code>, and wait for confirmation before committing and pushing.</li>
 </ul>
 </section>
 <section id="styling" class="level3">
