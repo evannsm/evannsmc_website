@@ -27,6 +27,8 @@ project:
     - files/journey/data/countries-110m.json
     - files/journey/data/us-states.json
     - files/journey/stops
+    - files/thesis_proposal/figures
+    - files/thesis_proposal/proposal_slides_files
     - googleffaf8e4b1a20676c.html
 
 website:
