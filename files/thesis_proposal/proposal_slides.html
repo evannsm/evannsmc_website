@@ -962,12 +962,7 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 <p><strong>Monotonicity.</strong> The flow <span class="math inline">\(\Phi^{\mathsf E}\)</span> of <span class="math inline">\(\mathsf E\)</span> <em>preserves</em> the southeast order <span class="math inline">\(\preceq_{\text{SE}}\)</span> on <span class="math inline">\(\mathbb R^{2n}\)</span>: tighter initial intervals and signals yield tighter embedding trajectories for all <span class="math inline">\(t\ge 0\)</span>.</p>
 <p><strong>Reachable-tube guarantee.</strong> For <span class="math inline">\(T\ge 0\)</span>, <span class="math inline">\(x_0\in[\underline x_0,\overline x_0]\)</span>, admissible <span class="math inline">\(w(\cdot)\)</span>, <span class="math display">\[\phi(T;x_0,u,w)\in[\![\Phi^{\mathsf E}(T;[\underline x_0,\overline x_0],[\underline u,\overline u],[\underline w,\overline w])]\!]\]</span></p>
 </div><div class="column" style="width:48%;">
-<div class="quarto-figure quarto-figure-center" style="margin-top:-1.5rem;">
-<figure>
-<p><img data-src="figures/rtd/animations/mixed_monotonicity.gif" style="width:100.0%"></p>
-<figcaption>Embedding trajectory and reachable tube for mixed-monotone reachability.</figcaption>
-</figure>
-</div>
+<p><img data-src="figures/rtd/animations/mixed_monotonicity_considerbox.gif" style="margin-top:-1.5rem;;width:100.0%" alt="Embedding trajectory and reachable tube for mixed-monotone reachability."> <!-- ![Embedding trajectory and reachable tube for mixed-monotone reachability.](figures/rtd/animations/mixed_monotonicity.gif){width=100% style="margin-top:-1.5rem;"} --></p>
 <div class="gt-highlight">
 <p>MMR gives us <strong>hyperrectangular FRS over-approximation</strong> via a single <span class="math inline">\(2n\)</span>-dim ODE integration.</p>
 <p><code>immrax</code> <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span> constructs <span class="math inline">\(\mathsf F\)</span> from the dynamics and <strong>JIT-compiles</strong> the embedding system for real-time reachability.</p>
