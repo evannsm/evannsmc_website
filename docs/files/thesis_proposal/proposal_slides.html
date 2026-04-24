@@ -50,7 +50,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="proposal_slides_files/libs/revealjs/dist/theme/quarto-776be929d1a429e15bf4ca4e9826883b.css">
+  <link rel="stylesheet" href="proposal_slides_files/libs/revealjs/dist/theme/quarto-b8a7d9ac24d7ffd10fe291bd26c09ad0.css">
   <link href="proposal_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="proposal_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="proposal_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -344,6 +344,9 @@ Thank you to my advisor, committee, friends, family, labmates, and collaborators
 <p>Analogous to a biological immune response: <strong>diagnose → recover → inoculate</strong> against adversarial attacks.</p>
 </div>
 </div></div>
+<!-- ::: {style="max-width:1100px; margin: 0.6rem auto 0.4rem; text-align:center;"}
+![](figures/overview/signal_flow.svg){width=88%}
+::: -->
 </section>
 <section id="outline" class="slide level2 smaller">
 <h2>Outline</h2>
@@ -352,7 +355,7 @@ Thank you to my advisor, committee, friends, family, labmates, and collaborators
 <div class="tc-section-badge tc1" style="margin-bottom:0.7rem;">Thrust I — Low-Level</div>
 <p><strong>Completed</strong></p>
 <ul>
-<li>NR + iCBF tracking on quadrotor &amp; blimp</li>
+<li>NRT + iCBF tracking on quadrotor &amp; blimp</li>
 <li><span class="math inline">\(\alpha\)</span>-stability proof (blimp) + I-STL runtime assurance</li>
 <li>Hardware study vs NMPC, FBL, PX4</li>
 <li>GP forward-invariant tube (quadrotor)</li>
@@ -406,7 +409,7 @@ Thank you to my advisor, committee, friends, family, labmates, and collaborators
       <div class="tc-num">I</div>
       <div class="tc-eyebrow">→ Now</div>
       <div class="tc-title">Thrust 1 — Low-Level</div>
-      <div class="tc-desc">NR · iCBF · α-stability</div>
+      <div class="tc-desc">NRT · iCBF · α-stability</div>
       <div class="tc-desc">blimp + quadrotor hardware</div>
     </div></a>
     <div class="tc-arrow">→</div>
@@ -468,7 +471,7 @@ Thank you to my advisor, committee, friends, family, labmates, and collaborators
 </section>
 <section id="newtonraphson-flow-controller" class="slide level2">
 <h2>Newton–Raphson Flow Controller</h2>
-<p>For <span class="math inline">\(\dot x = f(x,u),\; y = h(x)\)</span>, introduce a differentiable look-ahead predictor <span class="math inline">\(\hat y(t+T) = \rho(x(t), u(t))\)</span> under zero-order hold on <span class="math inline">\(u\)</span>. Applying NR to the predictor <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>:</p>
+<p>For <span class="math inline">\(\dot x = f(x,u),\; y = h(x)\)</span>, introduce a differentiable look-ahead predictor <span class="math inline">\(\hat y(t+T) = \rho(x(t), u(t))\)</span> under zero-order hold on <span class="math inline">\(u\)</span>. Applying NRT to the predictor <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>:</p>
 <p><span class="math display">\[
 \Psi(x,u) \;\triangleq\; \Bigl(\tfrac{\partial \rho}{\partial u}(x,u)\Bigr)^{-1} \bigl(r(t+T) - \rho(x,u)\bigr), \qquad \dot u(t) = \alpha\,\bigl(\Psi(x,u) + \eta\bigr)
 \]</span></p>
@@ -494,6 +497,12 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </section>
 <section id="prediction-strategies" class="slide level2">
 <h2>Prediction Strategies</h2>
+<style>
+#prediction-strategies .column:nth-child(2) { vertical-align: top; }
+#prediction-strategies .column:nth-child(2) > div:first-child { margin-top: -2rem; }
+#prediction-strategies .column:nth-child(2) > div { margin-bottom: 0; }
+#prediction-strategies .column:nth-child(2) p { margin-top: 0; margin-bottom: 2px; }
+</style>
 <p>The central design choice is the prediction strategy. Throughout our work, we’ve developed different approaches with various tradeoffs:</p>
 <div class="columns">
 <div class="column" style="width:58%;">
@@ -505,7 +514,8 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </ul></li>
 <li><strong>Flatness-based predictor.</strong> Prediction is kinematic expansion in flat space
 <ul>
-<li>Bypass ODE integration; no compilation needed</li>
+<li>Bypass ODE integration; 100Hz without compilation</li>
+<li>Fast computation; sacrifice accuracy</li>
 </ul></li>
 <li><strong>Learned predictor.</strong> <span class="math inline">\(\rho_{\mathrm{NN}}(x,u;\theta)\)</span>
 <ul>
@@ -521,62 +531,82 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </ul></li>
 </ul></li>
 </ol>
-</div><div id="vcenter" class="column" style="width:42%;">
-<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="width:100%;max-height:500px;border:1px solid #B3A369;">
-  <source src="figures/video/quad_nrdf.mp4" type="video/mp4">
-</video>
-<p style="text-align:center;margin:4px 0 0;">
-<small>Quadrotor simulation: NR with flatness-based prediction.</small>
+</div><div class="column" style="width:42%;">
+<div style="text-align:center;">
+  <video data-autoplay="" loop="" muted="" controls="" preload="auto" style="display:inline-block;height:380px;width:auto;max-width:100%;">
+    <source src="figures/video/quad_nrdf.mp4" type="video/mp4">
+  </video>
+</div>
+<p style="text-align:center;margin:2px 0 6px;">
+<small>Quadrotor running NRT on a Raspberry Pi (Spinning Helix).</small>
+</p>
+<div style="text-align:center;">
+  <img src="figures/video/jax_flatquad_3d.gif" style="display:inline-block;height:320px;width:auto;max-width:100%;">
+</div>
+<p style="text-align:center;margin:2px 0 0;">
+<small>Flatness-based NRT on 3D quadrotor.</small>
 </p>
 </div></div>
 </section>
-<section id="quadrotor-hardware-demo-tracking-comparison" class="slide level2" data-menu-title="Quadrotor Results — Comparison">
-<h2>Quadrotor Hardware — Demo &amp; Tracking Comparison</h2>
+<section id="newton-raphson-on-hardware-demo-implementation-details" class="slide level2" data-menu-title="Quadrotor Results — Comparison">
+<h2>Newton Raphson on Hardware — Demo &amp; Implementation Details</h2>
+<style>
+#newton-raphson-on-hardware-demo-implementation-details .gt-highlight {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.78em;
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
+}
+#newton-raphson-on-hardware-demo-implementation-details .gt-highlight ul { margin: 0.15rem 0 0.15rem 1rem; }
+#newton-raphson-on-hardware-demo-implementation-details .gt-highlight ul li { margin: 0; }
+</style>
 <div class="columns">
-<div class="column" style="width:70%;">
-<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="width:100%;max-height:640px;border:1px solid #B3A369;">
+<div class="column" style="width:58%;">
+<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="width:100%;max-height:520px;border:1px solid #B3A369;">
   <source src="figures/video/quad_nr.mp4" type="video/mp4">
 </video>
 <p style="text-align:center;margin:4px 0 0;">
-<small>Quadrotor tracking a reference under NRT on a Raspberry&nbsp;Pi class processor.</small>
+<small>Quadrotor with NRT and NMPC running onboard on a Raspberry&nbsp;Pi.</small>
 </p>
 <div class="gt-highlight">
-<p>Holybro X500 V2 tracking an aggressive reference under <strong>NRT</strong> running onboard at <strong>100&nbsp;Hz</strong>.</p>
+<p><strong>Avg per-iteration compute</strong> &nbsp;—&nbsp; <strong>NRT:</strong> 2.45&nbsp;ms&nbsp;·&nbsp; <strong>NMPC:</strong> 12.88&nbsp;ms&nbsp; →&nbsp; <strong>NRT ~<span class="math inline">\(5.3\times\)</span> faster</strong></p>
 </div>
-</div><div class="column" style="width:30%;">
-<div class="gt-highlight">
-<p><strong>Avg per-iteration compute</strong> <small>mean over 10 trajectories</small></p>
-<ul>
-<li><strong>NRT:</strong>&nbsp;&nbsp;2.45&nbsp;ms</li>
-<li><strong>NMPC:</strong> 12.88&nbsp;ms</li>
-</ul>
-<p>&nbsp;<strong>NRT ~<span class="math inline">\(5.3\times\)</span> faster</strong></p>
-</div>
+</div><div id="vcenter" class="column" style="width:42%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figures/nr/rmse_vs_alpha.svg" style="width:100.0%"></p>
 <figcaption>Empirical <span class="math inline">\(\alpha\)</span>-RMSE plateau — broad region insensitive to speedup <span class="math inline">\(\alpha\)</span>.</figcaption>
 </figure>
 </div>
-<!-- <small>_Drop MP4 at_ `figures/video/quad_nr.mp4`.</small> -->
 </div></div>
 </section>
 <section id="quadrotor-tracking-overall-results" class="slide level2 smaller">
 <h2>Quadrotor Tracking — Overall Results</h2>
+<!-- ## Quadrotor Hardware &mdash; Demo & Tracking Comparison {data-menu-title="Quadrotor Results — Comparison"} -->
 <style>
-#quadrotor-tracking-overall-results .column:first-child table { width: 100%; font-size: 0.65em; }
-#quadrotor-tracking-overall-results .column:nth-child(2) table { width: 92%; margin: 4px auto 0; font-size: 0.6em; }
-#quadrotor-tracking-overall-results .column:nth-child(2) th,
-#quadrotor-tracking-overall-results .column:nth-child(2) td { padding: 1px 6px; }
+#quadrotor-tracking-overall-results .column table { width: 100%; font-size: 0.58em; margin: 0 auto; }
+#quadrotor-tracking-overall-results .column th,
+#quadrotor-tracking-overall-results .column td { padding: 1px 6px; }
+#quadrotor-tracking-overall-results .table-caption { text-align: center; margin: 0 0 2px; font-style: italic; font-size: 0.7em; color: #516470; }
+#quadrotor-tracking-overall-results .quad-fig p { margin: 0; }
+#quadrotor-tracking-overall-results .quad-fig img { display: block; margin: 0 auto; }
+#quadrotor-tracking-overall-results .columns { display: flex !important; justify-content: center !important; gap: 2rem; }
+#quadrotor-tracking-overall-results .column { text-align: left; flex: 0 0 auto; }
+#quadrotor-tracking-overall-results .column:nth-child(2) { display: none; }
 </style>
-<div class="columns">
-<div class="column" style="width:58%;">
+<div class="quad-fig">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="figures/nr/quad_nmpc_vs_nrt.svg" style="width:100.0%"></p>
+<p><img data-src="figures/nr/quad_nmpc_vs_nrt.svg" style="width:68.0%"></p>
 <figcaption>Quadrotor hardware: top NRT, bottom NMPC. Flight data in red, reference in blue.</figcaption>
 </figure>
 </div>
+</div>
+<div class="columns">
+<div class="column" style="width:42%;">
+<p class="table-caption">
+Average CPU energy per iteration — NRT is lowest on both platforms:
+</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -607,14 +637,18 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </tr>
 </tbody>
 </table>
+</div><div class="column" style="width:4%;">
+<p>&nbsp;</p>
 </div><div class="column" style="width:42%;">
-<p>NMPC has lower steady-state error on clipped trajectories. When transients considered, NRT remains competitive — RMSE [m]:</p>
+<p class="table-caption">
+RMSE on full flight paths — NRT and NMPC are roughly even:
+</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;">Trajectory</th>
-<th style="text-align: right;">NRT</th>
-<th style="text-align: right;">NMPC</th>
+<th style="text-align: right;">NRT [m]</th>
+<th style="text-align: right;">NMPC [m]</th>
 </tr>
 </thead>
 <tbody>
@@ -670,44 +704,47 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </tr>
 </tbody>
 </table>
-<div class="gt-highlight">
-<p><strong>Competitive tracking</strong> with the <strong>lowest CPU energy on both platforms</strong> — cross-platform validation of the central claim.</p>
-</div>
 </div></div>
+<div class="gt-highlight">
+<p>Competitive tracking against state-of-the-art NMPC and <strong>lowest CPU energy comsumption</strong> across all platforms</p>
+</div>
 </section>
 <section id="blimp-results-tracking-comparison" class="slide level2" data-menu-title="Blimp Results — Comparison">
 <h2>Blimp Results — Tracking Comparison</h2>
 <style>
-#blimp-results-tracking-comparison .column:nth-child(2) table { width: 100%; font-size: 0.62em; }
+#blimp-results-tracking-comparison .column:nth-child(2) table { width: 100%; font-size: 0.49em; }
 #blimp-results-tracking-comparison .column:nth-child(2) th,
-#blimp-results-tracking-comparison .column:nth-child(2) td { padding: 2px 6px; }
+#blimp-results-tracking-comparison .column:nth-child(2) td { padding: 1px 4px; }
+#blimp-results-tracking-comparison .table-caption { text-align: center; margin: 0 0 2px; font-style: italic; font-size: 0.7em; color: #516470; }
 </style>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:57%;">
+<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="width:100%;border:1px solid #B3A369;">
+  <source src="figures/video/blimp_nr.mp4" type="video/mp4">
+</video>
+<p style="text-align:center;margin:4px 0 0;">
+<small>Miniature blimp tracking references under FBL, NMPC, &amp; NRT.</small>
+</p>
+<div class="gt-highlight">
+<p>NMPC <strong>missed</strong> the 25&nbsp;ms deadline at 40&nbsp;Hz; NRT + FBL never did. Only NRT used no derivative information.</p>
+</div>
+</div><div class="column" style="width:43%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figures/nr/blimp_traj_3x5.svg" style="width:100.0%"></p>
 <figcaption>Blimp hardware: flight data (red) vs reference (blue). Rows: NRT, NMPC, FBL.</figcaption>
 </figure>
 </div>
-<div class="gt-highlight">
-<p>NMPC <strong>missed</strong> the 25&nbsp;ms deadline at 40&nbsp;Hz; NRT + FBL never did. Only NRT used no derivative information.</p>
-</div>
-</div><div class="column" style="width:45%;">
-<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="width:100%;max-height:220px;border:1px solid #B3A369;">
-  <source src="figures/video/blimp_nr.mp4" type="video/mp4">
-</video>
-<p style="text-align:center;margin:4px 0 0;">
-<small>Miniature blimp tracking a reference under NRT.</small>
+<p class="table-caption">
+Per-trajectory RMSE — NRT wins on all 8:
 </p>
-<p><strong>Per-trajectory RMSE [m]</strong> — NRT wins on all 8:</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;">Trajectory</th>
-<th style="text-align: right;">NRT</th>
-<th style="text-align: right;">NMPC</th>
-<th style="text-align: right;">FBL</th>
+<th style="text-align: right;">NRT [m]</th>
+<th style="text-align: right;">NMPC [m]</th>
+<th style="text-align: right;">FBL [m]</th>
 </tr>
 </thead>
 <tbody>
@@ -766,57 +803,74 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 <section id="integration-1-i-stl-runtime-assurance" class="slide level2">
 <h2>Integration 1 — I-STL Runtime Assurance</h2>
 <div class="columns">
-<div class="column" style="width:52%;">
+<div class="column" style="width:56%;">
+<video data-autoplay="" loop="" muted="" playsinline="" controls="" preload="auto" style="display:block;width:100%;margin:0 auto 8px;border:1px solid #B3A369;">
+  <source src="figures/video/istl_blimp.mp4" type="video/mp4">
+</video>
+<div class="gt-highlight">
+<p>Separation of timescales: 2&nbsp;Hz RTA, 50&nbsp;Hz splines + NRT.</p>
+</div>
+</div><div class="column" style="width:44%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figures/nr/istl_main.svg" style="width:75.0%"></p>
-<figcaption>Left: unsafe trajectory (pink); runtime assurance produces a safe one (green). Right: I-STL RTA at 2&nbsp;Hz, splines to 50&nbsp;Hz, tracked by NR.</figcaption>
+<figcaption>Left: unsafe trajectory (pink); runtime assurance produces a safe one (green). Right: I-STL RTA at 2&nbsp;Hz, splines to 50&nbsp;Hz, tracked by NRT.</figcaption>
 </figure>
 </div>
-</div><div id="vcenter" class="column" style="width:48%;">
-<p><span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span> couples NR to a runtime-assurance layer enforcing <strong>temporal-logic safety</strong>:</p>
+<p>We couple NRT to a runtime-assurance layer enforcing <strong>temporal-logic safety</strong><span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span>:</p>
+<!-- - High-level optimization: **safe backup state trajectory** + feedforward inputs at low rate -->
 <ul>
-<li>High-level optimization: <strong>safe backup state trajectory</strong> + feedforward inputs at low rate</li>
-<li>Verified sequence <strong>spline-interpolated</strong> to high rate, <strong>tracked by NR</strong> with iCBF-enforced limits</li>
-<li>NR tracking tolerance <span class="math inline">\(\varepsilon\)</span> <strong>folded back</strong> into the RTA safety margin</li>
+<li>Reference is <strong>spline-interpolated</strong> to high rate, <strong>tracked by NRT</strong> with iCBF-enforced limits</li>
+<li>NRT tracking tolerance <span class="math inline">\(\varepsilon\)</span> <strong>folded back</strong> into the RTA safety margin</li>
 </ul>
-<div class="gt-highlight">
-<p><strong>Separation of timescales:</strong> 2&nbsp;Hz RTA, 50&nbsp;Hz splines + NR.</p>
-</div>
 </div></div>
 </section>
 <section id="alpha-stability-for-miniature-blimp" class="slide level2 smaller" data-menu-title="Blimp Results — Theory &amp; Demo">
 <h2><span class="math inline">\(\alpha\)</span>-Stability for Miniature Blimp</h2>
 <p><strong>Proposition</strong> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span><strong>.</strong> For the hover linearization of the six-DOF miniature blimp with the exact ZOH predictor <span class="math inline">\(\hat y(t)=Ce^{AT}x + CA^{-1}(e^{AT}-I)Bu\)</span>, the closed-loop linearized system is <strong><span class="math inline">\(\alpha\)</span>-stable</strong>: <span class="math display">\[\lim_{\alpha\to\infty}\limsup_{t\to\infty}\lVert r(t)-\hat{y}(t)\rVert=0.\]</span></p>
-<p><strong>Proof sketch.</strong> With extended state <span class="math inline">\(z \mathrel{:=} [x^\top\, u^\top]^\top\)</span>, NR-flow yields the linear closed loop <span class="math display">\[\dot z = \Phi_\alpha\, z + \Psi_\alpha\, r(t+T).\]</span> Following <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>, <span class="math inline">\(\alpha\)</span>-stability reduces to two system polynomials <span class="math inline">\(P_0(s), Q(s)\)</span> being Hurwitz. For the hover linearization both are <strong><span class="math inline">\(\alpha\)</span>-independent</strong> and have <strong>all roots in the LHP</strong> → sufficient conditions hold for every <span class="math inline">\(\alpha&gt;0\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
+<p><strong>Proof sketch.</strong> With extended state <span class="math inline">\(z \mathrel{:=} [x^\top\, u^\top]^\top\)</span>, NRT-flow yields the linear closed loop <span class="math display">\[\dot z = \Phi_\alpha\, z + \Psi_\alpha\, r(t+T).\]</span> Following <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>, <span class="math inline">\(\alpha\)</span>-stability reduces to two system polynomials <span class="math inline">\(P_0(s), Q(s)\)</span> being Hurwitz. For the hover linearization both are <strong><span class="math inline">\(\alpha\)</span>-independent</strong> and have <strong>all roots in the LHP</strong> → sufficient conditions hold for every <span class="math inline">\(\alpha&gt;0\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
 </section>
 <section id="integration-2-gp-invariant-tubes" class="slide level2 smaller">
 <h2>Integration 2 — GP Invariant Tubes</h2>
 <style>
 #integration-2-gp-invariant-tubes .column p { margin: 0 0 2px; line-height: 1; }
 #integration-2-gp-invariant-tubes .column img { display:block; margin: 0 auto; }
+#integration-2-gp-invariant-tubes .column:nth-child(2) { margin-top: -95px; }
+#integration-2-gp-invariant-tubes .column:nth-child(2) > p,
+#integration-2-gp-invariant-tubes .column:nth-child(2) ul { font-size: 0.88em; }
 </style>
 <div class="columns">
 <div class="column" style="width:58%;">
-<p><img data-src="figures/nr/ojcsys_hw6.svg" style="width:38.0%"></p>
-<p><img data-src="figures/nr/ojcsys_hw48.svg" style="width:38.0%"></p>
-<p><img data-src="figures/nr/ojcsys_hw165.svg" style="width:38.0%"></p>
-<p><img data-src="figures/nr/ojcsys_hw519.svg" style="width:38.0%"></p>
+<div style="display:flex;gap:12px;justify-content:center;align-items:flex-start;margin:0 auto 6px;">
+  <div style="text-align:center;">
+    <div style="font-size:0.6em;font-weight:700;color:#003057;letter-spacing:1px;margin-bottom:2px;">WIND ESTIMATION OFF</div>
+    <video data-autoplay="" loop="" muted="" playsinline="" preload="auto" style="height:540px;width:auto;max-width:100%;border:1px solid #B3A369;">
+      <source src="figures/video/mmgpr_wind_off.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div style="text-align:center;">
+    <div style="font-size:0.6em;font-weight:700;color:#B3A369;letter-spacing:1px;margin-bottom:2px;">WIND ESTIMATION ON</div>
+    <video data-autoplay="" loop="" muted="" playsinline="" preload="auto" style="height:540px;width:auto;max-width:100%;border:1px solid #B3A369;">
+      <source src="figures/video/mmgpr_wind_on.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+<p style="text-align:center;margin:4px 0 0;">
+<small>Hardware MM-GPR demo — wind estimation OFF vs ON.</small>
+</p>
 <div class="gt-highlight">
 <p><strong>MM-GPR tube</strong> rejects an unmodeled industrial-fan disturbance. With GP estimation <strong>disabled</strong>, tubes become inaccurate and <strong>the mission fails</strong>.</p>
 </div>
-</div><div id="vcenter" class="column" style="width:42%;">
-<video data-autoplay="" loop="" muted="" controls="" preload="auto" style="display:block;width:100%;max-height:180px;border:1px solid #B3A369;margin:0 auto 4px;">
-  <source src="figures/video/mmgpr.mp4" type="video/mp4">
-</video>
-<p style="text-align:center;margin:4px 0 0;">
-<small>MM-GPR invariant tube demo.</small>
-</p>
-<p>NR inside a <strong>runtime-assurance framework</strong> using <strong>forward-invariant tubes</strong> around reference trajectories:</p>
+</div><div class="column" style="width:42%;">
+<p><img data-src="figures/nr/ojcsys_hw6.svg" style="width:52.0%"></p>
+<p><img data-src="figures/nr/ojcsys_hw48.svg" style="width:52.0%"></p>
+<p><img data-src="figures/nr/ojcsys_hw165.svg" style="width:52.0%"></p>
+<p><img data-src="figures/nr/ojcsys_hw519.svg" style="width:52.0%"></p>
+<p>NRT inside a <strong>runtime-assurance framework</strong> using <strong>forward-invariant tubes</strong> around reference trajectories:</p>
 <ul>
 <li>Disturbances estimated online via <strong>time-varying Gaussian processes</strong></li>
-<li>Tube sized from <strong>GP posterior</strong> on tracking error; replanning triggered when tube can no longer certify safety</li>
-<li>NR at 100&nbsp;Hz, <code>immrax</code> <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span> tube updates at 10&nbsp;Hz — full pipeline meets <strong>10&nbsp;ms budget</strong> on average</li>
+<li>Replanning triggered when tube can no longer certify safety</li>
+<li>NRT at 100&nbsp;Hz, <code>immrax</code> <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span> tube updates at 10&nbsp;Hz — full pipeline meets <strong>10&nbsp;ms budget</strong> on average</li>
 </ul>
 </div></div>
 </section>
@@ -825,7 +879,7 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 <div class="gt-highlight">
 <p><strong>Summary of Thrust 1</strong></p>
 <ol type="1">
-<li>NR method occupies a <strong>valuable middle ground</strong> between high-accuracy control and efficient compute</li>
+<li>NRT method occupies a <strong>valuable middle ground</strong> between high-accuracy control and efficient compute</li>
 <li>Modular implementation with minimal tuning</li>
 <li><strong><span class="math inline">\(\alpha\)</span>-stability proof</strong> on the linearized miniature blimp; empirically near-insensitive to <span class="math inline">\(\alpha\)</span> over a broad plateau</li>
 <li><strong>Deployed on real hardware</strong> (blimp, quadrotor) with high accuracy, fast computation time, and low-energy footprint</li>
@@ -853,7 +907,7 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
       <div class="tc-num">I</div>
       <div class="tc-eyebrow">✓ Done</div>
       <div class="tc-title">Thrust 1 — Low-Level</div>
-      <div class="tc-desc">NR · iCBF · α-stability</div>
+      <div class="tc-desc">NRT · iCBF · α-stability</div>
       <div class="tc-desc">blimp + quadrotor hardware</div>
     </div></a>
     <div class="tc-arrow">→</div>
@@ -911,9 +965,6 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 <li><strong>Offline FRS.</strong> Trajectories parameterized by <span class="math inline">\(k\)</span>.</li>
 <li><strong>Online Optimization.</strong> <span class="math inline">\(k^\star=\arg\min_{k\in K_{\mathrm{adm}}} J(k)\ \ \textit{s.t. } k \textit{ is obstacle-free}\)</span> <!-- - **Online Optimization.** $k^\star=\arg\min_{k\in K_{\mathrm{adm}}} J(k)\quad\text{s.t.}\quad q_i(k)\le 0,\;i=1,\dots,N_{\mathrm{obs}}$ --></li>
 </ul>
-<div class="gt-highlight">
-<p><strong>Limitations we address:</strong><br> (1) worst-case inflation → <strong>safe trajectories falsely deemed infeasible</strong><br> (2) offline FRS cannot absorb <em>a priori</em> unknown disturbances.</p>
-</div>
 </div><div id="vcenter" class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -922,6 +973,9 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </figure>
 </div>
 </div></div>
+<div class="gt-highlight">
+<p><strong>Limitations we address:</strong>&nbsp;&nbsp;(1) worst-case inflation → <strong>safe trajectories falsely deemed infeasible</strong>&nbsp;&nbsp;·&nbsp;&nbsp;(2) offline FRS cannot absorb <em>a priori</em> unknown disturbances.</p>
+</div>
 </section>
 <section id="rtd-rax-architecture" class="slide level2">
 <h2>RTD-RAX Architecture</h2>
@@ -935,7 +989,7 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 </div>
 </div></div>
 <div class="gt-highlight">
-<p><strong>Departure:</strong> strip the FRS of its offline tracking-error inflation and delegate safety certification to the online MMR verifier against the measured disturbance. First RTD-class framework to safely plan under <em>a priori</em> unknown disturbances.</p>
+<p><strong>Departure:</strong> strip the offline FRS of its tracking-error inflation and delegate safety certification to the online MMR verifier against the measured disturbance. First RTD-class framework to safely plan under <em>a priori</em> unknown disturbances.</p>
 </div>
 </section>
 <section id="mixed-monotone-reachability-primer" class="slide level2 smaller">
@@ -986,10 +1040,10 @@ u_{k+1} = u_k + \dot u(t_k)\Delta t
 <li><strong>Standard RTD:</strong> inflated FRS declares <strong>infeasible</strong> → fail-safe triggered</li>
 <li><strong>RTD-RAX:</strong> optimizer returns <span class="math inline">\(k^\star\)</span> through the gap → mixed-monotone tube <strong>certifies safe</strong></li>
 </ul>
-<div class="gt-highlight">
-<p>Scenario isolates the effect of offline FRS conservatism &amp; demonstrates our division of labor</p>
-</div>
 </div></div>
+<div class="gt-highlight" style="width:fit-content;max-width:100%;margin:1.2rem auto 0;text-align:center;">
+<p>Scenario isolates the effect of offline FRS conservatism</p>
+</div>
 </section>
 <section id="case-study-2-angled-obstacle" class="slide level2">
 <h2>Case Study 2 — Angled Obstacle</h2>
@@ -1026,12 +1080,17 @@ Close-up of two repair events: unsafe candidate tube (pink) rejected, repaired t
 </section>
 <section id="case-study-3-unknown-disturbances" class="slide level2">
 <h2>Case Study 3 — Unknown Disturbances</h2>
+<style>
+#case-study-3-unknown-disturbances .column:nth-child(2) table { font-size: 0.85em; }
+#case-study-3-unknown-disturbances .column:nth-child(2) th,
+#case-study-3-unknown-disturbances .column:nth-child(2) td { padding: 2px 6px; }
+</style>
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figures/rtd/animations/disturbance_compare_seed32.gif" style="width:100.0%"></p>
-<figcaption>Randomised multi-gap course with disturbance patches. Top: Standard RTD collides on cycle 3. Bottom: RTD-RAX senses, verifies, repairs, and reaches the goal.</figcaption>
+<figcaption>Multi-gap course with disturbance patches. Top: Standard RTD collides on cycle 3. Bottom: RTD-RAX senses, verifies, repairs, and reaches the goal.</figcaption>
 </figure>
 </div>
 <div class="gt-highlight">
@@ -1039,7 +1098,7 @@ Close-up of two repair events: unsafe candidate tube (pink) rejected, repaired t
 <p>Verification and simple repairs often happen <strong>near-instantly</strong>: trade <strong><span class="math inline">\(\approx\!1\)</span>&nbsp;ms</strong> online compute for a recovered, certifiably safe path</p>
 </div>
 </div><div class="column" style="width:45%;">
-<p>Receding-horizon over a <strong>multi-gap course</strong> with <strong>disturbance patches</strong> sensed online.</p>
+<p>Receding-horizon with multiple disturbance patches.</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -1053,7 +1112,7 @@ Close-up of two repair events: unsafe candidate tube (pink) rejected, repaired t
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Std RTD</td>
-<td style="text-align: left;"><strong>Collision</strong> (cyc.&nbsp;3)</td>
+<td style="text-align: left;">Collision</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">10.5 / 21.9</td>
@@ -1061,9 +1120,9 @@ Close-up of two repair events: unsafe candidate tube (pink) rejected, repaired t
 <tr class="even">
 <td style="text-align: left;"><strong>RTD-RAX</strong></td>
 <td style="text-align: left;"><strong>Goal reached</strong></td>
-<td style="text-align: center;">19</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">10.5 / 37.4</td>
+<td style="text-align: center;"><strong>19</strong></td>
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: center;"><strong>10.5 / 37.4</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1150,7 +1209,7 @@ Close-up of two repair events: unsafe candidate tube (pink) rejected, repaired t
       <div class="tc-num">I</div>
       <div class="tc-eyebrow">✓ Done</div>
       <div class="tc-title">Thrust 1 — Low-Level</div>
-      <div class="tc-desc">NR · iCBF · α-stability</div>
+      <div class="tc-desc">NRT · iCBF · α-stability</div>
       <div class="tc-desc">blimp + quadrotor hardware</div>
     </div></a>
     <div class="tc-arrow">→</div>
@@ -1236,7 +1295,7 @@ Collaboration with Akash Harapanahalli.
       <div class="tc-num">I</div>
       <div class="tc-eyebrow">✓ Done</div>
       <div class="tc-title">Thrust 1 — Low-Level</div>
-      <div class="tc-desc">NR · iCBF · α-stability</div>
+      <div class="tc-desc">NRT · iCBF · α-stability</div>
       <div class="tc-desc">blimp + quadrotor hardware</div>
     </div></a>
     <div class="tc-arrow">→</div>
@@ -1367,7 +1426,7 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
       <div class="tc-num">I</div>
       <div class="tc-eyebrow">✓ Done</div>
       <div class="tc-title">Thrust 1 — Low-Level</div>
-      <div class="tc-desc">NR · iCBF · α-stability</div>
+      <div class="tc-desc">NRT · iCBF · α-stability</div>
       <div class="tc-desc">blimp + quadrotor hardware</div>
     </div></a>
     <div class="tc-arrow">→</div>
@@ -1415,53 +1474,37 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 
 </div>
 </section>
-<section id="p3.1-cyber-physical-inoculation" class="slide level2">
-<h2>P3.1 — Cyber-Physical Inoculation</h2>
-<div class="columns">
-<div class="column" style="width:45%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figures/nsf/cps_attack.svg" style="width:100.0%"></p>
-<figcaption>Two-way controller data-manipulation attack <span class="citation" data-cites="garcia2017hey">[<a href="#/references" role="doc-biblioref" onclick="">11</a>]</span>: adversary hides sabotage from the operator.</figcaption>
-</figure>
+<section id="thrust-3-overview" class="slide level2" data-menu-title="T3 Overview">
+<h2>Thrust 3 — Overview</h2>
+<div style="background:#f4f5f7; border-left:3px solid #8a8f9a; border-right:3px solid #8a8f9a; border-radius:6px; padding:0.7rem 1.1rem; margin:0.3rem auto 1.3rem; max-width:1020px; text-align:center;">
+<p>Like a <strong>biological immune response</strong>, accumulate certified safety-preserving strategies so each new attack expands the resilient operating envelope.</p>
 </div>
-</div><div class="column" style="width:55%;">
-<div class="gt-thrust-3">
-<p><strong>Key idea, analogous to a biological immune response:</strong> accumulate <strong>certified safety-preserving strategies</strong> over time.</p>
+<div class="columns" style="max-width:1200px; margin:0 auto;">
+<div class="column" style="width:32%;">
+<div class="gt-thrust-3" style="border-radius:14px; padding:0.95rem 1.05rem 1rem;">
+<p><strong>① Diagnose</strong> · <em>NSF T1</em></p>
+<p>Real-time root-cause isolation of the anomaly.</p>
 </div>
-<p>Rather than treating each disturbance or attack as a novel event, the control architecture <strong>evolves a growing library of backup controllers and verified motion primitives</strong> associated with fault classes. Each new attack <strong>expands the resilient operating envelope.</strong></p>
-<p><strong>Scope of this dissertation:</strong> <strong>certification &amp; integration</strong> — not firmware reverse-engineering or network-level detection (NSF collaborator lanes).</p>
-</div></div>
-</section>
-<section id="p3.2-inoculation-pipeline" class="slide level2">
-<h2>P3.2 — Inoculation Pipeline</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figures/nsf/inoculation_model.svg" style="width:100.0%"></p>
-<figcaption>Diagnose → recover → inoculate.</figcaption>
-</figure>
+</div><div class="column" style="width:32%;">
+<div class="gt-thrust-3" style="border-radius:14px; padding:0.95rem 1.05rem 1rem;">
+<p><strong>② Recover</strong> · <em>NSF T2</em></p>
+<p>Online recovery into a safe operating regime.</p>
 </div>
-</div><div class="column" style="width:50%;">
-<ul>
-<li><strong>Diagnose (NSF T1):</strong> real-time root-cause isolation of the anomaly</li>
-<li><strong>Recover (NSF T2):</strong> online safe recovery steering the system back into a safe operating regime</li>
-<li><strong>Inoculate (this thesis):</strong> reuse <strong><code>immrax</code>-based MMR machinery</strong> to certify backup controllers over a fault-class-specific viability-kernel under-approximation; add to library</li>
-</ul>
-<div class="gt-thrust-3">
-<p><strong>Reuse, not reinvention</strong> — MMR verifier → <strong>certified backup-controller library</strong>; NR tracker → <strong>executes</strong> the selected primitive.</p>
+</div><div class="column" style="width:36%;">
+<div class="gt-thrust-3" style="border-radius:14px; padding:0.95rem 1.05rem 1rem; background:rgba(41,128,185,0.13); border-top-width:3px;">
+<p><strong>③ Inoculate</strong> · <em>This Thesis</em></p>
+<p>Reuse <code>immrax</code> MMR to <strong>certify backup controllers</strong> per fault class; NRT tracker executes the selected primitive.</p>
 </div>
 </div></div>
 </section>
-<section id="p3.3-parameter-safe-strategy-map" class="slide level2">
-<h2>P3.3 — Parameter → Safe-Strategy Map</h2>
+<section id="p3.1-parameter-safe-strategy-map" class="slide level2">
+<h2>P3.1 — Parameter → Safe-Strategy Map</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>For each fault class <span class="math inline">\(f\)</span>, precompute an offline map <span class="math display">\[\sigma_f : \mathcal{P} \to \Sigma_f\]</span> from system parameter <span class="math inline">\(p \in \mathcal{P}\)</span> (altitude, speed, battery) to a <strong>pre-certified backup strategy</strong> <span class="math inline">\(\sigma \in \Sigma_f\)</span>.</p>
 <ul>
 <li><strong>Offline sweep:</strong> MMR-verify candidates on a grid of <span class="math inline">\((f, p)\)</span></li>
-<li><strong>Runtime:</strong> O(1) lookup → NR tracker executes the selected strategy</li>
+<li><strong>Runtime:</strong> O(1) lookup → NRT tracker executes the selected strategy</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="gt-thrust-3">
@@ -1469,12 +1512,12 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 </div>
 <ul>
 <li><strong>Coverage guarantee:</strong> if <span class="math inline">\((f,p)\)</span> is in the sampled grid, the strategy is MMR-certified by construction</li>
-<li><strong>Outside the grid:</strong> fall back to the online P3.2 pipeline</li>
+<li><strong>Outside the grid:</strong> fall back to the online inoculation pipeline</li>
 </ul>
 </div></div>
 </section>
-<section id="p3.4-stl-cached-failure-mode-warm-starts" class="slide level2">
-<h2>P3.4 — STL Cached Failure-Mode Warm-Starts</h2>
+<section id="p3.2-stl-cached-failure-mode-warm-starts" class="slide level2">
+<h2>P3.2 — STL Cached Failure-Mode Warm-Starts</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Each fault class <span class="math inline">\(f\)</span> carries an STL mission <span class="math inline">\(\varphi_f\)</span> encoding its <strong>safe-recovery intent</strong> (return-to-home, avoid corridor, stabilize altitude).</p>
@@ -1486,13 +1529,13 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 </div>
 <ul>
 <li><strong>Cache hit:</strong> sub-second recovery</li>
-<li><strong>Cache miss:</strong> falls back to cold MILP — safety from P3.2 still holds</li>
-<li>Ties parameter indexing (P3.3) and STL encoding (T2) into a single <strong>recovery layer</strong></li>
+<li><strong>Cache miss:</strong> falls back to cold MILP — safety from the inoculation pipeline still holds</li>
+<li>Ties parameter indexing (P3.1) and STL encoding (T2) into a single <strong>recovery layer</strong></li>
 </ul>
 </div></div>
 <!-- ## Publications
 
-- **ACC 2024** &mdash; NR flow for quadrotor tracking
+- **ACC 2024** &mdash; NRT flow for quadrotor tracking
 - **TCST (in revision, 2026)** &mdash; $\alpha$-stability + comparative analysis
 - **NAHS (in revision, 2026)** &mdash; I-STL runtime assurance on blimp
 - **MECC 2026 (submitted)** &mdash; RTD-RAX
@@ -1551,7 +1594,7 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 </tr>
 <tr class="odd">
 <td><strong>NAHS</strong></td>
-<td>I-STL runtime assurance on blimp with NR method as LLC + <span class="math inline">\(\alpha\)</span>-stability proof for blimp</td>
+<td>I-STL runtime assurance on blimp with NRT method as LLC + <span class="math inline">\(\alpha\)</span>-stability proof for blimp</td>
 <td>In revision</td>
 </tr>
 <tr class="even">
@@ -1561,16 +1604,20 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 </tr>
 <tr class="odd">
 <td><strong>OJ-CSYS</strong></td>
-<td>GP-tube tracking, quadrotor validation + NR Method as LLC</td>
+<td>GP-tube tracking, quadrotor validation + NRT Method as LLC</td>
 <td>Submitted</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="plan-of-work-proposed" class="slide level2" data-menu-title="Plan: Proposed">
+<section id="plan-of-work-proposed" class="slide level2 smaller" data-menu-title="Plan: Proposed">
 <h2>Plan of Work — Proposed</h2>
 <!-- | **Spring 2026** | GP-tube tracking, hardware (OJ-CSYS) | -->
 <table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Term</th>
@@ -1580,31 +1627,31 @@ k_{\text{new}} \leftarrow k^\star + \eta\;\nabla_k\bigl(\min_i\operatorname{dist
 <tbody>
 <tr class="odd">
 <td><strong>Summer 2026</strong></td>
-<td>Contraction-NN on quadrotor hardware (CoRL)</td>
+<td>Contraction-NN tracker on Holybro X500 vs NRT/NMPC (P1.1, CoRL)</td>
 </tr>
 <tr class="even">
 <td><strong>Summer 2026</strong></td>
-<td>RTD-RAX with learned GP disturbance</td>
+<td>RTD-RAX: GP disturbance bounds + gradient repair (P2.1–P2.2)</td>
 </tr>
 <tr class="odd">
 <td><strong>Fall 2026</strong></td>
-<td>RL-STL pipeline, MILP-on-trigger</td>
+<td>RL-STL MILP-on-trigger policy (P2.5)</td>
 </tr>
 <tr class="even">
 <td><strong>Fall 2026</strong></td>
-<td>RTD-RAX on quadrotor hardware</td>
+<td>RTD-RAX hardware: GTernal → Holybro X500 (P2.3)</td>
 </tr>
 <tr class="odd">
 <td><strong>Spring 2027</strong></td>
-<td>STL mining for fault-signature library</td>
+<td>Parameter → STL trajectory map (P2.4)</td>
 </tr>
 <tr class="even">
 <td><strong>Spring 2027</strong></td>
-<td>Backup-controller library (1 fault class)</td>
+<td>Certified backup-controller library, one fault class (P3.1)</td>
 </tr>
 <tr class="odd">
 <td><strong>Summer 2027</strong></td>
-<td>Integrated inoculation demo on quadrotor</td>
+<td>STL failure-mode warm-start cache (P3.2)</td>
 </tr>
 <tr class="even">
 <td><strong>Summer 2027</strong></td>
@@ -1658,17 +1705,31 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 </div>
 </div>
 </section>
-<section id="thank-you" class="slide level2 gt-titlepage">
-<h2>Thank You</h2>
-<div class="gt-highlight" style="max-width:1150px; margin: 1.6rem auto 0.8rem; text-align:center;">
+<section id="thank-you" class="slide level2 gt-titlepage" data-auto-animate="true" data-auto-animate-duration="2.0" data-auto-animate-easing="cubic-bezier(.2,.8,.2,1)">
+<h2 data-id="quarto-animate-title"><span data-id="title-thank-you">Thank You</span></h2>
+<div class="gt-highlight" data-id="thesis-title" style="max-width:1150px; margin: 1.6rem auto 0.8rem; text-align:center;">
 <p><span style="font-weight:510;">Computationally Efficient and Safe Control for Aerial Robotic Systems<br>under Threat and Disturbance</span></p>
 </div>
-<div style="max-width:1050px; margin: 0 auto 0.7rem; font-size:0.62em;">
+<div data-id="program-tagline" style="max-width:625px; margin: 0 auto 0.7rem; font-size:0.62em;">
 <div class="gt-highlight" style="margin: 0 0 0.55rem; padding: 0.5rem 0.9rem;">
 <p>A research program for <strong>efficient, robust, and cyber-secure</strong> autonomy.</p>
 </div>
 </div>
-<div class="gt-contact-box" style="max-width:490px; margin: 1rem auto 0; text-align:center;">
+<div data-id="name-to-figure" style="max-width:1100px; margin: 1.2rem auto; text-align:center;">
+<p><img data-src="figures/overview/signal_flow.svg" style="width:92.0%"> <!-- Swap in one of the cycle-style options below (comment out signal_flow first): --> <!-- ![](figures/overview/ooda_cycle.svg){width=85%} --> <!-- ![](figures/overview/ooda_cycle_flat.svg){width=90%} --></p>
+</div>
+</section>
+<section id="questions" class="slide level2 gt-titlepage" data-auto-animate="true" data-auto-animate-duration="2.0" data-auto-animate-easing="cubic-bezier(.2,.8,.2,1)">
+<h2 data-id="quarto-animate-title"><span data-id="title-questions">Questions?</span></h2>
+<div class="gt-highlight" data-id="thesis-title" style="max-width:1150px; margin: 1.6rem auto 0.8rem; text-align:center;">
+<p><span style="font-weight:510;">Computationally Efficient and Safe Control for Aerial Robotic Systems<br>under Threat and Disturbance</span></p>
+</div>
+<div data-id="program-tagline" style="max-width:625px; margin: 0 auto 0.7rem; font-size:0.62em;">
+<div class="gt-highlight" style="margin: 0 0 0.55rem; padding: 0.5rem 0.9rem;">
+<p>A research program for <strong>efficient, robust, and cyber-secure</strong> autonomy.</p>
+</div>
+</div>
+<div class="gt-contact-box" data-id="name-to-figure" style="max-width:490px; margin: 1rem auto 0; text-align:center;">
 <p><strong>Evanns Gabriel Morales-Cuadrado</strong></p>
 <p><a href="mailto:egm@gatech.edu">egm@gatech.edu</a></p>
 <p>Georgia Institute of Technology</p>
@@ -1709,15 +1770,15 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 <tbody>
 <tr class="odd">
 <td>Miniature blimp (undermounted thrusters)</td>
-<td>NR + I-STL RTA</td>
+<td>NRT + I-STL RTA</td>
 <td>40&nbsp;Hz control, 25&nbsp;ms deadline; RPi Zero W onboard</td>
 <td><span class="citation" data-cites="EMC-LB-YW-SC:2026 LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>, <a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></td>
 </tr>
 <tr class="even">
 <td>Holybro X500 V2 quadrotor</td>
-<td>NR + GP tube + proposed RTD-RAX</td>
+<td>NRT + GP tube + proposed RTD-RAX</td>
 <td><span class="math inline">\(\geq\)</span> 100&nbsp;Hz, 10&nbsp;ms budget; RPi 5 onboard</td>
-<td><span class="citation" data-cites="EMC-CL-YW-SC:2024 EMC-LB-YW-SC:2026 MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>, <a href="#/references" role="doc-biblioref" onclick="">12</a>, <a href="#/references" role="doc-biblioref" onclick="">13</a>]</span></td>
+<td><span class="citation" data-cites="EMC-CL-YW-SC:2024 EMC-LB-YW-SC:2026 MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>, <a href="#/references" role="doc-biblioref" onclick="">11</a>, <a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></td>
 </tr>
 <tr class="odd">
 <td>GTernal ground robot</td>
@@ -1727,17 +1788,17 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 </tr>
 </tbody>
 </table>
-<p>All hardware uses OptiTrack / Vicon for motion capture; the quadrotor fuses MoCap with onboard IMU/GPS via the PX4 EKF2 estimator <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>. All three platforms are <strong>underactuated</strong> (blimp: 4 inputs, 6 DoF; quadrotor: 4 inputs, 6 DoF; GTernal: 2 inputs, 3-DoF Dubins), so the NR predictor is formulated on the tracked <strong>output</strong> <span class="math inline">\(y=Cx\in\mathbb R^m\)</span> rather than the full state.</p>
+<p>All hardware uses OptiTrack / Vicon for motion capture; the quadrotor fuses MoCap with onboard IMU/GPS via the PX4 EKF2 estimator <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>. All three platforms are <strong>underactuated</strong> (blimp: 4 inputs, 6 DoF; quadrotor: 4 inputs, 6 DoF; GTernal: 2 inputs, 3-DoF Dubins), so the NRT predictor is formulated on the tracked <strong>output</strong> <span class="math inline">\(y=Cx\in\mathbb R^m\)</span> rather than the full state.</p>
 </section>
 <section id="backup-tooling-stack" class="slide level2" data-visibility="uncounted">
 <h2>Backup — Tooling Stack</h2>
 <ul>
-<li><strong>JAX</strong> (forward-mode autodiff, JIT) — nonlinear predictors and Jacobians for the NR flow on the quadrotor <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>; same runtime powers the GP tube <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span></li>
+<li><strong>JAX</strong> (forward-mode autodiff, JIT) — nonlinear predictors and Jacobians for the NRT flow on the quadrotor <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>; same runtime powers the GP tube <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></li>
 <li><strong><code>immrax</code></strong> <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span> — automated inclusion-function construction and MMR embedding propagation; shared back-end for RTD-RAX, GP-tube, and I-STL tube checks</li>
 <li><strong>acados</strong> — NMPC baseline (SQP-RTI with computational-delay compensation); parameters in <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
 <li><strong>PX4</strong> (EKF2 estimator, ROS 2 / <span class="math inline">\(\mu\)</span>XRCE-DDS middleware) — cascaded-PID native baseline and real-time messaging on the quadrotor <span class="citation" data-cites="SS-AR-PF-EK-DS:2022">[<a href="#/references" role="doc-biblioref" onclick="">1</a>]</span></li>
-<li><strong>Gazebo Garden</strong> + PX4 SITL — GP-tube validation with controllable wind fields up to 17&nbsp;m/s <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span></li>
-<li><strong>Gurobi</strong> (MILP) — offline I-STL plan synthesis at 2&nbsp;Hz; NR runs the 50&nbsp;Hz low-level loop <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span></li>
+<li><strong>Gazebo Garden</strong> + PX4 SITL — GP-tube validation with controllable wind fields up to 17&nbsp;m/s <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></li>
+<li><strong>Gurobi</strong> (MILP) — offline I-STL plan synthesis at 2&nbsp;Hz; NRT runs the 50&nbsp;Hz low-level loop <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span></li>
 </ul>
 </section></section>
 <section>
@@ -1747,13 +1808,13 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 <p>Thrust I · Backup Details — Theory, Models &amp; Baselines, Results</p>
 </div>
 </section>
-<section id="backup-nr-controller-derivation" class="slide level2" data-visibility="uncounted">
-<h2>Backup — NR Controller Derivation</h2>
+<section id="backup-nrt-controller-derivation" class="slide level2" data-visibility="uncounted">
+<h2>Backup — NRT Controller Derivation</h2>
 <p>Start from the <strong>classical scalar Newton-Raphson</strong> root-finder for <span class="math inline">\(f:\mathbb R\to\mathbb R\)</span> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>: <span class="math display">\[x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}, \qquad\text{(vector form)}\;\; x_{k+1} = x_k - \Bigl(\tfrac{\partial f}{\partial x}(x_k)\Bigr)^{-1} f(x_k).\]</span></p>
 <p><strong>Memoryless plant</strong> <span class="math inline">\(y(t)=g(u(t))\)</span>; seek <span class="math inline">\(u\)</span> such that <span class="math inline">\(g(u)=r\)</span>. Discretize with step <span class="math inline">\(\Delta t\)</span>, <span class="math inline">\(t_k=k\Delta t\)</span>: <span class="math display">\[u(t_{k+1}) \;=\; u(t_k) + \Delta t\,\Bigl(\tfrac{\partial g}{\partial u}(u(t_k))\Bigr)^{-1}\bigl(r(t_k)-g(u(t_k))\bigr).\]</span></p>
-<p>Rearrange as a difference quotient and <strong>take the limit</strong> <span class="math inline">\(\Delta t\to 0\)</span> to obtain the continuous-time NR flow; scaling by a <strong>speedup factor</strong> <span class="math inline">\(\alpha&gt;1\)</span> yields <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>: <span class="math display">\[\boxed{\;\dot u(t) = \alpha\,\Bigl(\tfrac{\partial g}{\partial u}(u(t))\Bigr)^{-1}\bigl(r(t)-g(u(t))\bigr)\;}\qquad\limsup_{t\to\infty}\|r(t)-y(t)\|\;\leq\;\alpha^{-1}\limsup_{t\to\infty}\|\dot r(t)\|.\]</span></p>
+<p>Rearrange as a difference quotient and <strong>take the limit</strong> <span class="math inline">\(\Delta t\to 0\)</span> to obtain the continuous-time NRT flow; scaling by a <strong>speedup factor</strong> <span class="math inline">\(\alpha&gt;1\)</span> yields <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>: <span class="math display">\[\boxed{\;\dot u(t) = \alpha\,\Bigl(\tfrac{\partial g}{\partial u}(u(t))\Bigr)^{-1}\bigl(r(t)-g(u(t))\bigr)\;}\qquad\limsup_{t\to\infty}\|r(t)-y(t)\|\;\leq\;\alpha^{-1}\limsup_{t\to\infty}\|\dot r(t)\|.\]</span></p>
 <div class="gt-thrust-1">
-<p><strong>For dynamical systems</strong> <span class="math inline">\(\dot x=f(x,u)\)</span>, <span class="math inline">\(y=h(x)\)</span>: replace <span class="math inline">\(y\)</span> with a ZOH look-ahead predictor <span class="math inline">\(\hat y(t+T)=\rho(x(t),u(t))\)</span>. The NR flow becomes <span class="math inline">\(\dot u=\alpha(\partial_u\rho)^{-1}(r(t+T)-\rho(x,u))\)</span>; asymptotic error bound tightens to <span class="math inline">\(\nu_1+\nu_2/\alpha\)</span> (Cor. 3.5). <span class="math inline">\(\alpha\)</span> is a <strong>speedup</strong>, not a gain — it multiplies <span class="math inline">\(\dot u\)</span>, not <span class="math inline">\(u\)</span>.</p>
+<p><strong>For dynamical systems</strong> <span class="math inline">\(\dot x=f(x,u)\)</span>, <span class="math inline">\(y=h(x)\)</span>: replace <span class="math inline">\(y\)</span> with a ZOH look-ahead predictor <span class="math inline">\(\hat y(t+T)=\rho(x(t),u(t))\)</span>. The NRT flow becomes <span class="math inline">\(\dot u=\alpha(\partial_u\rho)^{-1}(r(t+T)-\rho(x,u))\)</span>; asymptotic error bound tightens to <span class="math inline">\(\nu_1+\nu_2/\alpha\)</span> (Cor. 3.5). <span class="math inline">\(\alpha\)</span> is a <strong>speedup</strong>, not a gain — it multiplies <span class="math inline">\(\dot u\)</span>, not <span class="math inline">\(u\)</span>.</p>
 </div>
 </section>
 <section id="backup-zoh-predictor-rhoxu-construction" class="slide level2" data-visibility="uncounted">
@@ -1766,7 +1827,7 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 <div class="column" style="width:55%;">
 <ul>
 <li><strong>Linearized case</strong> (<span class="math inline">\(f(x,u)=Ax+Bu\)</span>): closed-form <span class="math inline">\(\rho(x,u)=C e^{AT}x + C\!\int_0^T e^{As}\mathrm ds\,B\,u =: C\tilde A x + C\tilde B u\)</span> → <strong>constant</strong> Jacobian <span class="math inline">\(J=C\tilde B\)</span> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
-<li><strong>Nonlinear case:</strong> <span class="math inline">\(\rho\)</span> via numerical integration (RK4/Euler); <span class="math inline">\(\partial_u\rho\)</span> via autodiff or finite differences <span class="citation" data-cites="EMC-CL-YW-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></li>
+<li><strong>Nonlinear case:</strong> <span class="math inline">\(\rho\)</span> via numerical integration (RK4/Euler); <span class="math inline">\(\partial_u\rho\)</span> via autodiff or finite differences <span class="citation" data-cites="EMC-CL-YW-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">11</a>]</span></li>
 <li>Horizon <span class="math inline">\(T\)</span> is a <strong>tuning knob</strong>: small <span class="math inline">\(T\)</span> → high-frequency noise; large <span class="math inline">\(T\)</span> → stale prediction</li>
 </ul>
 </div><div class="column" style="width:45%;">
@@ -1777,18 +1838,18 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 </section>
 <section id="backup-alpha-stability-definition" class="slide level2" data-visibility="uncounted">
 <h2>Backup — <span class="math inline">\(\alpha\)</span>-Stability: Definition</h2>
-<p><strong>Definition 4.1</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span><strong>.</strong> The NR-closed-loop system is <strong><span class="math inline">\(\alpha\)</span>-stable</strong> on compact <span class="math inline">\(\Gamma\subset\mathbb R^{n+m}\)</span> if <span class="math inline">\(\exists\,\bar\alpha\geq 0\)</span> and class-<span class="math inline">\(\mathcal K\)</span> functions <span class="math inline">\(\beta,\gamma_1,\gamma_2\)</span> such that for every <span class="math inline">\(z(0)\in\Gamma\)</span>, every bounded reference <span class="math inline">\(r\)</span> with bounded <span class="math inline">\(\dot r\)</span>, and every <span class="math inline">\(\alpha\geq\bar\alpha\)</span>, <span class="math display">\[\lVert z(t)\rVert \leq \beta(\lVert z(0)\rVert) + \gamma_1(\lVert r\rVert_\infty) + \gamma_2(\lVert\dot r\rVert_\infty).\]</span></p>
+<p><strong>Definition 4.1</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span><strong>.</strong> The NRT-closed-loop system is <strong><span class="math inline">\(\alpha\)</span>-stable</strong> on compact <span class="math inline">\(\Gamma\subset\mathbb R^{n+m}\)</span> if <span class="math inline">\(\exists\,\bar\alpha\geq 0\)</span> and class-<span class="math inline">\(\mathcal K\)</span> functions <span class="math inline">\(\beta,\gamma_1,\gamma_2\)</span> such that for every <span class="math inline">\(z(0)\in\Gamma\)</span>, every bounded reference <span class="math inline">\(r\)</span> with bounded <span class="math inline">\(\dot r\)</span>, and every <span class="math inline">\(\alpha\geq\bar\alpha\)</span>, <span class="math display">\[\lVert z(t)\rVert \leq \beta(\lVert z(0)\rVert) + \gamma_1(\lVert r\rVert_\infty) + \gamma_2(\lVert\dot r\rVert_\infty).\]</span></p>
 <p><strong>Intuition.</strong> The extended state <span class="math inline">\((x,u)\)</span> stays bounded by three additive budgets: a transient from the initial condition, a tax for reference magnitude, and a tax for reference speed. Crucially, the bound holds <strong>for every</strong> <span class="math inline">\(\alpha\geq\bar\alpha\)</span> with the <em>same</em> <span class="math inline">\(\beta,\gamma_1,\gamma_2\)</span> — so cranking the learning gain tightens tracking (Cor.~3.5) without ever enlarging the BIBS envelope.</p>
 <p><strong>Key property:</strong> the bounds hold <strong>uniformly in <span class="math inline">\(\alpha\)</span></strong> once <span class="math inline">\(\alpha\geq\bar\alpha\)</span> — increasing the gain never destabilises. Coupled with Corollary 3.5: <span class="math inline">\(\lim_{\alpha\to\infty}\limsup_t\lVert r-\hat y\rVert=0\)</span>. This is the <em>BIBS-with-speedup</em> variant; distinct from standard ISS in that <span class="math inline">\(\alpha\)</span> appears as a control parameter, not a fixed gain <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>.</p>
 </section>
 <section id="backup-alpha-stability-closed-loop" class="slide level2" data-visibility="uncounted">
 <h2>Backup — <span class="math inline">\(\alpha\)</span>-Stability: Closed-Loop</h2>
-<p>Extended state <span class="math inline">\(z=[x^\top,u^\top]^\top\)</span>; substituting the linear predictor into the NR dynamics: <span class="math display">\[\Phi_\alpha=\begin{bmatrix}A &amp; B\\ -\alpha J(T)^{-1} Ce^{AT} &amp; -\alpha I\end{bmatrix},\quad \Psi_\alpha=\begin{bmatrix}0\\ \alpha J(T)^{-1}\end{bmatrix}.\]</span></p>
+<p>Extended state <span class="math inline">\(z=[x^\top,u^\top]^\top\)</span>; substituting the linear predictor into the NRT dynamics: <span class="math display">\[\Phi_\alpha=\begin{bmatrix}A &amp; B\\ -\alpha J(T)^{-1} Ce^{AT} &amp; -\alpha I\end{bmatrix},\quad \Psi_\alpha=\begin{bmatrix}0\\ \alpha J(T)^{-1}\end{bmatrix}.\]</span></p>
 <p><span class="math inline">\(J(T)=CA^{-1}(e^{AT}-I)B\)</span> when <span class="math inline">\(A\)</span> is nonsingular; result holds even if <span class="math inline">\(A\)</span> is singular provided <span class="math inline">\(J(T)\)</span> is. <strong>Sufficient condition</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>, Thm.&nbsp;4.3]</span><strong>:</strong> the characteristic polynomial of <span class="math inline">\(\Phi_\alpha\)</span> factors as <span class="math inline">\(\det(sI-\Phi_\alpha)=\alpha\,Q(s)+P_0(s)\)</span> where <span class="math inline">\(P_0, Q\)</span> depend only on <span class="math inline">\((A,B,C)\)</span>; <span class="math inline">\(\alpha\)</span>-stability holds whenever <strong>both</strong> <span class="math inline">\(P_0(s)\)</span> and <span class="math inline">\(Q(s)\)</span> are Hurwitz.</p>
 </section>
 <section id="backup-where-nu_1nu_2alpha-comes-from" class="slide level2" data-visibility="uncounted">
 <h2>Backup — Where <span class="math inline">\(\nu_1+\nu_2/\alpha\)</span> Comes From</h2>
-<p><strong>Corollary 3.5 of</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>. For any bounded reference with bounded derivative, the tracking error of the NR flow satisfies <span class="math display">\[\limsup_{t\to\infty}\lVert r(t)-y(t)\rVert \;\leq\; \eta_1 + \tfrac{\eta_2}{\alpha}.\]</span></p>
+<p><strong>Corollary 3.5 of</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span>. For any bounded reference with bounded derivative, the tracking error of the NRT flow satisfies <span class="math display">\[\limsup_{t\to\infty}\lVert r(t)-y(t)\rVert \;\leq\; \eta_1 + \tfrac{\eta_2}{\alpha}.\]</span></p>
 <div class="columns">
 <div class="column" style="width:55%;">
 <p><strong><span class="math inline">\(\eta_1\)</span></strong> — sup-norm of the <strong>prediction-model residual</strong> <span class="math inline">\(\lVert\rho(x(t),u(t)) - y(t+T)\rVert\)</span>; vanishes only if <span class="math inline">\(\rho\)</span> matches the true ZOH output exactly. Floor that <span class="math inline">\(\alpha\)</span> cannot touch.</p>
@@ -1801,7 +1862,7 @@ M. E. Cao, A. Harapanahalli, <strong>E. Morales-Cuadrado</strong> and S. Coogan,
 </section>
 <section id="backup-icbf-mechanism-sketch" class="slide level2" data-visibility="uncounted">
 <h2>Backup — iCBF Mechanism Sketch</h2>
-<p>The NR dynamic law <span class="math inline">\(\dot u = \phi(x,u,t)\)</span> is augmented with a min-norm perturbation <span class="math inline">\(v\in\mathbb R^m\)</span> to enforce safety on the <strong>augmented</strong> set <span class="math inline">\(\mathcal S=\{(x,u)\in\mathbb R^{n+m}:h(x,u)\geq 0\}\)</span> <span class="citation" data-cites="ADA-GN-YW-ME:2021">[<a href="#/references" role="doc-biblioref" onclick="">3</a>, Thm.&nbsp;1]</span>:</p>
+<p>The NRT dynamic law <span class="math inline">\(\dot u = \phi(x,u,t)\)</span> is augmented with a min-norm perturbation <span class="math inline">\(v\in\mathbb R^m\)</span> to enforce safety on the <strong>augmented</strong> set <span class="math inline">\(\mathcal S=\{(x,u)\in\mathbb R^{n+m}:h(x,u)\geq 0\}\)</span> <span class="citation" data-cites="ADA-GN-YW-ME:2021">[<a href="#/references" role="doc-biblioref" onclick="">3</a>, Thm.&nbsp;1]</span>:</p>
 <p><span class="math display">\[\dot u \;=\; \phi(x,u,t) + v^\star,\qquad v^\star \;=\; \operatorname{arg\,min}_{v\in\mathbb R^m}\;\tfrac{1}{2}\lVert v\rVert^2 \quad\text{s.t.}\quad p(x,u)^\top v \;\geq\; d(x,u,t),\]</span></p>
 <p>with <span class="math inline">\(p(x,u)\!:=\!(\partial_u h)^\top\)</span> and <span class="math inline">\(d(x,u,t)\!:=\!-\bigl[\partial_x h\,f(x,u)+\partial_u h\,\phi(x,u,t)+\gamma(h(x,u))\bigr]\)</span>.</p>
 <div class="columns">
@@ -1844,7 +1905,7 @@ Because the QP has one scalar inequality, the solution is a **rank-1 projection*
 <section id="backup-blimp-dynamics-hover-linearization" class="slide level2" data-visibility="uncounted">
 <h2>Backup — Blimp Dynamics &amp; Hover Linearization</h2>
 <p><strong>Nonlinear model</strong> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>, Eq.&nbsp;(1)]</span><strong>:</strong> state <span class="math inline">\(x=(\nu^{b}_{b/n},\eta^{n}_{b/n})\in\mathbb R^{12}\)</span> with <span class="math inline">\(\nu\)</span> = body-frame translational/angular velocities, <span class="math inline">\(\eta\)</span> = world-frame position + Euler angles. Input <span class="math inline">\(u=[f_x,f_y,f_z,\tau_z]^\top\in\mathbb R^4\)</span>, output <span class="math inline">\(y=[p_x,p_y,p_z,\psi]^\top=Cx\in\mathbb R^4\)</span>. Dynamics derived from submarine physics model: <span class="math display">\[\dot x = \tilde A(x)x - (M^{CB})^{-1}G^{CB}(x) + (M^{CB})^{-1}u\]</span> with mass/inertia <span class="math inline">\(M^{CB}\)</span>, Coriolis <span class="math inline">\(C^{CB}(x)\)</span>, damping <span class="math inline">\(D^{CB}\)</span>, and restoring gravity term <span class="math inline">\(G^{CB}(x)\)</span> (buoyancy cancels gravity, but CG<span class="math inline">\(\neq\)</span>CB induces nonzero roll/pitch torque) <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>.</p>
-<p><strong>Hover linearization:</strong> about <span class="math inline">\(\nu=0\)</span>, <span class="math inline">\(\eta=0\)</span>, the nonlinear dynamics reduce to <span class="math inline">\(\dot x=Ax+Bu\)</span> with constant <span class="math inline">\((A,B)\)</span>. Used as the NR predictor on the blimp because constant Jacobian <span class="math inline">\(C\tilde B\)</span> avoids any runtime inverse solve → 0.84&nbsp;ms per control step on a Raspberry Pi Zero W <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>.</p>
+<p><strong>Hover linearization:</strong> about <span class="math inline">\(\nu=0\)</span>, <span class="math inline">\(\eta=0\)</span>, the nonlinear dynamics reduce to <span class="math inline">\(\dot x=Ax+Bu\)</span> with constant <span class="math inline">\((A,B)\)</span>. Used as the NRT predictor on the blimp because constant Jacobian <span class="math inline">\(C\tilde B\)</span> avoids any runtime inverse solve → 0.84&nbsp;ms per control step on a Raspberry Pi Zero W <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>.</p>
 </section>
 <section id="backup-quadrotor-dynamic-model" class="slide level2" data-visibility="uncounted">
 <h2>Backup — Quadrotor Dynamic Model</h2>
@@ -1863,12 +1924,12 @@ Because the QP has one scalar inequality, the solution is a **rank-1 projection*
 <div class="column" style="width:55%;">
 <ul>
 <li>Tracked output <span class="math inline">\(y=(p_x,p_y,p_z,\psi)^\top\in\mathbb R^4\)</span> — input/output dimensions match (<span class="math inline">\(m{=}p{=}4\)</span>), so <span class="math inline">\(\partial_u\rho\)</span> is square <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
-<li>NR predictor uses <strong>RK4</strong> integration of the above from <span class="math inline">\((x(t),u(t))\)</span> held constant over <span class="math inline">\([t, t+T]\)</span>; <span class="math inline">\(\partial_u\rho\)</span> via <strong>JAX</strong> forward-mode autodiff</li>
+<li>NRT predictor uses <strong>RK4</strong> integration of the above from <span class="math inline">\((x(t),u(t))\)</span> held constant over <span class="math inline">\([t, t+T]\)</span>; <span class="math inline">\(\partial_u\rho\)</span> via <strong>JAX</strong> forward-mode autodiff</li>
 <li>Body-rate commands feed the PX4 cascaded autopilot (stiff inner loop) → lookahead <span class="math inline">\(T\)</span> chosen near its settling time</li>
 </ul>
 </div><div class="column" style="width:45%;">
 <div class="gt-thrust-1">
-<p>The quadrotor is differentially flat in <span class="math inline">\((p,\psi)\)</span> but the flatness inverse explodes near hover attitude gimbal singularities <span class="citation" data-cites="SS-AR-PF-EK-DS:2022">[<a href="#/references" role="doc-biblioref" onclick="">1</a>]</span>; NR avoids this because it works directly with <span class="math inline">\(y=Cx\)</span> on the closed-loop (PX4-PID-inside-the-loop) dynamics rather than requiring a flatness chart.</p>
+<p>The quadrotor is differentially flat in <span class="math inline">\((p,\psi)\)</span> but the flatness inverse explodes near hover attitude gimbal singularities <span class="citation" data-cites="SS-AR-PF-EK-DS:2022">[<a href="#/references" role="doc-biblioref" onclick="">1</a>]</span>; NRT avoids this because it works directly with <span class="math inline">\(y=Cx\)</span> on the closed-loop (PX4-PID-inside-the-loop) dynamics rather than requiring a flatness chart.</p>
 </div>
 </div></div>
 </section>
@@ -1881,10 +1942,10 @@ Because the QP has one scalar inequality, the solution is a **rank-1 projection*
 <div class="columns">
 <div class="column" style="width:55%;">
 <ul>
-<li><span class="math inline">\(F_d\)</span> = <strong>4th-order Runge–Kutta</strong> discretisation of the same nonlinear model used by the NR predictor → apples-to-apples comparison</li>
+<li><span class="math inline">\(F_d\)</span> = <strong>4th-order Runge–Kutta</strong> discretisation of the same nonlinear model used by the NRT predictor → apples-to-apples comparison</li>
 <li>Weights tuned to give best achievable tracking within the 25&nbsp;ms (blimp) / 10&nbsp;ms (quad) budget</li>
 <li><strong>Delay compensation:</strong> solve from a forward-projected state <span class="math inline">\(\hat x(t+\tau_{\mathrm{comp}})\)</span> to offset computation time</li>
-<li>NMPC requires <span class="math inline">\((r_k, \dot r_k, \ddot r_k)\)</span> over the horizon; NR requires only <span class="math inline">\(r(t+T)\)</span> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
+<li>NMPC requires <span class="math inline">\((r_k, \dot r_k, \ddot r_k)\)</span> over the horizon; NRT requires only <span class="math inline">\(r(t+T)\)</span> <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
 </ul>
 </div><div class="column" style="width:45%;">
 <div class="gt-thrust-1">
@@ -1901,12 +1962,12 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 <div class="column" style="width:55%;">
 <ul>
 <li>Provides <strong>exact cancellation</strong> of the nominal dynamics under the assumed model → linear residual closed-loop with PD gains <span class="math inline">\((K_p, K_d)\)</span></li>
-<li>Requires full reference derivatives <span class="math inline">\((\dot r, \ddot r)\)</span> — same as NMPC, unlike NR</li>
+<li>Requires full reference derivatives <span class="math inline">\((\dot r, \ddot r)\)</span> — same as NMPC, unlike NRT</li>
 <li>Fails gracefully on standard trajectories but <strong>diverges on aggressive trajectories</strong> where <span class="math inline">\(\mathcal B(x)\)</span> becomes ill-conditioned (see Circle C in the Blimp RMSE table)</li>
 </ul>
 </div><div class="column" style="width:45%;">
 <div class="gt-thrust-1">
-<p>FBL is the <em>canonical</em> baseline for “smart-but-brittle”: no optimisation, low per-iter cost ($$10&nbsp;ms), but any model mismatch propagates directly through <span class="math inline">\(\mathcal B^{-1}\)</span>. NR achieves similar throughput <em>and</em> better robustness because the NR flow implicitly regularises inversion through the <span class="math inline">\(\alpha\)</span> integrator.</p>
+<p>FBL is the <em>canonical</em> baseline for “smart-but-brittle”: no optimisation, low per-iter cost ($$10&nbsp;ms), but any model mismatch propagates directly through <span class="math inline">\(\mathcal B^{-1}\)</span>. NRT achieves similar throughput <em>and</em> better robustness because the NRT flow implicitly regularises inversion through the <span class="math inline">\(\alpha\)</span> integrator.</p>
 </div>
 </div></div>
 </section>
@@ -1929,7 +1990,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </section>
 <section id="backup-prediction-strategies-details" class="slide level2" data-menu-title="Prediction Strategies Details" data-visibility="uncounted">
 <h2>Backup — Prediction Strategies: Details</h2>
-<p>All predictors share the ZOH structure <span class="math inline">\(\hat y(t+T)=\rho(x(t),u(t))\)</span> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>, Eq.&nbsp;18]</span>; only fidelity and cost differ across hardware implementations <span class="citation" data-cites="EMC-CL-YW-SC:2024 EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>, <a href="#/references" role="doc-biblioref" onclick="">12</a>]</span>.</p>
+<p>All predictors share the ZOH structure <span class="math inline">\(\hat y(t+T)=\rho(x(t),u(t))\)</span> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>, Eq.&nbsp;18]</span>; only fidelity and cost differ across hardware implementations <span class="citation" data-cites="EMC-CL-YW-SC:2024 EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>, <a href="#/references" role="doc-biblioref" onclick="">11</a>]</span>.</p>
 <table class="caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 16%">
@@ -1964,7 +2025,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 <td>Finite differences</td>
 <td><span class="math inline">\(O(m)\)</span> solves</td>
 <td>Alt. implementation</td>
-<td><span class="citation" data-cites="EMC-CL-YW-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></td>
+<td><span class="citation" data-cites="EMC-CL-YW-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">11</a>]</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Nonlinear (autodiff)</strong></td>
@@ -2155,7 +2216,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 #backup-blimp-full-rmse-compute-tables th,
 #backup-blimp-full-rmse-compute-tables td { padding: 2px 6px; }
 </style>
-<p>NR-based technique (NRT) vs.&nbsp;NMPC vs.&nbsp;FBL on the miniature blimp <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>. <strong>Bold</strong> = winner per row. NRT receives <em>no</em> reference-derivative information; NMPC and FBL are given <span class="math inline">\(\dot r, \ddot r\)</span>.</p>
+<p>Newton-Raphson tracker (NRT) vs.&nbsp;NMPC vs.&nbsp;FBL on the miniature blimp <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span>. <strong>Bold</strong> = winner per row. NRT receives <em>no</em> reference-derivative information; NMPC and FBL are given <span class="math inline">\(\dot r, \ddot r\)</span>.</p>
 <div class="columns">
 <div class="column" style="width:52%;">
 <p><strong>RMSE [m]</strong> — five standard + three aggressive trajectories</p>
@@ -2299,7 +2360,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 <ul>
 <li><strong>Southeast order:</strong> <span class="math inline">\((\underline x_1,\overline x_1)\preceq_{SE}(\underline x_2,\overline x_2)\iff \underline x_1\leq \underline x_2 \;\wedge\; \overline x_1\geq \overline x_2\)</span> <span class="citation" data-cites="SC:2020">[<a href="#/references" role="doc-biblioref" onclick="">9</a>]</span></li>
 <li>Integrating the embedding <strong>once</strong> yields a rigorous hyper-rectangular over-approximation of the forward reachable set, even for nonlinear <span class="math inline">\(f\)</span></li>
-<li>Natural inclusion <span class="math inline">\(\mathcal F(x^\downarrow,x^\uparrow,\ldots)=[f]([x^\downarrow,x^\uparrow],\ldots)\)</span>; mixed-Jacobian inclusion gives tighter bounds using <span class="math inline">\(\partial_x f\)</span> sign pattern <span class="citation" data-cites="AH-SJ-SC:2024 MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">6</a>, <a href="#/references" role="doc-biblioref" onclick="">13</a>]</span></li>
+<li>Natural inclusion <span class="math inline">\(\mathcal F(x^\downarrow,x^\uparrow,\ldots)=[f]([x^\downarrow,x^\uparrow],\ldots)\)</span>; mixed-Jacobian inclusion gives tighter bounds using <span class="math inline">\(\partial_x f\)</span> sign pattern <span class="citation" data-cites="AH-SJ-SC:2024 MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">6</a>, <a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></li>
 <li><code>immrax</code> automates decomposition-function construction via JAX tracing + interval-matrix arithmetic <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span></li>
 </ul>
 </section>
@@ -2387,7 +2448,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </section>
 <section id="backup-gp-mixed-jacobian-inclusion-function" class="slide level2" data-visibility="uncounted">
 <h2>Backup — GP Mixed-Jacobian Inclusion Function</h2>
-<p>For <span class="math inline">\(\dot x = f(x) + B(x)\,g(t,x)\)</span> with <span class="math inline">\(g\sim\mathcal{GP}(\mu(t,x), k((t,x),(t',x')))\)</span>, the Cao et al.&nbsp;2026 construction <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span> builds a decomposition function <span class="math inline">\(\mathcal F\)</span> as follows:</p>
+<p>For <span class="math inline">\(\dot x = f(x) + B(x)\,g(t,x)\)</span> with <span class="math inline">\(g\sim\mathcal{GP}(\mu(t,x), k((t,x),(t',x')))\)</span>, the Cao et al.&nbsp;2026 construction <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span> builds a decomposition function <span class="math inline">\(\mathcal F\)</span> as follows:</p>
 <p><strong>Step 1 — Interval posterior.</strong> For any <span class="math inline">\([\underline x,\overline x]\)</span>, the GP posterior mean <span class="math inline">\(\hat g\)</span> and variance <span class="math inline">\(\sigma^2\)</span> over the box admit interval bounds <span class="math inline">\([\underline g, \overline g]\)</span> from a confidence level <span class="math inline">\(\beta\)</span>: <span class="math inline">\(\underline g = \hat g - \beta\sigma,\;\overline g=\hat g+\beta\sigma\)</span>.</p>
 <p><strong>Step 2 — Mixed-Jacobian inclusion.</strong> Sign the entries of <span class="math inline">\(\partial_x f\)</span> over the box; decompose <span class="math inline">\(f(x) = f^+(x) + f^-(x)\)</span> where <span class="math inline">\(f^+\)</span> has nonneg, <span class="math inline">\(f^-\)</span> nonpos Jacobian. Then: <span class="math display">\[
 \underline{\mathcal F}(\underline x, \overline x, [\underline g,\overline g]) = f^+(\underline x) + f^-(\overline x) + B(\underline x)^+\underline g + B(\underline x)^-\overline g
@@ -2407,7 +2468,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </section>
 <section id="backup-gp-tube-runtime-trigger" class="slide level2" data-visibility="uncounted">
 <h2>Backup — GP-Tube Runtime Trigger</h2>
-<p>For <span class="math inline">\(\dot x=f(x,u,w)\)</span> with <span class="math inline">\(w\!=\!g(t,x)\)</span> unknown, <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span> build a <strong>forward-invariant tube</strong> of radius <span class="math inline">\(\varepsilon\)</span> around the reference <span class="math inline">\(x_r(t)\)</span> by (i) modelling <span class="math inline">\(g\)</span> as a time-varying Gaussian process, (ii) using mixed-Jacobian inclusion to construct an embedding system, (iii) propagating <span class="math inline">\([\underline x(t),\overline x(t)]\)</span> alongside <span class="math inline">\(x_r\)</span> under the tracking controller.</p>
+<p>For <span class="math inline">\(\dot x=f(x,u,w)\)</span> with <span class="math inline">\(w\!=\!g(t,x)\)</span> unknown, <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span> build a <strong>forward-invariant tube</strong> of radius <span class="math inline">\(\varepsilon\)</span> around the reference <span class="math inline">\(x_r(t)\)</span> by (i) modelling <span class="math inline">\(g\)</span> as a time-varying Gaussian process, (ii) using mixed-Jacobian inclusion to construct an embedding system, (iii) propagating <span class="math inline">\([\underline x(t),\overline x(t)]\)</span> alongside <span class="math inline">\(x_r\)</span> under the tracking controller.</p>
 <div class="columns">
 <div class="column" style="width:55%;">
 <p><strong>Mechanism:</strong> integrate the embedding until the earliest time <span class="math inline">\(t^\star\)</span> at which the tube can no longer stay inside the <span class="math inline">\(\varepsilon\)</span>-neighborhood of <span class="math inline">\(x_r\)</span>. At <span class="math inline">\(t^\star\)</span>, <strong>trigger</strong>:</p>
@@ -2424,18 +2485,18 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </section>
 <section id="backup-gp-tube-experimental-setup" class="slide level2" data-visibility="uncounted">
 <h2>Backup — GP-Tube Experimental Setup</h2>
-<p><strong>SITL platform</strong> <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span>:</p>
+<p><strong>SITL platform</strong> <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span>:</p>
 <ul>
 <li><strong>Simulator:</strong> Gazebo Garden + PX4 SITL, Holybro X500 V2 airframe model</li>
 <li><strong>Disturbance:</strong> wind field with spatial Gaussian process structure; magnitudes swept up to <strong>17&nbsp;m/s</strong> (beyond laboratory fan-bank capability of 8–10&nbsp;m/s)</li>
-<li><strong>Tracking controller:</strong> joint NR (outer, body-rate reference) + LQR (inner, attitude) running at <strong>100&nbsp;Hz</strong></li>
+<li><strong>Tracking controller:</strong> joint NRT (outer, body-rate reference) + LQR (inner, attitude) running at <strong>100&nbsp;Hz</strong></li>
 <li><strong>Tube propagation:</strong> <code>immrax</code>-based mixed-Jacobian inclusion <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span>, triggered only when <span class="math inline">\(\|\tilde x\| &gt; \varepsilon - \delta_{\mathrm{margin}}\)</span></li>
 </ul>
 <div class="columns">
 <div class="column" style="width:55%;">
 <p><strong>Proposed hardware step</strong> (Thrust&nbsp;2):</p>
 <ul>
-<li>Same Holybro X500 V2 used for NR-vs-NMPC study <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
+<li>Same Holybro X500 V2 used for NRT-vs-NMPC study <span class="citation" data-cites="EMC-LB-YW-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">5</a>]</span></li>
 <li>Indoor <strong>industrial fan-bank</strong> (4 × 36-inch fans) to produce controllable wind up to $$10&nbsp;m/s</li>
 <li>MoCap ground-truth for validation of tube coverage claim</li>
 </ul>
@@ -2452,7 +2513,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </section>
 <section id="backup-sitl-computation-budget-gp-tube" class="slide level2" data-visibility="uncounted">
 <h2>Backup — SITL Computation Budget (GP Tube)</h2>
-<p>From the Gazebo/PX4 software-in-the-loop study in <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span>:</p>
+<p>From the Gazebo/PX4 software-in-the-loop study in <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span>:</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -2468,7 +2529,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </thead>
 <tbody>
 <tr class="odd">
-<td>Joint NR + LQR controller</td>
+<td>Joint NRT + LQR controller</td>
 <td><span class="math inline">\(0.0026 \pm 0.00069\)</span></td>
 <td>0.00677</td>
 </tr>
@@ -2483,7 +2544,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 <li>Body-rate commands at ~100&nbsp;Hz → full pipeline inside <strong>10&nbsp;ms</strong></li>
 <li>Tube computation <strong>triggered intermittently</strong> (when tube approaches <span class="math inline">\(\varepsilon\)</span>-boundary), not per control step</li>
 <li>Enabled by <strong>JAX JIT</strong> compilation and <code>immrax</code> <span class="citation" data-cites="AH-SJ-SC:2024">[<a href="#/references" role="doc-biblioref" onclick="">6</a>]</span> automated inclusion-function construction</li>
-<li>Simulated wind magnitudes up to <strong>~17&nbsp;m/s</strong> (near gale-force) — well beyond what laboratory fans can reproduce <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span></li>
+<li>Simulated wind magnitudes up to <strong>~17&nbsp;m/s</strong> (near gale-force) — well beyond what laboratory fans can reproduce <span class="citation" data-cites="MEC-AH-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">12</a>]</span></li>
 </ul>
 </section></section>
 <section>
@@ -2536,7 +2597,7 @@ q = \ddot r + K_d(\dot r - \dot y) + K_p(r - y), \qquad u(x) = \mathcal B(x)^{-1
 </div><div class="column" style="width:45%;">
 <div class="gt-thrust-3">
 <p><strong>Deadline miss is safe:</strong> if the solver overruns, the previously computed backup trajectory is executed from the current state. Persistent feasibility guarantees the backup still satisfies <span class="math inline">\(\varphi\)</span> under worst-case disturbance, without needing a new MIP solve.</p>
-<p>Solved at <strong>2&nbsp;Hz</strong> in the blimp experiments; polynomial-spline interpolation + NR LLC at <strong>50&nbsp;Hz</strong>.</p>
+<p>Solved at <strong>2&nbsp;Hz</strong> in the blimp experiments; polynomial-spline interpolation + NRT LLC at <strong>50&nbsp;Hz</strong>.</p>
 </div>
 </div></div>
 </section>
@@ -2549,7 +2610,7 @@ u(t) = \begin{cases} u_{\mathrm{perf}}(x(t), r(t)) &amp; \text{if } \underline\r
 <div class="columns">
 <div class="column" style="width:55%;">
 <ul>
-<li><strong><span class="math inline">\(u_{\mathrm{perf}}\)</span></strong> = performance controller (NR flow, learned policy, NMPC, …) — any controller can be the performance layer</li>
+<li><strong><span class="math inline">\(u_{\mathrm{perf}}\)</span></strong> = performance controller (NRT flow, learned policy, NMPC, …) — any controller can be the performance layer</li>
 <li><strong><span class="math inline">\(u_{\mathrm{safe}}\)</span></strong> = certified backup (I-STL MIP solution or library <span class="math inline">\(u_{b,j}\)</span> from Inoculation slide)</li>
 <li><strong>Monitor:</strong> forward-propagate MMR tube <span class="math inline">\(\mathbf X_{[t, t+H]}\)</span> at each step; evaluate I-STL robustness on the tube</li>
 <li><strong>Switch is one-way?</strong> No — return to <span class="math inline">\(u_{\mathrm{perf}}\)</span> once <span class="math inline">\(\underline\rho^\varphi_{\mathrm I}\)</span> recovers above <span class="math inline">\(\rho_{\mathrm{trig}}\)</span> (no lock-in)</li>
@@ -2557,7 +2618,7 @@ u(t) = \begin{cases} u_{\mathrm{perf}}(x(t), r(t)) &amp; \text{if } \underline\r
 </div><div class="column" style="width:45%;">
 <div class="gt-thrust-3">
 <p><strong>Hysteresis:</strong> use two thresholds <span class="math inline">\(\rho_{\mathrm{trig}} &lt; \rho_{\mathrm{restore}}\)</span> to prevent chattering; <span class="math inline">\(\rho_{\mathrm{restore}}\)</span> is chosen from the certified region margin.</p>
-<p>Preliminary I-STL RTA uses this architecture on the blimp at 2&nbsp;Hz (monitor) / 50&nbsp;Hz (NR) <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span>.</p>
+<p>Preliminary I-STL RTA uses this architecture on the blimp at 2&nbsp;Hz (monitor) / 50&nbsp;Hz (NRT) <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span>.</p>
 </div>
 </div></div>
 </section>
@@ -2565,7 +2626,7 @@ u(t) = \begin{cases} u_{\mathrm{perf}}(x(t), r(t)) &amp; \text{if } \underline\r
 <h2>Backup — Cyber Threat Model (Detail)</h2>
 <div class="columns">
 <div class="column" style="width:48%;">
-<p><strong>Threat surface</strong> <span class="citation" data-cites="garcia2017hey">[<a href="#/references" role="doc-biblioref" onclick="">11</a>]</span>: adversary with access to the sensor-actuator interface can perform <strong>two-way data manipulation</strong> — inject false sensor readings while suppressing anomaly detection, steering the vehicle toward an unsafe region undetected.</p>
+<p><strong>Threat surface</strong> <span class="citation" data-cites="garcia2017hey">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span>: adversary with access to the sensor-actuator interface can perform <strong>two-way data manipulation</strong> — inject false sensor readings while suppressing anomaly detection, steering the vehicle toward an unsafe region undetected.</p>
 <p>Formal assumption: attacker applies an <strong>additive signal</strong> <span class="math inline">\(\delta_s(t)\)</span> to sensor output and <span class="math inline">\(\delta_a(t)\)</span> to actuator command, subject to <strong>stealthiness constraint</strong> <span class="math inline">\(\lVert\delta_s\rVert\leq \epsilon_s\)</span>, <span class="math inline">\(\lVert\delta_a\rVert\leq\epsilon_a\)</span>.</p>
 </div><div class="column" style="width:52%;">
 <p><strong>Collaborator scope (NSF):</strong></p>
@@ -2581,7 +2642,7 @@ u(t) = \begin{cases} u_{\mathrm{perf}}(x(t), r(t)) &amp; \text{if } \underline\r
 </section>
 <section id="backup-inoculation-formally" class="slide level2" data-visibility="uncounted">
 <h2>Backup — Inoculation, Formally</h2>
-<p><em>Proposed Thrust&nbsp;3 synthesis — extends the preliminary I-STL RTA</em> <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span> <em>to post-fault recovery under cyber threat</em> <span class="citation" data-cites="garcia2017hey">[<a href="#/references" role="doc-biblioref" onclick="">11</a>]</span>.</p>
+<p><em>Proposed Thrust&nbsp;3 synthesis — extends the preliminary I-STL RTA</em> <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span> <em>to post-fault recovery under cyber threat</em> <span class="citation" data-cites="garcia2017hey">[<a href="#/references" role="doc-biblioref" onclick="">13</a>]</span>.</p>
 <p>Under fault class <span class="math inline">\(\mathcal F_j\)</span> identified (by NSF collaborator) via STL specification <span class="math inline">\(\varphi_j\)</span>:</p>
 <ul>
 <li><strong>Viability kernel</strong> <span class="math inline">\(\mathcal V_j = \{x_0 : \exists u(\cdot),\;x(t)\in\mathcal X_{\mathrm{safe}}\;\forall t\geq 0\}\)</span> for post-fault dynamics is generally intractable online</li>
@@ -2647,14 +2708,14 @@ u(t) = \begin{cases} u_{\mathrm{perf}}(x(t), r(t)) &amp; \text{if } \underline\r
 <div id="ref-harapanahalli2026learningcertifiedneuralnetwork" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[10] </div><div class="csl-right-inline">A. Harapanahalli, S. Coogan and A. Davydov, <span>“Learning certified neural network controllers using contraction and interval analysis,”</span> <em>arXiv preprint</em>, 2026.</div>
 </div>
-<div id="ref-garcia2017hey" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[11] </div><div class="csl-right-inline">L. Garcia, F. Brasser, M. H. Cintuglu, A.-R. Sadeghi, O. Mohammed and S. A. Zonouz, <span>“<a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_08-1_Garcia_paper.pdf">Hey, my malware knows physics! <span>A</span>ttacking <span>PLCs</span> with physical model aware rootkit</a>,”</span> <em>NDSS</em>, 2017.</div>
-</div>
 <div id="ref-EMC-CL-YW-SC:2024" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[12] </div><div class="csl-right-inline">E. Morales-Cuadrado, C. Llanes, Y. Wardi and S. Coogan, <span>“<a href="https://arxiv.org/abs/2408.11197"><span>Newton–Raphson</span> flow for aggressive quadrotor tracking control</a>,”</span> <em>ACC</em>, 2024.</div>
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">E. Morales-Cuadrado, C. Llanes, Y. Wardi and S. Coogan, <span>“<a href="https://arxiv.org/abs/2408.11197"><span>Newton–Raphson</span> flow for aggressive quadrotor tracking control</a>,”</span> <em>ACC</em>, 2024.</div>
 </div>
 <div id="ref-MEC-AH-EMC-SC:2026" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[13] </div><div class="csl-right-inline">M. E. Cao, A. Harapanahalli, E. Morales-Cuadrado and S. Coogan, <span>“Trajectory tracking for systems with unknown time-varying disturbances,”</span> <em>IEEE Open Journal of Control Systems</em>, 2026.</div>
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">M. E. Cao, A. Harapanahalli, E. Morales-Cuadrado and S. Coogan, <span>“Trajectory tracking for systems with unknown time-varying disturbances,”</span> <em>IEEE Open Journal of Control Systems</em>, 2026.</div>
+</div>
+<div id="ref-garcia2017hey" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">L. Garcia, F. Brasser, M. H. Cintuglu, A.-R. Sadeghi, O. Mohammed and S. A. Zonouz, <span>“<a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_08-1_Garcia_paper.pdf">Hey, my malware knows physics! <span>A</span>ttacking <span>PLCs</span> with physical model aware rootkit</a>,”</span> <em>NDSS</em>, 2017.</div>
 </div>
 </div>
 
