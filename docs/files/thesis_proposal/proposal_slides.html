@@ -2939,18 +2939,18 @@ All predictors share the ZOH structure $\hat y(t+T)=\rho(x(t),u(t))$ [@YW-CS-JC-
 <div class="column" style="width:52%;">
 <p><strong>Making the MIP correct</strong> <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span></p>
 <ul>
-<li><strong>Recursive feasibility</strong> [§&nbsp;IV]: terminal constraint <span class="math inline">\([x]_N\subseteq\Omega_\varphi\)</span>, where <span class="math inline">\(\Omega_\varphi\)</span> is the <strong>persistently feasible set</strong> — a robust controllable invariant in the I-STL <strong>language space</strong> <span class="math inline">\(\mathcal L(\varphi)\)</span>. Built once offline by backward reachability with interval arithmetic.</li>
-<li><strong>Tube MPC for <span class="math inline">\(\max_w\)</span></strong> [§&nbsp;V]: replace the inner max with <strong>interval-valued</strong> state propagation <span class="math inline">\([x]_k = x_k \oplus \mathcal R_k\)</span> and a <strong>tightened input set</strong> <span class="math inline">\(\mathcal U \ominus K\mathcal R_k\)</span>; closed form, no nested optimization.</li>
-<li><strong>Slack variable</strong> [§&nbsp;VI]: relax <span class="math inline">\(\underline\rho^\varphi\geq 0 \,\to\, \underline\rho^\varphi\geq -s\)</span>, <span class="math inline">\(s\geq 0\)</span>, with high cost — gives <strong>graceful degradation</strong> when the sim-to-real residual exceeds <span class="math inline">\(\mathcal W\)</span>.</li>
-<li><strong>Warm-start</strong> across MIP instances [§&nbsp;VII]: shift the previous solution by one step to seed the next solve.</li>
+<li><strong>Recursive feasibility</strong> [§&nbsp;V]: terminal constraint <span class="math inline">\([x]_{t+N-\|\varphi\|:t+N-\|\varphi\|+b-1}\!\subseteq\!\mathcal S\)</span>, where <span class="math inline">\(\mathcal S\!\subseteq\!(\mathbb R^n)^b\)</span> is the <strong>persistently feasible set</strong> — <em>strictly more conservative</em> than the (intractable) maximal RCI in the language space <span class="math inline">\(\mathcal L(\varphi)\)</span>, but computable. Built once offline via robust controllable sets [Prop.&nbsp;2] using polytope/zonotope ops (cddlib, pypoman).</li>
+<li><strong>Tube MPC for <span class="math inline">\(\max_w\)</span></strong> [§&nbsp;VI]: replace the inner max with <strong>interval-valued</strong> state propagation <span class="math inline">\([x]_k = x_k + [Z](k\!-\!t)\)</span> and a <strong>tightened input set</strong> <span class="math inline">\(\mathcal U \ominus K Z(k\!-\!t)\)</span>; closed form, no nested optimization.</li>
+<li><strong>Slack variable</strong> [§&nbsp;VII]: relax <span class="math inline">\(\underline\rho^\varphi\geq 0 \,\to\, \underline\rho^\varphi\geq -\xi\)</span>, <span class="math inline">\(\xi\geq 0\)</span>, with high cost <span class="math inline">\(\gamma^\top\xi\)</span> — gives <strong>graceful degradation</strong> when the sim-to-real residual exceeds <span class="math inline">\(\mathcal W\)</span> (in reported runs <span class="math inline">\(\xi\equiv 0\)</span>).</li>
+<li><strong>Warm-start</strong> across MIP instances [§&nbsp;IX]: shift the previous solution by one step to seed the next solve.</li>
 </ul>
 </div><div class="column" style="width:48%;">
 <p><strong>Meeting the deadline</strong> <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span></p>
 <ul>
 <li><strong>Two-rate decomposition:</strong> MIP at <span class="math inline">\(\Delta t_\mathrm{RTA}=0.5\)</span> s (<strong>2 Hz</strong>), tracking at <strong>50 Hz</strong></li>
 <li><strong>5th-order polynomial splines</strong> interpolate consecutive RTA waypoints → smooth backup at tracker rate</li>
-<li><strong>Newton-Raphson tracker</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span> follows the spline — sub-ms compute on a Pi, residual error <span class="math inline">\(\eta_1+\eta_2/\alpha\)</span></li>
-<li><strong>Deadline-miss safe by construction:</strong> previous solution still lies in <span class="math inline">\(\Omega_\varphi\)</span> → executing it for one more step preserves <span class="math inline">\(\underline\rho\geq 0\)</span> under worst-case <span class="math inline">\(\mathcal W\)</span> — <em>no manual intervention needed</em></li>
+<li><strong>Newton-Raphson tracker</strong> <span class="citation" data-cites="YW-CS-JC-ME-SS-IB:2024">[<a href="#/references" role="doc-biblioref" onclick="">2</a>]</span> follows the spline on the host (Dell laptop) — asymptotic residual error <span class="math inline">\(\eta_1+\eta_2/\alpha\)</span></li>
+<li><strong>Deadline-miss safe by construction:</strong> the previous backup trajectory’s tail still terminates in <span class="math inline">\(\mathcal S\)</span> → executing its next step preserves <span class="math inline">\(\underline\rho\geq 0\)</span> under worst-case <span class="math inline">\(\mathcal W\)</span> — <em>no manual intervention needed</em></li>
 </ul>
 <div class="gt-thrust-1">
 <p>The split decouples <strong>correctness</strong> (slow MIP, I-STL interval semantics) from <strong>bandwidth</strong> (fast NRT tracking the spline).</p>
@@ -2997,27 +2997,27 @@ All predictors share the ZOH structure $\hat y(t+T)=\rho(x(t),u(t))$ [@YW-CS-JC-
 <td style="text-align: right;">0.07</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Horizon <span class="math inline">\(N\)</span></td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">12</td>
+<td style="text-align: left;">Formula horizon <span class="math inline">\(\|\varphi\|\)</span></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">NR speedup <span class="math inline">\(\alpha_0\)</span></td>
+<td style="text-align: left;">Actuation coeff. <span class="math inline">\(\alpha_0\)</span></td>
 <td style="text-align: right;">0.4</td>
 <td style="text-align: right;">0.4</td>
 <td style="text-align: right;">0.3</td>
 </tr>
 </tbody>
 </table>
-<p>Hardware <span class="math inline">\(\lvert\varepsilon\rvert\)</span> inflated <span class="math inline">\(\sim 60\%\)</span> vs.&nbsp;sim — absorbs unmodeled higher-order terms and slight negative buoyancy.</p>
+<p>Prediction horizon <span class="math inline">\(N=12\)</span>, <span class="math inline">\(b=1\)</span> [§&nbsp;X.4]. Hardware <span class="math inline">\(\lvert\varepsilon\rvert\)</span> inflated <span class="math inline">\(\sim 70\!-\!80\%\)</span> vs.&nbsp;sim — absorbs unmodeled higher-order terms and slight negative buoyancy.</p>
 </div><div class="column" style="width:50%;">
 <p><strong>Findings</strong> <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span></p>
 <ul>
 <li><strong>Sim:</strong> RTA never missed its 0.5&nbsp;s deadline; <span class="math inline">\(\underline\rho^\varphi\geq 0\)</span> throughout both runs</li>
 <li><strong>Hardware:</strong> deadline missed $<span class="math inline">\(1\)</span>$/50&nbsp;s — safety preserved automatically by the previous backup; no falls into <span class="math inline">\(\mathcal S\)</span></li>
 <li>Both specs satisfied across the entire run; the nominal PID violation pattern is bent into a verified safe trajectory</li>
-<li>First demo of I-STL RTA on the <strong>full 6-DOF nonlinear blimp</strong> — prior I-STL work <span class="citation" data-cites="LB-EMC-SC:2026">[<a href="#/references" role="doc-biblioref" onclick="">4</a>]</span> used only the linearized model</li>
+<li>First <strong>hardware</strong> demo of I-STL RTA on the GT-MAB platform: linearized 12-D blimp model in the RTA MIP, full 6-DOF nonlinear model in the NRT tracking layer — prior I-STL control synthesis was simulation-only on a linearized model</li>
 </ul>
 <div class="gt-thrust-1">
 <p>The persistent-feasibility net is the design payoff: occasional MIP overruns, which would chatter or crash a simplex-style RTA, are absorbed silently — the system is <strong>provably safe even when the optimizer fails</strong>.</p>
