@@ -17,6 +17,7 @@ project:
     - "!plan.md"
   post-render: bash fix-listing-urls.sh
   resources:
+    - .nojekyll
     - CNAME
     - overleaf_presentations
     - files/site_icon/apple-touch-icon.png
