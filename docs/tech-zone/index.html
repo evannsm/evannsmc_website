@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="An always-on semantic code intelligence daemon for Claude Code — keeps a knowledge graph of your entire codebase fresh via inotify, even when Claude is closed.">
+<meta name="description" content="Tech tutorials, dotfiles, and lessons from building my personal computing stack — Arch Linux, Neovim, tiling and scrolling window managers, and a privacy-first home setup.">
 
-<title>CodeGraph Live – evannsmc</title>
+<title>The Tech Zone – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,66 +21,31 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../files/site_icon/favicon.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -163,16 +128,16 @@ document.addEventListener('DOMContentLoaded', function () {
 <script data-goatcounter="https://evannsmc.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
 
 
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="CodeGraph Live – evannsmc">
-<meta property="og:description" content="An always-on semantic code intelligence daemon for Claude Code — keeps a knowledge graph of your entire codebase fresh via inotify, even when Claude is closed.">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="The Tech Zone – evannsmc">
+<meta property="og:description" content="Tech tutorials, dotfiles, and lessons from building my personal computing stack — Arch Linux, Neovim, tiling and scrolling window managers, and a privacy-first home setup.">
 <meta property="og:site_name" content="evannsmc">
-<meta name="twitter:title" content="CodeGraph Live – evannsmc">
-<meta name="twitter:description" content="An always-on semantic code intelligence daemon for Claude Code — keeps a knowledge graph of your entire codebase fresh via inotify, even when Claude is closed.">
+<meta name="twitter:title" content="The Tech Zone – evannsmc">
+<meta name="twitter:description" content="Tech tutorials, dotfiles, and lessons from building my personal computing stack — Arch Linux, Neovim, tiling and scrolling window managers, and a privacy-first home setup.">
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -337,14 +302,14 @@ document.addEventListener('DOMContentLoaded', function () {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../files/site_icon/favicon.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">evannsmc</span>
     </a>
   </div>
@@ -355,35 +320,35 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../cv"> 
+    <a class="nav-link" href="../cv"> 
 <span class="menu-text">CV &amp; Résumé</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../publications"> 
+    <a class="nav-link" href="../publications"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../projects"> 
+    <a class="nav-link" href="../projects"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../about"> 
+    <a class="nav-link" href="../about"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../journey"> 
+    <a class="nav-link" href="../journey"> 
 <span class="menu-text">Journey</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../blog"> 
+    <a class="nav-link" href="../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../tech-zone"> 
+    <a class="nav-link" href="../tech-zone"> 
 <span class="menu-text">The Tech Zone</span></a>
   </li>  
 </ul>
@@ -395,225 +360,611 @@ document.addEventListener('DOMContentLoaded', function () {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">The Tech Zone</h1>
+                  <div>
+        <div class="description">
+          Tech tutorials, dotfiles, and lessons from building my personal computing stack — Arch Linux, Neovim, tiling and scrolling window managers, and a privacy-first home setup.
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
 <a class="skip-to-content" href="#quarto-content">Skip to main content</a>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">CodeGraph Live</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">TypeScript</div>
-    <div class="quarto-category">Node.js</div>
-    <div class="quarto-category">Claude Code</div>
-    <div class="quarto-category">MCP</div>
-    <div class="quarto-category">Developer Tools</div>
-  </div>
+
+
+
+
+<style>
+#title-block-header {
+  display: none;
+}
+
+/* Tech Zone — its own terminal-flavored personality.
+   We deliberately diverge from the Research Blog (blue, sans-serif)
+   to signal: this is build logs, not literature. */
+:root {
+  --tz-accent: #22c55e;            /* terminal green */
+  --tz-prompt: #38bdf8;             /* sky-cyan for the $ prompt char */
+  --tz-warn:   #f59e0b;             /* amber for in-progress / warning */
+  --tz-fail:   #ef4444;             /* red for failed-boot card */
+  --tz-mono:   "Iosevka", "JetBrains Mono", "Fira Code", ui-monospace,
+               SFMono-Regular, Menlo, Consolas, monospace;
+
+  --tz-card-bg:     #eef7ee;
+  --tz-card-border: #b6c4ad;
+  --tz-card-inner:  #f7fbf6;
+  --tz-screen-bg:   #0f172a;        /* near-black terminal background */
+  --tz-screen-fg:   #e2e8f0;
+  --tz-screen-mute: #94a3b8;
+}
+
+body.quarto-dark {
+  --tz-accent: #4ade80;
+  --tz-prompt: #7dd3fc;
+  --tz-warn:   #fbbf24;
+  --tz-fail:   #f87171;
+  --tz-card-bg:     rgba(31, 41, 55, 0.92);
+  --tz-card-border: rgba(148, 163, 184, 0.28);
+  --tz-card-inner:  rgba(15, 23, 42, 0.65);
+  --tz-screen-bg:   #020617;
+  --tz-screen-fg:   #e2e8f0;
+  --tz-screen-mute: #94a3b8;
+}
+
+/* Widen the content column so the header and cards have real room. */
+.page-columns {
+  grid-template-columns: [screen-start] 4rem [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 4rem [screen-end] !important;
+}
+
+main.content.column-page {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.tz-shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 2vw, 2rem) 5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─────────────────────────  TERMINAL HEADER  ───────────────────────── */
+
+.tz-terminal {
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 0 2.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 12px 30px -20px rgba(0, 0, 0, 0.25);
+}
+
+.tz-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  background: color-mix(in oklab, var(--bg-secondary), #000 8%);
+  border-bottom: 1px solid var(--border);
+}
+
+.tz-terminal-bar .dot {
+  width: 0.7rem; height: 0.7rem; border-radius: 50%; background: #cbd5e1;
+}
+.tz-terminal-bar .dot.red    { background: #ef4444; }
+.tz-terminal-bar .dot.yellow { background: #f59e0b; }
+.tz-terminal-bar .dot.green  { background: #22c55e; }
+
+.tz-terminal-bar .title {
+  margin-left: 0.6rem;
+  font-family: var(--tz-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.tz-terminal-body {
+  padding: 1.4rem 1.4rem 1.6rem;
+  font-family: var(--tz-mono);
+}
+
+.tz-prompt-line {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.tz-prompt-line .user { color: var(--tz-accent); font-weight: 700; }
+.tz-prompt-line .sep  { color: var(--text-secondary); }
+.tz-prompt-line .path { color: var(--tz-prompt); font-weight: 600; }
+.tz-prompt-line .glyph { color: var(--text-secondary); margin: 0 0.35rem; }
+
+.tz-title {
+  margin: 0.3rem 0 0.7rem;
+  font-family: var(--tz-mono);
+  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.tz-title .cursor {
+  display: inline-block;
+  width: 0.55ch;
+  margin-left: 0.15ch;
+  background: var(--tz-accent);
+  color: transparent;
+  animation: tz-blink 1.05s steps(2, end) infinite;
+}
+
+@keyframes tz-blink { 50% { background: transparent; } }
+
+.tz-intro {
+  max-width: 68rem;
+  margin: 0 0 0.65rem;
+  color: var(--text-secondary);
+  font-size: 0.97rem;
+  line-height: 1.75;
+  font-family: var(--tz-mono);
+}
+.tz-intro:last-child { margin-bottom: 0; }
+
+.tz-intro .label {
+  color: var(--tz-accent);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.tz-intro code {
+  background: color-mix(in oklab, var(--tz-accent), transparent 86%);
+  border: 1px solid color-mix(in oklab, var(--tz-accent), transparent 70%);
+  color: var(--tz-accent);
+  padding: 0.02em 0.35em;
+  border-radius: 0.25rem;
+  font-size: 0.92em;
+}
+
+/* ─────────────────────────  CARD GRID  ───────────────────────── */
+
+.tz-section-kicker {
+  margin: 0 0 0.5rem;
+  font-family: var(--tz-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--tz-accent);
+}
+
+.tz-section-kicker::before { content: "// "; opacity: 0.55; }
+
+.tz-section-title {
+  margin: 0 0 1.4rem;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.tz-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.tz-card {
+  position: relative;
+  display: block;
+  border: 1.5px solid var(--tz-card-border);
+  border-radius: 1.35rem;
+  background: var(--tz-card-bg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tz-card:hover,
+.tz-card:focus-visible {
+  border-color: color-mix(in srgb, var(--tz-accent) 38%, var(--tz-card-border));
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.tz-card:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tz-accent) 55%, transparent);
+  outline-offset: 0.2rem;
+}
+
+.tz-card.failed:hover,
+.tz-card.failed:focus-visible {
+  border-color: color-mix(in srgb, var(--tz-fail) 38%, var(--tz-card-border));
+}
+
+.tz-card-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  padding: 1.55rem;
+}
+
+.tz-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.tz-tag {
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1.2px solid color-mix(in srgb, var(--tz-accent) 35%, var(--tz-card-border));
+  color: var(--tz-accent);
+  background: color-mix(in oklab, var(--tz-accent), transparent 90%);
+  font-family: var(--tz-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tz-tag::before { content: "#"; opacity: 0.6; margin-right: 0.05em; }
+
+.tz-card.failed .tz-tag {
+  color: var(--tz-fail);
+  border-color: color-mix(in srgb, var(--tz-fail) 35%, var(--tz-card-border));
+  background: color-mix(in oklab, var(--tz-fail), transparent 90%);
+}
+
+.tz-card-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.45rem;
+}
+
+.tz-card-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem; height: 2rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--tz-accent), transparent 82%);
+  color: var(--tz-accent);
+  font-family: var(--tz-mono);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.tz-card.failed .tz-card-number {
+  background: color-mix(in oklab, var(--tz-fail), transparent 82%);
+  color: var(--tz-fail);
+}
+
+.tz-card-name {
+  margin: 0;
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tz-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-family: var(--tz-mono);
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.tz-card-date::before { content: "[ "; opacity: 0.55; }
+.tz-card-date::after  { content: " ]"; opacity: 0.55; }
+
+.tz-status-pill {
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-family: var(--tz-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+
+.tz-status-pill.ok    { color: var(--tz-accent); background: color-mix(in oklab, var(--tz-accent), transparent 92%); }
+.tz-status-pill.warn  { color: var(--tz-warn);   background: color-mix(in oklab, var(--tz-warn),   transparent 92%); }
+.tz-status-pill.fail  { color: var(--tz-fail);   background: color-mix(in oklab, var(--tz-fail),   transparent 92%); }
+
+.tz-card-preview-copy {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.tz-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-family: var(--tz-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tz-accent);
+  letter-spacing: 0.02em;
+  transition: gap 0.18s ease;
+}
+
+.tz-card.failed .tz-card-cta { color: var(--tz-fail); }
+
+.tz-card:hover .tz-card-cta,
+.tz-card:focus-visible .tz-card-cta { gap: 0.7rem; }
+
+.tz-card-cta .arrow { transition: transform 0.18s ease; }
+.tz-card:hover .tz-card-cta .arrow,
+.tz-card:focus-visible .tz-card-cta .arrow { transform: translateX(2px); }
+
+/* ──── The "screen" preview inside each card — a mock terminal session ──── */
+
+.tz-screen {
+  background: var(--tz-screen-bg);
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--tz-screen-bg) 50%, var(--tz-card-border));
+  overflow: hidden;
+  font-family: var(--tz-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--tz-screen-fg);
+  position: relative;
+}
+
+.tz-screen-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--tz-screen-mute);
+}
+
+.tz-screen-bar .dot {
+  width: 0.55rem; height: 0.55rem; border-radius: 50%; background: rgba(255, 255, 255, 0.18);
+}
+.tz-screen-bar .dot.red    { background: #ef4444; }
+.tz-screen-bar .dot.yellow { background: #f59e0b; }
+.tz-screen-bar .dot.green  { background: #22c55e; }
+
+.tz-screen-bar .label {
+  margin-left: 0.3rem;
+  flex: 1;
+}
+
+.tz-screen-bar .badge {
+  padding: 0.05rem 0.45rem;
+  border-radius: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tz-screen-bar .badge.ok   { color: var(--tz-accent); background: color-mix(in oklab, var(--tz-accent), transparent 82%); }
+.tz-screen-bar .badge.fail { color: var(--tz-fail);   background: color-mix(in oklab, var(--tz-fail),   transparent 82%); }
+
+.tz-screen-body {
+  padding: 0.95rem 1.05rem 1.1rem;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.tz-screen .p   { color: var(--tz-screen-mute); }
+.tz-screen .u   { color: var(--tz-accent); font-weight: 600; }
+.tz-screen .c   { color: var(--tz-prompt); }
+.tz-screen .ok  { color: var(--tz-accent); }
+.tz-screen .err { color: var(--tz-fail); font-weight: 600; }
+.tz-screen .w   { color: var(--tz-warn); }
+.tz-screen .mute { color: var(--tz-screen-mute); }
+
+/* ─────────────────────────  RESPONSIVE  ───────────────────────── */
+
+@media (max-width: 1100px) {
+  .tz-card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .page-columns {
+    grid-template-columns: [screen-start] 0.5rem [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 0.5rem [screen-end] !important;
+  }
+  .tz-shell { padding: 2.5rem 0.75rem 4rem; }
+  .tz-terminal-body { padding: 1.1rem 1rem 1.3rem; }
+  .tz-card-summary  { padding: 1.25rem; }
+  .tz-screen-body   { font-size: 0.74rem; }
+}
+</style>
+
+<div class="tz-shell">
+
+  <!-- ─────── Terminal-styled section header ─────── -->
+  <div class="tz-terminal" role="img" aria-label="Terminal window header for The Tech Zone">
+    <div class="tz-terminal-bar">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+      <span class="title">evannsmc@tech-zone: ~</span>
+    </div>
+    <div class="tz-terminal-body">
+      <p class="tz-prompt-line">
+        <span class="user">evannsmc</span><span class="sep">@</span><span class="user">arch</span><span class="glyph">:</span><span class="path">~/tech-zone</span><span class="glyph">$</span> cat README.md
+      </p>
+      <h1 class="tz-title">The Tech Zone<span class="cursor">_</span></h1>
+      <p class="tz-intro">
+        Tech tutorials, dotfiles, and lessons from building my personal computing stack piece by piece.
+      </p>
+      <p class="tz-intro">
+        <span class="label">Currently:</span> my first <code>Arch Linux</code> install on an old laptop —
+        on the way to a dual-boot Ubuntu/Arch workstation with <code>BTRFS</code>, <code>LUKS</code>,
+        and <code>zram</code>, and eventually a triple-boot with a minimal Windows partition for
+        collaborators who live in Office-suite land.
+      </p>
+      <p class="tz-intro">
+        <span class="label">Next on this thread:</span> <code>Neovim</code> from scratch, tiling and scrolling
+        window managers, and whatever else I break and fix.
+      </p>
+      <p class="tz-intro">
+        <span class="label">Eventually:</span> a privacy-first home setup with custom DNS routing,
+        a personal VPN I can connect to from anywhere, and self-hosted services on a NAS.
+      </p>
+    </div>
   </div>
 
-<div>
-  <div class="description">
-    An always-on semantic code intelligence daemon for Claude Code — keeps a knowledge graph of your entire codebase fresh via inotify, even when Claude is closed.
+  <!-- ─────── Section heading for the cards ─────── -->
+  <p class="tz-section-kicker">latest entries</p>
+  <h2 class="tz-section-title anchored">Articles &amp; build logs.</h2>
+
+  <!-- ─────── Card grid ─────── -->
+  <div class="tz-card-grid">
+
+    <!-- CARD 01 — Basic Arch install (success) -->
+    <a class="tz-card success" href="./posts/2026-05-01-first-arch-install/" aria-label="Read: My First Arch Linux Install — A Basic Setup on an Old Laptop">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">first install</span>
+          <span class="tz-tag">ext4</span>
+          <span class="tz-tag">grub</span>
+          <span class="tz-tag">systemd</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">01</span>
+          <h3 class="tz-card-name anchored">My First Arch Linux Install: A Basic Setup on an Old Laptop</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-01</span>
+          <span class="tz-status-pill ok">boot ok</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          A copy-pasteable walkthrough of installing Arch Linux 2026.05.01 on an old test laptop — verifying
+          the ISO, partitioning, pacstrapping, configuring locale and users, and getting GRUB to actually boot
+          the thing. No Btrfs, no LUKS, no zram — just the boring, dependable first install.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">post-install — boot check</span>
+            <span class="badge ok">boot ok</span>
+          </div>
+          <div class="tz-screen-body"><span class="p">[evannsmc@arch ~]$</span> <span class="c">lsblk</span>
+NAME        SIZE  TYPE  MOUNTPOINTS
+nvme0n1     465G  disk
+├─nvme0n1p1   1G  part  /boot
+├─nvme0n1p2  35G  part  <span class="mute">[SWAP]</span>
+├─nvme0n1p3 200G  part  /
+└─nvme0n1p4 229G  part  /home
+
+<span class="p">[evannsmc@arch ~]$</span> <span class="c">systemctl is-system-running</span>
+<span class="ok">running</span>
+
+<span class="p">[evannsmc@arch ~]$</span> <span class="c">uname -r</span>
+6.13.4-arch1-1<span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the install log <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- CARD 02 — Ambitious LUKS+Btrfs install (failed) -->
+    <a class="tz-card failed" href="./posts/2026-05-05-arch-luks-btrfs-lessons/" aria-label="Read: An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">luks</span>
+          <span class="tz-tag">btrfs</span>
+          <span class="tz-tag">mkinitcpio</span>
+          <span class="tz-tag">debugging</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">02</span>
+          <h3 class="tz-card-name anchored">An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs &amp; Lessons</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-05</span>
+          <span class="tz-status-pill fail">in progress</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          The opposite of the boring install: full-disk LUKS, Btrfs subvolumes for <code>/</code> and
+          <code>/home</code>, zram swap, a shared data partition, and dual-boot with Ubuntu. GRUB loaded,
+          the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode.
+          The plan, the failure, and everything I've tried so far.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">boot — emergency.target</span>
+            <span class="badge fail">boot failed</span>
+          </div>
+          <div class="tz-screen-body"><span class="mute">A start job is running for /dev/disk/by-uuid/0e6caf44-…</span>
+<span class="mute">A password is required to access the Arch volume.</span>
+
+<span class="err">[FAIL]</span> <span class="mute">Timed out waiting for device</span>
+        <span class="mute">/dev/disk/by-uuid/0e6caf44-...</span>
+<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for /sysroot.</span>
+<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for initrd-root-fs.target.</span>
+
+<span class="w">You are in emergency mode.</span>
+
+<span class="p">root@archiso ~ #</span> <span class="c">ls /dev/mapper</span>
+control  arch  <span class="mute">…</span><span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the post-mortem <span class="arrow">→</span></span>
+      </div>
+    </a>
+
   </div>
+
 </div>
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<div class="d-flex gap-2 flex-wrap mb-3">
-<p><a href="https://github.com/evannsmc/codegraph-live" class="btn btn-sm btn-primary" target="_blank">GitHub ↗</a> <a href="https://github.com/colbymchenry/codegraph" class="btn btn-sm btn-outline-primary" target="_blank">Upstream: colbymchenry/codegraph</a></p>
-</div>
-<p>Every time I opened Claude Code after an editing session in VS Code or a <code>git pull</code>, it would waste tokens re-reading files to orient itself. The upstream codegraph project builds a semantic graph of your codebase and exposes it to Claude via MCP — but only keeps it fresh when Claude Code is open. The moment you close it, the graph goes stale.</p>
-<p><strong>CodeGraph Live</strong> fixes this with a persistent background daemon that watches all your projects simultaneously via Linux inotify. Every file save from any editor is detected and synced within a second, automatically, even when Claude Code is completely closed.</p>
-<hr>
-<section id="what-it-adds-over-upstream" class="level3">
-<h3 class="anchored" data-anchor-id="what-it-adds-over-upstream">What it adds over upstream</h3>
-<p>The upstream <a href="https://github.com/colbymchenry/codegraph">colbymchenry/codegraph</a> already builds a solid code knowledge graph and exposes it to Claude through an MCP server. What it doesn’t do is keep that graph fresh outside of Claude Code sessions.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th>upstream codegraph</th>
-<th>CodeGraph Live</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Sync on Claude’s own edits</td>
-<td>Yes (PostToolUse hook)</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td>Sync when editing outside Claude</td>
-<td>No — manual <code>sync</code> only</td>
-<td><strong>Always automatic</strong></td>
-</tr>
-<tr class="odd">
-<td>Graph fresh when Claude is closed</td>
-<td>No</td>
-<td><strong>Yes</strong></td>
-</tr>
-<tr class="even">
-<td>Filesystem watcher</td>
-<td>No</td>
-<td><strong><span class="citation" data-cites="parcel/watcher">@parcel/watcher</span> (inotify)</strong></td>
-</tr>
-<tr class="odd">
-<td>Systemd user service</td>
-<td>No</td>
-<td><strong>Yes — starts at login</strong></td>
-</tr>
-<tr class="even">
-<td>Auto-discover new projects</td>
-<td>No</td>
-<td><strong>Yes — scans $HOME every 30s</strong></td>
-</tr>
-</tbody>
-</table>
-<hr>
-</section>
-<section id="how-it-works" class="level3">
-<h3 class="anchored" data-anchor-id="how-it-works">How it works</h3>
-<pre><code>Boot → systemd starts codegraph-live daemon
-  │
-  ├── Scans $HOME for .codegraph/codegraph.db (initialized projects)
-  ├── Opens @parcel/watcher subscription on each project root
-  │
-  └── On file change → 1000ms debounce → CodeGraph.sync()
-        (incremental update — only re-indexes changed files)</code></pre>
-<p>The daemon runs alongside Claude Code’s own sync hooks:</p>
-<ul>
-<li><strong><code>PostToolUse</code> hook</strong> (Edit/Write) → <code>mark-dirty</code> — flags the project immediately after Claude edits a file</li>
-<li><strong><code>Stop</code> hook</strong> → <code>sync-if-dirty</code> — runs a full sync before Claude’s next response, so the graph reflects everything Claude just wrote</li>
-</ul>
-<p>Both paths write to the same SQLite database under <code>.codegraph/</code>, protected by CodeGraph’s built-in <code>FileLock</code> so the daemon and MCP server never conflict.</p>
-<hr>
-</section>
-<section id="claude-code-integration" class="level3">
-<h3 class="anchored" data-anchor-id="claude-code-integration">Claude Code integration</h3>
-<p>Once installed, Claude Code queries the graph through seven MCP tools instead of reading source files:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Tool</th>
-<th>What Claude uses it for</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>codegraph_explore</code></td>
-<td>Deep exploration — comprehensive context for a topic in one call</td>
-</tr>
-<tr class="even">
-<td><code>codegraph_context</code></td>
-<td>Quick context for a task</td>
-</tr>
-<tr class="odd">
-<td><code>codegraph_search</code></td>
-<td>Find symbols by name — functions, classes, types</td>
-</tr>
-<tr class="even">
-<td><code>codegraph_callers</code></td>
-<td>Everything that calls a given function</td>
-</tr>
-<tr class="odd">
-<td><code>codegraph_callees</code></td>
-<td>Everything a function calls</td>
-</tr>
-<tr class="even">
-<td><code>codegraph_impact</code></td>
-<td>What breaks if a symbol changes</td>
-</tr>
-<tr class="odd">
-<td><code>codegraph_node</code></td>
-<td>Full source + metadata for a single symbol</td>
-</tr>
-</tbody>
-</table>
-<p>The global <code>~/.claude/CLAUDE.md</code> instructions (written by <code>codegraph-live install</code>) tell Claude to prefer these tools for structural questions rather than grepping through files, keeping the main session context lean.</p>
-<hr>
-</section>
-<section id="setup" class="level3">
-<h3 class="anchored" data-anchor-id="setup">Setup</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Clone and install</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:evannsmc/codegraph-live.git</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> codegraph-live <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> run build <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install <span class="at">-g</span> .</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Register systemd service (starts daemon at every login)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">codegraph-live</span> daemon install-service</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. One-time global setup (writes ~/.claude/CLAUDE.md + MCP config)</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">codegraph-live</span> install</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Initialize each project</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/your-project</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">codegraph-live</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>After step 4 the daemon picks up the new project within 30 seconds — no restart needed.</p>
-<hr>
-</section>
-<section id="architecture" class="level3">
-<h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
-<p>The fork adds four new source modules on top of upstream:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Module</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>src/daemon/index.ts</code></td>
-<td>Main daemon loop: inotify subscriptions, debounce, sync</td>
-</tr>
-<tr class="even">
-<td><code>src/daemon/discovery.ts</code></td>
-<td>Recursive <code>$HOME</code> scan for <code>.codegraph/codegraph.db</code></td>
-</tr>
-<tr class="odd">
-<td><code>src/daemon/pid.ts</code></td>
-<td>PID file management for start/stop/status CLI commands</td>
-</tr>
-<tr class="even">
-<td><code>src/daemon/logger.ts</code></td>
-<td>Timestamped log to <code>~/.local/share/codegraph-live/daemon.log</code></td>
-</tr>
-</tbody>
-</table>
-<p>The installer was split into <code>runGlobalInstaller()</code> (machine-wide, writes <code>~/.claude/</code>) and <code>runProjectInit()</code> (per-project, writes <code>.claude/</code> locally) to keep the setup semantics clean. In-depth documentation for each component lives in the repo’s <a href="https://github.com/evannsmc/codegraph-live/tree/main/architecture"><code>architecture/</code></a> directory.</p>
-<hr>
-<p><strong>Built with:</strong> TypeScript · Node.js · <span class="citation" data-cites="parcel/watcher">@parcel/watcher</span> · SQLite · MCP · systemd</p>
-
-
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

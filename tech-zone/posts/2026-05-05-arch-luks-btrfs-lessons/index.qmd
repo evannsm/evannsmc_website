@@ -1,0 +1,532 @@
+---
+title: "[In progress] An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned"
+description: "A post-mortem on my second pass at installing Arch Linux: full-disk LUKS encryption, Btrfs subvolumes for / and /home, zram for everyday swap, a shared data partition, and a dedicated encrypted swap partition for hibernation, set up to dual-boot with Ubuntu. GRUB loaded, the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode. Here's the plan, the failure, and everything I've tried so far."
+author: "Evanns Morales-Cuadrado"
+date: "2026-05-05"
+categories: [arch linux, linux, installation, luks, btrfs, grub, mkinitcpio, debugging, dual-boot]
+image: ../../../files/tech-zone/arch-logo-dark.svg
+image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
+draft: false
+---
+
+::: {.callout-warning}
+## Heads up: this one didn't work
+
+This article is honest. The ambitious dual-boot setup it describes — LUKS + Btrfs + zram + shared data partition + encrypted swap for hibernation — accepted my passphrase at boot and then dropped into a `systemd` emergency shell with a "Timed out waiting for device" error. I'm publishing the design, the install steps, and the post-mortem here as a learning record, not as a guide to copy. If you want a known-good first install, go read [my basic Arch install](../2026-05-01-first-arch-install/) instead.
+:::
+
+## The plan I tried to execute
+
+After successfully completing the [basic Arch install on my old laptop](../2026-05-01-first-arch-install/), I wanted to go further. The eventual workstation I'm building toward looks like this:
+
+- **Dual-boot Arch + Ubuntu** on one ~1 TB SSD, with both distros sharing a single EFI System Partition.
+- Each distro encrypted at the partition level with **LUKS**.
+- Each distro using **Btrfs** with `zstd` compression, with the Timeshift-friendly subvolume layout (`@` for root, `@home` for home).
+- A **shared data partition** mounted from both distros (`/data`), so my git repos, ROS 2 workspaces, datasets, and media live in one neutral place.
+- **zram** as the primary swap mechanism (compressed swap in RAM — fewer SSD writes during normal use).
+- A separate **encrypted swap partition** big enough for hibernation (suspend-to-disk).
+
+The proposed partition layout:
+
+| Partition           | Size      | Filesystem | Encryption       | Purpose                              |
+|---------------------|----------:|------------|------------------|--------------------------------------|
+| EFI System          | 1 GiB     | FAT32      | none             | UEFI bootloaders for both systems    |
+| Encrypted swap      | 35 GiB    | swap       | LUKS             | Hibernation                          |
+| Shared data         | 100 GiB   | Btrfs      | LUKS (optional)  | Cross-distro files                   |
+| Arch                | 420 GiB   | Btrfs      | LUKS             | Arch root + home as Btrfs subvolumes |
+| Ubuntu              | 420 GiB   | Btrfs      | LUKS             | Ubuntu root + home as Btrfs subvolumes |
+
+And inside each Linux partition, the Btrfs subvolume layout:
+
+```text
+@           -> /
+@home       -> /home
+@snapshots  -> /.snapshots
+@var_log    -> /var/log
+```
+
+::: {.callout-tip}
+## Why these names
+
+Timeshift (a snapshot/backup tool) expects exactly `@` and `@home`. If you rename them to `@arch_root` or `@ubuntu_home` or anything else, Timeshift will not auto-detect the layout and you'll have to configure it by hand. Keeping the names default is one of those small choices that costs nothing now and saves a headache later.
+:::
+
+### Why one big Btrfs partition per distro instead of separate `/` and `/home` partitions?
+
+With ext4 partitions, you have to *guess* how much space root vs. home will need. If you guess wrong, one fills up while the other has plenty free. Btrfs subvolumes are logically separate but share the same free-space pool inside the partition — so root and home grow into whichever space is actually needed.
+
+### Why zram **and** a swap partition?
+
+Different jobs.
+
+- **zram** is fast, compressed swap in RAM. It reduces SSD write wear during normal pressure and is usually preferable to a disk swap file for day-to-day swap.
+- **A disk swap partition** is the only thing that survives a power-off. Hibernation (suspend-to-disk) requires somewhere durable to dump the contents of RAM, and that has to be a real block device, not a tmpfs.
+
+So zram handles 99% of swap activity in RAM, and the disk swap partition exists *specifically* for hibernation.
+
+---
+
+## The install path
+
+Most of the early steps are identical to the [basic install](../2026-05-01-first-arch-install/): verify the ISO, boot the live USB, set up Wi-Fi and SSH, set the keymap and timezone, and partition with `cfdisk`. The differences start at formatting.
+
+### Encrypt the Linux partitions
+
+```bash
+cryptsetup luksFormat /dev/nvme0n1p4   # Arch Linux partition
+cryptsetup luksFormat /dev/nvme0n1p5   # Ubuntu partition
+cryptsetup luksFormat /dev/nvme0n1p3   # Shared data (optional but recommended)
+cryptsetup luksFormat /dev/nvme0n1p2   # Encrypted swap (required for hibernation)
+```
+
+Each `luksFormat` prompts you to type `YES` (literally, uppercase) and then set a passphrase. **You will not be able to recover this data if you forget the passphrase.** I used a password manager.
+
+### Open the encrypted containers
+
+```bash
+cryptsetup open /dev/nvme0n1p4 arch
+cryptsetup open /dev/nvme0n1p5 ubuntu
+cryptsetup open /dev/nvme0n1p3 shared
+cryptsetup open /dev/nvme0n1p2 swap
+```
+
+This creates `/dev/mapper/arch`, `/dev/mapper/ubuntu`, `/dev/mapper/shared`, and `/dev/mapper/swap`. From here forward, the live system reads and writes those mapper devices the way it would a normal block device — LUKS handles encryption transparently.
+
+### Create filesystems
+
+```bash
+mkfs.fat -F32 /dev/nvme0n1p1        # EFI System Partition
+mkfs.btrfs -f /dev/mapper/arch      # Arch
+mkfs.btrfs -f /dev/mapper/ubuntu    # Ubuntu
+mkfs.btrfs -f /dev/mapper/shared    # Shared
+mkswap        /dev/mapper/swap       # Encrypted swap
+```
+
+### Create Btrfs subvolumes for Arch
+
+```bash
+mount /dev/mapper/arch /mnt
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+umount /mnt
+```
+
+We mount the top of the Btrfs volume just long enough to create the subvolumes inside it, then unmount because we're about to mount the subvolumes individually.
+
+### Mount the Arch subvolumes
+
+```bash
+mkdir -p /mnt/{boot,home,data}
+
+mount -o noatime,ssd,compress=zstd,subvol=@ \
+    /dev/mapper/arch /mnt
+
+mount -o noatime,ssd,compress=zstd,subvol=@home \
+    /dev/mapper/arch /mnt/home
+```
+
+The mount options earn their keep:
+
+- `noatime` — don't update access timestamps on every read. Reduces unnecessary writes.
+- `ssd` — explicitly enable Btrfs's SSD heuristics. Modern Btrfs usually auto-detects NVMe and SSD devices, but being explicit is harmless and self-documenting.
+- `compress=zstd` — transparent Zstandard compression. Great compression ratio with very low CPU cost.
+- `subvol=@` (and `subvol=@home`) — which subvolume to mount at this path.
+
+Notably absent: `discard=async`. Online discard is fine, but I'm planning to use `fstrim.timer` (weekly batch TRIM) instead. Doing both is redundant.
+
+### Mount the rest
+
+```bash
+mount /dev/nvme0n1p1 /mnt/boot                               # EFI partition
+mount -o noatime,ssd,compress=zstd /dev/mapper/shared /mnt/data   # shared data
+swapon /dev/mapper/swap                                       # encrypted swap
+```
+
+### Recovery: starting the mount step over
+
+The full LUKS+Btrfs mount sequence has enough steps that you *will* fat-finger one of them at least once. If you do, this resets the mount state cleanly so you can try again without rebuilding anything:
+
+```bash
+swapoff /dev/mapper/swap
+umount -R /mnt
+mount | grep /mnt          # should print nothing now
+
+mkdir -p /mnt/{boot,home,data}
+
+mount -o noatime,ssd,compress=zstd,subvol=@ \
+    /dev/mapper/arch /mnt
+mount -o noatime,ssd,compress=zstd,subvol=@home \
+    /dev/mapper/arch /mnt/home
+mount /dev/nvme0n1p1 /mnt/boot
+mount -o noatime,ssd,compress=zstd /dev/mapper/shared /mnt/data
+swapon /dev/mapper/swap
+```
+
+### Pacstrap, fstab, chroot
+
+Same as the basic install, except we also need `btrfs-progs`:
+
+```bash
+pacstrap -K /mnt base linux linux-firmware btrfs-progs \
+    grub efibootmgr networkmanager sudo neovim \
+    git base-devel intel-ucode
+
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+```
+
+`btrfs-progs` ships the userspace tools (`btrfs`, `btrfs-balance`, etc.) without which a Btrfs root system can't be maintained.
+
+The basic system configuration that follows (timezone, locale, hostname, user, sudo, package installs) is exactly the same as the basic install, with one addition to the second wave of packages: `grub-btrfs`, which adds Btrfs snapshot entries to the GRUB menu automatically.
+
+---
+
+## The interesting part: initramfs and bootloader for LUKS + Btrfs
+
+When you boot a system whose root filesystem is on a LUKS-encrypted Btrfs subvolume, the journey from power-on to login prompt has more moving parts than an unencrypted ext4 install:
+
+1. UEFI firmware fires up.
+2. GRUB loads the Linux kernel and an *initramfs* — a small temporary Linux environment that lives in RAM.
+3. The initramfs detects hardware, loads kernel modules, and prompts for the LUKS passphrase.
+4. The encrypted partition is unlocked and mapped to `/dev/mapper/arch`.
+5. The Btrfs `@` subvolume is mounted as `/`.
+6. Control hands off to systemd inside the real root filesystem.
+
+Three things have to be configured correctly for that chain to work: `mkinitcpio.conf` (what the initramfs contains), `/etc/default/grub` (what GRUB tells the kernel about the encrypted disk), and the regenerated initramfs and GRUB config files themselves.
+
+### Configure `/etc/mkinitcpio.conf`
+
+```bash
+nvim /etc/mkinitcpio.conf
+```
+
+Set:
+
+```bash
+MODULES=(btrfs)
+HOOKS=(base udev autodetect microcode modconf kms keyboard keymap block encrypt filesystems fsck)
+```
+
+Why both `MODULES` and `HOOKS`?
+
+```text
+MODULES = actual kernel drivers compiled in / preloaded
+HOOKS   = scripts and procedures executed during early boot
+```
+
+`btrfs` goes in `MODULES` because the initramfs needs the Btrfs *driver* before it can mount the root filesystem. `encrypt`, `block`, `keyboard`, and `filesystems` go in `HOOKS` because they're early-boot logic: detect block devices, accept a passphrase, unlock the LUKS container, mount the filesystem.
+
+Hook-by-hook:
+
+| Hook          | What it does                                                |
+|---------------|-------------------------------------------------------------|
+| `base`        | Minimum tooling for early boot.                             |
+| `udev`        | Detects hardware and creates `/dev` entries.                |
+| `autodetect`  | Trims the initramfs to drivers this machine actually needs. |
+| `microcode`   | Loads early CPU microcode updates.                          |
+| `modconf`     | Honors `/etc/modprobe.d/` settings.                         |
+| `kms`         | Brings up the GPU early so the LUKS prompt is visible.      |
+| `keyboard`    | Adds keyboard drivers so you can type the passphrase.       |
+| `keymap`      | Loads your console keymap.                                  |
+| `block`       | Adds support for SSDs, NVMe, USB block devices, etc.        |
+| `encrypt`     | Unlocks the LUKS container.                                 |
+| `filesystems` | Adds filesystem drivers.                                    |
+| `fsck`        | Filesystem check support — less critical for Btrfs.         |
+
+::: {.callout-note}
+## udev vs. systemd initramfs
+
+This guide uses the traditional **udev**-based initramfs (`udev`, `keyboard`, `keymap`, `encrypt`). The systemd-based equivalent uses different hooks (`systemd`, `sd-vconsole`, `sd-encrypt`) — they're functionally similar but **don't mix them**. Pick one style. Using `udev` in the initramfs has nothing to do with whether your real system uses systemd later — it still does.
+:::
+
+If your keyboard isn't detected at the LUKS prompt (rare, but it happens with some weird USB hubs and old laptop keyboards), you can also explicitly include drivers:
+
+```bash
+MODULES=(btrfs usbhid atkbd)
+```
+
+`usbhid` covers most USB keyboards; `atkbd` covers many built-in laptop keyboards.
+
+### Regenerate the initramfs
+
+```bash
+mkinitcpio -P
+```
+
+The uppercase `-P` regenerates initramfs images for **all** installed kernel presets (`linux`, `linux-lts`, `linux-zen`, …). Use this instead of `mkinitcpio -p linux`, which only rebuilds one preset and is easy to forget about if you later install a second kernel.
+
+A successful run ends with `Initcpio image generation successful`.
+
+---
+
+## Configure GRUB
+
+GRUB needs to know three things to boot this setup:
+
+- which encrypted partition to unlock,
+- what to name the unlocked mapping,
+- which Btrfs subvolume inside it is the root filesystem.
+
+### Find the right partition
+
+Before editing anything, verify which `/dev/nvmeXnYpZ` is *actually* the Arch partition. Don't copy a `/dev/nvme0n1p4` from a tutorial — your layout is what `lsblk` says it is.
+
+```bash
+lsblk
+```
+
+Look for the row whose mapper device is mounted at `/` (and `/home`). For me it was:
+
+```text
+nvme0n1p4
+└─arch    /home
+          /
+```
+
+So:
+
+- Encrypted partition: `/dev/nvme0n1p4`
+- Mapper name:        `arch`
+- Mapped device:      `/dev/mapper/arch`
+- Root mount:         `/`
+- Home mount:         `/home`
+
+Confirm the mapper is correct:
+
+```bash
+ls /dev/mapper
+findmnt /
+```
+
+And verify the Btrfs subvolume options:
+
+```bash
+findmnt -no SOURCE,OPTIONS /
+findmnt -no SOURCE,OPTIONS /home
+```
+
+You're looking for `subvol=@` on `/` and `subvol=@home` on `/home`. That `subvol=@` is the value we'll pass to the kernel via GRUB as `rootflags=subvol=@`.
+
+### Get the LUKS partition UUID
+
+GRUB needs the UUID of the **raw encrypted partition**, *not* the unlocked mapper device. So you want the UUID of `/dev/nvme0n1p4`, not `/dev/mapper/arch`:
+
+```bash
+blkid /dev/nvme0n1p4
+```
+
+You should see `TYPE="crypto_LUKS"` in the output. Then to grab just the UUID:
+
+```bash
+blkid -s UUID -o value /dev/nvme0n1p4
+```
+
+For me this returned:
+
+```text
+0e6caf44-4ba9-4279-8f29-ad2344ea4387
+```
+
+### Install GRUB to the EFI partition
+
+```bash
+findmnt /boot     # confirm /boot is the FAT32 ESP
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+```
+
+### Edit `/etc/default/grub`
+
+```bash
+nvim /etc/default/grub
+```
+
+Find the line:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+```
+
+and change it to (substituting your UUID in for `<uuid>`):
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 cryptdevice=UUID=<uuid>:arch root=/dev/mapper/arch rootflags=subvol=@"
+```
+
+::: {.callout-important}
+## Don't use angle brackets in the actual file
+
+The `<uuid>` above is a placeholder. The real line must contain the bare UUID — no angle brackets, no quotes around the UUID, just the value. **This is the exact mistake I made on my first attempt and it's what bricked the boot** (see post-mortem below).
+:::
+
+What each kernel parameter does:
+
+| Parameter                          | Purpose                                                                 |
+|------------------------------------|-------------------------------------------------------------------------|
+| `loglevel=3`                       | Quieter boot logs.                                                      |
+| `quiet`                            | Suppress most non-critical kernel messages.                             |
+| `zswap.enabled=0`                  | Disable zswap (since we're using zram).                                 |
+| `cryptdevice=UUID=<uuid>:arch`     | Find this LUKS partition by UUID, unlock it, expose it as `/dev/mapper/arch`. |
+| `root=/dev/mapper/arch`            | The unlocked mapper is the root device.                                 |
+| `rootflags=subvol=@`               | Mount the `@` subvolume as `/`.                                         |
+
+While you're in `/etc/default/grub`, also set:
+
+```bash
+GRUB_ENABLE_CRYPTODISK=y
+```
+
+This tells `grub-mkconfig` to emit a config that GRUB itself understands cryptographically (it lets GRUB read encrypted `/boot` if you put `/boot` inside LUKS later).
+
+### Generate the final GRUB config
+
+```bash
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+### Sanity checks before reboot
+
+```bash
+grep '^MODULES='                 /etc/mkinitcpio.conf
+grep '^HOOKS='                   /etc/mkinitcpio.conf
+grep '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub
+ls /boot/grub/grub.cfg
+findmnt /boot
+```
+
+Expected:
+
+```bash
+MODULES=(btrfs)
+HOOKS=(base udev autodetect microcode modconf kms keyboard keymap block encrypt filesystems fsck)
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 cryptdevice=UUID=...:arch root=/dev/mapper/arch rootflags=subvol=@"
+```
+
+Then enable the same services as the basic install:
+
+```bash
+systemctl enable NetworkManager bluetooth sshd firewalld reflector.timer fstrim.timer
+```
+
+`exit` the chroot, `reboot`, and hope.
+
+---
+
+# Part 2 — Post-mortem: the boot failure
+
+## What I saw
+
+After the install completed cleanly and I rebooted:
+
+1. GRUB loaded successfully — the menu appeared and the Arch entry was selectable.
+2. The kernel started, and I got the LUKS passphrase prompt.
+3. The passphrase was **accepted** — no "wrong passphrase" message.
+4. After a delay of roughly 90 seconds, the kernel printed:
+
+   ```text
+   A password is required to access the Arch volume.
+   Timed out waiting for device /dev/disk/by-uuid/<some-uuid>.
+   You are in emergency mode.
+   ```
+
+5. The system dropped into a `systemd` emergency root shell instead of finishing boot.
+
+The fact that the LUKS prompt appeared *and accepted my passphrase* meant the initramfs was working — the keyboard worked, the `encrypt` hook ran, the passphrase was correct. So whatever was wrong happened **after** the unlock.
+
+## Working theories
+
+The error pattern ("password accepted, then timeout waiting for a device by-uuid") usually narrows to one of three things:
+
+1. The `cryptdevice=UUID=...` value in GRUB is wrong or malformed, so the kernel unlocks the wrong UUID (or tries to and gives up).
+2. The `root=` device doesn't match the mapper name from `cryptdevice=`.
+3. The Btrfs `rootflags=subvol=@` is incorrect — for example, mounting the top-level volume that has no `/sbin/init`.
+
+## What I tried
+
+I booted back into the install USB and re-entered the installed system:
+
+```bash
+cryptsetup open /dev/nvme0n1p4 arch
+mount -o subvol=@ /dev/mapper/arch /mnt
+mkdir -p /mnt/home && mount -o subvol=@home /dev/mapper/arch /mnt/home
+mkdir -p /mnt/boot && mount /dev/nvme0n1p1 /mnt/boot
+arch-chroot /mnt
+```
+
+Then I re-verified everything:
+
+```bash
+blkid -s UUID -o value /dev/nvme0n1p4
+# 0e6caf44-4ba9-4279-8f29-ad2344ea4387
+```
+
+…and looked at `/etc/default/grub`. The original line read:
+
+```bash
+cryptdevice=UUID<0e6caf44-...>:arch
+```
+
+(missing `=` between `UUID` and the value).
+
+I fixed that to:
+
+```bash
+cryptdevice=UUID=<0e6caf44-...>:arch
+```
+
+…still with the angle brackets.
+
+The angle brackets were the second mistake. The correct line is:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 cryptdevice=UUID=0e6caf44-4ba9-4279-8f29-ad2344ea4387:arch root=/dev/mapper/arch rootflags=subvol=@"
+```
+
+No angle brackets, no quoting *inside* the value, just the bare UUID.
+
+After fixing, I regenerated everything:
+
+```bash
+mkinitcpio -P
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+`grub-mkconfig` reported `done`.
+
+I also:
+
+- Confirmed `mkinitcpio.conf` had `MODULES=(btrfs)` and the correct `HOOKS` line.
+- Verified `/dev/nvme0n1p4` was the encrypted Arch partition (and `/dev/nvme0n1p1` the EFI).
+- Confirmed `@` is the root Btrfs subvolume.
+- Set `GRUB_ENABLE_CRYPTODISK=y`.
+
+## Where I am now
+
+Even after all of the above, the boot still drops into emergency mode with the same "Timed out waiting for device" message. I haven't fully root-caused it yet. My next experiments will be:
+
+- Boot into the kernel without `quiet` and `loglevel=3` to see the *full* dmesg leading up to the timeout. Drop the `quiet` flag, watch what device the kernel is actually waiting for.
+- Confirm in the emergency shell that `/dev/mapper/arch` exists after the LUKS prompt — if it does, the failure is in mounting, not unlocking; if it doesn't, the `encrypt` hook isn't doing what I think it is.
+- Try replacing the `udev`-style hooks with the systemd-style equivalents (`sd-encrypt` in place of `encrypt`, `systemd` in place of `udev`) since `sd-encrypt` is the better-tested path on contemporary Arch.
+- Audit `/etc/fstab` — if any line references `/dev/disk/by-uuid/<...>` for the mapper instead of `/dev/mapper/arch`, the systemd unit waiting on that path will time out exactly as I'm seeing.
+
+I'll publish a follow-up once I know what fixed it. The point of this post is to leave a record of the design and the failure mode so I can come back to it — and so anyone hitting the same "passphrase accepted, then emergency mode" wall has at least *one* concrete shape of the problem to compare against.
+
+---
+
+## What I'm taking away
+
+Three things this exercise made very concrete for me:
+
+1. **The boot pipeline has many places to be wrong.** Initramfs, kernel command line, `fstab`, GRUB config, and the LUKS metadata each have their own place to silently misbehave. Verbose logging is your friend the moment something is off.
+2. **The `mapper name` is a contract.** Whatever you put after `cryptdevice=UUID=...:` *must* match the `/dev/mapper/<name>` you reference in `root=` and any `fstab` entry. Mismatched names look like mysterious timeouts.
+3. **A working basic install is worth more than a half-broken ambitious one.** I'm glad I did the [boring ext4 install first](../2026-05-01-first-arch-install/). It means I have a working machine to write this post on while I debug the encrypted setup at my own pace.
+
+The encrypted dual-boot will get its own follow-up article when it actually boots.
+
+---
+
+::: {.callout-note}
+## Attribution
+
+The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only.
+:::
