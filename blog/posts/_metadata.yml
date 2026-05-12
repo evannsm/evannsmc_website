@@ -3,3 +3,4 @@
 format:
   html:
     css: paper-theme.css
+    page-layout: full

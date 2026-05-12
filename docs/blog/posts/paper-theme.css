@@ -8,10 +8,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
 
 :root {
-  /* Article body matches the blog index page background EXACTLY — same
-     parchment cream so navigating into an article feels like reading
-     the same publication, not a different colored page. */
-  --rb-paper-bg:    #f9f3e1;
+  /* Article body matches the blog index page bg — the lighter cream
+     (#fefdf6) is the unified publication color across both the index
+     and inside each article. */
+  --rb-paper-bg:    #fefdf6;
   --rb-paper-ink:   #1f2937;
   --rb-paper-rule:  #d6cfb5;
   --rb-accent-blog: #2563eb;
@@ -25,8 +25,17 @@ body.quarto-dark {
   --rb-accent-blog: #60a5fa;
 }
 
-/* Cover every Quarto wrapper so the paper bg extends edge to edge. */
+/* Cover every Quarto wrapper so the paper bg extends edge to edge.
+   The `body.quarto-light` selectors match the site-wide styles.css
+   specificity so this !important rule actually wins over the site's
+   "side margins" gray + white content background. */
 html, body,
+body.quarto-light,
+body.quarto-light #quarto-content,
+body.quarto-light .footer,
+body.quarto-dark,
+body.quarto-dark #quarto-content,
+body.quarto-dark .footer,
 main, main.content, main.column-page,
 #quarto-content, #quarto-document-content,
 .page-columns, .quarto-page,
@@ -34,6 +43,18 @@ main, main.content, main.column-page,
 .column-page, .column-page-left, .column-page-right,
 .page-footer, footer.footer, .nav-footer {
   background: var(--rb-paper-bg) !important;
+}
+
+/* Strip the site's max-width: 2200px gutter constraint so the article
+   really takes the full viewport. */
+body.quarto-light #quarto-content,
+body.quarto-light .footer,
+body.quarto-dark #quarto-content,
+body.quarto-dark .footer,
+#quarto-content, .footer {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .page-footer, footer.footer, .nav-footer { border-top: none !important; }
@@ -111,11 +132,18 @@ main.content blockquote {
    section headings, drop cap, italic figure captions.
    ───────────────────────────────────────────────────────── */
 
-/* Wider reading column — articles use more of the page horizontally. */
+/* Drop Quarto's narrow body column and let the article take the full
+   page width minus a small screen-edge gutter. */
+.page-columns {
+  grid-template-columns: [screen-start] 1.5rem [screen-start-inset] 0 [page-start] 0 [page-start-inset] 0 [body-start-outset] 0 [body-start] 0 [body-content-start] 1fr [body-content-end] 0 [body-end] 0 [body-end-outset] 0 [page-end-inset] 0 [page-end] 0 [screen-end-inset] 1.5rem [screen-end] !important;
+}
+main.content.column-page,
+main.content.column-body,
 main.content {
-  max-width: 80rem !important;
+  max-width: none !important;
+  width: 100% !important;
   margin: 0 auto !important;
-  padding: 1.5rem clamp(1rem, 5vw, 3rem) 4rem !important;
+  padding: 1.5rem clamp(1.5rem, 4vw, 5rem) 4rem !important;
 }
 
 /* Re-order the title block so meta (author / published) sits ABOVE the

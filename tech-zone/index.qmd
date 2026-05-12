@@ -50,8 +50,15 @@ body.quarto-dark {
 }
 
 /* Extend the page bg across every Quarto wrapper so there's no white
-   leakage at the perimeter. */
+   leakage at the perimeter. The body.quarto-light selectors match
+   site-wide rule specificity to win the cascade. */
 html, body,
+body.quarto-light,
+body.quarto-light #quarto-content,
+body.quarto-light .footer,
+body.quarto-dark,
+body.quarto-dark #quarto-content,
+body.quarto-dark .footer,
 main, main.content, main.column-page,
 #quarto-content, #quarto-document-content,
 .page-columns, .quarto-page,
@@ -60,6 +67,16 @@ main, main.content, main.column-page,
 .page-footer, footer.footer, .nav-footer {
   background: var(--tz-page-bg) !important;
 }
+
+body.quarto-light #quarto-content,
+body.quarto-light .footer,
+body.quarto-dark #quarto-content,
+body.quarto-dark .footer {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 .page-footer, footer.footer, .nav-footer { border-top: none !important; }
 
 /* Widen the content column so the header and cards have real room. */
