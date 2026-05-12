@@ -1,0 +1,5 @@
+# Applies the parchment paper theme to every blog post so individual
+# articles share the same aesthetic as the blog landing page.
+format:
+  html:
+    css: paper-theme.css

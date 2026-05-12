@@ -471,8 +471,7 @@ main.content.column-page {
 <div class="tz-shell">
 
   <!-- ─────── Page lead-in (above the terminal header) ─────── -->
-  <p class="tz-section-kicker">latest entries</p>
-  <h2 class="tz-section-title">Articles &amp; build logs.</h2>
+  <h2 class="tz-section-title">Tech Articles and Tutorials.</h2>
 
   <!-- ─────── Terminal-styled section header ─────── -->
   <div class="tz-terminal" role="img" aria-label="Terminal window header for The Tech Zone">

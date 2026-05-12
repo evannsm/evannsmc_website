@@ -1,0 +1,103 @@
+/* ─────────────────────────────────────────────────────────
+   Research-blog paper theme — applied to every individual
+   post in blog/posts/ so an article reads as the same
+   parchment publication as the blog landing page.
+   Loaded via blog/posts/_metadata.yml.
+   ───────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+  /* Article body matches the blog index page background EXACTLY — same
+     parchment cream so navigating into an article feels like reading
+     the same publication, not a different colored page. */
+  --rb-paper-bg:    #f9f3e1;
+  --rb-paper-ink:   #1f2937;
+  --rb-paper-rule:  #d6cfb5;
+  --rb-accent-blog: #2563eb;
+  --rb-serif: "Crimson Pro", "Source Serif Pro", Georgia, "Times New Roman", serif;
+}
+
+body.quarto-dark {
+  --rb-paper-bg:    #1c2230;
+  --rb-paper-ink:   #e5e7eb;
+  --rb-paper-rule:  rgba(148, 163, 184, 0.35);
+  --rb-accent-blog: #60a5fa;
+}
+
+/* Cover every Quarto wrapper so the paper bg extends edge to edge. */
+html, body,
+main, main.content, main.column-page,
+#quarto-content, #quarto-document-content,
+.page-columns, .quarto-page,
+#quarto-margin-sidebar,
+.column-page, .column-page-left, .column-page-right,
+.page-footer, footer.footer, .nav-footer {
+  background: var(--rb-paper-bg) !important;
+}
+
+.page-footer, footer.footer, .nav-footer { border-top: none !important; }
+
+/* Article title + section headings in the paper-aesthetic serif. */
+.quarto-title h1.title,
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--rb-serif);
+  color: var(--rb-paper-ink);
+}
+
+.quarto-title h1.title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Article body text in serif — matches the masthead/abstract styling. */
+main.content p,
+main.content li,
+main.content blockquote {
+  font-family: var(--rb-serif);
+  color: var(--rb-paper-ink);
+}
+
+/* Subtle warm tint on inline code + code blocks so they don't fight the
+   parchment palette. */
+main.content :not(pre) > code {
+  background: rgba(124, 87, 22, 0.06);
+  color: var(--rb-paper-ink);
+  padding: 0.05em 0.35em;
+  border-radius: 0.25rem;
+}
+
+main.content pre {
+  background: rgba(124, 87, 22, 0.05);
+  border: 1px solid var(--rb-paper-rule);
+}
+
+body.quarto-dark main.content pre {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--rb-paper-rule);
+}
+
+/* Blockquotes get a paper-themed left rule. */
+main.content blockquote {
+  border-left: 3px solid var(--rb-paper-rule);
+  padding-left: 1rem;
+  color: var(--rb-paper-ink);
+  opacity: 0.85;
+}
+
+/* Callouts keep their semantics but pick up the warm border. */
+.callout {
+  background: color-mix(in oklab, var(--rb-paper-bg), #000 3%);
+  border-color: var(--rb-paper-rule) !important;
+}
+
+/* Tweak the title block byline / dateline to feel like a paper byline. */
+.quarto-title-meta {
+  font-family: var(--rb-serif);
+  color: var(--rb-paper-ink);
+  opacity: 0.85;
+}
+
+/* Hide the auto-generated Quarto category pills (we don't show them on
+   the blog index either). */
+.quarto-title .quarto-categories { display: none; }
