@@ -1,7 +1,7 @@
 ---
 title: "Understanding Quadrotor Dynamics and Control"
 description: "A practical overview of modeling, coordinate frames, and control-relevant dynamics of the quadrotor UAV. "
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-09-29"
 categories: [dynamical systems, control theory, quadrotor, geometric control, modeling]
 draft: false

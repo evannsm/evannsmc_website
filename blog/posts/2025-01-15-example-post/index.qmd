@@ -1,7 +1,7 @@
 ---
 title: "Understanding PID Controllers: A Visual Introduction"
 description: "A beginner-friendly explanation of PID control with practical examples from robotics."
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-01-15"
 categories: [control theory, robotics, tutorial]
 # image: "thumbnail.jpg"

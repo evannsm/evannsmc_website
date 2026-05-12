@@ -1,7 +1,7 @@
 ---
 title: "[TODO] Understanding Jax"
 description: "Will write about Jax and its uses for control research"
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-1-1"
 categories: [tools, software, jax, implementation]
 # image: "thumbnail.jpg"

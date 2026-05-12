@@ -410,6 +410,11 @@ document.addEventListener('DOMContentLoaded', function () {
   --tz-mono:   "Iosevka", "JetBrains Mono", "Fira Code", ui-monospace,
                SFMono-Regular, Menlo, Consolas, monospace;
 
+  /* Page background — a soft slate-cyan that picks up the prompt color
+     subtly and complements the terminal-green cards. Reads like a calm
+     code-editor canvas, not stark white. */
+  --tz-page-bg:     #eef2f5;
+
   --tz-card-bg:     #eef7ee;
   --tz-card-border: #b6c4ad;
   --tz-card-inner:  #f7fbf6;
@@ -423,6 +428,7 @@ body.quarto-dark {
   --tz-prompt: #7dd3fc;
   --tz-warn:   #fbbf24;
   --tz-fail:   #f87171;
+  --tz-page-bg:     #0b1220;
   --tz-card-bg:     rgba(31, 41, 55, 0.92);
   --tz-card-border: rgba(148, 163, 184, 0.28);
   --tz-card-inner:  rgba(15, 23, 42, 0.65);
@@ -430,6 +436,19 @@ body.quarto-dark {
   --tz-screen-fg:   #e2e8f0;
   --tz-screen-mute: #94a3b8;
 }
+
+/* Extend the page bg across every Quarto wrapper so there's no white
+   leakage at the perimeter. */
+html, body,
+main, main.content, main.column-page,
+#quarto-content, #quarto-document-content,
+.page-columns, .quarto-page,
+#quarto-margin-sidebar,
+.column-page, .column-page-left, .column-page-right,
+.page-footer, footer.footer, .nav-footer {
+  background: var(--tz-page-bg) !important;
+}
+.page-footer, footer.footer, .nav-footer { border-top: none !important; }
 
 /* Widen the content column so the header and cards have real room. */
 .page-columns {

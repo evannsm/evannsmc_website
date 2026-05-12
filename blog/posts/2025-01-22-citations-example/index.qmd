@@ -1,7 +1,7 @@
 ---
 title: "Example: How to Cite Papers in Blog Posts"
 description: "Demonstration of citation features in Quarto using BibTeX references."
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-01-22"
 categories: [tutorial, example]
 bibliography: references.bib

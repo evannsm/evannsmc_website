@@ -1,7 +1,7 @@
 ---
 title: "[TODO] Understanding Reachability"
 description: "Will write about reachability analysis methods in control"
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-1-1"
 categories: [dynamical systems, control theory, reachability]
 # image: "thumbnail.jpg"

@@ -1,7 +1,7 @@
 ---
 title: "Newton-Raphson Flow: From Iteration to Continuous Control"
 description: "The Newton-Raphson flow tracking controller, its derivation from the iterative root-finding method, and its adaptation for dynamical systems using output prediction."
-author: "Evanns Morales-Cuadrado"
+author: "evannsmc"
 date: "2025-05-22"
 categories: [control theory, iterative methods, dynamical systems]
 # image: "thumbnail.jpg"
