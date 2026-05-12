@@ -34,6 +34,11 @@ project:
     - files/thesis_proposal/_extensions
     - googleffaf8e4b1a20676c.html
 
+# Posts with `draft: true` in frontmatter should NOT render to docs/ at all
+# (they leaked into the public listing once before — guard against that
+# regression at the project level).
+draft-mode: gone
+
 website:
   title: "evannsmc"
   favicon: files/site_icon/favicon.png
@@ -58,14 +63,14 @@ website:
         text: Publications
       - href: projects
         text: Projects
-      - href: about
-        text: About Me
-      - href: journey
-        text: Journey
       - href: blog
         text: Research Blog
       - href: tech-zone
         text: The Tech Zone
+      - href: about
+        text: About Me
+      - href: journey
+        text: Journey
 
 
 

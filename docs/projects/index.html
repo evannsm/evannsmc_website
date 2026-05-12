@@ -340,20 +340,20 @@ document.addEventListener('DOMContentLoaded', function () {
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about"> 
-<span class="menu-text">About Me</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../journey"> 
-<span class="menu-text">Journey</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="../blog"> 
 <span class="menu-text">Research Blog</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../tech-zone"> 
 <span class="menu-text">The Tech Zone</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../journey"> 
+<span class="menu-text">Journey</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -452,6 +452,51 @@ body.quarto-dark {
   gap: 2.5rem;
   align-items: start;
 }
+
+/* ───── Filter strip (matches blog + tech-zone) ───── */
+.projects-filter-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.8rem;
+  flex-wrap: wrap;
+}
+
+.projects-filter-input {
+  flex: 1 1 22rem;
+  min-width: 14rem;
+  max-width: 32rem;
+  padding: 0.55rem 0.85rem 0.55rem 2.2rem;
+  border: 1.5px solid var(--projects-border);
+  border-radius: 0.7rem;
+  background:
+    var(--bs-body-bg, #fff)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat 0.65rem center / 1rem 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  color: inherit;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.projects-filter-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.projects-filter-count {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+.projects-filter-count strong { color: var(--accent); font-weight: 700; }
+
+.project-card[hidden] { display: none; }
+
+/* Hide an entire column when all its cards are filtered out
+   (gracefully handled by the JS toggling [data-empty]). */
+.projects-columns > div[data-empty="true"] { display: none; }
 
 .projects-column-heading {
   margin: 0 0 0.45rem;
@@ -899,9 +944,17 @@ body.quarto-dark .project-action.paper:focus {
   <p class="projects-page-title">Research &amp; Open-Source Builds.</p>
   <p class="projects-subtitle">Click on a Panel to See the Full Project Page.</p>
 
-  <div class="projects-columns">
+  <!-- ───── Filter strip ───── -->
+  <div class="projects-filter-strip">
+    <input class="projects-filter-input" type="search" placeholder="filter by title, topic, or #tag…" aria-label="Filter projects" autocomplete="off">
+    <span class="projects-filter-count" aria-live="polite">
+      showing <strong id="projects-count-shown">9</strong> of <strong id="projects-count-total">9</strong>
+    </span>
+  </div>
+
+  <div class="projects-columns" id="projects-columns">
     <!-- LEFT COLUMN: Research Projects -->
-    <div>
+    <div data-col="research">
       <p class="projects-column-heading">Research Projects</p>
       <p class="projects-column-title">Projects from my Ph.D. Research with Accompanying Code.</p>
       <p class="projects-column-intro">
@@ -1150,7 +1203,7 @@ body.quarto-dark .project-action.paper:focus {
     </div>
 
     <!-- RIGHT COLUMN: Independent Projects -->
-    <div>
+    <div data-col="independent">
       <p class="projects-column-heading">Independent Projects</p>
       <p class="projects-column-title">Open-source tools and infrastructure.</p>
       <p class="projects-column-intro">
@@ -1465,6 +1518,48 @@ body.quarto-dark .project-action.paper:focus {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  // ─── Live filter for the project grid ───
+  var filterInput = document.querySelector('.projects-filter-input');
+  var filterCount = document.getElementById('projects-count-shown');
+  var columns     = document.getElementById('projects-columns');
+  if (filterInput && filterCount && columns) {
+    var filterables = Array.prototype.slice.call(
+      columns.querySelectorAll('.project-card')
+    );
+    var colNodes = Array.prototype.slice.call(
+      columns.querySelectorAll('[data-col]')
+    );
+
+    function applyProjectFilter() {
+      var q = filterInput.value.trim().toLowerCase().replace(/^#/, '');
+      var shown = 0;
+      filterables.forEach(function (card) {
+        if (!q) { card.hidden = false; shown++; return; }
+        var title = (card.querySelector('.project-name') || {}).textContent || '';
+        var tagEls = card.querySelectorAll('.project-tag');
+        var tags = '';
+        tagEls.forEach(function (t) { tags += ' ' + t.textContent; });
+        var copy = (card.querySelector('.project-preview-copy') || {}).textContent || '';
+        var hay = (title + ' ' + tags + ' ' + copy).toLowerCase();
+        var match = hay.indexOf(q) !== -1;
+        card.hidden = !match;
+        if (match) shown++;
+      });
+      filterCount.textContent = String(shown);
+
+      // Toggle empty-column visibility so we don't leave orphan headings.
+      colNodes.forEach(function (col) {
+        var anyVisible = Array.prototype.slice
+          .call(col.querySelectorAll('.project-card'))
+          .some(function (c) { return !c.hidden; });
+        col.setAttribute('data-empty', anyVisible ? 'false' : 'true');
+      });
+    }
+
+    filterInput.addEventListener('input', applyProjectFilter);
+  }
+
+  // ─── Existing card-as-link behavior ───
   var cards = document.querySelectorAll('.project-card[data-project-href]');
 
   cards.forEach(function (card) {

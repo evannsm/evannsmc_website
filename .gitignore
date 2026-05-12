@@ -8,3 +8,9 @@ log/
 # Ignore all .md files except README.md
 *.md
 !README.md
+
+# Empty stubs Quarto writes for `draft: true` blog posts under `draft-mode: gone`.
+# Source .qmd files remain in blog/posts/ as templates; we never publish them.
+docs/blog/posts/2025-01-15-example-post/
+docs/blog/posts/2025-01-20-another-example/
+docs/blog/posts/2025-01-22-citations-example/
