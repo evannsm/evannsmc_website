@@ -646,6 +646,68 @@ body.quarto-dark .rb-paper {
   text-align: center;
 }
 
+/* ─────────────────  Drafts & Upcoming section  ─────────────────
+   Mirrors the Tech Zone's "Planned" pattern. WIP cards keep their
+   link (content exists, just unfinished); TODO cards become
+   non-clickable <div>s with dashed amber borders so a visitor
+   doesn't bounce to a stub.                                       */
+
+.rb-divider {
+  margin: 3.2rem 0 1.8rem;
+  border: none;
+  border-top: 1px dashed var(--rb-paper-rule);
+}
+
+.rb-section-kicker.warn { color: var(--rb-warn); }
+
+.rb-section-blurb {
+  max-width: 60rem;
+  margin: -0.4rem 0 0.4rem;
+  font-family: var(--rb-serif);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--rb-paper-ink);
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* WIP — solid amber-tinged border, still a link. */
+.rb-card.wip {
+  border-color: color-mix(in srgb, var(--rb-warn) 38%, var(--rb-card-border));
+  background: color-mix(in oklab, var(--rb-warn), var(--rb-card-bg) 95%);
+}
+.rb-card.wip:hover,
+.rb-card.wip:focus-visible {
+  border-color: color-mix(in srgb, var(--rb-warn) 55%, var(--rb-card-border));
+}
+.rb-card.wip .rb-card-number {
+  color: var(--rb-warn);
+  border-color: color-mix(in srgb, var(--rb-warn) 35%, var(--rb-paper-rule));
+}
+.rb-card.wip .rb-card-cta { color: var(--rb-warn); }
+
+/* DRAFT — dashed amber border, no link, no hover lift. */
+.rb-card.draft {
+  cursor: default;
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--rb-warn) 40%, var(--rb-card-border));
+  background: color-mix(in oklab, var(--rb-warn), var(--rb-card-bg) 94%);
+}
+.rb-card.draft:hover,
+.rb-card.draft:focus-visible {
+  border-color: color-mix(in srgb, var(--rb-warn) 40%, var(--rb-card-border));
+  box-shadow: var(--rb-card-shadow);
+  transform: none;
+}
+.rb-card.draft .rb-card-number {
+  color: var(--rb-warn);
+  border-color: color-mix(in srgb, var(--rb-warn) 35%, var(--rb-paper-rule));
+}
+.rb-card.draft .rb-tag {
+  color: var(--rb-warn);
+  border-color: color-mix(in srgb, var(--rb-warn) 35%, var(--rb-paper-rule));
+}
+
 /* ─────────────────  Responsive  ───────────────── */
 
 @media (max-width: 1100px) {
@@ -714,38 +776,9 @@ body.quarto-dark .rb-paper {
   </header>
 
 
-  <!-- ───────  Card grid (all paper-style previews)  ─────── -->
+  <!-- ───────  Published card grid (the main, decluttered view)  ─────── -->
+  <p class="rb-section-kicker">published</p>
   <div class="rb-card-grid" id="rb-card-grid">
-
-    <!-- 01 — Understanding PX4 (in progress) -->
-    <a class="rb-card" href="./posts/2025-10-15-UnderstandingPX4/"
-       data-status="wip" data-tags="px4 quadrotor ros2 hardware tools software implementation"
-       aria-label="Read: Understanding PX4 Autopilot and Offboard Control via ROS2">
-      <div class="rb-card-summary">
-        <div class="rb-card-name-row">
-          <span class="rb-card-number">01</span>
-          <h3 class="rb-card-name">Understanding PX4 Autopilot and Offboard Control via ROS 2</h3>
-        </div>
-        <div class="rb-card-meta">
-          <span class="rb-card-date">2025-10-15</span>
-          <span class="rb-status-pill wip">in progress</span>
-        </div>
-
-        <div class="rb-paper" aria-hidden="true">
-          <div class="rb-paper-body">
-            <p class="rb-paper-title">Understanding PX4 Autopilot and Offboard Control via ROS&nbsp;2</p>
-            <span class="rb-paper-abstract-label">Abstract</span>
-            <hr class="rb-paper-abstract-rule"/>
-            <p class="rb-paper-abstract">
-              Driving PX4 from ROS&nbsp;2 — the uXRCE-DDS bridge, offboard-mode entry conditions,
-              and my modular offboard package.
-            </p>
-          </div>
-        </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
-      </div>
-    </a>
 
     <!-- 02 — Understanding Quadrotor Dynamics (published) -->
     <a class="rb-card" href="./posts/2025-09-29-QuadrotorDynamics/"
@@ -806,14 +839,60 @@ body.quarto-dark .rb-paper {
       </div>
     </a>
 
-    <!-- 04 — Understanding Game-Theoretic Control (TODO) -->
-    <a class="rb-card" href="./posts/2025-11-11-GameTheoreticControl/"
-       data-status="todo" data-tags="dynamical systems control theory game theory differential games"
-       aria-label="Read: Understanding Game-Theoretic Control">
+  </div>
+
+  <!-- ───────  Drafts & Upcoming  ─────── -->
+  <hr class="rb-divider" role="separator" aria-hidden="true"/>
+
+  <p class="rb-section-kicker warn">drafts &middot; upcoming</p>
+  <h2 class="rb-section-title" id="rb-drafts">Drafts &amp; Upcoming</h2>
+  <p class="rb-section-blurb">
+    Notes I've started or committed to writing but haven't shipped yet. The first card is a working draft you
+    can peek at; the rest are placeholders for write-ups still in the queue. Dashed borders mean there is
+    nothing to read yet — the cards are intentionally non-clickable so a click doesn't drop you onto an
+    empty page.
+  </p>
+
+  <div class="rb-card-grid" id="rb-drafts-grid">
+
+    <!-- 01 — Understanding PX4 (in progress, still a link — has GitHub references) -->
+    <a class="rb-card wip" href="./posts/2025-10-15-UnderstandingPX4/"
+       data-status="wip" data-tags="px4 quadrotor ros2 hardware tools software implementation"
+       aria-label="Read draft: Understanding PX4 Autopilot and Offboard Control via ROS2">
+      <div class="rb-card-summary">
+        <div class="rb-card-name-row">
+          <span class="rb-card-number">01</span>
+          <h3 class="rb-card-name">Understanding PX4 Autopilot and Offboard Control via ROS 2</h3>
+        </div>
+        <div class="rb-card-meta">
+          <span class="rb-card-date">2025-10-15</span>
+          <span class="rb-status-pill wip">in progress</span>
+        </div>
+
+        <div class="rb-paper" aria-hidden="true">
+          <div class="rb-paper-body">
+            <p class="rb-paper-title">Understanding PX4 Autopilot and Offboard Control via ROS&nbsp;2</p>
+            <span class="rb-paper-abstract-label">Abstract</span>
+            <hr class="rb-paper-abstract-rule"/>
+            <p class="rb-paper-abstract">
+              Driving PX4 from ROS&nbsp;2 — the uXRCE-DDS bridge, offboard-mode entry conditions,
+              and my modular offboard package.
+            </p>
+          </div>
+        </div>
+
+        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- 04 — Understanding Game-Theoretic Control (TODO, non-link) -->
+    <div class="rb-card draft" role="article"
+         data-status="todo" data-tags="dynamical systems control theory game theory differential games"
+         aria-labelledby="rb-draft-04">
       <div class="rb-card-summary">
         <div class="rb-card-name-row">
           <span class="rb-card-number">04</span>
-          <h3 class="rb-card-name">Understanding Game-Theoretic Control</h3>
+          <h3 class="rb-card-name" id="rb-draft-04">Understanding Game-Theoretic Control</h3>
         </div>
         <div class="rb-card-meta">
           <span class="rb-card-date">planned</span>
@@ -830,19 +909,17 @@ body.quarto-dark .rb-paper {
             </p>
           </div>
         </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
       </div>
-    </a>
+    </div>
 
-    <!-- 05 — Understanding JAX (TODO) -->
-    <a class="rb-card" href="./posts/2025-11-11-UnderstandingJax/"
-       data-status="todo" data-tags="tools software jax implementation"
-       aria-label="Read: Understanding JAX">
+    <!-- 05 — Understanding JAX (TODO, non-link) -->
+    <div class="rb-card draft" role="article"
+         data-status="todo" data-tags="tools software jax implementation"
+         aria-labelledby="rb-draft-05">
       <div class="rb-card-summary">
         <div class="rb-card-name-row">
           <span class="rb-card-number">05</span>
-          <h3 class="rb-card-name">Understanding JAX for Control Research</h3>
+          <h3 class="rb-card-name" id="rb-draft-05">Understanding JAX for Control Research</h3>
         </div>
         <div class="rb-card-meta">
           <span class="rb-card-date">planned</span>
@@ -859,19 +936,17 @@ body.quarto-dark .rb-paper {
             </p>
           </div>
         </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
       </div>
-    </a>
+    </div>
 
-    <!-- 06 — Understanding Optimal Control & CoV (TODO) -->
-    <a class="rb-card" href="./posts/2025-11-11-UnderstandingOptimalControl/"
-       data-status="todo" data-tags="optimal control calculus of variations control theory pontryagin hjb"
-       aria-label="Read: Understanding Optimal Control and Calculus of Variations">
+    <!-- 06 — Understanding Optimal Control & CoV (TODO, non-link) -->
+    <div class="rb-card draft" role="article"
+         data-status="todo" data-tags="optimal control calculus of variations control theory pontryagin hjb"
+         aria-labelledby="rb-draft-06">
       <div class="rb-card-summary">
         <div class="rb-card-name-row">
           <span class="rb-card-number">06</span>
-          <h3 class="rb-card-name">Understanding Optimal Control &amp; Calculus of Variations</h3>
+          <h3 class="rb-card-name" id="rb-draft-06">Understanding Optimal Control &amp; Calculus of Variations</h3>
         </div>
         <div class="rb-card-meta">
           <span class="rb-card-date">planned</span>
@@ -888,19 +963,17 @@ body.quarto-dark .rb-paper {
             </p>
           </div>
         </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
       </div>
-    </a>
+    </div>
 
-    <!-- 07 — Understanding Reachability (TODO) -->
-    <a class="rb-card" href="./posts/2025-11-11-UnderstandingReachability/"
-       data-status="todo" data-tags="reachability dynamical systems control theory safety"
-       aria-label="Read: Understanding Reachability">
+    <!-- 07 — Understanding Reachability (TODO, non-link) -->
+    <div class="rb-card draft" role="article"
+         data-status="todo" data-tags="reachability dynamical systems control theory safety"
+         aria-labelledby="rb-draft-07">
       <div class="rb-card-summary">
         <div class="rb-card-name-row">
           <span class="rb-card-number">07</span>
-          <h3 class="rb-card-name">Understanding Reachability Analysis</h3>
+          <h3 class="rb-card-name" id="rb-draft-07">Understanding Reachability Analysis</h3>
         </div>
         <div class="rb-card-meta">
           <span class="rb-card-date">planned</span>
@@ -917,19 +990,17 @@ body.quarto-dark .rb-paper {
             </p>
           </div>
         </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
       </div>
-    </a>
+    </div>
 
-    <!-- 08 — Understanding RL (TODO) -->
-    <a class="rb-card" href="./posts/2025-11-11-UnderstandingRL/"
-       data-status="todo" data-tags="reinforcement learning control theory dynamical systems bellman"
-       aria-label="Read: Understanding Reinforcement Learning">
+    <!-- 08 — Understanding RL (TODO, non-link) -->
+    <div class="rb-card draft" role="article"
+         data-status="todo" data-tags="reinforcement learning control theory dynamical systems bellman"
+         aria-labelledby="rb-draft-08">
       <div class="rb-card-summary">
         <div class="rb-card-name-row">
           <span class="rb-card-number">08</span>
-          <h3 class="rb-card-name">Understanding Reinforcement Learning</h3>
+          <h3 class="rb-card-name" id="rb-draft-08">Understanding Reinforcement Learning</h3>
         </div>
         <div class="rb-card-meta">
           <span class="rb-card-date">planned</span>
@@ -946,10 +1017,8 @@ body.quarto-dark .rb-paper {
             </p>
           </div>
         </div>
-
-        <span class="rb-card-cta">peek at the scratch pad <span class="arrow">→</span></span>
       </div>
-    </a>
+    </div>
 
   </div>
 
@@ -961,11 +1030,12 @@ body.quarto-dark .rb-paper {
 // Lightweight live filter across the hand-built blog cards.
 document.addEventListener('DOMContentLoaded', function () {
   var input = document.querySelector('.rb-filter-input');
-  var grid  = document.getElementById('rb-card-grid');
   var count = document.getElementById('rb-count-shown');
-  if (!input || !grid || !count) return;
+  if (!input || !count) return;
 
-  var cards = Array.prototype.slice.call(grid.querySelectorAll('.rb-card'));
+  var cards = Array.prototype.slice.call(
+    document.querySelectorAll('#rb-card-grid .rb-card, #rb-drafts-grid .rb-card')
+  );
 
   function applyFilter() {
     var q = input.value.trim().toLowerCase().replace(/^#/, '');
