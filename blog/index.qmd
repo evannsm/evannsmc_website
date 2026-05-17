@@ -504,9 +504,6 @@ body.quarto-dark .rb-paper-page {
   color: var(--rb-muted);
   letter-spacing: 0.02em;
 }
-.rb-card-date::before { content: "[ "; opacity: 0.55; }
-.rb-card-date::after  { content: " ]"; opacity: 0.55; }
-
 .rb-status-pill {
   padding: 0.18rem 0.55rem;
   border-radius: 999px;
@@ -517,7 +514,6 @@ body.quarto-dark .rb-paper-page {
   text-transform: uppercase;
   border: 1px solid currentColor;
 }
-.rb-status-pill.published { color: var(--rb-accent); background: var(--rb-paper-bg); }
 .rb-status-pill.wip       { color: var(--rb-warn);   background: var(--rb-paper-bg); }
 .rb-status-pill.todo      { color: var(--rb-muted);  background: var(--rb-paper-bg); }
 
@@ -789,11 +785,6 @@ body.quarto-dark .rb-paper {
           <span class="rb-card-number">02</span>
           <h3 class="rb-card-name">Understanding Quadrotor Dynamics and Control</h3>
         </div>
-        <div class="rb-card-meta">
-          <span class="rb-card-date">2025-09-29</span>
-          <span class="rb-status-pill published">published</span>
-        </div>
-
         <div class="rb-paper" aria-hidden="true">
           <div class="rb-paper-body">
             <p class="rb-paper-title">Understanding Quadrotor Dynamics and Control</p>
@@ -818,11 +809,6 @@ body.quarto-dark .rb-paper {
           <span class="rb-card-number">03</span>
           <h3 class="rb-card-name">Newton-Raphson Flow: From Iteration to Continuous Control</h3>
         </div>
-        <div class="rb-card-meta">
-          <span class="rb-card-date">2025-05-22</span>
-          <span class="rb-status-pill published">published</span>
-        </div>
-
         <div class="rb-paper" aria-hidden="true">
           <div class="rb-paper-body">
             <p class="rb-paper-title">Newton-Raphson Flow:<br/>From Iteration to Continuous Control</p>
@@ -865,7 +851,6 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name">Understanding PX4 Autopilot and Offboard Control via ROS 2</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">2025-10-15</span>
           <span class="rb-status-pill wip">in progress</span>
         </div>
 
@@ -895,8 +880,7 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name" id="rb-draft-04">Understanding Game-Theoretic Control</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">planned</span>
-          <span class="rb-status-pill todo">todo</span>
+          <span class="rb-status-pill todo">planned</span>
         </div>
 
         <div class="rb-paper" aria-hidden="true">
@@ -922,8 +906,7 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name" id="rb-draft-05">Understanding JAX for Control Research</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">planned</span>
-          <span class="rb-status-pill todo">todo</span>
+          <span class="rb-status-pill todo">planned</span>
         </div>
 
         <div class="rb-paper" aria-hidden="true">
@@ -949,8 +932,7 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name" id="rb-draft-06">Understanding Optimal Control &amp; Calculus of Variations</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">planned</span>
-          <span class="rb-status-pill todo">todo</span>
+          <span class="rb-status-pill todo">planned</span>
         </div>
 
         <div class="rb-paper" aria-hidden="true">
@@ -976,8 +958,7 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name" id="rb-draft-07">Understanding Reachability Analysis</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">planned</span>
-          <span class="rb-status-pill todo">todo</span>
+          <span class="rb-status-pill todo">planned</span>
         </div>
 
         <div class="rb-paper" aria-hidden="true">
@@ -1003,8 +984,7 @@ body.quarto-dark .rb-paper {
           <h3 class="rb-card-name" id="rb-draft-08">Understanding Reinforcement Learning</h3>
         </div>
         <div class="rb-card-meta">
-          <span class="rb-card-date">planned</span>
-          <span class="rb-status-pill todo">todo</span>
+          <span class="rb-status-pill todo">planned</span>
         </div>
 
         <div class="rb-paper" aria-hidden="true">
