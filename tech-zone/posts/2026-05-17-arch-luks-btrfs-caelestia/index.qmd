@@ -215,7 +215,8 @@ pacstrap -K /mnt \
     networkmanager openssh sudo \
     neovim git base-devel \
     zram-generator \
-    inotify-tools
+    inotify-tools \
+    reflector
 ```
 
 Use `amd-ucode` instead of `intel-ucode` on AMD hardware.
@@ -231,6 +232,7 @@ The new packages beyond Article 01:
 | `snap-pac`        | Pacman hook that creates a snapper snapshot before and after every `pacman` transaction. |
 | `zram-generator` | systemd-friendly zram setup. We'll point it at half of RAM, zstd-compressed. |
 | `inotify-tools`   | Used by `grub-btrfs`'s `grub-btrfsd` to watch the snapshots directory and re-generate GRUB on changes. |
+| `reflector`       | Mirror-list optimizer. We used it once from the live USB before pacstrap; install it *inside* the chroot too so `reflector.timer` exists for the Chapter 11 enable step and the system can re-rank mirrors on its own weekly. |
 
 ::: {.callout-warning}
 ## Two harmless warnings you will see during pacstrap
