@@ -1608,10 +1608,15 @@ sudo pacman -S \
   gwenview kate ark okular \
   haruna swayimg \
   flatpak \
-  desktop-file-utils
-
-yay -S discover
+  desktop-file-utils \
+  discover
 ```
+
+::: {.callout-note}
+## Heads up: `discover` is in the official repos now
+
+Older guides (and an earlier draft of this article) reach for `yay -S discover` because Discover used to be AUR-only on non-Plasma desktops. As of recent Arch, **it's back in the official `extra` repo** — `sudo pacman -S discover` works directly, no AUR build needed. If you do run `yay -S discover` you'll see the output line `Sync Explicit (1): discover-6.6.5-1` (note: **Sync**, not **AUR**) — yay just forwards to pacman.
+:::
 
 ::: {.callout-tip}
 ## Provider prompts you'll see during this install — what to pick
@@ -1679,19 +1684,21 @@ sudo pacman -S sddm qt6-svg qt6-virtualkeyboard
 | `qt6-svg`              | SVG rendering for the SDDM theme. Required by the default Breeze theme and almost every third-party theme. |
 | `qt6-virtualkeyboard`  | On-screen keyboard support. Optional for desktops but harmless and recommended if you might use this install on a touch device later. |
 
-::: {.callout-note}
-## Why I'm not setting `DisplayServer=wayland`
+::: {.callout-warning}
+## Expect SDDM to pull in `xorg-server` + a few X11 deps
 
-SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (`kwin_wayland`, `weston`, etc.) which we don't have installed. SDDM's default mode (Qt running directly against the framebuffer/DRM-KMS via `kms`) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that's independent of how the greeter is rendered.
+On current Arch (SDDM 0.21.0-6 as of mid-2026), the `sddm` package pulls these as transitive dependencies:
 
-If you ever want to switch to the Wayland greeter, install one of the supported compositors (`pacman -S weston`) and add this to `/etc/sddm.conf.d/wayland.conf`:
+| Package | Why it's pulled in |
+|---------|--------------------|
+| `xorg-server` | SDDM's default greeter renders via an X.Org server, not directly via DRM/KMS. Despite SDDM being marketed as Qt6/Wayland-aware, the *greeter screen itself* still runs under X11 on current Arch packaging. |
+| `xorg-xauth` | X11 cookie/authority management — required by xorg-server. |
+| `xf86-input-libinput` | libinput → X11 input driver, so the SDDM greeter sees your keyboard and mouse. |
+| `libxmu` | Misc X utilities, an xorg-server dep. |
 
-```ini
-[General]
-DisplayServer=wayland
-[Wayland]
-CompositorCommand=weston --shell=fullscreen-shell.so
-```
+About ~40 MB of X11 stack you can't avoid. **This is mandatory on current Arch packaging — not optional.** The good news: the session SDDM *launches* (Hyprland) is still pure Wayland, so the X server only runs for the few seconds of greeter rendering during login. After you authenticate, X is gone and Hyprland is running natively on Wayland.
+
+If you want to avoid pulling X11 entirely, use `greetd + tuigreet` instead (next callout) — that's a TTY-based greeter and stays Wayland-pure end-to-end.
 :::
 
 Enable SDDM so it starts at every boot:
@@ -1699,6 +1706,16 @@ Enable SDDM so it starts at every boot:
 ```bash
 sudo systemctl enable sddm.service
 ```
+
+You should see one `Created symlink '/etc/systemd/system/display-manager.service' → '/usr/lib/systemd/system/sddm.service'` line — that's the proof SDDM is registered as the system's display manager.
+
+Verify it's set up to start at boot:
+
+```bash
+systemctl is-enabled sddm.service     # should print: enabled
+```
+
+Don't `systemctl start sddm.service` right now — that would try to seize your current TTY (or fight with your SSH session). The reboot in Step 9 is the right time for SDDM to start.
 
 ::: {.callout-note}
 ## How SDDM finds Hyprland
@@ -1725,33 +1742,62 @@ sudo systemctl enable greetd.service
 sudo reboot
 ```
 
-On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.
+If you've been running the install over SSH, this will close your session — that's normal. **Walk to the laptop's physical display + keyboard for the first graphical login.** SDDM renders on the local seat, not over SSH; you cannot drive the first login from a remote shell (see the [SSH vs local seat](#ssh-vs-local-seat) note above).
+
+The expected sequence on the screen:
+
+| Stage | What you should see | What's happening under the hood |
+|-------|---------------------|----------------------------------|
+| 1 | **GRUB menu** — Arch is the only entry; press Enter or wait the default timeout | UEFI firmware booted GRUB from the ESP |
+| 2 | **`Please enter passphrase for disk … (cryptroot):`** | systemd-in-initramfs is asking sd-encrypt to unlock `/dev/nvme0n1p2` |
+| 3 | A brief pause (~2–3 s) after correct passphrase | Kernel mounts the `@` Btrfs subvolume as `/`, real systemd takes over, services start |
+| 4 | **SDDM graphical login screen** appears on the local display | This is the moment-of-truth — proof Section 8 worked. The greeter is X11-backed (xorg-server briefly active), about to launch a Wayland session |
+| 5 | Session dropdown in the bottom corner | Shows "Hyprland" and possibly "Caelestia" — both launch Hyprland with the same configs (Caelestia's variant pre-sets a few env vars for the bundled status bar). Pick either. |
+| 6 | Type your user password → Enter | SDDM authenticates via PAM, kills xorg-server, hands over the seat to Hyprland |
+| 7 | Brief flicker, then **Caelestia bar appears across the top**, your wallpaper renders | Hyprland is up, Quickshell is rendering the status bar, your dGPU is back in D3cold (battery-friendly idle) |
+
+If anything weird happens between SDDM and the bar fully rendering — black screen, fallback to TTY, SDDM crashes back to its login — see the troubleshooting section at the bottom of the article.
 
 ---
 
 # Part 5 — Verifying everything ended up where it should
 
-Once you're in Hyprland, open a `foot` terminal and run:
+Once you're in Hyprland (Caelestia bar across the top, your wallpaper rendered), open a `foot` terminal — Caelestia's default keybind is `Super+Return` — and run:
 
 ```bash
 # Filesystem & encryption
 lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS
 cryptsetup status cryptroot      # active LUKS mapping
-findmnt -t btrfs                 # all four Btrfs mountpoints
-sudo btrfs subvolume list /      # @, @home, @snapshots, @var_log, @swap
+findmnt -t btrfs                 # all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)
+sudo btrfs subvolume list /      # same five subvolumes, listed by ID
 
 # Swap + hibernation
-swapon --show                    # zram0 (pri 100) + /swap/swapfile
+swapon --show                    # zram0 (pri 100) + /swap/swapfile (pri -1)
 zramctl                          # zstd-compressed zram device
 
-# Snapshots
-sudo snapper list                # at least two snapshots from the first pacman -Syu
-ls /.snapshots/                  # numbered snapshot directories
+# Snapshots — should now show MANY (one per pacman transaction during install)
+sudo snapper -c root list        # expect snapshots numbered well into the 40s if you followed every step
+ls /.snapshots/                  # numbered snapshot directories matching the list above
 
-# Compositor + desktop
-hyprctl version                  # Hyprland version
-hyprctl monitors                 # detected displays
+# Compositor + Wayland
+hyprctl version                  # now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"
+hyprctl monitors                 # detected displays with resolution, refresh rate, scale
+echo $WAYLAND_DISPLAY            # something like "wayland-1" — proves you're in a Wayland session, not Xwayland
+
+# Audio (PipeWire stack)
+pactl info | grep 'Server Name'  # "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API
+wpctl status                     # tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there
+systemctl --user status pipewire wireplumber pipewire-pulse | grep Active
+                                 # all three should be Active: active (running)
+
+# GPU (on hybrid laptops — Dell Precision example)
+nvidia-smi                       # confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)
+vainfo 2>/dev/null | head -5     # iGPU VA-API confirms working video decode
+
+# Caelestia-specific
+caelestia --version              # CLI version
 systemctl --user status caelestia-shell.service 2>/dev/null || true
+                                 # may or may not exist depending on Caelestia version — fine either way
 ```
 
 If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.
