@@ -1766,7 +1766,55 @@ If anything weird happens between SDDM and the bar fully rendering — black scr
 
 When you authenticate at the SDDM greeter and Hyprland starts, expect to see:
 
-- **A black desktop background** — Caelestia doesn't set a wallpaper out-of-the-box. The bar, side panels, and Quickshell widgets render correctly *on top of* black; that's the default fallback Hyprland uses until a wallpaper backend (e.g., `swww`, `hyprpaper`, or Caelestia's own `caelestia wallpaper`) takes over the background layer. Not a bug — just an empty wallpaper slot.
+- **A black desktop background** — Caelestia doesn't set a wallpaper out-of-the-box. The bar, side panels, and Quickshell widgets render correctly *on top of* black; that's the default fallback because Caelestia's own wallpaper layer simply hasn't been told which file to render yet. Not a bug — just an empty wallpaper slot. Fix in the "Setting your first wallpaper" callout below.
+
+::: {.callout-tip}
+## Setting your first wallpaper (and how Caelestia's wallpaper layer works)
+
+Caelestia doesn't use a separate wallpaper daemon (`swww`, `hyprpaper`, etc.) — its **Quickshell-based bar is also the wallpaper layer**. The same Quickshell process that renders your status bar at the `OVERLAY` Wayland layer also renders your wallpaper at the `BACKGROUND` layer. So there's nothing to install — `pacman -Qi swww` will report "not found" and that's correct.
+
+To actually set a wallpaper, use the `caelestia wallpaper` subcommand. Its flags (per `caelestia wallpaper --help`):
+
+| Flag | What it does |
+|------|--------------|
+| `-f, --file FILE` | Set a specific image as the wallpaper |
+| `-r, --random [DIR]` | Pick a random image from `DIR` (defaults to whatever Caelestia is configured to scan) |
+| `-p, --print [PATH]` | Preview the color scheme an image would generate, **without switching to it** |
+| `-n, --no-filter` | Don't reject images smaller than your monitor (useful for stylized low-res art) |
+| `-t, --threshold N` | Minimum percentage of monitor size for the image to be accepted |
+| `-N, --no-smart` | Don't auto-update the desktop color scheme based on the wallpaper's dominant color |
+
+Common patterns:
+
+```bash
+# Set a specific wallpaper
+caelestia wallpaper -f ~/Pictures/Wallpapers/sunset.jpg
+
+# Random from a folder — the typical "I cloned a wallpapers repo" workflow
+caelestia wallpaper -r ~/Pictures/Wallpapers/
+
+# Preview the color scheme without committing — useful for picking
+caelestia wallpaper -p ~/Pictures/Wallpapers/sunset.jpg
+
+# Set without auto-retheming the bar
+caelestia wallpaper -f ~/Pictures/Wallpapers/sunset.jpg -N
+```
+
+When you run `-f` or `-r`, **two things happen at once**:
+
+1. The wallpaper appears on the background layer (replacing the black fallback).
+2. Caelestia's `python-materialyoucolor` library extracts the dominant color from the image and **re-themes the bar, widgets, and accent colors** to match. This is the Material You-style coordinated look. If you don't want this, add `-N`.
+
+To make this your default on every login, add a line to `~/.config/caelestia/hypr-user.conf` (or to a stow-managed personal overlay — see [Part 10 of the pacman/yay article](../2026-05-17-pacman-yay-aur-prompts/#part-10-living-alongside-opinionated-installers-gnu-stow--caelestia--chezmoi--yadm)):
+
+```text
+exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers
+```
+
+That way every Hyprland session starts with a random wallpaper from your collection (and a fresh accent-color scheme to match). Use an absolute path — `exec-once` lines don't always expand `~`.
+
+If `caelestia wallpaper -f` reports an image is too small, override with `-n` (no size filter). If you have a fixed favorite, use `-f` instead of `-r`.
+:::
 - **Caelestia's status bar across the top** with the time, system tray, and workspace indicators rendered.
 - **Side panels** (notification feed, calendar, control center, etc., depending on which keybinds you trigger).
 - **Default Hyprland window borders** around any foot terminals you open with `Super+Return`.
