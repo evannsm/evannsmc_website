@@ -812,11 +812,58 @@ sudo snapper -c root set-config \
     TIMELINE_LIMIT_YEARLY=0
 ```
 
-You can do the same for `/home` if you want home directory rollback as well:
+### Should you also snapshot `/home`?
+
+A live question worth thinking through rather than enabling reflexively, because the answer changes the disk-usage profile of your install meaningfully.
+
+**Why it's tempting:** rolling back an accidental `rm`, an editor that ate a file, or a misbehaving app that scrambled your dotfiles.
+
+**Why it's not free:** snapshots are copy-on-write, so they cost nothing *until files diverge*. The catch is that `/home` on a working machine is full of "write-once-delete-soon" data — `cargo target/`, `node_modules/`, `~/.cache/`, ROS `build/` and `install/`, training checkpoints, downloaded tarballs. Every snapshot pins those deleted extents until the snapshot ages out, so a build-heavy `/home` (research code, ML, robotics workspaces) can balloon snapper's footprint by many gigabytes in days.
+
+**What snapper for `/home` doesn't do:** it doesn't protect against disk failure, theft, fire, or `sudo rm -rf /` across the whole filesystem. Those need a *backup* — `restic` or `borg` to a NAS, an external drive, or a cloud bucket. Snapshots and backups solve different problems; for `/home` data you actually care about, the backup is the load-bearing tool.
+
+| Your workflow looks like… | Recommendation |
+|---------------------------|----------------|
+| Code, papers, configs, mostly git-tracked | **Skip** — git already gives you rollback for the things you'd want to roll back |
+| Heavy builds (cargo / npm / Python / ROS / ML) | **Skip** *unless* you mark build dirs NoCOW first (see below) |
+| Large datasets, video, ROS bags, model checkpoints | **Skip** — snapshot growth scales with edits to these |
+| Hand-edited dotfiles you don't track in git | **Enable** with tight retention (next block) |
+| Mostly small documents / email / browser profile | **Enable** with tight retention |
+
+::: {.callout-tip}
+## If you decide to enable it — use tight retention
+
+The default snapper retention is too generous for `/home`. This config keeps only ~6 rolling snapshots, which is enough to recover from "I deleted that file twenty minutes ago" without storing a month of build artifacts:
 
 ```bash
 sudo snapper -c home create-config /home
+sudo snapper -c home set-config \
+    TIMELINE_LIMIT_HOURLY=2 \
+    TIMELINE_LIMIT_DAILY=3 \
+    TIMELINE_LIMIT_WEEKLY=1 \
+    TIMELINE_LIMIT_MONTHLY=0 \
+    TIMELINE_LIMIT_YEARLY=0
 ```
+
+`snapper-timeline.timer` and `snapper-cleanup.timer` are already enabled (from Chapter 11), so they automatically apply this config too.
+:::
+
+::: {.callout-tip}
+## Mark build / cache directories NoCOW *regardless* of whether you enable home snapper
+
+Even on the live filesystem (no snapshots involved), Btrfs's copy-on-write semantics produce fragmentation on heavily-rewritten files — exactly what `cargo target/`, `~/.cache/`, and Python venvs are. Setting NoCOW on those directories *before* you populate them tells Btrfs to skip COW for the files inside, which both prevents that fragmentation and means snapshots (if you turn them on later) never pin those build artifacts.
+
+```bash
+mkdir -p ~/.cache ~/code/builds ~/.cargo
+chattr +C ~/.cache ~/code/builds ~/.cargo     # new files inside inherit NoCOW
+
+# ROS workspace pattern — mark build/install/log before colcon ever creates them
+mkdir -p ~/ros2_ws/{build,install,log}
+chattr +C ~/ros2_ws/{build,install,log}
+```
+
+`chattr +C` only affects *new* files — existing files in the directory keep their old (COW) attributes. So set this on empty directories before they fill up, or recreate the directory contents to inherit it.
+:::
 
 Verify snap-pac is wired up:
 
@@ -825,7 +872,24 @@ sudo pacman -Syu       # any pacman transaction now creates a pre + post snapsho
 sudo snapper -c root list
 ```
 
-You should see two new snapshots — one pre, one post — bracketing the update. From here on, *every* `pacman` invocation gives you a rollback point.
+**What you should see depends on whether `pacman -Syu` actually did anything:**
+
+- **If packages were upgraded**: a pre + post snapshot pair appears, bracketing the update — descriptions like `pacman -Syu` and cleanup `number`. From here on, *every* upgrading `pacman` invocation gives you a rollback point.
+- **If `pacman -Syu` printed `there is nothing to do`** (likely on a fresh install — pacstrap already pulled the latest from a current mirror): no pre/post snapshots are created, because *no transaction happened*. snap-pac hooks transactions, not bare `-Syu` syncs. You'll only see snapshot `0 │ single │ current`, which is snapper's reference placeholder, not real data.
+
+To prove snap-pac is wired up without waiting for a real upgrade, either force a manual snapshot or install one small package:
+
+```bash
+# Option A — manual snapshot
+sudo snapper -c root create --description "manual baseline"
+
+# Option B — install something to trigger the snap-pac hook
+sudo pacman -S htop                 # creates pre + post snapshots
+sudo snapper -c root list           # snapshots 1, 2, 3 should now appear
+# sudo pacman -R htop               # optional cleanup — this also triggers a pre + post pair
+```
+
+The `snapper-timeline.timer` enabled in Chapter 11 fires `OnCalendar=hourly`, so within an hour of first boot, snapshots will also start appearing automatically with cleanup `timeline`.
 
 ### Test hibernation before you trust it
 
