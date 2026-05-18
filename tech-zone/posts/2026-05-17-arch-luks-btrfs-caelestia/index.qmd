@@ -294,7 +294,14 @@ echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=us"        > /etc/vconsole.conf
 
 # Hostname
-echo "evanns-arch" > /etc/hostname
+echo "arch" > /etc/hostname
+
+# /etc/hosts (so the hostname resolves locally)
+cat > /etc/hosts <<'EOF'
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   arch.localdomain arch
+EOF
 
 # Root password
 passwd
@@ -307,7 +314,20 @@ passwd evanns
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 ```
 
-Replace `evanns-arch` and `evanns` with whatever names you want. The extra groups (`video`, `audio`, `input`) preempt small annoyances later with Hyprland (`video` for GPU access, `input` for libinput devices, `audio` for the legacy ALSA path some apps still want).
+Replace `evanns` with whatever username you want. I'm using `arch` as the bare hostname (so the shell prompt reads `evanns@arch`) — if you'd rather have a more descriptive hostname like `arch-thinkpad` or `lab-laptop`, change both the `/etc/hostname` line and the trailing `arch.localdomain arch` token in `/etc/hosts`. The extra groups (`video`, `audio`, `input`) preempt small annoyances later with Hyprland (`video` for GPU access, `input` for libinput devices, `audio` for the legacy ALSA path some apps still want).
+
+::: {.callout-tip}
+## Already booted and want to change the hostname later?
+
+Don't edit `/etc/hostname` by hand on a running system — use `hostnamectl`, which updates the file, the kernel's runtime hostname, and the systemd-hostnamed D-Bus property in one shot:
+
+```bash
+sudo hostnamectl set-hostname arch
+sudo nvim /etc/hosts            # update the 127.0.1.1 line to match
+```
+
+Then open a new shell (or log out / log back in) — your current shell cached `$HOSTNAME` at startup and won't update in place.
+:::
 
 ---
 
