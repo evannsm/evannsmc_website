@@ -1,6 +1,6 @@
 ---
 title: "Three Single-Boot Arch Variants: Btrfs, LUKS, or Both"
-description: "A side-by-side compilation of three single-boot Arch Linux install procedures derived from what I learned writing Articles 01–04: Arch + Btrfs subvolumes (no encryption), Arch + LUKS (no Btrfs), and Arch + LUKS + Btrfs (the snapshot-ready encrypted single-boot from Article 03, minus the Caelestia desktop). Use the tab switcher to pick the variant you want. Each tab is a complete, copy-pasteable procedure isolated to one variable change relative to the basic install."
+description: "A side-by-side compilation of three single-boot Arch Linux install procedures derived from what I learned writing Articles 01–04: Arch + Btrfs subvolumes (no encryption), Arch + LUKS (no Btrfs), and Arch + LUKS + Btrfs (the snapshot-ready encrypted single-boot from Article 03). Use the tab switcher to pick the variant you want. Each tab is a complete, copy-pasteable procedure isolated to one variable change relative to the basic install, and stops on the console — the desktop layer is a separate choice."
 author: "Evanns Morales-Cuadrado"
 date: "2026-05-18"
 categories: [arch linux, linux, installation, btrfs, luks, snapper, grub, mkinitcpio, zram, single-boot]
@@ -12,7 +12,7 @@ draft: false
 ::: {.callout-warning}
 ## Honesty disclaimer: I haven't run these three exactly line-by-line
 
-Unlike [Article 02 (basic install)](../2026-05-01-first-arch-install/), [Article 01 (failed dual-boot post-mortem)](../2026-05-05-arch-luks-btrfs-lessons/), and [Article 03 (LUKS+Btrfs+Caelestia)](../2026-05-17-arch-luks-btrfs-caelestia/) — which are first-hand install logs I executed and can vouch for command-by-command — **the three procedures in this compilation are reasoned derivations**. They're built from what I learned in those four articles plus the [Arch wiki](https://wiki.archlinux.org/title/Installation_guide){target="_blank" rel="noopener"} and standard practice for each technology in isolation. I've verified every command in the man pages and the wiki, but I have **not** run all three end-to-end on a real machine and watched them boot.
+Unlike [Article 02 (basic install)](../2026-05-01-first-arch-install/), [Article 01 (failed dual-boot post-mortem)](../2026-05-05-arch-luks-btrfs-lessons/), and [Article 03 (LUKS+Btrfs single-boot)](../2026-05-17-arch-luks-btrfs-caelestia/) — which are first-hand install logs I executed and can vouch for command-by-command — **the three procedures in this compilation are reasoned derivations**. They're built from what I learned in those four articles plus the [Arch wiki](https://wiki.archlinux.org/title/Installation_guide){target="_blank" rel="noopener"} and standard practice for each technology in isolation. I've verified every command in the man pages and the wiki, but I have **not** run all three end-to-end on a real machine and watched them boot.
 
 If you spot something wrong, the canonical sources are:
 
@@ -322,7 +322,7 @@ lsblk -f
 
 ## Arch + LUKS + Btrfs
 
-**What this variant gives you:** the full single-boot install from [Article 03](../2026-05-17-arch-luks-btrfs-caelestia/), but condensed and without the Caelestia/Hyprland desktop layer. LUKS2 underneath, Btrfs subvolumes on top, zram for everyday swap, a NoCOW Btrfs swap file for hibernation, snapper + grub-btrfs from day one.
+**What this variant gives you:** the full single-boot install from [Article 03](../2026-05-17-arch-luks-btrfs-caelestia/), condensed. LUKS2 underneath, Btrfs subvolumes on top, zram for everyday swap, a NoCOW Btrfs swap file for hibernation, snapper + grub-btrfs from day one. Stops on the console — desktop layer is your call (Caelestia, custom Hyprland, GNOME, Plasma, sway, dwm, …).
 
 **What's the same as Article 03:** every command in Parts 1–3 of that article — partitioning, LUKS format, Btrfs subvolume layout, mount options, pacstrap, mkinitcpio hooks, GRUB cmdline, snapper config, first-boot verification.
 
@@ -472,17 +472,27 @@ sudo snapper -c root list                                       # at least the p
 sudo systemctl hibernate                                        # hibernation works (re-test after a few uses)
 ```
 
-### Next: layer the Caelestia desktop on top
+### Next: pick a desktop layer
 
-This tab stops where Article 03 stops in its install layer — you have an encrypted, snapshot-able, hibernation-ready single-boot Arch system, on the console. The desktop is its own piece of work:
+This tab stops where Article 03 stops in its install layer — you have an encrypted, snapshot-able, hibernation-ready single-boot Arch system, on the console. The desktop is its own piece of work, and which one you reach for depends on how much opinionation you want pre-baked:
 
 ::: {.callout-tip}
-## → [Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar](../2026-05-18-caelestia-desktop/)
+## Path A → Caelestia: a turnkey Hyprland bundle (Article 05)
 
-PipeWire audio, GPU drivers, AUR helper, the Caelestia bundle, KDE apps under Hyprland, SDDM, wallpaper chain, and the Hyprland 0.55 Lua override path. Pick it up from here.
+[**Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar**](../2026-05-18-caelestia-desktop/) — PipeWire audio, GPU drivers (Intel / AMD / NVIDIA / hybrid), AUR helper, a single coherent dotfile bundle (Quickshell bar, `foot`, `fish`, themed widgets), KDE apps under Hyprland, SDDM, the wallpaper chain. Fast to "looks like a screenshot." Read the [honest retrospective at the top](../2026-05-18-caelestia-desktop/#caveats-from-actually-using-it) first — it's opinionated and on older hardware noticeably slower than a bespoke setup.
 :::
 
-If you want a different desktop (GNOME, Plasma, sway, dwm, …), skip the Caelestia article and install the relevant `gnome` / `plasma` / `sway` group instead — the install layer this tab leaves you with is desktop-agnostic.
+::: {.callout-tip}
+## Path B → Custom Hyprland (upcoming)
+
+A Hyprland setup picked piece by piece — your bar, your terminal, your keybinds, your theme — with no project-bundle layer on top. Slower to "first screenshot" but every component is one you chose. Article dashed in the upcoming section on the [Tech Zone landing](../../).
+:::
+
+::: {.callout-tip}
+## Path C → Something else entirely (no article)
+
+If you want GNOME, Plasma, sway, dwm, or anything else, skip both desktop articles above and install the relevant `gnome` / `plasma` / `sway` / `dwm` group with `pacman`. The install layer this tab leaves you with is desktop-agnostic — nothing about the LUKS+Btrfs+snapper stack assumes a particular compositor.
+:::
 
 :::
 

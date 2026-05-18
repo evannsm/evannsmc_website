@@ -468,7 +468,7 @@ What this is
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The post-install half of <a href="../2026-05-17-arch-luks-btrfs-caelestia/">Article 03 (Arch + LUKS + Btrfs + Caelestia)</a>, split out into its own article because the desktop setup is independent of the underlying install. You can follow this on top of any working Arch base — LUKS+Btrfs, plain ext4, dual-boot, whatever. The commands below all run <em>inside</em> a booted, networked Arch system with a regular user account.</p>
+<p>The Caelestia desktop layer — one of two desktop options for the install in <a href="../2026-05-17-arch-luks-btrfs-caelestia/">Article 03 (Arch + LUKS + Btrfs)</a>. Split into its own article because the desktop is independent of the underlying install — you can follow this on top of any working Arch base (LUKS+Btrfs, plain ext4, dual-boot, whatever). The commands below all run <em>inside</em> a booted, networked Arch system with a regular user account.</p>
 <p>In order:</p>
 <ul>
 <li><strong>PipeWire</strong> audio stack (so sound works the moment Caelestia launches)</li>
@@ -483,6 +483,27 @@ What this is
 <li><strong>Post-login verification</strong> — wallpaper chain, Hyprland customization paths, sanity checks</li>
 </ul>
 <p>If your install isn’t done yet, finish the bootstrap-and-LUKS-and-Btrfs half first (<a href="../2026-05-17-arch-luks-btrfs-caelestia/">Article 03 Parts 1–3</a>) and come back here.</p>
+<p><strong>If you want a custom-built Hyprland setup instead</strong> (no project-bundle layer, your own bar / terminal / theme picks), see the read-this-first callout below — the upcoming Custom Hyprland article is for you.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caveats from actually using it
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This article is honest about what I shipped and what I learned. Read this before committing to the bundle.</p>
+<ul>
+<li><strong>On older hardware it ran slow.</strong> The Quickshell-rendered bar + Material-You wallpaper-driven retheming + animated reveals add real frame-time pressure. On my old test laptop the desktop was usable but noticeably less snappy than a barebones Hyprland with <code>waybar</code>. On modern hardware (the Precision the rest of the article is tested on) it’s fine.</li>
+<li><strong>The install was harder than many tutorials made it look.</strong> The <code>caelestia-meta</code> <code>.SRCINFO</code> parsing failure I document below is real, and several other small papercuts (the missing <code>hypr-vars.conf</code> <code>source =</code> line that paints a red overlay on first login, the wallpaper-daemon-not-installed-by-default chain, the SSH-vs-local-seat trap with <code>hyprctl</code>) cost me hours that none of the upstream guides flagged. If you’re impatient or new to Hyprland, expect troubleshooting time before “first screenshot.”</li>
+<li><strong>It’s opinionated past my taste.</strong> The bundle picks every layer for you — bar, terminal (<code>foot</code>), shell (<code>fish</code> + <code>starship</code>), keybinds, animations, file-manager (<code>nautilus</code>-friendly), theme. That’s the point of a bundle, and a lot of people love it. For me, after living in it, I’d rather build a Hyprland setup piece by piece so I own every keybind and every line of <code>hyprland.conf</code> / <code>hyprland.lua</code>.</li>
+<li><strong>What I’m doing next:</strong> my next install will skip Caelestia and follow the <a href="../../">upcoming <strong>Custom Hyprland</strong> article</a> — <code>waybar</code> or <code>ironbar</code> instead of Quickshell, my own keybind set, a much smaller dependency footprint, no AUR meta-package gymnastics, and (importantly) no bundled retheming layer. This Caelestia article stays published as honest documentation of what it took to ship the opinionated path, for readers who do want the turnkey route.</li>
+</ul>
+<p>None of the above is a recommendation against Caelestia — it’s a project I respect and the screenshots are deserved. It’s a fit assessment. If you want a polished Hyprland desktop in an evening and don’t mind inheriting opinions, <strong>go for it</strong>. If you’d rather take longer and own every piece, the Custom Hyprland article is the one to wait for.</p>
 </div>
 </div>
 <section id="part-4-caelestia-hyprland-desktop" class="level1">

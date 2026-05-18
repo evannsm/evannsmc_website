@@ -8,9 +8,9 @@
 
 <meta name="author" content="Evanns Morales-Cuadrado">
 <meta name="dcterms.date" content="2026-05-17">
-<meta name="description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+<meta name="description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in. The desktop layer is deliberately a separate choice, see Part 4.">
 
-<title>Arch + LUKS + Btrfs + Caelestia – evannsmc</title>
+<title>Arch + LUKS + Btrfs — Encrypted, Snapshot-Ready Single-Boot – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,13 +166,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="Arch + LUKS + Btrfs + Caelestia – evannsmc">
-<meta property="og:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+<meta property="og:title" content="Arch + LUKS + Btrfs — Encrypted, Snapshot-Ready Single-Boot – evannsmc">
+<meta property="og:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in. The desktop layer is deliberately a separate choice, see Part 4.">
 <meta property="og:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
-<meta name="twitter:title" content="Arch + LUKS + Btrfs + Caelestia – evannsmc">
-<meta name="twitter:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+<meta name="twitter:title" content="Arch + LUKS + Btrfs — Encrypted, Snapshot-Ready Single-Boot – evannsmc">
+<meta name="twitter:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in. The desktop layer is deliberately a separate choice, see Part 4.">
 <meta name="twitter:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta name="twitter:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
 <meta name="twitter:card" content="summary_large_image">
@@ -412,15 +412,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Arch + LUKS + Btrfs + Caelestia</h1>
+<h1 class="title">Arch + LUKS + Btrfs — Encrypted, Snapshot-Ready Single-Boot</h1>
   <div class="quarto-categories">
     <div class="quarto-category">arch linux</div>
     <div class="quarto-category">linux</div>
     <div class="quarto-category">installation</div>
     <div class="quarto-category">luks</div>
     <div class="quarto-category">btrfs</div>
-    <div class="quarto-category">hyprland</div>
-    <div class="quarto-category">caelestia</div>
     <div class="quarto-category">snapper</div>
     <div class="quarto-category">hibernation</div>
     <div class="quarto-category">grub</div>
@@ -432,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <div>
   <div class="description">
-    Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, <span class="citation" data-cites="home">@home</span>, <span class="citation" data-cites="snapshots">@snapshots</span>, <span class="citation" data-cites="var_log">@var_log</span>, <span class="citation" data-cites="swap">@swap</span>), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.
+    Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, <span class="citation" data-cites="home">@home</span>, <span class="citation" data-cites="snapshots">@snapshots</span>, <span class="citation" data-cites="var_log">@var_log</span>, <span class="citation" data-cites="swap">@swap</span>), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in. The desktop layer is deliberately a separate choice, see Part 4.
   </div>
 </div>
 
@@ -471,16 +469,15 @@ What this is
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The install I’m actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working <a href="../2026-05-01-first-arch-install/">basic Arch install</a> with:</p>
+<p>The encrypted, snapshot-able install layer I’m actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working <a href="../2026-05-01-first-arch-install/">basic Arch install</a> with:</p>
 <ul>
 <li><strong>LUKS2</strong> full-disk encryption on the root partition,</li>
 <li><strong>Btrfs</strong> with proper subvolumes (<code>@</code>, <code>@home</code>, <code>@snapshots</code>, <code>@var_log</code>, <code>@swap</code>),</li>
 <li><strong>zram</strong> for fast, compressed, RAM-resident everyday swap,</li>
 <li>a <strong>NoCOW Btrfs swap file</strong> big enough for hibernation (suspend-to-disk),</li>
-<li><strong>snapper</strong> + <strong>grub-btrfs</strong> for bootable, per-<code>pacman</code>-transaction snapshots,</li>
-<li>and the <strong><a href="https://github.com/caelestia-dots/caelestia" target="_blank" rel="noopener">Caelestia</a></strong> Hyprland-based desktop on top.</li>
+<li><strong>snapper</strong> + <strong>grub-btrfs</strong> for bootable, per-<code>pacman</code>-transaction snapshots.</li>
 </ul>
-<p>It is <strong>single-boot</strong>. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.</p>
+<p>It is <strong>single-boot</strong> and stops on the console — the desktop layer is deliberately a separate choice. <strong>Part 4 (at the end)</strong> is a fork: pick a pre-bundled desktop (<a href="../2026-05-18-caelestia-desktop/">Caelestia, Article 05</a>) or a piece-by-piece custom Hyprland (upcoming) — neither is required for the install itself. Dual-boot and triple-boot setups get their own articles too — those add complexity I want to introduce one variable at a time after this one is rock-solid.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -493,13 +490,13 @@ How to read the hardware-specific examples in this guide
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Some sections of this article have variance by machine — the GPU drivers you need, the swap-file size, what <code>lspci</code> actually prints. Wherever that’s the case, you’ll see a <strong>tabbed block</strong> like the one in <a href="#section-4-graphics-drivers">Section 4 (Graphics drivers)</a>: a row of clickable tabs across the top, each one a different machine.</p>
+<p>Some sections of this article have variance by machine — the swap-file size, the kernel image you pick, what <code>lspci</code> actually prints. Wherever that’s the case, you’ll see a <strong>tabbed block</strong> with one example per machine. The tabs don’t change anything else on the page — they just show or hide the example content.</p>
 <ul>
 <li><strong>Generic</strong> — the version a reader on unknown hardware should follow.</li>
 <li><strong>Dell Precision (Intel Iris Xe + RTX A2000)</strong> — the actual <code>lspci</code> output, exact commands, and post-install env vars from my Dell Precision mobile workstation. This is the machine I’ve fully installed and tested this guide on.</li>
 <li><strong>Dell Pro 16 Plus</strong> — placeholder for a second machine I’ll install this stack on later. Content lands when I actually run through it.</li>
 </ul>
-<p>Click any tab to see the example specific to that machine. The tabs don’t change anything else on the page — they just show or hide the example content. Future readers (including future-me) get both the general guidance and the concrete “here’s what it looked like on a real machine I trust.”</p>
+<p>GPU drivers themselves are part of the <em>desktop</em> layer, not the install — they live in the desktop articles (Article 05 for Caelestia, upcoming for Custom Hyprland), not here.</p>
 </div>
 </div>
 <section id="why-this-is-its-own-article-and-not-just-article-01-fixed" class="level2">
@@ -1797,32 +1794,50 @@ Hibernation + LUKS: what this gives you, security-wise
 </table>
 <p>For a laptop that leaves your physical control (travel, conference rooms, anywhere you might want to close the lid and walk away with confidence), <strong>hibernate is meaningfully more secure than suspend</strong>.</p>
 <p>What hibernation + LUKS does <strong>not</strong> protect against: someone walking up to your unlocked desktop session after you’ve successfully resumed. The LUKS prompt gates <em>getting back into the machine</em>; once that prompt is satisfied, you’re returned to whatever session state existed before you hibernated. If you didn’t have a screen-locker active at hibernate time, the unlocked desktop is sitting right there after resume.</p>
-<p>For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this with <code>hyprlock</code> + <code>hypridle</code> once Hyprland is up:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> hyprlock hypridle        <span class="co"># if not already pulled in by caelestia-meta</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>…and configure <code>hypridle</code> to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs <em>both</em> the LUKS passphrase (to boot the disk) <em>and</em> the screen-lock passphrase (to re-enter your session). Without <code>hyprlock</code> running, only the LUKS prompt stands in their way.</p>
+<p>For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this install with a screen locker once your chosen desktop is up. Whichever Part 4 path you take, install and configure a locker:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hyprland: hyprlock + hypridle (works under any Hyprland setup — Caelestia bundle or custom)</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> hyprlock hypridle</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># GNOME / KDE / Sway / dwm — use the locker that matches your compositor.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>…then configure your locker to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs <em>both</em> the LUKS passphrase (to boot the disk) <em>and</em> the screen-lock passphrase (to re-enter your session). Without a locker running, only the LUKS prompt stands in their way.</p>
 </div>
 </div>
 <hr>
 </section>
 </section>
 </section>
-<section id="part-4-layer-on-the-caelestia-desktop-separate-article" class="level1">
-<h1>Part 4 — Layer on the Caelestia desktop (separate article)</h1>
-<p>You now have a working, encrypted, snapshot-able single-boot Arch system. The PipeWire audio stack, the Caelestia Hyprland bundle, the GPU drivers, the AUR helper, the KDE apps under Hyprland, the SDDM login manager, the wallpaper chain that survives reboots, and the Hyprland 0.55 Lua override path are all covered in their own dedicated article so this one can stay focused on the install layer:</p>
+<section id="part-4-pick-your-desktop-layer" class="level1">
+<h1>Part 4 — Pick your desktop layer</h1>
+<p>You now have a working, encrypted, snapshot-able single-boot Arch system on the console. <strong>The next step — putting a graphical session in front of it — is its own choice</strong>, and I deliberately keep it out of this article so the install layer above stays desktop-agnostic. PipeWire audio, GPU drivers, the AUR helper, the login manager, the bar, the wallpaper layer, every keybind — none of that is required for the install to be considered “done.” It’s a separate body of work.</p>
+<p>Two paths, depending on how much opinionation you want from your desktop:</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-→ <a href="../2026-05-18-caelestia-desktop/">Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</a>
+Path A → Caelestia: a turnkey Hyprland bundle (Article 05)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The post-install half: audio, GPU, AUR, Caelestia itself, KDE-Frameworks-under-Hyprland apps, SDDM, wallpaper, and customization paths. Pick it up on top of the install you just finished.</p>
+<p><a href="../2026-05-18-caelestia-desktop/"><strong>Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</strong></a> walks through a single coherent dotfile bundle: a Quickshell-based status bar, themed terminal (<code>foot</code>), <code>fish</code> + <code>starship</code>, a curated tool set, the Material-You-style wallpaper-driven retheming, GPU drivers (Intel / AMD / NVIDIA / hybrid), the AUR helper, KDE-Frameworks apps under Hyprland, and SDDM. Fast to get to “looks like a screenshot” — but you inherit the Caelestia project’s design opinions wholesale, and on older hardware the Quickshell bar adds measurable latency. See <a href="../2026-05-18-caelestia-desktop/#caveats-from-actually-using-it">my honest retrospective at the top of Article 05</a> before committing.</p>
 </div>
 </div>
-<p>Before you click through, a short final-checks block for the install layer itself — these are the commands you can run <em>right now</em>, from a TTY login, to confirm everything from Parts 1–3 came up correctly:</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Path B → Custom Hyprland (upcoming)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A from-scratch Hyprland setup built piece by piece — your own status bar choice (<code>waybar</code>, <code>ironbar</code>, <code>eww</code>, plain <code>hyprland-eyepatch</code>, …), your own terminal, your own keybinds, your own theme — with no project-bundle layer on top. Slower to “first screenshot” but every component is one you picked, and there’s no surprise opinion baked in. This is the path I’m taking on my next laptop. The article is dashed in the upcoming section on the <a href="../../">Tech Zone landing</a>.</p>
+</div>
+</div>
+<p>If you don’t know which to pick: try <strong>Caelestia</strong> first if you want a polished Hyprland desktop in an evening and don’t mind inheriting opinions you’ll later strip; pick <strong>Custom Hyprland</strong> if you’d rather take longer and own every line of <code>hyprland.conf</code> / <code>hyprland.lua</code> from day one.</p>
+<p>Before you click through to either, a short final-checks block for the install layer itself — these are the commands you can run <em>right now</em>, from a TTY login, to confirm everything from Parts 1–3 came up correctly:</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
@@ -1836,7 +1851,7 @@ Hibernation + LUKS: what this gives you, security-wise
 <span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show at least the initial set from Part 3</span></span>
 <span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span>
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If those return sane output, the encrypted Btrfs install is rock-solid and you’re ready to layer the desktop on top.</p>
+<p>If those return sane output, the encrypted Btrfs install is rock-solid and you’re ready to layer the desktop on top — Path A or Path B above, your call.</p>
 <hr>
 <section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
 <h2 class="anchored" data-anchor-id="troubleshooting-timed-out-waiting-for-device-at-boot">Troubleshooting: “Timed out waiting for device” at boot</h2>
@@ -1865,7 +1880,7 @@ Attribution
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The Arch Linux logo is a trademark of the Arch Linux project and is used here under <a href="https://archlinux.org/art/" target="_blank" rel="noopener">Arch Linux’s branding terms</a> for editorial purposes only. Caelestia is the work of the <a href="https://github.com/caelestia-dots" target="_blank" rel="noopener">caelestia-dots</a> project and its contributors.</p>
+<p>The Arch Linux logo is a trademark of the Arch Linux project and is used here under <a href="https://archlinux.org/art/" target="_blank" rel="noopener">Arch Linux’s branding terms</a> for editorial purposes only.</p>
 </div>
 </div>
 

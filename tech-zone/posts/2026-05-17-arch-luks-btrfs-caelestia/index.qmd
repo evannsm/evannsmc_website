@@ -1,9 +1,9 @@
 ---
-title: "Arch + LUKS + Btrfs + Caelestia"
-description: "Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in."
+title: "Arch + LUKS + Btrfs — Encrypted, Snapshot-Ready Single-Boot"
+description: "Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in. The desktop layer is deliberately a separate choice, see Part 4."
 author: "Evanns Morales-Cuadrado"
 date: "2026-05-17"
-categories: [arch linux, linux, installation, luks, btrfs, hyprland, caelestia, snapper, hibernation, grub, mkinitcpio, systemd, zram]
+categories: [arch linux, linux, installation, luks, btrfs, snapper, hibernation, grub, mkinitcpio, systemd, zram]
 image: ../../../files/tech-zone/arch-logo-dark.svg
 image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
 draft: false
@@ -12,28 +12,27 @@ draft: false
 ::: {.callout-note}
 ## What this is
 
-The install I'm actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working [basic Arch install](../2026-05-01-first-arch-install/) with:
+The encrypted, snapshot-able install layer I'm actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working [basic Arch install](../2026-05-01-first-arch-install/) with:
 
 - **LUKS2** full-disk encryption on the root partition,
 - **Btrfs** with proper subvolumes (`@`, `@home`, `@snapshots`, `@var_log`, `@swap`),
 - **zram** for fast, compressed, RAM-resident everyday swap,
 - a **NoCOW Btrfs swap file** big enough for hibernation (suspend-to-disk),
-- **snapper** + **grub-btrfs** for bootable, per-`pacman`-transaction snapshots,
-- and the **[Caelestia](https://github.com/caelestia-dots/caelestia){target="_blank" rel="noopener"}** Hyprland-based desktop on top.
+- **snapper** + **grub-btrfs** for bootable, per-`pacman`-transaction snapshots.
 
-It is **single-boot**. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.
+It is **single-boot** and stops on the console — the desktop layer is deliberately a separate choice. **Part 4 (at the end)** is a fork: pick a pre-bundled desktop ([Caelestia, Article 05](../2026-05-18-caelestia-desktop/)) or a piece-by-piece custom Hyprland (upcoming) — neither is required for the install itself. Dual-boot and triple-boot setups get their own articles too — those add complexity I want to introduce one variable at a time after this one is rock-solid.
 :::
 
 ::: {.callout-tip}
 ## How to read the hardware-specific examples in this guide
 
-Some sections of this article have variance by machine — the GPU drivers you need, the swap-file size, what `lspci` actually prints. Wherever that's the case, you'll see a **tabbed block** like the one in [Section 4 (Graphics drivers)](#section-4-graphics-drivers): a row of clickable tabs across the top, each one a different machine.
+Some sections of this article have variance by machine — the swap-file size, the kernel image you pick, what `lspci` actually prints. Wherever that's the case, you'll see a **tabbed block** with one example per machine. The tabs don't change anything else on the page — they just show or hide the example content.
 
 - **Generic** — the version a reader on unknown hardware should follow.
 - **Dell Precision (Intel Iris Xe + RTX A2000)** — the actual `lspci` output, exact commands, and post-install env vars from my Dell Precision mobile workstation. This is the machine I've fully installed and tested this guide on.
 - **Dell Pro 16 Plus** — placeholder for a second machine I'll install this stack on later. Content lands when I actually run through it.
 
-Click any tab to see the example specific to that machine. The tabs don't change anything else on the page — they just show or hide the example content. Future readers (including future-me) get both the general guidance and the concrete "here's what it looked like on a real machine I trust."
+GPU drivers themselves are part of the *desktop* layer, not the install — they live in the desktop articles (Article 05 for Caelestia, upcoming for Custom Hyprland), not here.
 :::
 
 ## Why this is its own article (and not just "Article 01, fixed")
@@ -1075,28 +1074,41 @@ For a laptop that leaves your physical control (travel, conference rooms, anywhe
 
 What hibernation + LUKS does **not** protect against: someone walking up to your unlocked desktop session after you've successfully resumed. The LUKS prompt gates *getting back into the machine*; once that prompt is satisfied, you're returned to whatever session state existed before you hibernated. If you didn't have a screen-locker active at hibernate time, the unlocked desktop is sitting right there after resume.
 
-For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this with `hyprlock` + `hypridle` once Hyprland is up:
+For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this install with a screen locker once your chosen desktop is up. Whichever Part 4 path you take, install and configure a locker:
 
 ```bash
-yay -S hyprlock hypridle        # if not already pulled in by caelestia-meta
+# Hyprland: hyprlock + hypridle (works under any Hyprland setup — Caelestia bundle or custom)
+yay -S hyprlock hypridle
+
+# GNOME / KDE / Sway / dwm — use the locker that matches your compositor.
 ```
 
-…and configure `hypridle` to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs *both* the LUKS passphrase (to boot the disk) *and* the screen-lock passphrase (to re-enter your session). Without `hyprlock` running, only the LUKS prompt stands in their way.
+…then configure your locker to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs *both* the LUKS passphrase (to boot the disk) *and* the screen-lock passphrase (to re-enter your session). Without a locker running, only the LUKS prompt stands in their way.
 :::
 
 ---
 
-# Part 4 — Layer on the Caelestia desktop (separate article)
+# Part 4 — Pick your desktop layer
 
-You now have a working, encrypted, snapshot-able single-boot Arch system. The PipeWire audio stack, the Caelestia Hyprland bundle, the GPU drivers, the AUR helper, the KDE apps under Hyprland, the SDDM login manager, the wallpaper chain that survives reboots, and the Hyprland 0.55 Lua override path are all covered in their own dedicated article so this one can stay focused on the install layer:
+You now have a working, encrypted, snapshot-able single-boot Arch system on the console. **The next step — putting a graphical session in front of it — is its own choice**, and I deliberately keep it out of this article so the install layer above stays desktop-agnostic. PipeWire audio, GPU drivers, the AUR helper, the login manager, the bar, the wallpaper layer, every keybind — none of that is required for the install to be considered "done." It's a separate body of work.
+
+Two paths, depending on how much opinionation you want from your desktop:
 
 ::: {.callout-tip}
-## → [Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar](../2026-05-18-caelestia-desktop/)
+## Path A → Caelestia: a turnkey Hyprland bundle (Article 05)
 
-The post-install half: audio, GPU, AUR, Caelestia itself, KDE-Frameworks-under-Hyprland apps, SDDM, wallpaper, and customization paths. Pick it up on top of the install you just finished.
+[**Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar**](../2026-05-18-caelestia-desktop/) walks through a single coherent dotfile bundle: a Quickshell-based status bar, themed terminal (`foot`), `fish` + `starship`, a curated tool set, the Material-You-style wallpaper-driven retheming, GPU drivers (Intel / AMD / NVIDIA / hybrid), the AUR helper, KDE-Frameworks apps under Hyprland, and SDDM. Fast to get to "looks like a screenshot" — but you inherit the Caelestia project's design opinions wholesale, and on older hardware the Quickshell bar adds measurable latency. See [my honest retrospective at the top of Article 05](../2026-05-18-caelestia-desktop/#caveats-from-actually-using-it) before committing.
 :::
 
-Before you click through, a short final-checks block for the install layer itself — these are the commands you can run *right now*, from a TTY login, to confirm everything from Parts 1–3 came up correctly:
+::: {.callout-tip}
+## Path B → Custom Hyprland (upcoming)
+
+A from-scratch Hyprland setup built piece by piece — your own status bar choice (`waybar`, `ironbar`, `eww`, plain `hyprland-eyepatch`, …), your own terminal, your own keybinds, your own theme — with no project-bundle layer on top. Slower to "first screenshot" but every component is one you picked, and there's no surprise opinion baked in. This is the path I'm taking on my next laptop. The article is dashed in the upcoming section on the [Tech Zone landing](../../).
+:::
+
+If you don't know which to pick: try **Caelestia** first if you want a polished Hyprland desktop in an evening and don't mind inheriting opinions you'll later strip; pick **Custom Hyprland** if you'd rather take longer and own every line of `hyprland.conf` / `hyprland.lua` from day one.
+
+Before you click through to either, a short final-checks block for the install layer itself — these are the commands you can run *right now*, from a TTY login, to confirm everything from Parts 1–3 came up correctly:
 
 ```bash
 # Filesystem & encryption
@@ -1114,7 +1126,7 @@ sudo snapper -c root list
 ls /.snapshots/                  # numbered snapshot directories matching the list above
 ```
 
-If those return sane output, the encrypted Btrfs install is rock-solid and you're ready to layer the desktop on top.
+If those return sane output, the encrypted Btrfs install is rock-solid and you're ready to layer the desktop on top — Path A or Path B above, your call.
 
 
 ---
@@ -1146,5 +1158,5 @@ If you want loud boot logs to see exactly what the kernel is waiting for, remove
 ::: {.callout-note}
 ## Attribution
 
-The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only. Caelestia is the work of the [caelestia-dots](https://github.com/caelestia-dots){target="_blank" rel="noopener"} project and its contributors.
+The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only.
 :::

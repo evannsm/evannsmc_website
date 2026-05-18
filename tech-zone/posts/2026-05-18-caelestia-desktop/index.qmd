@@ -12,7 +12,7 @@ draft: false
 ::: {.callout-note}
 ## What this is
 
-The post-install half of [Article 03 (Arch + LUKS + Btrfs + Caelestia)](../2026-05-17-arch-luks-btrfs-caelestia/), split out into its own article because the desktop setup is independent of the underlying install. You can follow this on top of any working Arch base — LUKS+Btrfs, plain ext4, dual-boot, whatever. The commands below all run *inside* a booted, networked Arch system with a regular user account.
+The Caelestia desktop layer — one of two desktop options for the install in [Article 03 (Arch + LUKS + Btrfs)](../2026-05-17-arch-luks-btrfs-caelestia/). Split into its own article because the desktop is independent of the underlying install — you can follow this on top of any working Arch base (LUKS+Btrfs, plain ext4, dual-boot, whatever). The commands below all run *inside* a booted, networked Arch system with a regular user account.
 
 In order:
 
@@ -28,6 +28,21 @@ In order:
 - **Post-login verification** — wallpaper chain, Hyprland customization paths, sanity checks
 
 If your install isn't done yet, finish the bootstrap-and-LUKS-and-Btrfs half first ([Article 03 Parts 1–3](../2026-05-17-arch-luks-btrfs-caelestia/)) and come back here.
+
+**If you want a custom-built Hyprland setup instead** (no project-bundle layer, your own bar / terminal / theme picks), see the read-this-first callout below — the upcoming Custom Hyprland article is for you.
+:::
+
+::: {.callout-warning}
+## Caveats from actually using it {#caveats-from-actually-using-it}
+
+This article is honest about what I shipped and what I learned. Read this before committing to the bundle.
+
+- **On older hardware it ran slow.** The Quickshell-rendered bar + Material-You wallpaper-driven retheming + animated reveals add real frame-time pressure. On my old test laptop the desktop was usable but noticeably less snappy than a barebones Hyprland with `waybar`. On modern hardware (the Precision the rest of the article is tested on) it's fine.
+- **The install was harder than many tutorials made it look.** The `caelestia-meta` `.SRCINFO` parsing failure I document below is real, and several other small papercuts (the missing `hypr-vars.conf` `source =` line that paints a red overlay on first login, the wallpaper-daemon-not-installed-by-default chain, the SSH-vs-local-seat trap with `hyprctl`) cost me hours that none of the upstream guides flagged. If you're impatient or new to Hyprland, expect troubleshooting time before "first screenshot."
+- **It's opinionated past my taste.** The bundle picks every layer for you — bar, terminal (`foot`), shell (`fish` + `starship`), keybinds, animations, file-manager (`nautilus`-friendly), theme. That's the point of a bundle, and a lot of people love it. For me, after living in it, I'd rather build a Hyprland setup piece by piece so I own every keybind and every line of `hyprland.conf` / `hyprland.lua`.
+- **What I'm doing next:** my next install will skip Caelestia and follow the [upcoming **Custom Hyprland** article](../../) — `waybar` or `ironbar` instead of Quickshell, my own keybind set, a much smaller dependency footprint, no AUR meta-package gymnastics, and (importantly) no bundled retheming layer. This Caelestia article stays published as honest documentation of what it took to ship the opinionated path, for readers who do want the turnkey route.
+
+None of the above is a recommendation against Caelestia — it's a project I respect and the screenshots are deserved. It's a fit assessment. If you want a polished Hyprland desktop in an evening and don't mind inheriting opinions, **go for it**. If you'd rather take longer and own every piece, the Custom Hyprland article is the one to wait for.
 :::
 
 # Part 4 — Caelestia (Hyprland desktop)
