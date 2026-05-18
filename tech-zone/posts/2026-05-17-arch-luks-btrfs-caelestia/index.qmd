@@ -1226,6 +1226,66 @@ You should see a list of supported codecs without errors. If you switched the ke
 These are libraries, not services — there's no `systemctl enable nvidia` to forget. The GPU comes up the moment the kernel loads its driver, well before login.
 :::
 
+::: {.callout-tip}
+## Hybrid laptops (Intel + NVIDIA, AMD + NVIDIA): install both blocks
+
+If your `lspci` showed two GPU lines — typical on mobile workstations (Dell Precision, ThinkPad P-series, HP ZBook) and most gaming laptops — install the driver blocks for **both** vendors. The drivers coexist without conflict; the kernel loads each as its hardware appears, and Wayland compositors pick which one to render on a per-app basis.
+
+The default behavior under Hyprland on a hybrid:
+
+- The **iGPU** (Intel Iris Xe, AMD Radeon Graphics) is the **primary render device** — it draws your compositor, your windows, your animations, video playback, and almost every app. It idles at low power and keeps your battery happy.
+- The **dGPU** (NVIDIA RTX, AMD Radeon dGPU) **idles at ~5 W until explicitly asked** to render. Apps that want it call `prime-run <app>` or set `__NV_PRIME_RENDER_OFFLOAD=1` themselves (CUDA jobs, ML training, Blender, games, video encoders).
+
+A few things to expect during the NVIDIA install on a hybrid:
+
+- **Pacman prompts to pick a `libglvnd` provider** — pick `nvidia-utils`. `mesa` and `nvidia-utils` both provide pieces of libGL; the GLVND dispatcher at runtime routes calls to whichever GPU each app is actually rendering on.
+- **DKMS compiles the `nvidia` kernel modules** against your current kernel (~30–60 seconds, runs inside pacman's post-install hook). `linux-headers` from pacstrap is what makes this work — without it, the compile fails loudly. The `-open-dkms` variant builds against NVIDIA's open kernel modules, which is the recommended path for any GPU **Turing or newer** (GTX 16-series, RTX 20-series, all RTX 30-series, all RTX 40/50-series, all RTX A/L workstation cards).
+- A **`nvidia.conf` modules-load file** drops into `/etc/modules-load.d/` so the modules load on next boot, before the display server starts.
+
+Verify both halves of the GPU stack after install:
+
+```bash
+vainfo            # Intel iGPU: lists h264, h265, vp9, av1 decode entrypoints
+nvidia-smi        # NVIDIA dGPU: prints a table showing the dGPU name,
+                  #              driver version, and current power draw (~5–10 W idle)
+```
+
+If `nvidia-smi` returns *"No devices were found"* or hangs, the kernel modules didn't load — usually a silent DKMS build failure. Recovery: `sudo dkms autoinstall && sudo modprobe nvidia`, then re-check.
+
+#### Hyprland env vars for NVIDIA (set once Caelestia is up)
+
+Don't worry about these yet — flagging so you know to look for them after Caelestia is installed and Hyprland is running. NVIDIA on Wayland needs a handful of environment variables to interoperate cleanly with Hyprland and the apps that run inside it. Caelestia's bundled `hyprland.conf` may already set them; if not, add them to `~/.config/hypr/hyprland.conf` (Hyprland's syntax is `env = NAME,VALUE` — comma, not equals):
+
+```text
+env = LIBVA_DRIVER_NAME,nvidia
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+env = NVD_BACKEND,direct
+env = ELECTRON_OZONE_PLATFORM_HINT,auto
+```
+
+What each variable does:
+
+| Variable | What it does | When to set it |
+|----------|--------------|----------------|
+| `LIBVA_DRIVER_NAME=nvidia` | VA-API (Video Acceleration API) is the Linux API for hardware-accelerated video decode/encode. This env var tells clients (browsers, `mpv`, `obs`) which VA-API driver to load. `nvidia` routes decode to the NVIDIA GPU via the `libva-nvidia-driver` shim. | Set if you want the dGPU doing video decode (faster on 4K, more CPU-cool). **Omit on battery-sensitive workflows** — leaving it unset (or setting `iHD` for Intel) keeps decode on the iGPU, which is more power-efficient. |
+| `__GLX_VENDOR_LIBRARY_NAME=nvidia` | GLVND (GL Vendor-Neutral Dispatch) is the library that lets multiple GPU drivers coexist on one system. This env var tells GLVND to route OpenGL/GLX calls through the NVIDIA libGL implementation. | Set when you want OpenGL apps (legacy X11 apps running via Xwayland) to use the NVIDIA dGPU instead of the Intel iGPU. Less important for native Wayland apps, which use EGL via the compositor's chosen device. |
+| `NVD_BACKEND=direct` | Tells the `libva-nvidia-driver` shim to talk to NVDEC (NVIDIA's hardware video decoder) via the *direct* backend, rather than going through CUDA-based intermediaries. The direct backend is lower-latency and the recommended path for current driver versions. | Always set this when `LIBVA_DRIVER_NAME=nvidia` is also set. The two work together — the first picks NVIDIA for VA-API, the second tells NVIDIA *how* to do the decode. |
+| `ELECTRON_OZONE_PLATFORM_HINT=auto` | Chromium and Electron apps (VSCode, Discord, Slack, Obsidian, Signal, Spotify, Zen Browser) use the "Ozone" rendering abstraction. `auto` tells them to detect Wayland and prefer the native Wayland backend over Xwayland. | Always set this on Hyprland regardless of GPU — *not NVIDIA-specific*. Without it, Electron apps run via Xwayland (works, but ignores fractional scaling, has worse touchpad gestures, and is slightly laggier on hi-DPI displays). |
+
+A few additional notes:
+
+- **Apply after adding** — Hyprland reloads its config on save *for most* settings, but `env` lines only take effect for apps started *after* the change. Either log out and log back in, or `hyprctl reload` and then close+reopen each app you want to pick up the new env.
+- **For the iGPU-only render path** (your default for desktop work), no env vars are needed at all — Hyprland uses the iGPU automatically. The vars above only matter when you want NVIDIA to do specific work.
+- **For running a *specific* app on the dGPU**, you don't have to flip any global env vars — just launch it with offload:
+
+  ```bash
+  prime-run blender        # or: __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia blender
+  ```
+
+  `prime-run` is a tiny wrapper script that comes with `nvidia-prime` (worth `pacman -S nvidia-prime` if you do a lot of per-app dGPU offload).
+- **Older NVIDIA driver workarounds you might see online** — older guides recommend `WLR_NO_HARDWARE_CURSORS=1` (fixes invisible cursor on pre-555 drivers) and `GBM_BACKEND=nvidia-drm` (sets the GBM allocator). With `nvidia-open-dkms` ≥ 580 (current as of mid-2026) neither is needed — skip them unless you actually see a problem they describe.
+:::
+
 ### 5. Install an AUR helper
 
 Caelestia is distributed via the AUR and its install script defaults to `yay`:
