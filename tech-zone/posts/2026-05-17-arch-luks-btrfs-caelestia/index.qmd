@@ -1768,6 +1768,39 @@ When you authenticate at the SDDM greeter and Hyprland starts, expect to see:
 
 - **A black desktop background** — Caelestia doesn't set a wallpaper out-of-the-box. The bar, side panels, and Quickshell widgets render correctly *on top of* black; that's the default fallback because Caelestia's own wallpaper layer simply hasn't been told which file to render yet. Not a bug — just an empty wallpaper slot. Fix in the "Setting your first wallpaper" callout below.
 
+::: {.callout-important}
+## Run Hyprland-interacting commands *inside* the session, not over SSH
+
+A trap worth knowing about before you try to set a wallpaper (or anything else that talks to the compositor): **`caelestia wallpaper`, `hyprctl`, `hyprlock`, and most other Hyprland-aware tools fail when run from an SSH session.** The error looks like:
+
+```text
+File "/usr/lib/python3.14/site-packages/caelestia/utils/hypr.py", line 13, in message
+    sock.connect(socket_path)
+FileNotFoundError: [Errno 2] No such file or directory
+```
+
+…or for `hyprctl`:
+
+```text
+HYPRLAND_INSTANCE_SIGNATURE not set! (is hyprland running?)
+```
+
+**Why:** Hyprland's IPC socket lives at `$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock`, and both of those env vars are only set inside processes Hyprland itself spawned. An SSH session gets a fresh environment with neither set, so the socket path resolves to garbage and clients fail to connect. Same architectural reason `Hyprland` itself can't start over SSH — the compositor and its IPC are bound to the local seat.
+
+**Fix:** open a `foot` terminal *inside* the Hyprland session (the default Caelestia keybind is `Super + Return`) and run the command there. From inside the session, the env vars are set automatically and the socket exists.
+
+**Workaround for the determined** — if you really need to drive `caelestia` or `hyprctl` from SSH, export the env vars by hand first:
+
+```bash
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export HYPRLAND_INSTANCE_SIGNATURE=$(ls "$XDG_RUNTIME_DIR/hypr/" | head -1)
+# Now caelestia / hyprctl find the socket
+caelestia wallpaper -r ~/Pictures/Wallpapers/
+```
+
+The cleaner mental model: **SSH for headless work** (package installs, file edits, system inspection, snapshot management), **the local Hyprland session for anything that talks to the compositor** (wallpaper, screen lock, audio routing, window layouts).
+:::
+
 ::: {.callout-tip}
 ## Setting your first wallpaper (and how Caelestia's wallpaper layer works)
 
