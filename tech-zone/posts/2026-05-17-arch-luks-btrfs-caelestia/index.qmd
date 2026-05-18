@@ -1152,7 +1152,26 @@ The first `nvim` launch will pop up a Lazy.nvim progress window while the plugin
 
 ### 4. Graphics drivers
 
-Pick one block based on your GPU.
+First figure out which GPU(s) you actually have — don't guess, the wrong driver set wastes a few hundred MB of install and either does nothing useful or causes silent breakage at first compositor launch.
+
+```bash
+lspci -nn | grep -E 'VGA|3D|Display'
+```
+
+Interpret the output by vendor string:
+
+| What `lspci` reports | GPU you have | Run block(s) below |
+|----------------------|--------------|---------------------|
+| `Intel Corporation … (Graphics\|Iris\|UHD\|Arc) …` | Intel iGPU (or Arc dGPU) | **Intel** |
+| `Advanced Micro Devices, Inc. [AMD/ATI] …` | AMD GPU (APU iGPU or Radeon dGPU) | **AMD** |
+| `NVIDIA Corporation …` | NVIDIA dGPU | **NVIDIA** |
+| One Intel line **and** one NVIDIA line | Hybrid laptop (Intel iGPU + NVIDIA dGPU) | **Both Intel and NVIDIA** |
+| One AMD line **and** one NVIDIA line | Hybrid (AMD APU + NVIDIA dGPU) | **Both AMD and NVIDIA** |
+| Two AMD lines | AMD APU + AMD dGPU | **AMD** (covers both) |
+
+On a hybrid laptop, install both blocks — the drivers coexist, Hyprland defaults to the iGPU for everyday work to save power, and apps that need the dGPU request it explicitly.
+
+Pick the block(s) the table points you at:
 
 **Intel iGPU** (Iris, UHD, Arc):
 
