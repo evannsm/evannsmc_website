@@ -24,6 +24,18 @@ The install I'm actually running on my daily-driver laptop, in the order I execu
 It is **single-boot**. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.
 :::
 
+::: {.callout-tip}
+## How to read the hardware-specific examples in this guide
+
+Some sections of this article have variance by machine — the GPU drivers you need, the swap-file size, what `lspci` actually prints. Wherever that's the case, you'll see a **tabbed block** like the one in [Section 4 (Graphics drivers)](#section-4-graphics-drivers): a row of clickable tabs across the top, each one a different machine.
+
+- **Generic** — the version a reader on unknown hardware should follow.
+- **Dell Precision (Intel Iris Xe + RTX A2000)** — the actual `lspci` output, exact commands, and post-install env vars from my Dell Precision mobile workstation. This is the machine I've fully installed and tested this guide on.
+- **Dell Pro 16 Plus** — placeholder for a second machine I'll install this stack on later. Content lands when I actually run through it.
+
+Click any tab to see the example specific to that machine. The tabs don't change anything else on the page — they just show or hide the example content. Future readers (including future-me) get both the general guidance and the concrete "here's what it looked like on a real machine I trust."
+:::
+
 ## Why this is its own article (and not just "Article 02, fixed")
 
 My [first attempt at LUKS + Btrfs](../2026-05-05-arch-luks-btrfs-lessons/) dropped into emergency mode at boot. I traced the root cause to two typos in the kernel command line: `cryptdevice=UUID<…>` (missing `=`) and literal `<angle brackets>` around the UUID. Those are easy mistakes to make once and never make again, but I also took the chance to step back and pick a different default for *this* install, because I'm going to be living in it:
@@ -1150,7 +1162,7 @@ nvim
 
 The first `nvim` launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for `:Lazy` to report all plugins installed, then `:q`. If you prefer the AUR-packaged version instead, `yay -S lazyvim` after installing the AUR helper below also works — same end state.
 
-### 4. Graphics drivers
+### 4. Graphics drivers {#section-4-graphics-drivers}
 
 First figure out which GPU(s) you actually have — don't guess, the wrong driver set wastes a few hundred MB of install and either does nothing useful or causes silent breakage at first compositor launch.
 
@@ -1171,7 +1183,100 @@ Interpret the output by vendor string:
 
 On a hybrid laptop, install both blocks — the drivers coexist, Hyprland defaults to the iGPU for everyday work to save power, and apps that need the dGPU request it explicitly.
 
-Pick the block(s) the table points you at:
+#### Machine examples
+
+::: {.panel-tabset}
+
+##### Generic
+
+A clean run on an unknown machine should look like this — one or two `lspci` lines, no errors, then the install of the matching driver block(s). The specific package names and DKMS output below are *templates*; substitute your kernel version and driver version.
+
+```bash
+$ lspci -nn | grep -E 'VGA|3D|Display'
+# one or two lines, depending on whether you have a hybrid GPU laptop
+```
+
+Then run the matching driver block from the lists below, verify with `vainfo` (Intel/AMD VA-API) and/or `nvidia-smi` (NVIDIA), and reboot if you installed the NVIDIA driver for the first time.
+
+##### Dell Precision (Intel Iris Xe + RTX A2000)
+
+The mobile workstation I've fully installed and tested this guide on. **Alder Lake-P** + **GA107GLM (Ampere)** — a hybrid laptop, so both driver blocks were needed.
+
+`lspci -nn | grep -E 'VGA|3D|Display'`:
+
+```text
+0000:00:02.0 VGA compatible controller [0300]: Intel Corporation Alder Lake-P GT2 [Iris Xe Graphics] [8086:46a6] (rev 0c)
+0000:01:00.0 3D controller [0302]: NVIDIA Corporation GA107GLM [RTX A2000 8GB Laptop GPU] [10de:25ba] (rev a1)
+```
+
+Two GPU lines → install both blocks. Intel first:
+
+```bash
+sudo pacman -S mesa vulkan-intel intel-media-driver libva-utils
+```
+
+Verify Intel side with `vainfo`. On the Precision you should see the **full Iris Xe codec set including hardware AV1 decode** (`VAProfileAV1Profile0 : VAEntrypointVLD`) — confirms `intel-media-driver 26.1.5` is loaded:
+
+```text
+$ vainfo
+Trying display: drm
+vainfo: VA-API version: 1.23 (libva 2.22.0)
+vainfo: Driver version: Intel iHD driver for Intel(R) Gen Graphics - 26.1.5 ()
+vainfo: Supported profile and entrypoints
+      VAProfileNone                   :    VAEntrypointVideoProc
+      VAProfileH264High               :    VAEntrypointVLD
+      VAProfileHEVCMain10             :    VAEntrypointVLD
+      VAProfileVP9Profile2            :    VAEntrypointVLD
+      VAProfileAV1Profile0            :    VAEntrypointVLD          # <-- Iris Xe HW AV1 decode
+      ...
+```
+
+Then NVIDIA:
+
+```bash
+sudo pacman -S nvidia-open-dkms nvidia-utils libva-nvidia-driver
+```
+
+The DKMS hook compiles `nvidia/595.71.05 -k 7.0.7-arch2-1` (driver version × kernel version) and rebuilds the initramfs to include nvidia early. You'll see snap-pac take pre/post snapshots bracketing the transaction.
+
+::: {.callout-warning}
+## On a hybrid: `nvidia-smi` will fail *until* you reboot
+
+Immediately after `pacman -S nvidia-open-dkms`, running `nvidia-smi` returns:
+
+```text
+NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver.
+Make sure that the latest NVIDIA driver is installed and running.
+```
+
+And `sudo modprobe nvidia` returns:
+
+```text
+modprobe: ERROR: could not insert 'nvidia': No such device
+```
+
+**This is expected and not a broken install.** The running kernel was booted *before* nvidia-open-dkms existed, so the `nouveau` open-source NVIDIA driver is still bound to the dGPU. nouveau owns the device; nvidia can't bind on top. The package install dropped a nouveau blacklist file *and* rebuilt your initramfs to load nvidia early on next boot — both take effect only after a reboot.
+
+**Fix:** `sudo reboot`. After re-entering your LUKS passphrase and logging back in:
+
+```bash
+$ lsmod | grep nvidia
+# expected: nvidia, nvidia_drm, nvidia_modeset, nvidia_uvm
+
+$ nvidia-smi
+# expected: table showing "NVIDIA RTX A2000 8GB Laptop GPU", driver 595.71.05, ~5-10 W idle
+```
+
+If `nvidia-smi` *still* fails post-reboot, add `nvidia_drm.modeset=1` to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`, re-run `grub-mkconfig -o /boot/grub/grub.cfg`, and reboot again. On nvidia-open 595+ this parameter is usually defaulted, but some hybrid configurations need it explicit.
+:::
+
+After the reboot, the four Hyprland NVIDIA env vars (set later, in `~/.config/hypr/hyprland.conf`) become relevant — see the env-vars table above.
+
+##### Dell Pro 16 Plus
+
+*Placeholder.* I haven't installed this stack on the Dell Pro 16 Plus yet. When I do, this tab will land with: the real `lspci` output (likely Intel Lunar Lake or Arrow Lake iGPU only, no dGPU on the Pro line), the matching `pacman -S` block, `vainfo` confirmation, and any laptop-specific quirks I hit (firmware updates, ACPI workarounds, audio codec patches).
+
+:::
 
 **Intel iGPU** (Iris, UHD, Arc):
 
