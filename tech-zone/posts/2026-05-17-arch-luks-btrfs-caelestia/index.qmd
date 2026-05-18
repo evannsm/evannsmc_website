@@ -283,7 +283,7 @@ Identical to the [basic install](../2026-05-01-first-arch-install/) — I won't 
 ln -sf /usr/bin/nvim /usr/local/bin/vi
 echo 'export EDITOR=nvim' >> /etc/profile
 
-# Timezone + hardware clock
+# Timezone + hardware clock — **substitute your zone**, not mine
 ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 hwclock --systohc
 
@@ -315,6 +315,28 @@ sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 ```
 
 Replace `evanns` with whatever username you want. I'm using `arch` as the bare hostname (so the shell prompt reads `evanns@arch`) — if you'd rather have a more descriptive hostname like `arch-thinkpad` or `lab-laptop`, change both the `/etc/hostname` line and the trailing `arch.localdomain arch` token in `/etc/hosts`. The extra groups (`video`, `audio`, `input`) preempt small annoyances later with Hyprland (`video` for GPU access, `input` for libinput devices, `audio` for the legacy ALSA path some apps still want).
+
+::: {.callout-important}
+## Substitute *your* timezone — don't inherit mine
+
+The `ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime` line above sets the system timezone to my zone (US Eastern). **Change it to wherever you actually are**, or you'll be doing time-zone math in your head for the lifetime of this install. Find your zone first:
+
+```bash
+timedatectl list-timezones | grep -E 'America|Europe|Asia|Australia' | less
+# e.g. America/Chicago, America/Los_Angeles, Europe/Madrid, Asia/Tokyo
+```
+
+Then swap the path in the `ln -sf` command. Examples for common ones:
+
+```bash
+ln -sf /usr/share/zoneinfo/America/Chicago      /etc/localtime   # US Central
+ln -sf /usr/share/zoneinfo/America/Los_Angeles  /etc/localtime   # US Pacific
+ln -sf /usr/share/zoneinfo/Europe/Madrid        /etc/localtime   # CET
+ln -sf /usr/share/zoneinfo/Asia/Tokyo           /etc/localtime   # JST
+```
+
+If you realize you set the wrong zone after first boot, no need to redo anything in chroot — `sudo timedatectl set-timezone <Region/City>` from the running system fixes it instantly. There's a verification step in [Part 3](#re-enable-ntp-and-verify-your-timezone) that walks you through this.
+:::
 
 ::: {.callout-note}
 ## What `/etc/hosts` is, and what `arch.localdomain` means
@@ -632,16 +654,86 @@ findmnt /home           # Should show subvol=/@home
 swapon --show           # Should show /dev/zram0 (pri 100) AND /swap/swapfile
 ```
 
-### Re-enable NTP
+### Reconnect to Wi-Fi (do this before anything else needs the network)
 
-The `timedatectl set-ntp true` you ran from the live ISO only affected the live environment. The installed system has its own `systemd-timesyncd`, and on first boot it's idle until you turn it on:
+NetworkManager is enabled and running, but it has **no saved networks** — your Wi-Fi credentials lived in the live USB's `iwd`/`iwctl` session, not in the installed system. The very first thing to do after the sanity checks is re-establish a connection so `pacman`, `timesyncd`, snapper, and everything downstream actually works.
+
+If you have an **Ethernet cable**, plug it in — NetworkManager runs DHCP automatically and you're online in a couple seconds. Skip to the next subsection.
+
+For **Wi-Fi**, three `nmcli` commands:
+
+```bash
+# 1. Make sure the wifi radio is on (it usually is, but cheap to confirm)
+nmcli radio wifi on
+
+# 2. See what networks are in range
+nmcli device wifi list
+
+# 3. Connect — quote the SSID if it has spaces; quote the password if it has $ or !
+nmcli device wifi connect "Your SSID Here" password "your-passphrase"
+```
+
+You should see a line like `Device 'wlan0' successfully activated with '<uuid>'`. Verify you actually have an IP and can reach the world:
+
+```bash
+ip -brief address                    # wlan0 should have an inet address now
+ping -c 3 archlinux.org              # should see <1% packet loss
+```
+
+::: {.callout-tip}
+## A few `nmcli` patterns worth knowing
+
+| Goal                                            | Command |
+|-------------------------------------------------|---------|
+| List all saved connections                      | `nmcli connection show` |
+| Reconnect to a saved network manually           | `nmcli connection up "Your SSID Here"` |
+| Forget a saved network                          | `nmcli connection delete "Your SSID Here"` |
+| Toggle wifi off / on                            | `nmcli radio wifi off` &nbsp;/&nbsp; `nmcli radio wifi on` |
+| Get connection status in a glance               | `nmcli device status` |
+| See current Wi-Fi signal / bitrate              | `nmcli -f IN-USE,SSID,SIGNAL,BARS device wifi list` |
+| Connect to a hidden SSID                        | `nmcli device wifi connect "Hidden SSID" password "…" hidden yes` |
+
+The saved-connection file lives at `/etc/NetworkManager/system-connections/<SSID>.nmconnection`, mode 600, root-owned, with the passphrase **in plaintext** — back it up or treat it as a secret accordingly.
+:::
+
+### Re-enable NTP and verify your timezone
+
+Two related-but-separate clock checks at first boot.
+
+**NTP**: the `timedatectl set-ntp true` you ran from the live ISO only affected the live environment. The installed system has its own `systemd-timesyncd`, and on first boot it's idle until you turn it on:
 
 ```bash
 sudo timedatectl set-ntp true
-timedatectl status            # "System clock synchronized: yes"
 ```
 
-Without this the clock drifts to whatever the hardware RTC says, and `pacman` operations start failing with mysterious GPG / TLS errors as soon as the skew gets large enough. Turn it on now and forget about it forever.
+**Timezone**: `timedatectl status` shows what's currently set. If it says something other than the zone you wanted (you might be staring at the article's default `America/New_York` because you copy-pasted the chroot block without substituting), fix it now:
+
+```bash
+timedatectl status            # what's currently set?
+timedatectl list-timezones | grep -i <your city>    # find the right Region/City
+sudo timedatectl set-timezone America/Chicago       # substitute yours
+timedatectl status            # confirm it took
+```
+
+The result you want from `timedatectl status` should look like:
+
+```text
+               Local time: Sun 2026-05-17 12:34:56 CDT
+           Universal time: Sun 2026-05-17 17:34:56 UTC
+                 RTC time: Sun 2026-05-17 17:34:56
+                Time zone: America/Chicago (CDT, -0500)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
+```
+
+Three things to check at a glance:
+
+- **Time zone** matches where you actually are.
+- **System clock synchronized: yes** (means NTP is working).
+- **RTC in local TZ: no** (means the hardware clock is in UTC, which is the only correct setting — `yes` here causes wall-clock weirdness around DST transitions).
+
+Without NTP on, the clock drifts to whatever the hardware RTC says, and `pacman` operations start failing with mysterious GPG / TLS errors as soon as the skew gets large enough. Without the right zone, every timestamp you ever see is off by 1–24 hours. Both fixes are cheap and permanent — do them now.
 
 ### Configure snapper for `/` properly
 
