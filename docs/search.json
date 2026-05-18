@@ -614,5 +614,131 @@
     "title": "Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using",
     "section": "Troubleshooting: “Timed out waiting for device” at boot",
     "text": "Troubleshooting: “Timed out waiting for device” at boot\nIf you reboot and land in emergency mode after the LUKS prompt, the failure mode is almost always one of:\n\n&lt;UUID&gt; or &lt;RESUME_OFFSET&gt; left as literal text in /etc/default/grub. Re-read Chapter 10.\nMapper name mismatch between rd.luks.name=…=cryptroot and root=/dev/mapper/cryptroot. They have to match exactly.\nrootflags=subvol=@ missing. Without it, the kernel mounts the top-level Btrfs volume, which has no /sbin/init.\nmkinitcpio.conf left as the defaults — no sd-encrypt hook, no btrfs module. Re-edit, re-run mkinitcpio -P.\n\nTo recover, boot the install USB again and re-enter the system:\ncryptsetup open /dev/nvme0n1p2 cryptroot\nmount -o subvol=@ /dev/mapper/cryptroot /mnt\nmount /dev/nvme0n1p1 /mnt/boot\narch-chroot /mnt\nThen fix the offending file, re-run mkinitcpio -P and grub-mkconfig -o /boot/grub/grub.cfg, exit, umount -R /mnt, cryptsetup close cryptroot, reboot.\nIf you want loud boot logs to see exactly what the kernel is waiting for, remove quiet and loglevel=3 from GRUB_CMDLINE_LINUX_DEFAULT temporarily and regenerate the GRUB config.\n\n\n\n\n\n\n\nAttribution\n\n\n\nThe Arch Linux logo is a trademark of the Arch Linux project and is used here under Arch Linux’s branding terms for editorial purposes only. Caelestia is the work of the caelestia-dots project and its contributors."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "",
+    "text": "Skip to main content"
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#proceed-with-installation-yn",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#proceed-with-installation-yn",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: Proceed with installation? [Y/n]",
+    "text": ":: Proceed with installation? [Y/n]\nTotal Download Size:   0.17 MiB\nTotal Installed Size:  0.39 MiB\n\n:: Proceed with installation? [Y/n]\nWhat it’s asking: the final go/no-go before pacman modifies your system. Above this line, pacman has printed the full list of packages it’s about to install, upgrade, or remove. Read that list — this is your last chance to abort if you see something unexpected.\nWhat to type:\n\n\n\n\n\n\n\nAnswer\nEffect\n\n\n\n\nY or just Enter\nProceed (the capital Y in [Y/n] means “Yes is the default”)\n\n\nn\nAbort the transaction. Nothing is changed.\n\n\n\nWhen to not hit Enter blindly: if the package count is way larger than you expected (e.g., you pacman -S htop and it wants to install 200 packages), something’s pulled in a giant transitive dependency tree — usually because of an --asdeps typo or because you -Syu’d too. Read the list, abort with n, investigate."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#optional-dependencies-for-x",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#optional-dependencies-for-x",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "Optional dependencies for X",
+    "text": "Optional dependencies for X\nOptional dependencies for htop\n    lm_sensors: show cpu temperatures\n    lsof: show files opened by a process\n    strace: attach to a running process\nWhat it’s saying: informational only. These packages are not installed by default — they unlock optional functionality that the package can use if it finds them. You’re being told they exist so you can install them later if you want the extra features.\nWhat to do: nothing. If you want any of them, pacman -S &lt;optdep&gt; later. If you don’t, ignore."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#there-are-n-providers-available-for-x",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#there-are-n-providers-available-for-x",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: There are N providers available for X:",
+    "text": ":: There are N providers available for X:\n:: There are 2 providers available for jack:\n:: Repository extra\n   1) jack2  2) pipewire-jack\n\nEnter a number (default=1):\nWhat it’s asking: more than one package can satisfy a dependency on X. Which one do you want?\nCommon providers you’ll see:\n\n\n\n\n\n\n\n\nDependency name\nChoices\nPick if…\n\n\n\n\njack\njack2, pipewire-jack\npipewire-jack if you’re on the PipeWire audio stack (this guide’s setup); jack2 only for legacy pure-JACK pro-audio rigs\n\n\npulseaudio (rarely seen now)\npulseaudio, pipewire-pulse\npipewire-pulse — same reason\n\n\njava-runtime\njre21-openjdk, jre17-openjdk, …\nthe version your apps need; most use 21 in 2026\n\n\ncron\ncronie, systemd-cron, fcron\ncronie is Arch’s default; modern systems usually don’t need this at all (systemd timers replace it)\n\n\n\nWhat to type: the number from the list, then Enter. Or just Enter to accept the default (the parenthesized default=1)."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#replace-x-with-repoy",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#replace-x-with-repoy",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: Replace X with repo/Y?",
+    "text": ":: Replace X with repo/Y?\n:: Replace openssl with extra/openssl-3.0? [Y/n]\nWhat it’s saying: a package has been renamed or replaced upstream. Pacman is asking permission to migrate you from the old name to the new one.\nDefault answer: Y. Saying n typically blocks the upgrade entirely. The only reason to say n is if you’re aware of a specific incompatibility that means you need to pin the old version (rare)."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#file-in-x-is-owned-by-both-x-and-y",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#file-in-x-is-owned-by-both-x-and-y",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: file in X is owned by both X and Y",
+    "text": ":: file in X is owned by both X and Y\nerror: failed to commit transaction (conflicting files)\nfoo: /usr/bin/bar exists in filesystem (owned by baz)\nErrors occurred, no packages were upgraded.\nWhat it’s saying: two packages each want to install the same file at the same path, and pacman refuses to silently let one overwrite the other.\nCommon causes:\n\nYou installed something via makepkg -i or curl-piped-bash that wrote files outside of pacman’s bookkeeping — and now a package update from the repos wants to install those same files.\nA package was renamed upstream and pacman didn’t catch the migration cleanly.\n\nFix: identify which package owns the file (pacman -Qo /usr/bin/bar). Uninstall the offending one, or use --overwrite '/path/glob' on the pacman command line to grant pacman permission to write over the conflicting file. Don’t reflexively use --overwrite '*' — that disables every conflict check and is a way to silently break your system."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#running-pre-transaction-hooks-running-post-transaction-hooks",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#running-pre-transaction-hooks-running-post-transaction-hooks",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: Running pre-transaction hooks / :: Running post-transaction hooks",
+    "text": ":: Running pre-transaction hooks / :: Running post-transaction hooks\n:: Running pre-transaction hooks...\n(1/1) Performing snapper pre snapshots for the following configurations...\n==&gt; root: 16\n:: Processing package changes...\n(1/3) reinstalling nvidia-utils\n…\n:: Running post-transaction hooks...\n(1/9) Creating system user accounts...\n(6/9) Install DKMS modules\n==&gt; dkms install --no-depmod nvidia/595.71.05 -k 7.0.7-arch2-1\n(7/9) Updating linux initcpios...\nWhat it’s saying: between (or after) the actual package operations, pacman is running automated hook scripts that ship with various packages. Hooks live in /usr/share/libalpm/hooks/ (system-provided) and /etc/pacman.d/hooks/ (user-provided), and run when their trigger conditions match.\nCommon hooks you’ll see and what they do:\n\n\n\n\n\n\n\n\nHook\nWhen it fires\nWhat it does\n\n\n\n\nsnap-pac (snapper)\nAny pacman transaction (if snap-pac is installed)\nCreates pre + post Btrfs snapshots bracketing the transaction so you can roll back\n\n\nmkinitcpio\nKernel updates, module package installs (NVIDIA, ZFS, etc.)\nRebuilds /boot/initramfs-linux.img so the new module is included on next boot\n\n\ndkms\nKernel updates or DKMS-managed module installs\nRecompiles out-of-tree kernel modules (NVIDIA, VirtualBox, etc.) against the current kernel\n\n\nglib-compile-schemas\nGTK app installs\nCompiles XML schema files into the binary cache GLib reads\n\n\nupdate-desktop-database\nDesktop-entry installs\nRefreshes the .desktop database app launchers read\n\n\nfontconfig\nFont installs\nRebuilds the font cache\n\n\n\nHooks are not interactive. They don’t ask you questions; they just run. If a hook fails, pacman reports it and the overall transaction may or may not succeed depending on the hook’s severity."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#marked-as-installed-as-a-dependency-explicit",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#marked-as-installed-as-a-dependency-explicit",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "“Marked as installed as a dependency” / “explicit”",
+    "text": "“Marked as installed as a dependency” / “explicit”\nwarning: nvidia-utils-595.71.05-2 is up to date -- reinstalling\n…\n==&gt; Marking dependency as explicit: foo\nExplicit = a package you (the human) installed directly. Dependency = a package pacman installed because something else needed it. You can re-mark with pacman -D --asexplicit &lt;pkg&gt; (or --asdeps). This matters because orphan cleanup (pacman -Qdtq | sudo pacman -Rns -) removes dependency packages that nothing currently depends on — but never explicit ones."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#search-results-numbered-list",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#search-results-numbered-list",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "Search results numbered list",
+    "text": "Search results numbered list\n$ yay foo\n3 aur/foo-git  1.0.r123.gabcdef-1  (+12 0.42)  Latest git of foo\n2 aur/foo      1.0-1                (+8  0.31)  Stable foo\n1 extra/foo    1.0-1                (300 KiB)   Stable foo (official)\n==&gt; Packages to install (eg: 1 2 3, 1-3 or ^4)\n==&gt;\nWhat it’s saying: here are matching packages from both the official repos (extra/ etc.) and the AUR (aur/). The list is reverse-sorted — the most relevant result is at the bottom, right next to the prompt, so you can pick it quickly.\nThe two numbers in parens after each AUR entry are votes and popularity — higher is generally more trustworthy (more users, longer-maintained). Repo packages instead show install size.\nWhat to type:\n\n\n\nSelector\nMeans\n\n\n\n\n1\ninstall entry 1\n\n\n1 3 5\ninstall entries 1, 3, and 5\n\n\n1-3\ninstall entries 1, 2, and 3\n\n\n^4\ninstall everything except entry 4\n\n\nA\ninstall all\n\n\nN or just Enter\ninstall none (cancel)"
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#packages-to-cleanbuild",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#packages-to-cleanbuild",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "==> Packages to cleanBuild?",
+    "text": "==&gt; Packages to cleanBuild?\n  3 caelestia-shell        (Build Files Exist)\n  2 quickshell-git         (Build Files Exist)\n  1 libcava                (Build Files Exist)\n==&gt; Packages to cleanBuild?\n==&gt; [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)\nWhat it’s asking: yay’s cache already has cloned PKGBUILD directories for these packages, almost certainly because you’ve installed them (or attempted to) before. Should they be cleaned (deleted and re-fetched fresh) or reused as-is?\nWhat to type:\n\n\n\n\n\n\n\nAnswer\nWhen\n\n\n\n\nN (None)\nReuse cached. Fast. Right for a re-run of the same install where you trust the cache.\n\n\nA (All)\nRe-fetch every PKGBUILD fresh. Adds ~30 s of git-clone time. Right for a first install or when the previous attempt failed and you want known-clean state.\n\n\nAb (Abort)\nBail out.\n\n\nI (Installed)\nClean only packages that are currently installed (refetch updates to PKGBUILDs you’ve already built).\n\n\nNo (NotInstalled)\nClean only packages not yet installed.\n\n\n1 2 3 / 1-3 / ^4\nClean only the specific entries you list.\n\n\n\nDefault recommendation: A on a first install (clean slate), N on a retry where you know the previous failure was downstream (e.g., a make error you’ve already fixed in the source)."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#diffs-to-show",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#diffs-to-show",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "==> Diffs to show?",
+    "text": "==&gt; Diffs to show?\n==&gt; Diffs to show?\n==&gt; [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)\nWhat it’s asking: “do you want me to show you the diff between each PKGBUILD’s current upstream version and your locally-cached one, before I build it?”\nWhat to type: N (the default) unless you have a habit of patching PKGBUILDs locally or you’re auditing upstream for security. The diff is your local vs fresh fetch, so for a fresh install (you just A-cleaned everything) there’s nothing to diff against — N is correct."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#pkgbuilds-to-edit",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#pkgbuilds-to-edit",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "==> PKGBUILDs to edit?",
+    "text": "==&gt; PKGBUILDs to edit?\n==&gt; PKGBUILDs to edit?\n==&gt; [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)\nWhat it’s asking: “do you want to open each PKGBUILD in $EDITOR to modify it before makepkg runs?” Used to patch upstream bugs, pin versions, change pkgver() logic, etc.\nWhat to type: N (the default). Same audience as the diff prompt — power users patching upstream. For the 99 % case, you trust the AUR maintainer and just want the package built."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#proceed-with-installation",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#proceed-with-installation",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": ":: Proceed with installation?",
+    "text": ":: Proceed with installation?\nAfter all the build prompts, yay shows the final list of .pkg.tar.zst files it built and prompts again. This is pacman’s :: Proceed with installation? [Y/n] from Part 3 — same answer (Y or Enter to proceed)."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#snapshots-created-by-snap-pac-during-aur-builds",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#snapshots-created-by-snap-pac-during-aur-builds",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "Snapshots created by snap-pac during AUR builds",
+    "text": "Snapshots created by snap-pac during AUR builds\n:: Running pre-transaction hooks...\n(1/1) Performing snapper pre snapshots for the following configurations...\n==&gt; root: 14\n…\n:: Running post-transaction hooks...\n(2/2) Performing snapper post snapshots for the following configurations...\n==&gt; root: 15\nWhen yay hands the built packages to pacman, the normal snap-pac hook fires — you get a numbered snapshot pair around the install. ==&gt; root: 14 means snapshot 14 was created in the root snapper config. You can snapper -c root list later to see them."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#the-problem",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#the-problem",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "The problem",
+    "text": "The problem\nA bundle like Caelestia ships its own install.fish (or install.sh, or makefile) that symlinks configs from the bundle’s repo into ~/.config/. The instructions usually include some version of:\n\nDo not move the cloned repo after running install.fish. The symlinks in ~/.config/ point back into it; moving or deleting the source orphans every symlink.\n\nSo you can’t just pick the bundle’s files up, drop them into your own dotfiles repo, and call it a day — the install script is part of the install, and the symlinks it creates are load-bearing.\nIf you naïvely add your own dotfiles on top by copying files into the bundle’s repo, the next git pull will fight you (merge conflicts on every customization). So the natural question is: how do I keep my own customizations cleanly separated from the bundle’s, and under my own version control, and not fight the bundle’s update process?"
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#the-answer-stow-your-personal-overlay-not-the-bundle",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#the-answer-stow-your-personal-overlay-not-the-bundle",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "The answer: stow your personal overlay, not the bundle",
+    "text": "The answer: stow your personal overlay, not the bundle\nstow (GNU Stow) is a symlink-farm manager. Install it once:\nsudo pacman -S stow\nThen structure your personal additions in a separate repo:\n~/dotfiles/                         &lt;- YOUR repo (separate from any bundle)\n├── fish/                           &lt;- a \"stow package\"\n│   └── .config/\n│       └── fish/\n│           └── conf.d/\n│               └── 99-aliases.fish      &lt;- new file, doesn't collide with Caelestia\n├── hypr/\n│   └── .config/\n│       └── hypr/\n│           └── conf.d/\n│               └── personal-binds.conf  &lt;- if Caelestia's hyprland.conf sources conf.d/*.conf\n└── nvim/\n    └── .config/\n        └── nvim/\n            └── lua/\n                └── plugins/\n                    └── my-extras.lua    &lt;- adds a LazyVim plugin without touching starter\nThen from ~/dotfiles/:\nstow fish        # symlinks ~/.config/fish/conf.d/99-aliases.fish → ../dotfiles/fish/.config/fish/conf.d/99-aliases.fish\nstow hypr\nstow nvim\nEach top-level directory under ~/dotfiles/ becomes a stow package you can install or remove independently. stow -D fish removes the symlinks; stow -R fish re-stows (useful after pulling new files).\nThe recovery flow on a fresh machine becomes:\n# 1. Install Arch + bundle as normal (e.g., this guide's Section 6)\ngit clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia\n~/.local/share/caelestia/install.fish --aur-helper=yay\n\n# 2. Add your overlay\ngit clone https://github.com/&lt;you&gt;/dotfiles.git ~/dotfiles\ncd ~/dotfiles\nstow */"
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#two-rules-that-keep-this-clean",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#two-rules-that-keep-this-clean",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "Two rules that keep this clean",
+    "text": "Two rules that keep this clean\n\nYour stow packages should add files to ~/.config/, never replace what the bundle installed. Use new filenames (99-evanns.fish, personal-binds.conf), or use subdirectories the bundle leaves alone (conf.d/, local/, plugins/). If you stow a file that has the same path as a bundle symlink, stow refuses with a “would override” error — which is the right behavior; it’s telling you to pick a non-colliding name.\nTreat both the bundle’s repo and your overlay as part of the install. Back up both. On a reinstall, restore both. If you ever want to remove your overlay cleanly: cd ~/dotfiles && stow -D */ removes every symlink in one shot."
+  },
+  {
+    "objectID": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#why-not-chezmoi-or-yadm-instead",
+    "href": "tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html#why-not-chezmoi-or-yadm-instead",
+    "title": "Pacman, Yay, and the AUR: What Every Prompt Actually Means",
+    "section": "Why not chezmoi or yadm instead?",
+    "text": "Why not chezmoi or yadm instead?\nBoth are nice tools. They differ from stow in how they manage the link / copy:\n\n\n\n\n\n\n\n\nTool\nMechanism\nBest fit\n\n\n\n\nstow\nSymlinks. Files live in your repo dir; ~/.config/ points there.\nLowest-magic option. You always know exactly where a file lives by following the symlink. Great for layering on top of opinionated bundles.\n\n\nchezmoi\nTemplated copies. Files live in ~/.local/share/chezmoi/; chezmoi renders them into ~/ as real files (no symlinks).\nMulti-machine setups where per-host templating matters (different git email per machine, different brightness defaults per laptop).\n\n\nyadm\nGit wrapper around ~. Your home directory itself is the working tree of a git repo.\nSingle-machine simplicity. No symlinks, no templating, just yadm add ~/.config/foo and commit.\n\n\n\nFor a bundle like Caelestia where you want clean separation between bundle and overlay, stow is the right pick — its symlink approach makes the boundary explicit and impossible to confuse. You can always see which files came from Caelestia (symlinks into ~/.local/share/caelestia/) and which came from your overlay (symlinks into ~/dotfiles/) by running ls -l ~/.config/&lt;dir&gt;/."
   }
 ]

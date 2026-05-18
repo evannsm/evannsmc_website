@@ -126,7 +126,7 @@
   </url>
   <url>
     <loc>https://evannsmc.com/tech-zone/index.html</loc>
-    <lastmod>2026-05-18T01:00:32.914Z</lastmod>
+    <lastmod>2026-05-18T03:56:03.427Z</lastmod>
   </url>
   <url>
     <loc>https://evannsmc.com/tech-zone/posts/2026-05-05-arch-luks-btrfs-lessons/index.html</loc>
@@ -135,5 +135,9 @@
   <url>
     <loc>https://evannsmc.com/tech-zone/posts/2026-05-17-arch-luks-btrfs-caelestia/index.html</loc>
     <lastmod>2026-05-18T03:47:23.559Z</lastmod>
+  </url>
+  <url>
+    <loc>https://evannsmc.com/tech-zone/posts/2026-05-17-pacman-yay-aur-prompts/index.html</loc>
+    <lastmod>2026-05-18T03:55:40.208Z</lastmod>
   </url>
 </urlset>

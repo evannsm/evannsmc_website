@@ -1,0 +1,531 @@
+---
+title: "Pacman, Yay, and the AUR: What Every Prompt Actually Means"
+description: "A practical reference for the interactive prompts, warnings, and errors you'll see when installing packages on Arch Linux. Decodes every common pacman question (Y/n confirmations, optional dependencies, provider selection, file conflicts, hooks), every yay/paru question (cleanBuild, diffs, PKGBUILDs to edit), and the warnings that look scary but aren't (snap-pac perl errors, missing-firmware messages, sd-vconsole notices). Written so future-you can paste a prompt into the search and find the right answer in five seconds."
+author: "Evanns Morales-Cuadrado"
+date: "2026-05-17"
+categories: [arch linux, pacman, aur, yay, package management, reference]
+image: ../../../files/tech-zone/arch-logo-dark.svg
+image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
+draft: false
+---
+
+::: {.callout-note}
+## What this is
+
+A **reference** post, not a tutorial. The goal is that the next time you paste `==> Packages to cleanBuild?` or `:: There are 2 providers available for jack` into a search box, this article is the first thing that comes up and tells you exactly what to type and why.
+
+I'm writing this because midway through my [LUKS + Btrfs + Caelestia install](../2026-05-17-arch-luks-btrfs-caelestia/) I hit a dozen prompts in a row from pacman and yay, and realized that the answer to "what does this mean" is buried in eight different wiki pages, each of which assumes you already know the others. This post puts them all in one place, in the order you encounter them, with the answers I actually use.
+:::
+
+# Part 1 — The mental model
+
+Three layers, one transaction.
+
+```text
+┌──────────────────────────────────────────────────────────────────┐
+│  yay  (or paru)                                                  │
+│    └─ AUR helper. Searches AUR, fetches PKGBUILDs, builds them.  │
+│       Then asks pacman to install the resulting .pkg.tar.zst.    │
+├──────────────────────────────────────────────────────────────────┤
+│  makepkg                                                         │
+│    └─ Build tool. Reads a PKGBUILD, downloads sources, compiles, │
+│       produces a .pkg.tar.zst.                                   │
+├──────────────────────────────────────────────────────────────────┤
+│  pacman                                                          │
+│    └─ Package manager. Installs, removes, and upgrades packages  │
+│       from the official Arch repos and from local .pkg.tar.zst   │
+│       files. Runs pre/post hooks. Tracks dependencies.           │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+**Pacman is always at the bottom.** It does the actual installing — whether the package came from the official repos (`pacman -S htop`) or from the AUR via yay (`yay -S caelestia-meta` → builds it → calls pacman to install the result). Every prompt you see ultimately comes from either pacman or yay; understanding which is which is the first step to decoding them.
+
+**AUR** = Arch User Repository — a community-maintained collection of *PKGBUILDs* (recipes for building packages), **not** packages themselves. To install something from the AUR you (or your helper) need to clone the PKGBUILD, run `makepkg` to build it, then pacman-install the result.
+
+**`yay` and `paru`** are *AUR helpers* — they wrap that "clone + makepkg + pacman" loop into a single command and add nice quality-of-life features (parallel downloads, dependency resolution across repo + AUR, interactive search). Caelestia's install script defaults to yay; the prompts and behaviors below also apply (with minor cosmetic differences) to paru.
+
+---
+
+# Part 2 — Pacman commands at a glance
+
+The 95 % subset of pacman you actually use day-to-day:
+
+| Command | What it does |
+|---------|--------------|
+| `pacman -S <pkg>` | Install package from the official repos |
+| `pacman -Sy` | Refresh the package database (don't upgrade anything) |
+| `pacman -Syu` | Refresh database **and** upgrade all out-of-date packages |
+| `pacman -R <pkg>` | Remove a package (keep its deps) |
+| `pacman -Rs <pkg>` | Remove a package **and** any deps that aren't used by anything else |
+| `pacman -Rns <pkg>` | Same as `-Rs` plus delete its config files in `/etc` |
+| `pacman -Ss <regex>` | Search the repos for packages whose name or description matches |
+| `pacman -Si <pkg>` | Show detailed info about a (repo) package — version, deps, optdeps, size |
+| `pacman -Qi <pkg>` | Show detailed info about an **installed** package |
+| `pacman -Ql <pkg>` | List every file owned by an installed package |
+| `pacman -Qo <file>` | "Which package owns this file?" |
+| `pacman -Qe` | List **explicitly-installed** packages (the ones *you* asked for) |
+| `pacman -Qdt` | List orphan packages (installed as deps but nothing depends on them now) |
+| `pacman -F <filename>` | Search the repos for the package that ships a given filename |
+
+::: {.callout-tip}
+## Read this if you only remember three of those
+
+- **`pacman -Syu`** is *the* daily/weekly upgrade command. Never run `pacman -Sy <pkg>` without the `u` — that's the "partial upgrade" anti-pattern that desyncs your system.
+- **`pacman -Qi <pkg>`** is your friend when you want to know *anything* about an installed package — version, dependencies, optional dependencies, install size, build date.
+- **`pacman -Qo /path/to/file`** is what you use when you find some random file on your system and wonder where it came from.
+:::
+
+---
+
+# Part 3 — Pacman's prompts, decoded
+
+These appear during `pacman -S`, `pacman -Syu`, or any AUR-helper install (yay forwards them through).
+
+## `:: Proceed with installation? [Y/n]`
+
+```text
+Total Download Size:   0.17 MiB
+Total Installed Size:  0.39 MiB
+
+:: Proceed with installation? [Y/n]
+```
+
+**What it's asking:** the final go/no-go before pacman modifies your system. Above this line, pacman has printed the full list of packages it's about to install, upgrade, or remove. Read that list — this is your last chance to abort if you see something unexpected.
+
+**What to type:**
+
+| Answer | Effect |
+|--------|--------|
+| `Y` or just **Enter** | Proceed (the capital `Y` in `[Y/n]` means "Yes is the default") |
+| `n` | Abort the transaction. Nothing is changed. |
+
+**When to *not* hit Enter blindly:** if the package count is way larger than you expected (e.g., you `pacman -S htop` and it wants to install 200 packages), something's pulled in a giant transitive dependency tree — usually because of an `--asdeps` typo or because you `-Syu`'d too. Read the list, abort with `n`, investigate.
+
+## `Optional dependencies for X`
+
+```text
+Optional dependencies for htop
+    lm_sensors: show cpu temperatures
+    lsof: show files opened by a process
+    strace: attach to a running process
+```
+
+**What it's saying:** *informational only.* These packages are **not** installed by default — they unlock optional functionality that the package can use *if* it finds them. You're being told they exist so you can install them later if you want the extra features.
+
+**What to do:** nothing. If you want any of them, `pacman -S <optdep>` later. If you don't, ignore.
+
+## `:: There are N providers available for X:`
+
+```text
+:: There are 2 providers available for jack:
+:: Repository extra
+   1) jack2  2) pipewire-jack
+
+Enter a number (default=1):
+```
+
+**What it's asking:** more than one package can satisfy a dependency on `X`. Which one do you want?
+
+**Common providers you'll see:**
+
+| Dependency name | Choices | Pick if… |
+|-----------------|---------|----------|
+| `jack` | `jack2`, `pipewire-jack` | `pipewire-jack` if you're on the PipeWire audio stack (this guide's setup); `jack2` only for legacy pure-JACK pro-audio rigs |
+| `pulseaudio` (rarely seen now) | `pulseaudio`, `pipewire-pulse` | `pipewire-pulse` — same reason |
+| `java-runtime` | `jre21-openjdk`, `jre17-openjdk`, … | the version your apps need; most use 21 in 2026 |
+| `cron` | `cronie`, `systemd-cron`, `fcron` | `cronie` is Arch's default; modern systems usually don't need this at all (systemd timers replace it) |
+
+**What to type:** the number from the list, then Enter. Or just Enter to accept the default (the parenthesized `default=1`).
+
+## `:: Replace X with repo/Y?`
+
+```text
+:: Replace openssl with extra/openssl-3.0? [Y/n]
+```
+
+**What it's saying:** a package has been renamed or replaced upstream. Pacman is asking permission to migrate you from the old name to the new one.
+
+**Default answer:** `Y`. Saying `n` typically blocks the upgrade entirely. The only reason to say `n` is if you're aware of a specific incompatibility that means you need to pin the old version (rare).
+
+## `:: file in X is owned by both X and Y`
+
+```text
+error: failed to commit transaction (conflicting files)
+foo: /usr/bin/bar exists in filesystem (owned by baz)
+Errors occurred, no packages were upgraded.
+```
+
+**What it's saying:** two packages each want to install the same file at the same path, and pacman refuses to silently let one overwrite the other.
+
+**Common causes:**
+
+1. You installed something via `makepkg -i` or curl-piped-bash that wrote files outside of pacman's bookkeeping — and now a package update from the repos wants to install those same files.
+2. A package was renamed upstream and pacman didn't catch the migration cleanly.
+
+**Fix:** identify which package owns the file (`pacman -Qo /usr/bin/bar`). Uninstall the offending one, or use `--overwrite '/path/glob'` on the pacman command line to grant pacman permission to write over the conflicting file. **Don't reflexively use `--overwrite '*'`** — that disables every conflict check and is a way to silently break your system.
+
+## `:: Running pre-transaction hooks` / `:: Running post-transaction hooks`
+
+```text
+:: Running pre-transaction hooks...
+(1/1) Performing snapper pre snapshots for the following configurations...
+==> root: 16
+:: Processing package changes...
+(1/3) reinstalling nvidia-utils
+…
+:: Running post-transaction hooks...
+(1/9) Creating system user accounts...
+(6/9) Install DKMS modules
+==> dkms install --no-depmod nvidia/595.71.05 -k 7.0.7-arch2-1
+(7/9) Updating linux initcpios...
+```
+
+**What it's saying:** between (or after) the actual package operations, pacman is running automated *hook scripts* that ship with various packages. Hooks live in `/usr/share/libalpm/hooks/` (system-provided) and `/etc/pacman.d/hooks/` (user-provided), and run when their trigger conditions match.
+
+**Common hooks you'll see and what they do:**
+
+| Hook | When it fires | What it does |
+|------|---------------|--------------|
+| `snap-pac` (snapper) | Any pacman transaction (if `snap-pac` is installed) | Creates pre + post Btrfs snapshots bracketing the transaction so you can roll back |
+| `mkinitcpio` | Kernel updates, module package installs (NVIDIA, ZFS, etc.) | Rebuilds `/boot/initramfs-linux.img` so the new module is included on next boot |
+| `dkms` | Kernel updates or DKMS-managed module installs | Recompiles out-of-tree kernel modules (NVIDIA, VirtualBox, etc.) against the current kernel |
+| `glib-compile-schemas` | GTK app installs | Compiles XML schema files into the binary cache GLib reads |
+| `update-desktop-database` | Desktop-entry installs | Refreshes the `.desktop` database app launchers read |
+| `fontconfig` | Font installs | Rebuilds the font cache |
+
+**Hooks are not interactive.** They don't ask you questions; they just run. If a hook fails, pacman reports it and the overall transaction may or may not succeed depending on the hook's severity.
+
+## "Marked as installed as a dependency" / "explicit"
+
+```text
+warning: nvidia-utils-595.71.05-2 is up to date -- reinstalling
+…
+==> Marking dependency as explicit: foo
+```
+
+`Explicit` = a package you (the human) installed directly. `Dependency` = a package pacman installed because something else needed it. You can re-mark with `pacman -D --asexplicit <pkg>` (or `--asdeps`). This matters because **orphan cleanup** (`pacman -Qdtq | sudo pacman -Rns -`) removes dependency packages that nothing currently depends on — but never explicit ones.
+
+---
+
+# Part 4 — Warnings vs errors (how to tell when to worry)
+
+Pacman uses three severity prefixes:
+
+| Prefix | Severity | Transaction continues? | When to worry |
+|--------|----------|------------------------|---------------|
+| `warning:` | Low — informational | **Yes** | Almost never. Read the message, but the upgrade is proceeding. |
+| `error:` | High — usually fatal | **No** (aborted) | Yes. Read the message, fix the cause, re-run. |
+| `==> WARNING:` (from sub-tools) | Varies | **Yes** (the sub-tool isn't pacman; it's mkinitcpio, dkms, etc.) | Sometimes. See below. |
+
+**Common warnings that *look* scary but aren't:**
+
+| Message | What it means | What to do |
+|---------|---------------|------------|
+| `warning: nvidia-utils-595.71.05-2 is up to date -- reinstalling` | You explicitly asked to install something that's already installed. Pacman reinstalls it (overwrites the same files). | Nothing — totally fine. |
+| `==> WARNING: sd-vconsole: "/etc/vconsole.conf" not found, will use default values` (mkinitcpio) | `vconsole.conf` doesn't exist yet, so the keymap defaults to `us`. | Write `KEYMAP=us > /etc/vconsole.conf` and re-run `mkinitcpio -P`. Or ignore if `us` is what you wanted. |
+| `==> WARNING: Possibly missing firmware for module: 'qat_6xxx'` (mkinitcpio) | The kernel module exists but its firmware blob isn't installed. The module won't load unless you have Intel QAT enterprise crypto hardware — which you don't if you're on a normal laptop. | Ignore. |
+| `==> WARNING: Possibly missing firmware for module: 'aic94xx'` etc. | Same pattern — server-class storage controllers most people don't have | Ignore. |
+| `fatal library error, lookup self` (snap-pac during a pacman transaction) | snap-pac tried to take a snapper snapshot but snapper isn't yet configured, and perl's library path inside the pacman-triggered subprocess isn't fully resolved | Ignore. Goes away once snapper is configured with `snapper -c root create-config /`. |
+
+**Errors that are usually real:**
+
+| Message | What it means | Fix |
+|---------|---------------|-----|
+| `error: failed to commit transaction (conflicting files)` | Two packages want to install the same file | See [the file-conflict prompt above](#file-in-x-is-owned-by-both-x-and-y) |
+| `error: failed retrieving file 'foo.pkg.tar.zst' from <mirror>` | Mirror is slow, down, or rate-limiting | Re-rank mirrors: `sudo reflector --country '<your country>' --sort rate --save /etc/pacman.d/mirrorlist` and retry |
+| `error: GPGME error: No data` | Pacman keyring is corrupt or stale | `sudo pacman-key --refresh-keys` (slow; uses Web Key Directory) or `sudo pacman -S archlinux-keyring` if a basic upgrade works |
+| `error: invalid or corrupted package` | A package was downloaded but the signature or checksum doesn't match | Usually a CDN issue — `sudo rm /var/cache/pacman/pkg/<offending-pkg>` and retry |
+
+---
+
+# Part 5 — The AUR and how yay wraps it
+
+The Arch User Repository is a public collection of **PKGBUILDs** — shell-script recipes that tell `makepkg` how to download, build, and package some piece of software that isn't in Arch's official repos. The AUR itself stores no compiled packages; you (or your helper) build them on the spot.
+
+**`yay -S caelestia-meta`** does roughly:
+
+1. Search the AUR for `caelestia-meta`.
+2. Fetch its PKGBUILD into `~/.cache/yay/caelestia-meta/`.
+3. Walk its dependencies. Any AUR dep gets its PKGBUILD fetched too (recursively).
+4. Show you the full plan: "I'm about to fetch N PKGBUILDs, build them, and install M packages."
+5. Ask: clean the build cache? show diffs? edit PKGBUILDs?
+6. Run `makepkg` against each PKGBUILD (downloads source tarballs, configures, compiles, packages).
+7. Hand the resulting `.pkg.tar.zst` files to pacman with `pacman -U`.
+8. Pacman runs its normal install + hook pipeline.
+
+That's why yay's prompts come **first** (about the build), then pacman's prompts come **last** (about the install).
+
+---
+
+# Part 6 — yay's interactive prompts, decoded
+
+## Search results numbered list
+
+```text
+$ yay foo
+3 aur/foo-git  1.0.r123.gabcdef-1  (+12 0.42)  Latest git of foo
+2 aur/foo      1.0-1                (+8  0.31)  Stable foo
+1 extra/foo    1.0-1                (300 KiB)   Stable foo (official)
+==> Packages to install (eg: 1 2 3, 1-3 or ^4)
+==>
+```
+
+**What it's saying:** here are matching packages from both the official repos (`extra/` etc.) and the AUR (`aur/`). The list is **reverse-sorted** — the most relevant result is at the bottom, right next to the prompt, so you can pick it quickly.
+
+The two numbers in parens after each AUR entry are **votes** and **popularity** — higher is generally more trustworthy (more users, longer-maintained). Repo packages instead show install size.
+
+**What to type:**
+
+| Selector | Means |
+|----------|-------|
+| `1` | install entry 1 |
+| `1 3 5` | install entries 1, 3, and 5 |
+| `1-3` | install entries 1, 2, and 3 |
+| `^4` | install everything except entry 4 |
+| `A` | install all |
+| `N` or just **Enter** | install none (cancel) |
+
+## `==> Packages to cleanBuild?`
+
+```text
+  3 caelestia-shell        (Build Files Exist)
+  2 quickshell-git         (Build Files Exist)
+  1 libcava                (Build Files Exist)
+==> Packages to cleanBuild?
+==> [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** yay's cache already has cloned PKGBUILD directories for these packages, almost certainly because you've installed them (or attempted to) before. Should they be **cleaned** (deleted and re-fetched fresh) or **reused as-is**?
+
+**What to type:**
+
+| Answer | When |
+|--------|------|
+| `N` (None) | Reuse cached. Fast. Right for a **re-run of the same install** where you trust the cache. |
+| `A` (All) | Re-fetch every PKGBUILD fresh. Adds ~30 s of git-clone time. Right for a **first install** or when the previous attempt failed and you want known-clean state. |
+| `Ab` (Abort) | Bail out. |
+| `I` (Installed) | Clean only packages that are currently installed (refetch updates to PKGBUILDs you've already built). |
+| `No` (NotInstalled) | Clean only packages not yet installed. |
+| `1 2 3` / `1-3` / `^4` | Clean only the specific entries you list. |
+
+**Default recommendation:** `A` on a first install (clean slate), `N` on a retry where you know the previous failure was downstream (e.g., a make error you've already fixed in the source).
+
+## `==> Diffs to show?`
+
+```text
+==> Diffs to show?
+==> [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** *"do you want me to show you the diff between each PKGBUILD's current upstream version and your locally-cached one, before I build it?"*
+
+**What to type:** `N` (the default) unless you have a habit of patching PKGBUILDs locally or you're auditing upstream for security. The diff is *your local* vs *fresh fetch*, so for a fresh install (you just `A`-cleaned everything) there's nothing to diff against — `N` is correct.
+
+## `==> PKGBUILDs to edit?`
+
+```text
+==> PKGBUILDs to edit?
+==> [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** *"do you want to open each PKGBUILD in `$EDITOR` to modify it before makepkg runs?"* Used to patch upstream bugs, pin versions, change `pkgver()` logic, etc.
+
+**What to type:** `N` (the default). Same audience as the diff prompt — power users patching upstream. For the 99 % case, you trust the AUR maintainer and just want the package built.
+
+## `:: Proceed with installation?`
+
+After all the build prompts, yay shows the final list of `.pkg.tar.zst` files it built and prompts again. This is pacman's `:: Proceed with installation? [Y/n]` from [Part 3](#proceed-with-installation-yn) — same answer (`Y` or Enter to proceed).
+
+## Snapshots created by snap-pac during AUR builds
+
+```text
+:: Running pre-transaction hooks...
+(1/1) Performing snapper pre snapshots for the following configurations...
+==> root: 14
+…
+:: Running post-transaction hooks...
+(2/2) Performing snapper post snapshots for the following configurations...
+==> root: 15
+```
+
+When yay hands the built packages to pacman, the normal snap-pac hook fires — you get a numbered snapshot pair around the install. `==> root: 14` means snapshot **14** was created in the `root` snapper config. You can `snapper -c root list` later to see them.
+
+---
+
+# Part 7 — Common AUR build failures
+
+Most AUR builds "just work" — but when one fails, the error is usually in one of three places. Read the makepkg output top-to-bottom and stop at the first `error:` line.
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `==> ERROR: One or more PGP signatures could not be verified` | Missing GPG key for source verification | The PKGBUILD usually prints the key ID; `gpg --recv-keys <KEY-ID>` then retry |
+| `==> ERROR: One or more files did not pass the validity check` | Upstream source tarball changed but PKGBUILD's checksum wasn't updated | If the AUR maintainer hasn't pushed an update yet, you can update the SHA in the PKGBUILD locally; otherwise wait and retry |
+| `error: failed to commit transaction (conflicting files)` after build succeeds | Built package conflicts with an installed file | Same as the [pacman file-conflict case](#file-in-x-is-owned-by-both-x-and-y) — usually fixed with `--overwrite '/path'` |
+| `Could not resolve all dependencies.` | Missing dep that isn't in the AUR or repos | Usually a transitive AUR dep that doesn't exist anymore; check the AUR comments page |
+| Compilation fails with `gcc` errors | Source incompatible with current toolchain | Usually means the AUR PKGBUILD is stale and needs maintainer attention — check the package's AUR comments page; sometimes a patch is mentioned there |
+
+**General recovery:** if a single package in a multi-package yay install fails, yay stops. The packages that *did* build successfully are already installed. You can re-run `yay -S <failed-pkg>` to retry just the failing one once you've fixed the cause.
+
+---
+
+# Part 8 — When pacman triggers mkinitcpio (and you see it complain)
+
+A lot of "scary-looking" pacman output is actually *another tool* running as a hook. mkinitcpio is the most common: it rebuilds your initramfs every time a kernel updates or a kernel module package is installed (NVIDIA, ZFS, VirtualBox modules, etc.).
+
+A typical mkinitcpio-triggered-by-pacman run:
+
+```text
+(7/9) Updating linux initcpios...
+==> Building image from preset: /etc/mkinitcpio.d/linux.preset: 'default'
+==> Using default configuration file: '/etc/mkinitcpio.conf'
+  -> -k /boot/vmlinuz-linux -g /boot/initramfs-linux.img
+==> Starting build: '7.0.7-arch2-1'
+  -> Running build hook: [base]
+  -> Running build hook: [systemd]
+  -> Running build hook: [autodetect]
+  …
+==> WARNING: Possibly missing firmware for module: 'qat_6xxx'
+  -> Running build hook: [filesystems]
+==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux.img'
+==> Initcpio image generation successful
+```
+
+**What you care about:** the **last line** — `Initcpio image generation successful`. If you see that, the boot-time disk image was rebuilt correctly and the next reboot will use it.
+
+**Warnings you can ignore here:**
+
+- `==> WARNING: Possibly missing firmware for module: '<name>'` — the kernel module is preloaded into the initramfs but doesn't have a matching firmware blob. Harmless if you don't have the hardware that module drives. The most common ones (`qat_6xxx`, `aic94xx`, `wd719x`) are enterprise gear nobody has on a laptop.
+- `==> WARNING: sd-vconsole: "/etc/vconsole.conf" not found, will use default values` — only fires during initial install, before you wrote `/etc/vconsole.conf`. Goes away after.
+
+**Errors that are real:**
+
+- `==> ERROR: Failed to install kernel`, `==> ERROR: missing required module`, anything containing the word `failed` — these mean the next boot will not work. Stop, diagnose, fix before rebooting.
+
+---
+
+# Part 9 — Quick-reference cheat sheet
+
+For when you just need the answer.
+
+| Prompt | Default | What I usually type | Why |
+|--------|---------|----------------------|-----|
+| `:: Proceed with installation? [Y/n]` | Y | Enter (Y) — but **read the package list first** | Final go/no-go |
+| `:: There are N providers available for jack` | 1 | `pipewire-jack` | I'm on the PipeWire audio stack |
+| `:: Replace X with Y? [Y/n]` | Y | Enter (Y) | Almost always the right migration |
+| `==> Packages to cleanBuild? [N/A/Ab/I/No]` | N | `A` on first install, `N` on retry | Clean state vs cache-reuse trade-off |
+| `==> Diffs to show? [N/A/…]` | N | `N` | I trust the AUR maintainer; not auditing |
+| `==> PKGBUILDs to edit? [N/A/…]` | N | `N` | Not patching upstream |
+| `==> Confirm package PGP keys` | — | `Y` if the key matches the AUR comments page; otherwise abort | Real security check, but rare |
+| `Optional dependencies for X` | — | Read, then nothing (install later if I want them) | Informational |
+
+---
+
+# Part 10 — Living alongside opinionated installers (GNU Stow + Caelestia / chezmoi / yadm)
+
+A specific pattern worth naming: how to layer **your personal customizations** on top of an opinionated dotfile bundle (Caelestia, AstroNvim, LazyVim, Oh-My-Zsh, prezto, etc.) without fighting it on every update.
+
+## The problem
+
+A bundle like [Caelestia](../2026-05-17-arch-luks-btrfs-caelestia/) ships its own `install.fish` (or `install.sh`, or makefile) that **symlinks configs from the bundle's repo into `~/.config/`**. The instructions usually include some version of:
+
+> *Do not move the cloned repo after running install.fish. The symlinks in `~/.config/` point back into it; moving or deleting the source orphans every symlink.*
+
+So you can't just pick the bundle's files up, drop them into your own dotfiles repo, and call it a day — the install script is *part of the install*, and the symlinks it creates are *load-bearing*.
+
+If you naïvely add your own dotfiles **on top** by copying files into the bundle's repo, the next `git pull` will fight you (merge conflicts on every customization). So the natural question is: how do I keep my own customizations cleanly separated from the bundle's, *and* under my own version control, *and* not fight the bundle's update process?
+
+## The answer: stow your *personal overlay*, not the bundle
+
+`stow` (GNU Stow) is a symlink-farm manager. Install it once:
+
+```bash
+sudo pacman -S stow
+```
+
+Then structure your personal additions in a separate repo:
+
+```text
+~/dotfiles/                         <- YOUR repo (separate from any bundle)
+├── fish/                           <- a "stow package"
+│   └── .config/
+│       └── fish/
+│           └── conf.d/
+│               └── 99-aliases.fish      <- new file, doesn't collide with Caelestia
+├── hypr/
+│   └── .config/
+│       └── hypr/
+│           └── conf.d/
+│               └── personal-binds.conf  <- if Caelestia's hyprland.conf sources conf.d/*.conf
+└── nvim/
+    └── .config/
+        └── nvim/
+            └── lua/
+                └── plugins/
+                    └── my-extras.lua    <- adds a LazyVim plugin without touching starter
+```
+
+Then from `~/dotfiles/`:
+
+```bash
+stow fish        # symlinks ~/.config/fish/conf.d/99-aliases.fish → ../dotfiles/fish/.config/fish/conf.d/99-aliases.fish
+stow hypr
+stow nvim
+```
+
+Each top-level directory under `~/dotfiles/` becomes a *stow package* you can install or remove independently. `stow -D fish` removes the symlinks; `stow -R fish` re-stows (useful after pulling new files).
+
+The recovery flow on a fresh machine becomes:
+
+```bash
+# 1. Install Arch + bundle as normal (e.g., this guide's Section 6)
+git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+~/.local/share/caelestia/install.fish --aur-helper=yay
+
+# 2. Add your overlay
+git clone https://github.com/<you>/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+stow */
+```
+
+## Two rules that keep this clean
+
+1. **Your stow packages should *add* files to `~/.config/`, never *replace* what the bundle installed.**
+   Use new filenames (`99-evanns.fish`, `personal-binds.conf`), or use subdirectories the bundle leaves alone (`conf.d/`, `local/`, `plugins/`). If you stow a file that has the same path as a bundle symlink, stow refuses with a "would override" error — which is the *right* behavior; it's telling you to pick a non-colliding name.
+
+2. **Treat both the bundle's repo and your overlay as part of the install.** Back up both. On a reinstall, restore both. If you ever want to remove your overlay cleanly: `cd ~/dotfiles && stow -D */` removes every symlink in one shot.
+
+## Why not chezmoi or yadm instead?
+
+Both are nice tools. They differ from stow in *how* they manage the link / copy:
+
+| Tool | Mechanism | Best fit |
+|------|-----------|----------|
+| `stow` | Symlinks. Files live in your repo dir; `~/.config/` points there. | Lowest-magic option. You always know exactly where a file lives by following the symlink. Great for layering on top of opinionated bundles. |
+| `chezmoi` | Templated copies. Files live in `~/.local/share/chezmoi/`; chezmoi *renders* them into `~/` as real files (no symlinks). | Multi-machine setups where per-host templating matters (different git email per machine, different brightness defaults per laptop). |
+| `yadm` | Git wrapper around `~`. Your home directory itself is the working tree of a git repo. | Single-machine simplicity. No symlinks, no templating, just `yadm add ~/.config/foo` and commit. |
+
+For a bundle like Caelestia where you want **clean separation between bundle and overlay**, stow is the right pick — its symlink approach makes the boundary explicit and impossible to confuse. You can always see which files came from Caelestia (symlinks into `~/.local/share/caelestia/`) and which came from your overlay (symlinks into `~/dotfiles/`) by running `ls -l ~/.config/<dir>/`.
+
+---
+
+# Part 11 — Hardening (optional)
+
+A handful of small `/etc/pacman.conf` tweaks worth knowing about:
+
+- **`ParallelDownloads = 5`** (default in current Arch) — pacman downloads up to 5 packages in parallel. Bigger numbers help on fast connections; smaller (or `1`) helps if your network is flaky or rate-limited.
+- **`Color`** — uncomment for colored output. Easier to spot warnings vs errors.
+- **`ILoveCandy`** — uncomment for pac-man-shaped progress bars during downloads. Pure aesthetic; harmless.
+- **`VerbosePkgLists`** — uncomment to show old version → new version columns in upgrade lists. I always have this on.
+
+For `/etc/makepkg.conf` (affects AUR builds):
+
+- **`MAKEFLAGS="-j$(nproc)"`** — parallel compilation using all your CPU cores. Speeds up Quickshell, Chromium-based AUR packages, etc. by a lot.
+- **`COMPRESSXZ`** / **`COMPRESSZST`** — if you're disk-constrained, you can switch the package compressor; for most users the defaults are fine.
+
+---
+
+::: {.callout-note}
+## Attribution
+
+The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only.
+:::

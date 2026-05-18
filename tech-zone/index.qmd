@@ -631,7 +631,7 @@ main.content.column-page {
       autocomplete="off"
     />
     <span class="tz-filter-count" aria-live="polite">
-      showing <strong id="tz-count-shown">9</strong> of <strong>9</strong>
+      showing <strong id="tz-count-shown">10</strong> of <strong>10</strong>
     </span>
   </div>
 
@@ -811,6 +811,60 @@ Hyprland, built from branch main<span class="u">_</span></div>
         </div>
 
         <span class="tz-card-cta">read the build log <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- CARD 04 — Pacman / Yay / AUR reference -->
+    <a class="tz-card success" href="./posts/2026-05-17-pacman-yay-aur-prompts/"
+       data-tags="arch linux pacman aur yay package management reference prompts hooks snap-pac mkinitcpio stow"
+       aria-label="Read: Pacman, Yay, and the AUR — What Every Prompt Actually Means">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">pacman</span>
+          <span class="tz-tag">aur</span>
+          <span class="tz-tag">yay</span>
+          <span class="tz-tag">reference</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">04</span>
+          <h3 class="tz-card-name">Pacman, Yay, and the AUR — What Every Prompt Actually Means</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-17</span>
+          <span class="tz-status-pill ok">reference</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          A practical reference for every interactive prompt, warning, and error you'll see during pacman
+          installs and AUR builds — <code>Y/n</code> confirmations, provider selection, file conflicts,
+          <code>cleanBuild</code> / diffs / PKGBUILDs-to-edit, the snap-pac perl warning that looks scary
+          but isn't, and how to layer your own dotfiles on top of opinionated bundles with GNU Stow.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">yay — interactive prompts</span>
+            <span class="badge ok">reference</span>
+          </div>
+          <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">yay -S caelestia-meta</span>
+  3 caelestia-shell        <span class="mute">(Build Files Exist)</span>
+  2 quickshell-git         <span class="mute">(Build Files Exist)</span>
+  1 libcava                <span class="mute">(Build Files Exist)</span>
+<span class="ok">==></span> Packages to cleanBuild?
+<span class="ok">==></span> [N]one [<span class="u">A</span>]ll [Ab]ort [I]nstalled [No]tInstalled
+
+<span class="ok">==></span> Diffs to show?
+<span class="ok">==></span> [<span class="u">N</span>]one [A]ll [Ab]ort [I]nstalled [No]tInstalled
+
+<span class="ok">==></span> PKGBUILDs to edit?
+<span class="ok">==></span> [<span class="u">N</span>]one [A]ll [Ab]ort [I]nstalled [No]tInstalled<span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the reference <span class="arrow">→</span></span>
       </div>
     </a>
 
