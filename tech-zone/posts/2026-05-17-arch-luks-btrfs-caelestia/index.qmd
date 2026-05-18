@@ -232,6 +232,25 @@ The new packages beyond Article 01:
 | `zram-generator` | systemd-friendly zram setup. We'll point it at half of RAM, zstd-compressed. |
 | `inotify-tools`   | Used by `grub-btrfs`'s `grub-btrfsd` to watch the snapshots directory and re-generate GRUB on changes. |
 
+::: {.callout-warning}
+## Two harmless warnings you will see during pacstrap
+
+Both of these print in red but are expected and do **not** mean the install failed:
+
+1. **`sd-vconsole: "/etc/vconsole.conf" not found, will use default values`** — mkinitcpio built an initramfs before we created `/etc/vconsole.conf`. The very first boot's LUKS prompt will use the default `us` keymap (fine for most people); we set it properly in Chapter 6 and rebuild the initramfs in Chapter 9.
+2. **`fatal library error, lookup self`** after `Performing snapper post snapshots` — `snap-pac`'s pacman hook fired against a snapper that has no configs yet (and perl's library paths inside the brand-new chroot aren't fully resolved). The hook would have been a no-op anyway — nothing is snapshotted, nothing is broken. We configure snapper properly in Part 3 (first boot), and the warning disappears from then on.
+
+To confirm pacstrap actually succeeded despite the noise:
+
+```bash
+ls /mnt/boot/vmlinuz-linux       # kernel image is present
+ls /mnt/usr/bin/cryptsetup       # cryptsetup binary made it in
+ls /mnt/etc/ | head              # /etc is populated (no fstab yet — that's next)
+```
+
+If all three exist, you're good.
+:::
+
 Generate `fstab` and enter the new system:
 
 ```bash
