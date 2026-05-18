@@ -2924,11 +2924,22 @@ FileNotFoundError: [Errno 2] No such file or directory</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Setting your first wallpaper (and how Caelestia’s wallpaper layer works)
+Setting your first wallpaper (and how Caelestia’s wallpaper layer actually works)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Caelestia doesn’t use a separate wallpaper daemon (<code>swww</code>, <code>hyprpaper</code>, etc.) — its <strong>Quickshell-based bar is also the wallpaper layer</strong>. The same Quickshell process that renders your status bar at the <code>OVERLAY</code> Wayland layer also renders your wallpaper at the <code>BACKGROUND</code> layer. So there’s nothing to install — <code>pacman -Qi swww</code> will report “not found” and that’s correct.</p>
+<p><strong>Important correction</strong>: an earlier version of this section claimed Caelestia’s Quickshell-based bar also handles the wallpaper layer. That’s wrong. Caelestia <em>delegates</em> wallpaper rendering to an external daemon — specifically <strong><code>awww</code></strong> (a fork of <code>swww</code> that the Caelestia maintainers prefer). The Quickshell shell decides <em>which</em> wallpaper to display and sends the path to the daemon via IPC; the daemon does the actual decode + Wayland layer-shell rendering.</p>
+<p>The full chain on a working install:</p>
+<pre class="text"><code>caelestia wallpaper -f IMG     # CLI wrapper
+        ↓
+~/.local/state/caelestia/wallpaper/path.txt    # state file written
+        ↓
+awww img IMG                   # daemon called (via Quickshell.execDetached)
+        ↓
+awww-daemon                    # claims Wayland BACKGROUND layer-shell surface
+        ↓
+your monitor                   # pixels appear</code></pre>
+<p>If any step in that chain is missing or broken, you get the symptoms in the recovery section below.</p>
 <p>To actually set a wallpaper, use the <code>caelestia wallpaper</code> subcommand. Its flags (per <code>caelestia wallpaper --help</code>):</p>
 <table class="caption-top table">
 <colgroup>
@@ -2969,17 +2980,17 @@ Setting your first wallpaper (and how Caelestia’s wallpaper layer works)
 </tbody>
 </table>
 <p>Common patterns:</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a specific wallpaper</span></span>
-<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg</span>
-<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Random from a folder — the typical "I cloned a wallpapers repo" workflow</span></span>
-<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-r</span> ~/Pictures/Wallpapers/</span>
-<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the color scheme without committing — useful for picking</span></span>
-<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-p</span> ~/Pictures/Wallpapers/sunset.jpg</span>
-<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set without auto-retheming the bar</span></span>
-<span id="cb101-11"><a href="#cb101-11" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg <span class="at">-N</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a specific wallpaper</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg</span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Random from a folder — the typical "I cloned a wallpapers repo" workflow</span></span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-r</span> ~/Pictures/Wallpapers/</span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the color scheme without committing — useful for picking</span></span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-p</span> ~/Pictures/Wallpapers/sunset.jpg</span>
+<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set without auto-retheming the bar</span></span>
+<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg <span class="at">-N</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When you run <code>-f</code> or <code>-r</code>, <strong>two things happen at once</strong>:</p>
 <ol type="1">
 <li>The wallpaper appears on the background layer (replacing the black fallback).</li>
@@ -2989,6 +3000,126 @@ Setting your first wallpaper (and how Caelestia’s wallpaper layer works)
 <pre class="text"><code>exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers</code></pre>
 <p>That way every Hyprland session starts with a random wallpaper from your collection (and a fresh accent-color scheme to match). Use an absolute path — <code>exec-once</code> lines don’t always expand <code>~</code>.</p>
 <p>If <code>caelestia wallpaper -f</code> reports an image is too small, override with <code>-n</code> (no size filter). If you have a fixed favorite, use <code>-f</code> instead of <code>-r</code>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The three-line recipe that makes wallpapers Just Work from first login
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After hitting every layer of failure (no daemon installed, daemon not finding Wayland, picker scanning the wrong directory, mid-session env changes not propagating), this is what your <code>~/.config/caelestia/hypr-user.conf</code> needs to contain to make the whole wallpaper chain self-starting on every reboot:</p>
+<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;your-username&gt;/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/&lt;your-username&gt;/Pictures/Wallpapers -n</code></pre>
+<p>Substitute <code>&lt;your-username&gt;</code> with your actual home directory name (e.g., <code>evanns</code>). The order matters and the lines do specific things:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Line</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>env = CAELESTIA_WALLPAPERS_DIR,…</code></td>
+<td>Tells the Caelestia shell (Quickshell) where to scan for wallpapers when the launcher’s <code>&gt;wallpaper</code> picker is opened. The shell reads this env var at startup; without it, the picker scans whatever default <code>GlobalConfig.paths.wallpaperDir</code> is and shows “no wallpapers found” if your collection isn’t there.</td>
+</tr>
+<tr class="even">
+<td><code>exec-once = awww-daemon</code></td>
+<td>Starts the wallpaper-rendering daemon. <strong>This is the daemon that actually paints pixels</strong> — Caelestia/Quickshell only decides which wallpaper to display; awww-daemon does the rendering. Must be installed (<code>yay -S swww</code> resolves to <code>awww</code> which provides swww’s interface).</td>
+</tr>
+<tr class="odd">
+<td><code>exec-once = caelestia wallpaper -r DIR -n</code></td>
+<td>Picks a random wallpaper from your folder at login and tells awww to paint it. The <code>-n</code> flag skips the size filter (which can over-reject wallpapers smaller than your monitor).</td>
+</tr>
+</tbody>
+</table>
+<p>Append all three lines if you don’t have them yet:</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;&gt;</span> ~/.config/caelestia/hypr-user.conf <span class="op">&lt;&lt;'EOF'</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="st"># Wallpaper chain — picker dir + daemon + initial random wallpaper</span></span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="st">env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;your-username&gt;/Pictures/Wallpapers</span></span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a><span class="st">exec-once = awww-daemon</span></span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a><span class="st">exec-once = caelestia wallpaper -r /home/&lt;your-username&gt;/Pictures/Wallpapers -n</span></span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then verify:</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-E</span> <span class="st">'^(exec-once|env)'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On every future reboot or fresh login: Hyprland reads <code>hypr-user.conf</code>, exports the env var into the spawn environment, fires <code>exec-once</code> lines top-to-bottom (awww-daemon before caelestia wallpaper, which is the order you need), and the wallpaper appears within a couple seconds of session start. Zero manual work.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Recovery: “black background after login,” “no wallpapers found” in the picker, or both
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A full troubleshooting walkthrough for the most common wallpaper failure modes — each step diagnoses one layer of the chain so you can stop as soon as you find the broken piece.</p>
+<section id="symptom-1-black-background-no-wallpaper-paints-even-after-caelestia-wallpaper--f" class="level3">
+<h3 class="anchored" data-anchor-id="symptom-1-black-background-no-wallpaper-paints-even-after-caelestia-wallpaper--f">Symptom 1: Black background, no wallpaper paints even after <code>caelestia wallpaper -f</code></h3>
+<p>The wallpaper daemon (<code>awww-daemon</code>) isn’t running. Test:</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pgrep</span> <span class="at">-af</span> awww-daemon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If empty, install (if needed) and start:</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> swww     <span class="co"># resolves to "awww" which provides swww — same end result</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="ex">awww-daemon</span> <span class="kw">&amp;</span> <span class="bu">disown</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/<span class="op">&lt;</span>some-image<span class="op">&gt;</span>.jpg <span class="at">-n</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A wallpaper should appear immediately. If <code>awww-daemon</code> panics with <code>failed to connect to socket</code>, see Symptom 4 below.</p>
+</section>
+<section id="symptom-2-wallpaper-picker-says-no-wallpapers-found-try-putting-some-in-pictureswallpapers" class="level3">
+<h3 class="anchored" data-anchor-id="symptom-2-wallpaper-picker-says-no-wallpapers-found-try-putting-some-in-pictureswallpapers">Symptom 2: <code>&gt;wallpaper</code> picker says “no wallpapers found, try putting some in ~/Pictures/Wallpapers”</h3>
+<p>The picker’s scan directory doesn’t match where your wallpapers actually live. The picker reads <code>Paths.wallsdir</code>, which resolves to <code>$CAELESTIA_WALLPAPERS_DIR</code> if set, otherwise <code>GlobalConfig.paths.wallpaperDir</code>. If neither is configured, the scan falls through to an unset/empty path.</p>
+<p>Fix: set the env var via <code>hypr-user.conf</code>:</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers'</span> <span class="op">&gt;&gt;</span> ~/.config/caelestia/hypr-user.conf</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then <strong>restart the Caelestia shell</strong> so it picks up the new env (env changes in <code>hypr-user.conf</code> apply to processes Hyprland <em>spawns</em>, not to ones already running):</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> shell <span class="at">-k</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null    <span class="co"># kill the running shell</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> shell <span class="at">-d</span> <span class="kw">&amp;</span>              <span class="co"># restart as daemon</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="bu">disown</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Re-open the launcher, type <code>&gt;wallpaper</code>, and the picker should now show your collection.</p>
+</section>
+<section id="symptom-3-caelestia-wallpaper--r-dir--n-exits-0-silently-but-nothing-changes-on-screen" class="level3">
+<h3 class="anchored" data-anchor-id="symptom-3-caelestia-wallpaper--r-dir--n-exits-0-silently-but-nothing-changes-on-screen">Symptom 3: <code>caelestia wallpaper -r DIR -n</code> exits 0 silently but nothing changes on screen</h3>
+<p>You’re running the command from a shell that doesn’t have Hyprland’s env vars set — usually because you’re SSH’d in. The CLI exits cleanly because with <code>-n</code> it skips the monitor-size IPC query, but the actual paint call to awww silently fails because the IPC socket isn’t reachable.</p>
+<p>Fix: run the command from inside the Hyprland session. Press <code>Super + Return</code> at the laptop keyboard to open a foot terminal that <em>is</em> a child of Hyprland (inherits the env vars), and run the command there.</p>
+<p>If you really need to do it from SSH, export the env vars manually first:</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_RUNTIME_DIR</span><span class="op">=</span>/run/user/<span class="va">$(</span><span class="fu">id</span> <span class="at">-u</span><span class="va">)</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">HYPRLAND_INSTANCE_SIGNATURE</span><span class="op">=</span><span class="va">$(</span><span class="fu">ls</span> <span class="st">"</span><span class="va">$XDG_RUNTIME_DIR</span><span class="st">/hypr/"</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WAYLAND_DISPLAY</span><span class="op">=</span>wayland-1</span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/<span class="op">&lt;</span>some-image<span class="op">&gt;</span>.jpg <span class="at">-n</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note all <em>three</em> env vars — <code>XDG_RUNTIME_DIR</code>, <code>HYPRLAND_INSTANCE_SIGNATURE</code>, <em>and</em> <code>WAYLAND_DISPLAY</code>. Missing <code>WAYLAND_DISPLAY</code> causes awww-daemon to panic with <code>failed to connect to socket</code> looking for <code>wayland-0</code> instead of the actual <code>wayland-1</code> socket.</p>
+</section>
+<section id="symptom-4-awww-daemon-panics-with-failed-to-connect-to-socket" class="level3">
+<h3 class="anchored" data-anchor-id="symptom-4-awww-daemon-panics-with-failed-to-connect-to-socket">Symptom 4: <code>awww-daemon</code> panics with “failed to connect to socket”</h3>
+<p>Missing <code>WAYLAND_DISPLAY</code> env var. From the shell where you’re trying to start the daemon:</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WAYLAND_DISPLAY</span><span class="op">=</span>wayland-1     <span class="co"># or whatever ls /run/user/$(id -u)/wayland-* shows</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="ex">awww-daemon</span> <span class="kw">&amp;</span> <span class="bu">disown</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>awww-daemon</code> instead complains about a missing cache dir (<code>~/.cache/awww: No such file or directory</code>), that’s a <strong>non-fatal warning</strong> — the daemon creates the directory on first paint. Continue.</p>
+</section>
+<section id="symptom-5-wallpaper-paints-when-set-manually-but-not-on-next-login" class="level3">
+<h3 class="anchored" data-anchor-id="symptom-5-wallpaper-paints-when-set-manually-but-not-on-next-login">Symptom 5: Wallpaper paints when set manually but not on next login</h3>
+<p>Your <code>~/.config/caelestia/hypr-user.conf</code> is missing the <code>exec-once = awww-daemon</code> line (or it’s after the <code>caelestia wallpaper</code> line). Hyprland fires <code>exec-once</code> lines in declaration order — the daemon needs to be running <em>before</em> the wallpaper command tries to paint.</p>
+<p>Verify with:</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-E</span> <span class="st">'^(exec-once|env)'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expected (in this order):</p>
+<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;user&gt;/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/&lt;user&gt;/Pictures/Wallpapers -n</code></pre>
+<p>If <code>awww-daemon</code> appears <em>after</em> <code>caelestia wallpaper</code>, edit the file with nvim and reorder. If it’s missing entirely, append:</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="at">-i</span> <span class="st">'/exec-once = caelestia wallpaper/i exec-once = awww-daemon'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(The <code>sed</code> inserts <code>awww-daemon</code> immediately <em>before</em> the <code>caelestia wallpaper</code> line. Run it once; running it twice would create duplicate lines.)</p>
+</section>
 </div>
 </div>
 <ul>
@@ -3011,11 +3142,11 @@ If you see a “config error” overlay at the bottom of the screen referencing 
 <p>Everything else loads fine — bar, widgets, keybinds, animations all work — but the overlay is visually noisy. To clear it:</p>
 <ol type="1">
 <li><p>Open the Caelestia-side Hyprland config (this is the <em>real</em> file; your <code>~/.config/hypr/hyprland.conf</code> is a symlink to it):</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span> ~/.local/share/caelestia/hypr/hyprland.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb117"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span> ~/.local/share/caelestia/hypr/hyprland.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Find the line <code>source = $cConf/hypr-vars.conf</code> and <strong>comment it out</strong> by prefixing with <code>#</code>:</p>
 <pre class="text"><code># source = $cConf/hypr-vars.conf</code></pre></li>
 <li><p>Save, exit nvim, and reload Hyprland’s config without restarting your session:</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb119"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 <p>The error overlay disappears immediately. Your terminals and any open windows stay exactly where they were — <code>hyprctl reload</code> re-parses the config in place, it doesn’t kill the session.</p>
 <p>If Caelestia later ships a fix (or you <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> and the line gets re-added because upstream added it back without the missing file), repeat the comment-out. You can also just <code>touch ~/.config/hypr/hypr-vars.conf</code> to create an empty file at the expected path — that satisfies the source directive without you having to remember to re-comment after each pull. Both fixes are valid; commenting is simpler, the empty-file trick is more <code>git pull</code>-resistant.</p>
@@ -3025,39 +3156,39 @@ If you see a “config error” overlay at the bottom of the screen referencing 
 <section id="verification-commands" class="level2">
 <h2 class="anchored" data-anchor-id="verification-commands">Verification commands</h2>
 <p>Open a <code>foot</code> terminal — Caelestia’s default keybind is <code>Super+Return</code> — and run:</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
-<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
-<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-7"><a href="#cb107-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb107-8"><a href="#cb107-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
-<span id="cb107-9"><a href="#cb107-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb107-10"><a href="#cb107-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-11"><a href="#cb107-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show MANY (one per pacman transaction during install)</span></span>
-<span id="cb107-12"><a href="#cb107-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list        <span class="co"># expect snapshots numbered well into the 40s if you followed every step</span></span>
-<span id="cb107-13"><a href="#cb107-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span>
-<span id="cb107-14"><a href="#cb107-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-15"><a href="#cb107-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + Wayland</span></span>
-<span id="cb107-16"><a href="#cb107-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"</span></span>
-<span id="cb107-17"><a href="#cb107-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays with resolution, refresh rate, scale</span></span>
-<span id="cb107-18"><a href="#cb107-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$WAYLAND_DISPLAY</span>            <span class="co"># something like "wayland-1" — proves you're in a Wayland session, not Xwayland</span></span>
-<span id="cb107-19"><a href="#cb107-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-20"><a href="#cb107-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Audio (PipeWire stack)</span></span>
-<span id="cb107-21"><a href="#cb107-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>  <span class="co"># "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API</span></span>
-<span id="cb107-22"><a href="#cb107-22" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                     <span class="co"># tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there</span></span>
-<span id="cb107-23"><a href="#cb107-23" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status pipewire wireplumber pipewire-pulse <span class="kw">|</span> <span class="fu">grep</span> Active</span>
-<span id="cb107-24"><a href="#cb107-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># all three should be Active: active (running)</span></span>
-<span id="cb107-25"><a href="#cb107-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-26"><a href="#cb107-26" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU (on hybrid laptops — Dell Precision example)</span></span>
-<span id="cb107-27"><a href="#cb107-27" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>                       <span class="co"># confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)</span></span>
-<span id="cb107-28"><a href="#cb107-28" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span>     <span class="co"># iGPU VA-API confirms working video decode</span></span>
-<span id="cb107-29"><a href="#cb107-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb107-30"><a href="#cb107-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Caelestia-specific</span></span>
-<span id="cb107-31"><a href="#cb107-31" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--version</span>              <span class="co"># CLI version</span></span>
-<span id="cb107-32"><a href="#cb107-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
-<span id="cb107-33"><a href="#cb107-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># may or may not exist depending on Caelestia version — fine either way</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show MANY (one per pacman transaction during install)</span></span>
+<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list        <span class="co"># expect snapshots numbered well into the 40s if you followed every step</span></span>
+<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span>
+<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + Wayland</span></span>
+<span id="cb120-16"><a href="#cb120-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"</span></span>
+<span id="cb120-17"><a href="#cb120-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays with resolution, refresh rate, scale</span></span>
+<span id="cb120-18"><a href="#cb120-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$WAYLAND_DISPLAY</span>            <span class="co"># something like "wayland-1" — proves you're in a Wayland session, not Xwayland</span></span>
+<span id="cb120-19"><a href="#cb120-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-20"><a href="#cb120-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Audio (PipeWire stack)</span></span>
+<span id="cb120-21"><a href="#cb120-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>  <span class="co"># "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API</span></span>
+<span id="cb120-22"><a href="#cb120-22" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                     <span class="co"># tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there</span></span>
+<span id="cb120-23"><a href="#cb120-23" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status pipewire wireplumber pipewire-pulse <span class="kw">|</span> <span class="fu">grep</span> Active</span>
+<span id="cb120-24"><a href="#cb120-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># all three should be Active: active (running)</span></span>
+<span id="cb120-25"><a href="#cb120-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-26"><a href="#cb120-26" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU (on hybrid laptops — Dell Precision example)</span></span>
+<span id="cb120-27"><a href="#cb120-27" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>                       <span class="co"># confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)</span></span>
+<span id="cb120-28"><a href="#cb120-28" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span>     <span class="co"># iGPU VA-API confirms working video decode</span></span>
+<span id="cb120-29"><a href="#cb120-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-30"><a href="#cb120-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Caelestia-specific</span></span>
+<span id="cb120-31"><a href="#cb120-31" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--version</span>              <span class="co"># CLI version</span></span>
+<span id="cb120-32"><a href="#cb120-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb120-33"><a href="#cb120-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># may or may not exist depending on Caelestia version — fine either way</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
 <hr>
 </section>
@@ -3071,10 +3202,10 @@ If you see a “config error” overlay at the bottom of the screen referencing 
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>

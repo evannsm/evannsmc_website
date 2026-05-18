@@ -1802,9 +1802,25 @@ The cleaner mental model: **SSH for headless work** (package installs, file edit
 :::
 
 ::: {.callout-tip}
-## Setting your first wallpaper (and how Caelestia's wallpaper layer works)
+## Setting your first wallpaper (and how Caelestia's wallpaper layer actually works)
 
-Caelestia doesn't use a separate wallpaper daemon (`swww`, `hyprpaper`, etc.) — its **Quickshell-based bar is also the wallpaper layer**. The same Quickshell process that renders your status bar at the `OVERLAY` Wayland layer also renders your wallpaper at the `BACKGROUND` layer. So there's nothing to install — `pacman -Qi swww` will report "not found" and that's correct.
+**Important correction**: an earlier version of this section claimed Caelestia's Quickshell-based bar also handles the wallpaper layer. That's wrong. Caelestia *delegates* wallpaper rendering to an external daemon — specifically **`awww`** (a fork of `swww` that the Caelestia maintainers prefer). The Quickshell shell decides *which* wallpaper to display and sends the path to the daemon via IPC; the daemon does the actual decode + Wayland layer-shell rendering.
+
+The full chain on a working install:
+
+```text
+caelestia wallpaper -f IMG     # CLI wrapper
+        ↓
+~/.local/state/caelestia/wallpaper/path.txt    # state file written
+        ↓
+awww img IMG                   # daemon called (via Quickshell.execDetached)
+        ↓
+awww-daemon                    # claims Wayland BACKGROUND layer-shell surface
+        ↓
+your monitor                   # pixels appear
+```
+
+If any step in that chain is missing or broken, you get the symptoms in the recovery section below.
 
 To actually set a wallpaper, use the `caelestia wallpaper` subcommand. Its flags (per `caelestia wallpaper --help`):
 
@@ -1847,6 +1863,145 @@ exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers
 That way every Hyprland session starts with a random wallpaper from your collection (and a fresh accent-color scheme to match). Use an absolute path — `exec-once` lines don't always expand `~`.
 
 If `caelestia wallpaper -f` reports an image is too small, override with `-n` (no size filter). If you have a fixed favorite, use `-f` instead of `-r`.
+:::
+
+::: {.callout-important}
+## The three-line recipe that makes wallpapers Just Work from first login
+
+After hitting every layer of failure (no daemon installed, daemon not finding Wayland, picker scanning the wrong directory, mid-session env changes not propagating), this is what your `~/.config/caelestia/hypr-user.conf` needs to contain to make the whole wallpaper chain self-starting on every reboot:
+
+```text
+env = CAELESTIA_WALLPAPERS_DIR,/home/<your-username>/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/<your-username>/Pictures/Wallpapers -n
+```
+
+Substitute `<your-username>` with your actual home directory name (e.g., `evanns`). The order matters and the lines do specific things:
+
+| Line | What it does |
+|------|--------------|
+| `env = CAELESTIA_WALLPAPERS_DIR,…` | Tells the Caelestia shell (Quickshell) where to scan for wallpapers when the launcher's `>wallpaper` picker is opened. The shell reads this env var at startup; without it, the picker scans whatever default `GlobalConfig.paths.wallpaperDir` is and shows "no wallpapers found" if your collection isn't there. |
+| `exec-once = awww-daemon` | Starts the wallpaper-rendering daemon. **This is the daemon that actually paints pixels** — Caelestia/Quickshell only decides which wallpaper to display; awww-daemon does the rendering. Must be installed (`yay -S swww` resolves to `awww` which provides swww's interface). |
+| `exec-once = caelestia wallpaper -r DIR -n` | Picks a random wallpaper from your folder at login and tells awww to paint it. The `-n` flag skips the size filter (which can over-reject wallpapers smaller than your monitor). |
+
+Append all three lines if you don't have them yet:
+
+```bash
+cat >> ~/.config/caelestia/hypr-user.conf <<'EOF'
+
+# Wallpaper chain — picker dir + daemon + initial random wallpaper
+env = CAELESTIA_WALLPAPERS_DIR,/home/<your-username>/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/<your-username>/Pictures/Wallpapers -n
+EOF
+```
+
+Then verify:
+
+```bash
+grep -E '^(exec-once|env)' ~/.config/caelestia/hypr-user.conf
+```
+
+On every future reboot or fresh login: Hyprland reads `hypr-user.conf`, exports the env var into the spawn environment, fires `exec-once` lines top-to-bottom (awww-daemon before caelestia wallpaper, which is the order you need), and the wallpaper appears within a couple seconds of session start. Zero manual work.
+:::
+
+::: {.callout-warning}
+## Recovery: "black background after login," "no wallpapers found" in the picker, or both
+
+A full troubleshooting walkthrough for the most common wallpaper failure modes — each step diagnoses one layer of the chain so you can stop as soon as you find the broken piece.
+
+### Symptom 1: Black background, no wallpaper paints even after `caelestia wallpaper -f`
+
+The wallpaper daemon (`awww-daemon`) isn't running. Test:
+
+```bash
+pgrep -af awww-daemon
+```
+
+If empty, install (if needed) and start:
+
+```bash
+yay -S swww     # resolves to "awww" which provides swww — same end result
+awww-daemon & disown
+caelestia wallpaper -f ~/Pictures/Wallpapers/<some-image>.jpg -n
+```
+
+A wallpaper should appear immediately. If `awww-daemon` panics with `failed to connect to socket`, see Symptom 4 below.
+
+### Symptom 2: `>wallpaper` picker says "no wallpapers found, try putting some in ~/Pictures/Wallpapers"
+
+The picker's scan directory doesn't match where your wallpapers actually live. The picker reads `Paths.wallsdir`, which resolves to `$CAELESTIA_WALLPAPERS_DIR` if set, otherwise `GlobalConfig.paths.wallpaperDir`. If neither is configured, the scan falls through to an unset/empty path.
+
+Fix: set the env var via `hypr-user.conf`:
+
+```bash
+echo 'env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers' >> ~/.config/caelestia/hypr-user.conf
+hyprctl reload
+```
+
+Then **restart the Caelestia shell** so it picks up the new env (env changes in `hypr-user.conf` apply to processes Hyprland *spawns*, not to ones already running):
+
+```bash
+caelestia shell -k 2>/dev/null    # kill the running shell
+caelestia shell -d &              # restart as daemon
+disown
+```
+
+Re-open the launcher, type `>wallpaper `, and the picker should now show your collection.
+
+### Symptom 3: `caelestia wallpaper -r DIR -n` exits 0 silently but nothing changes on screen
+
+You're running the command from a shell that doesn't have Hyprland's env vars set — usually because you're SSH'd in. The CLI exits cleanly because with `-n` it skips the monitor-size IPC query, but the actual paint call to awww silently fails because the IPC socket isn't reachable.
+
+Fix: run the command from inside the Hyprland session. Press `Super + Return` at the laptop keyboard to open a foot terminal that *is* a child of Hyprland (inherits the env vars), and run the command there.
+
+If you really need to do it from SSH, export the env vars manually first:
+
+```bash
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export HYPRLAND_INSTANCE_SIGNATURE=$(ls "$XDG_RUNTIME_DIR/hypr/" | head -1)
+export WAYLAND_DISPLAY=wayland-1
+caelestia wallpaper -f ~/Pictures/Wallpapers/<some-image>.jpg -n
+```
+
+Note all *three* env vars — `XDG_RUNTIME_DIR`, `HYPRLAND_INSTANCE_SIGNATURE`, *and* `WAYLAND_DISPLAY`. Missing `WAYLAND_DISPLAY` causes awww-daemon to panic with `failed to connect to socket` looking for `wayland-0` instead of the actual `wayland-1` socket.
+
+### Symptom 4: `awww-daemon` panics with "failed to connect to socket"
+
+Missing `WAYLAND_DISPLAY` env var. From the shell where you're trying to start the daemon:
+
+```bash
+export WAYLAND_DISPLAY=wayland-1     # or whatever ls /run/user/$(id -u)/wayland-* shows
+awww-daemon & disown
+```
+
+If `awww-daemon` instead complains about a missing cache dir (`~/.cache/awww: No such file or directory`), that's a **non-fatal warning** — the daemon creates the directory on first paint. Continue.
+
+### Symptom 5: Wallpaper paints when set manually but not on next login
+
+Your `~/.config/caelestia/hypr-user.conf` is missing the `exec-once = awww-daemon` line (or it's after the `caelestia wallpaper` line). Hyprland fires `exec-once` lines in declaration order — the daemon needs to be running *before* the wallpaper command tries to paint.
+
+Verify with:
+
+```bash
+grep -E '^(exec-once|env)' ~/.config/caelestia/hypr-user.conf
+```
+
+Expected (in this order):
+
+```text
+env = CAELESTIA_WALLPAPERS_DIR,/home/<user>/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/<user>/Pictures/Wallpapers -n
+```
+
+If `awww-daemon` appears *after* `caelestia wallpaper`, edit the file with nvim and reorder. If it's missing entirely, append:
+
+```bash
+sed -i '/exec-once = caelestia wallpaper/i exec-once = awww-daemon' ~/.config/caelestia/hypr-user.conf
+```
+
+(The `sed` inserts `awww-daemon` immediately *before* the `caelestia wallpaper` line. Run it once; running it twice would create duplicate lines.)
 :::
 - **Caelestia's status bar across the top** with the time, system tray, and workspace indicators rendered.
 - **Side panels** (notification feed, calendar, control center, etc., depending on which keybinds you trigger).
