@@ -889,7 +889,66 @@ sudo snapper -c root list           # snapshots 1, 2, 3 should now appear
 # sudo pacman -R htop               # optional cleanup — this also triggers a pre + post pair
 ```
 
-The `snapper-timeline.timer` enabled in Chapter 11 fires `OnCalendar=hourly`, so within an hour of first boot, snapshots will also start appearing automatically with cleanup `timeline`.
+After `Option B`, the snap-pac hook output during the install confirms snapshots were taken (look for `==> root: 1` and `==> root: 2` lines), and `snapper -c root list` shows them:
+
+```text
+:: Running pre-transaction hooks...
+(1/1) Performing snapper pre snapshots for the following configurations...
+==> root: 1
+:: Processing package changes...
+(1/1) installing htop                                         [###############################] 100%
+:: Running post-transaction hooks...
+(1/2) Arming ConditionNeedsUpdate...
+(2/2) Performing snapper post snapshots for the following configurations...
+==> root: 2
+
+[evanns@arch ~]$ sudo snapper -c root list
+# │ Type   │ Pre # │ Date                            │ User │ Cleanup │ Description    │ Userdata
+──┼────────┼───────┼─────────────────────────────────┼──────┼─────────┼────────────────┼─────────
+0 │ single │       │                                 │ root │         │ current        │
+1 │ pre    │       │ Sun 17 May 2026 09:20:30 PM CDT │ root │ number  │ pacman -S htop │
+2 │ post   │     1 │ Sun 17 May 2026 09:20:30 PM CDT │ root │ number  │ htop           │
+```
+
+### What this table is and what each column shows
+
+`snapper list` prints every snapshot for the named config (`-c root` here means the `/` snapper config we set up earlier). Each row is one snapshot. Column-by-column:
+
+| Column        | What it means |
+|---------------|---------------|
+| `#`           | The snapshot's integer ID, assigned in order of creation. `0` is special — see below. |
+| `Type`        | `single` (a standalone snapshot), `pre` (taken before a transaction), or `post` (taken after a transaction). `pre`/`post` always come in pairs created by the same pacman invocation. |
+| `Pre #`       | Only filled in on `post` rows. Points back at the matching `pre` snapshot. Lets snapper treat the pair as a unit when you query or roll back. |
+| `Date`        | Local timestamp the snapshot was taken. |
+| `User`        | Which user ran the command that created the snapshot (almost always `root` because snap-pac runs as a pacman hook). |
+| `Cleanup`     | The retention policy that decides when this snapshot gets garbage-collected. `number` = keep the last *N* pre/post pairs (snap-pac's default is 10). `timeline` = keep by age per the `TIMELINE_LIMIT_*` config. Empty = keep forever (e.g., snapshot `0` and any `manual baseline` snapshots you create yourself). |
+| `Description` | A human-readable label. For `pre` snapshots, snap-pac writes the pacman command (`pacman -S htop`). For `post`, snap-pac writes the package list that changed (`htop`). For manual snapshots, whatever you passed to `--description`. |
+| `Userdata`    | Optional key=value metadata you can attach. Empty by default. |
+
+A few specifics about what we're seeing above:
+
+- **Snapshot `0 │ single │ current`** is snapper's reference placeholder, created when you ran `snapper -c root create-config /`. It's not a real point-in-time copy — it's an abstract pointer to "the live state of `/` *right now*." You can't roll back *to* it (you're already there), but tools use it as the "before" half of various diffs.
+- **Snapshot `1 │ pre`** was taken by snap-pac the instant before pacman started touching the filesystem. Description is the exact pacman command line. Cleanup is `number`, so this snapshot stays around until ten newer pre/post pairs exist.
+- **Snapshot `2 │ post`** was taken the instant after pacman finished. `Pre # = 1` ties it back to its pre. Description is the package(s) that were affected. Same timestamp as snapshot 1 because the install took less than a second.
+
+What you can *do* with this pair:
+
+```bash
+# See exactly what files changed during the htop install
+sudo snapper -c root status 1..2
+
+# Show a unified diff of the changed files
+sudo snapper -c root diff 1..2
+
+# Roll back the entire filesystem to *before* htop was installed
+sudo snapper -c root undochange 1..2     # safer: just revert the files
+# or, full rollback (changes default subvolume; needs reboot):
+sudo snapper -c root rollback 1
+```
+
+`undochange` reverts the file changes only — safe and reversible. `rollback` is heavier: it makes snapshot 1's tree the new default subvolume, and the next boot uses that subvolume as `/`. Use `rollback` to recover from a system that won't boot after a bad update; use `undochange` for "I wish I hadn't installed that one package."
+
+The `snapper-timeline.timer` enabled in Chapter 11 fires `OnCalendar=hourly`, so within an hour of first boot, snapshots will also start appearing automatically with cleanup `timeline`. You'll soon see a steadily-growing list with descriptions like `timeline`, garbage-collected per the `TIMELINE_LIMIT_HOURLY=5 / DAILY=7 / WEEKLY=2 / MONTHLY=1` retention you set.
 
 ### Test hibernation before you trust it
 
