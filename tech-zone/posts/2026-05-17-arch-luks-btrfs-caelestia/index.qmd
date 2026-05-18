@@ -654,6 +654,58 @@ findmnt /home           # Should show subvol=/@home
 swapon --show           # Should show /dev/zram0 (pri 100) AND /swap/swapfile
 ```
 
+### Verify your hostname (and fix it if it's off)
+
+Your shell prompt should already be reading `<your-user>@arch` (e.g. `evanns@arch`). If you instead see something like `evanns@evanns-arch` — because you copy-pasted the chroot block from an earlier draft of this article, or just picked a different name in Chapter 6 — fix it now. The hostname is what shows up in your prompt, in `mDNS` (`arch.local` for things like AirDrop-style discovery), in NetworkManager's DHCP requests, and in every `journalctl` entry from now on; getting it right early saves grep noise forever.
+
+Check what's currently set:
+
+```bash
+hostnamectl                       # full status (Static hostname, Icon name, Chassis, …)
+cat /etc/hosts                    # should have 3 lines — see below
+```
+
+If `hostnamectl` reports anything other than what you want, change it with one command (no editing `/etc/hostname` by hand on a live system — `hostnamectl` updates the file, the kernel's runtime hostname, *and* the systemd-hostnamed D-Bus property in one shot):
+
+```bash
+sudo hostnamectl set-hostname arch        # substitute your preferred hostname
+```
+
+Then make sure `/etc/hosts` has the matching third line. The default Arch `/etc/hosts` ships with only the two `localhost` entries, so most likely you need to append the third one. (See the [What `/etc/hosts` is, and what `arch.localdomain` means](#what-etchosts-is-and-what-archlocaldomain-means) callout in Chapter 6 for the *why* behind this line.)
+
+```bash
+cat /etc/hosts                    # do you see "127.0.1.1 ... arch ..." already?
+# If not, append it:
+echo "127.0.1.1   arch.localdomain arch" | sudo tee -a /etc/hosts
+getent hosts arch                 # should print: 127.0.1.1   arch.localdomain arch
+```
+
+Substitute `arch` everywhere with whatever hostname you actually picked.
+
+::: {.callout-tip}
+## Do you need to reboot?
+
+The kernel hostname changed instantly, but two things still see the old value:
+
+- **Your current shell** cached `$HOSTNAME` at startup. Your prompt won't update until you open a new shell — either log out and back in, or `Ctrl-Alt-F2` to another TTY.
+- **Long-running services that read the hostname once at boot** (NetworkManager publishing your name over mDNS, for example) keep the old name until restarted.
+
+You can fix both without a reboot:
+
+```bash
+exec bash                         # replace the current shell — prompt now shows the new hostname
+sudo systemctl restart NetworkManager
+```
+
+…but the cleanest, most thorough way is to reboot once after this point, because we're going to make more changes (snapper, services, packages) and a reboot gives every daemon a clean slate that reflects the new hostname:
+
+```bash
+sudo reboot
+```
+
+After the reboot you'll need to re-unlock LUKS, log back in, and your prompt should read `<user>@arch` cleanly.
+:::
+
 ### Reconnect to Wi-Fi (do this before anything else needs the network)
 
 NetworkManager is enabled and running, but it has **no saved networks** — your Wi-Fi credentials lived in the live USB's `iwd`/`iwctl` session, not in the installed system. The very first thing to do after the sanity checks is re-establish a connection so `pacman`, `timesyncd`, snapper, and everything downstream actually works.
