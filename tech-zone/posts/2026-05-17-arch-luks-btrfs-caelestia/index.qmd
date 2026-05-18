@@ -983,7 +983,59 @@ The `snapper-timeline.timer` enabled in Chapter 11 fires `OnCalendar=hourly`, so
 sudo systemctl hibernate
 ```
 
-The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. If the system resumes with windows where you left them and `dmesg | grep -i hibernate` shows a clean image read, you're good. If it instead boots fresh, your `resume=` parameters didn't take — re-check the cmdline and re-run `mkinitcpio -P && grub-mkconfig -o /boot/grub/grub.cfg`.
+The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. The expected sequence on resume:
+
+1. Firmware → GRUB → kernel + initramfs (same as a cold boot).
+2. **`sd-encrypt` prompts for your LUKS passphrase** — see the security-model callout below for why this is the only prompt you should see.
+3. After unlock, `systemd-hibernate-resume.service` reads the hibernation image from `/swap/swapfile` (decrypted on the fly by LUKS as it reads), restores RAM, and userspace picks up where it left off.
+
+If the system instead boots fresh (clean login prompt, no windows restored), your `resume=` parameters didn't take — re-check the GRUB cmdline and re-run `mkinitcpio -P && grub-mkconfig -o /boot/grub/grub.cfg`.
+
+#### What `dmesg` should show after a successful hibernate + resume
+
+```bash
+sudo dmesg | grep -i hibernate
+```
+
+Two informational lines, no errors:
+
+```text
+[   25.728339] systemd[1]: Clear Stale Hibernate Storage Info skipped, unmet condition check ConditionPathExists=/sys/firmware/efi/efivars/HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67
+[  948.817235] efivarfs: removing variable HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67
+```
+
+Both lines reference the EFI variable `HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67` — the trailing UUID is systemd's standard namespace UUID for this variable name and is identical on every Linux machine that uses systemd hibernation. What the two lines are *telling* you:
+
+- **`Clear Stale Hibernate Storage Info skipped, unmet condition check …`** (early in boot, ~25 s). The `systemd-hibernate-clear.service` unit ran, checked whether the `HibernateLocation` EFI variable existed, found it didn't (because at that moment you hadn't yet hibernated this session), and skipped. **Not an error** — it's the unit correctly declining to do work when there's nothing to clean up.
+- **`efivarfs: removing variable HibernateLocation-…`** (later, however many minutes after boot you ran `systemctl hibernate`). The variable was written by `systemctl hibernate`, persisted across the power cycle, read by the resume logic on next boot, and then *removed* by the kernel after the resume finished and the bookkeeping was no longer needed. **This is the success signature of a complete hibernate + resume cycle.**
+
+If hibernation *failed* (image couldn't be written, resume couldn't find the image, the swap file wasn't recognized), you'd see explicit `PM: hibernation` error lines mixed in with these — typically including the string `failed`, `error`, or `Cannot find swap device`. The absence of such lines is the proof the chain worked end-to-end.
+
+::: {.callout-note}
+## Hibernation + LUKS: what this gives you, security-wise
+
+The hibernation image lives in `/swap/swapfile`, which sits inside `/dev/mapper/cryptroot` — the unlocked LUKS volume. So *the contents of your RAM at the moment you hit hibernate are encrypted on disk at rest*, as a side-effect of where the swap file lives. There is no separate "hibernation password" — your LUKS passphrase is the only thing standing between a stolen laptop and the contents of RAM.
+
+**This gives hibernation the security posture of a fully-shut-down device** while preserving "wake up where I left off" UX. Compare with the alternatives:
+
+| Power state         | RAM contents at rest                | Cold-boot attack window |
+|---------------------|--------------------------------------|--------------------------|
+| **Shutdown**        | Empty (RAM is unpowered, contents lost) | None |
+| **Hibernate**       | Encrypted in swap file, inside LUKS  | None |
+| **Suspend (S3)**    | **Plaintext, still in powered RAM**  | Minutes — attacker can chill the chips, transplant, dump |
+
+For a laptop that leaves your physical control (travel, conference rooms, anywhere you might want to close the lid and walk away with confidence), **hibernate is meaningfully more secure than suspend**.
+
+What hibernation + LUKS does **not** protect against: someone walking up to your unlocked desktop session after you've successfully resumed. The LUKS prompt gates *getting back into the machine*; once that prompt is satisfied, you're returned to whatever session state existed before you hibernated. If you didn't have a screen-locker active at hibernate time, the unlocked desktop is sitting right there after resume.
+
+For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this with `hyprlock` + `hypridle` once Hyprland is up:
+
+```bash
+yay -S hyprlock hypridle        # if not already pulled in by caelestia-meta
+```
+
+…and configure `hypridle` to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs *both* the LUKS passphrase (to boot the disk) *and* the screen-lock passphrase (to re-enter your session). Without `hyprlock` running, only the LUKS prompt stands in their way.
+:::
 
 ---
 
