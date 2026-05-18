@@ -1013,7 +1013,7 @@ main.content.column-page {
   <div class="tz-filter-strip">
     <input class="tz-filter-input" type="search" placeholder="filter by title, topic, or #tag…" aria-label="Filter articles" autocomplete="off">
     <span class="tz-filter-count" aria-live="polite">
-      showing <strong id="tz-count-shown">8</strong> of <strong>8</strong>
+      showing <strong id="tz-count-shown">9</strong> of <strong>9</strong>
     </span>
   </div>
 
@@ -1124,6 +1124,69 @@ control  arch  <span class="mute">…</span><span class="u">_</span></div>
         </div>
 
         <span class="tz-card-cta">read the post-mortem <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- CARD 03 — LUKS + BTRFS + Caelestia (working) -->
+    <a class="tz-card success" href="./posts/2026-05-17-arch-luks-btrfs-caelestia/" data-tags="arch linux luks btrfs caelestia hyprland snapper hibernation zram sd-encrypt grub pipewire" aria-label="Read: Arch + LUKS + Btrfs + Caelestia — The Install I'm Actually Using">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">luks</span>
+          <span class="tz-tag">btrfs</span>
+          <span class="tz-tag">caelestia</span>
+          <span class="tz-tag">hyprland</span>
+          <span class="tz-tag">snapper</span>
+          <span class="tz-tag">hibernation</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">03</span>
+          <h3 class="tz-card-name anchored">Arch + LUKS + Btrfs + Caelestia — The Install I'm Actually Using</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-17</span>
+          <span class="tz-status-pill ok">boot ok</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          Article 02's ambition, executed correctly: <code>LUKS2</code> on the root partition,
+          <code>Btrfs</code> with the canonical <code>@</code>/<code>@home</code>/<code>@snapshots</code>/<code>@var_log</code>/<code>@swap</code>
+          subvolumes, zram for everyday swap plus a NoCOW Btrfs swap file for hibernation,
+          snapper + grub-btrfs from day one, and the Caelestia Hyprland desktop on top —
+          with every <code>cryptdevice=</code> typo from the failed-boot post-mortem fixed.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">first boot — sanity checks</span>
+            <span class="badge ok">boot ok</span>
+          </div>
+          <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">cryptsetup status cryptroot</span>
+<span class="mute">  type:    LUKS2</span>
+<span class="mute">  cipher:  aes-xts-plain64</span>
+<span class="mute">  device:  /dev/nvme0n1p2</span>
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">findmnt -t btrfs -o TARGET,OPTIONS</span>
+TARGET       OPTIONS
+/            <span class="ok">subvol=/@</span>,compress=zstd:3,noatime
+/home        <span class="ok">subvol=/@home</span>,compress=zstd:3
+/.snapshots  <span class="ok">subvol=/@snapshots</span>,compress=zstd:3
+/var/log     <span class="ok">subvol=/@var_log</span>,compress=zstd:3
+/swap        <span class="ok">subvol=/@swap</span>,noatime
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">swapon --show</span>
+NAME           TYPE       SIZE PRIO
+/dev/zram0     partition  8G   <span class="ok">100</span>
+/swap/swapfile file      20G   <span class="mute">-2</span>
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">hyprctl version | head -1</span>
+Hyprland, built from branch main<span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the build log <span class="arrow">→</span></span>
       </div>
     </a>
 

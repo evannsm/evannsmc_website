@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Evanns Morales-Cuadrado">
+<meta name="dcterms.date" content="2026-05-17">
+<meta name="description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+
+<title>Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../files/site_icon/favicon.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-71d377fd5de2ab829bf86f8ce9e65e3a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-aa9b08c41d776d9daeee5b56fe0ceaec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="apple-touch-icon" sizes="180x180" href="files/site_icon/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://evannsmc.com/#person",
+      "name": "Evanns Morales-Cuadrado",
+      "alternateName": "evannsmc",
+      "url": "https://evannsmc.com",
+      "jobTitle": "Ph.D Student in Robotics and ECE",
+      "affiliation": {
+        "@type": "CollegeOrUniversity",
+        "name": "Georgia Institute of Technology",
+        "url": "https://www.gatech.edu"
+      },
+      "description": "Robotics and ECE Ph.D student at Georgia Tech researching safe autonomy, nonlinear control, and quadrotor UAVs.",
+      "sameAs": [
+        "https://github.com/evannsmc",
+        "https://www.linkedin.com/in/evanns-morales/",
+        "https://scholar.google.com/citations?user=FY9tS9oAAAAJ",
+        "https://orcid.org/0009-0000-3928-6243"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://evannsmc.com/#website",
+      "name": "evannsmc",
+      "url": "https://evannsmc.com",
+      "description": "The personal research website of Evanns Morales-Cuadrado",
+      "author": {
+        "@id": "https://evannsmc.com/#person"
+      }
+    }
+  ]
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var path = window.location.pathname.replace(/\/index\.html$/, '/');
+  document.querySelectorAll('.navbar .nav-link').forEach(function (link) {
+    var href = link.getAttribute('href');
+    if (!href) return;
+    var linkPath = new URL(href, window.location.origin).pathname.replace(/\/index\.html$/, '/');
+    if (path === linkPath || (linkPath !== '/' && path.startsWith(linkPath))) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
+    }
+  });
+});
+</script>
+<script data-goatcounter="https://evannsmc.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc">
+<meta property="og:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+<meta property="og:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
+<meta property="og:site_name" content="evannsmc">
+<meta property="og:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
+<meta name="twitter:title" content="Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc">
+<meta name="twitter:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
+<meta name="twitter:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
+<meta name="twitter:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../files/site_icon/favicon.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">evannsmc</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../cv"> 
+<span class="menu-text">CV &amp; Résumé</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../publications"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../projects"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog"> 
+<span class="menu-text">Research Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../tech-zone"> 
+<span class="menu-text">The Tech Zone</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../journey"> 
+<span class="menu-text">Journey</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<a class="skip-to-content" href="#quarto-content">Skip to main content</a>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">arch linux</div>
+    <div class="quarto-category">linux</div>
+    <div class="quarto-category">installation</div>
+    <div class="quarto-category">luks</div>
+    <div class="quarto-category">btrfs</div>
+    <div class="quarto-category">hyprland</div>
+    <div class="quarto-category">caelestia</div>
+    <div class="quarto-category">snapper</div>
+    <div class="quarto-category">hibernation</div>
+    <div class="quarto-category">grub</div>
+    <div class="quarto-category">mkinitcpio</div>
+    <div class="quarto-category">systemd</div>
+    <div class="quarto-category">zram</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, <span class="citation" data-cites="home">@home</span>, <span class="citation" data-cites="snapshots">@snapshots</span>, <span class="citation" data-cites="var_log">@var_log</span>, <span class="citation" data-cites="swap">@swap</span>), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Evanns Morales-Cuadrado </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 17, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What this is
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The install I’m actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working <a href="../2026-05-01-first-arch-install/">basic Arch install</a> with:</p>
+<ul>
+<li><strong>LUKS2</strong> full-disk encryption on the root partition,</li>
+<li><strong>Btrfs</strong> with proper subvolumes (<code>@</code>, <code>@home</code>, <code>@snapshots</code>, <code>@var_log</code>, <code>@swap</code>),</li>
+<li><strong>zram</strong> for fast, compressed, RAM-resident everyday swap,</li>
+<li>a <strong>NoCOW Btrfs swap file</strong> big enough for hibernation (suspend-to-disk),</li>
+<li><strong>snapper</strong> + <strong>grub-btrfs</strong> for bootable, per-<code>pacman</code>-transaction snapshots,</li>
+<li>and the <strong><a href="https://github.com/caelestia-dots/caelestia" target="_blank" rel="noopener">Caelestia</a></strong> Hyprland-based desktop on top.</li>
+</ul>
+<p>It is <strong>single-boot</strong>. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.</p>
+</div>
+</div>
+<section id="why-this-is-its-own-article-and-not-just-article-02-fixed" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-is-its-own-article-and-not-just-article-02-fixed">Why this is its own article (and not just “Article 02, fixed”)</h2>
+<p>My <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt at LUKS + Btrfs</a> dropped into emergency mode at boot. I traced the root cause to two typos in the kernel command line: <code>cryptdevice=UUID&lt;…&gt;</code> (missing <code>=</code>) and literal <code>&lt;angle brackets&gt;</code> around the UUID. Those are easy mistakes to make once and never make again, but I also took the chance to step back and pick a different default for <em>this</em> install, because I’m going to be living in it:</p>
+<ol type="1">
+<li><strong>systemd-based initramfs</strong> (<code>sd-encrypt</code>) instead of the older <code>udev</code>/<code>encrypt</code> hook. The kernel parameter format (<code>rd.luks.name=&lt;UUID&gt;=&lt;name&gt;</code>) is documented in <code>systemd-cryptsetup-generator(8)</code>, accepts no <code>:</code> separator, and is harder to mistype than <code>cryptdevice=</code>.</li>
+<li><strong>No dual-boot.</strong> Last time I tried to land LUKS + Btrfs + zram + shared partition + dual-boot Ubuntu in one swing. This time the goal is one OS, fully working, with a desktop on top.</li>
+<li><strong>A real swap file on Btrfs</strong> for hibernation, plus zram for normal swap pressure. This replaces last attempt’s “separate encrypted swap partition” — same outcome, fewer partitions.</li>
+<li><strong>Snapper integration from day one</strong>, so the very first <code>pacman -Syu</code> already creates a rollback point.</li>
+</ol>
+<p>The result is the install I trust enough to put my dissertation work, my dotfiles, and my GPG keys on.</p>
+<hr>
+</section>
+<section id="part-1-bootstrap-same-as-the-basic-install" class="level1">
+<h1>Part 1 — Bootstrap (same as the basic install)</h1>
+<p>The first three chapters are identical to the <a href="../2026-05-01-first-arch-install/">basic install</a> and I won’t repeat them in full. The short version, in order:</p>
+<ol type="1">
+<li><strong>Verify the ISO</strong> with <code>sha256sum -c sha256sums.txt</code> and <code>gpg --verify</code>.</li>
+<li><strong>Boot the USB</strong>, confirm UEFI mode with <code>cat /sys/firmware/efi/fw_platform_size</code> (should print <code>64</code>).</li>
+<li><strong>Connect to Wi-Fi</strong> via <code>iwctl</code>, then <code>systemctl enable --now sshd</code> and <code>passwd</code> so you can SSH in from a real keyboard.</li>
+<li><strong>Keymap, timezone, NTP</strong>: <code>loadkeys us</code>, <code>timedatectl set-timezone America/New_York</code>, <code>timedatectl set-ntp true</code>.</li>
+</ol>
+<p>Once you have a shell on the target machine with networking and the clock synced, you’re ready to start diverging from the basic install.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Confirm what disk you’re about to wipe
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-d</span> <span class="at">-o</span> NAME,SIZE,MODEL,TRAN</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The NVMe drive will show <code>TRAN=nvme</code>. Note the device — usually <code>/dev/nvme0n1</code>. Every command below uses <code>/dev/nvme0n1</code> and its partitions as a placeholder. <strong>Substitute your actual device</strong> if it differs. Wiping the wrong disk is the kind of mistake LUKS can’t save you from.</p>
+</div>
+</div>
+<hr>
+<section id="chapter-1-partitioning" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-1-partitioning">Chapter 1: Partitioning</h2>
+<p>For this install I’m using exactly two partitions — the EFI System Partition, and one big Linux partition that I’ll LUKS-encrypt and then carve into Btrfs subvolumes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Partition</th>
+<th style="text-align: right;">Size</th>
+<th>Filesystem</th>
+<th>Encryption</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EFI System</td>
+<td style="text-align: right;">1 GiB</td>
+<td>FAT32</td>
+<td>none</td>
+<td>UEFI bootloader, kernel, initramfs</td>
+</tr>
+<tr class="even">
+<td>Linux</td>
+<td style="text-align: right;">remainder</td>
+<td>Btrfs</td>
+<td>LUKS2</td>
+<td><code>/</code>, <code>/home</code>, snapshots, swap file</td>
+</tr>
+</tbody>
+</table>
+<p>That’s it. No separate <code>/home</code> partition (Btrfs subvolumes give you the same isolation without the space-guessing problem). No separate swap partition (the swap file inside Btrfs replaces it). No shared data partition (single boot, so there’s nothing to share with).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cfdisk</span> /dev/nvme0n1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Inside <code>cfdisk</code>:</p>
+<ol type="1">
+<li><code>d</code> on every existing partition until the table is empty.</li>
+<li><code>n</code> → 1 GiB → type <strong>EFI System</strong> → that’s <code>/dev/nvme0n1p1</code>.</li>
+<li><code>n</code> → accept the remaining space → type <strong>Linux filesystem</strong> → that’s <code>/dev/nvme0n1p2</code>.</li>
+<li><code>w</code>, then type <code>yes</code>.</li>
+</ol>
+<p>Verify:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should see <code>/dev/nvme0n1p1</code> at 1G and <code>/dev/nvme0n1p2</code> filling the rest.</p>
+<hr>
+</section>
+<section id="chapter-2-encrypt-the-linux-partition" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-2-encrypt-the-linux-partition">Chapter 2: Encrypt the Linux partition</h2>
+<p>LUKS2 is the modern default in <code>cryptsetup</code>; there is no good reason to force LUKS1 unless you’re booting from GRUB with an encrypted <code>/boot</code> (we’re not — <code>/boot</code> lives on the unencrypted ESP).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> luksFormat <span class="at">--type</span> luks2 /dev/nvme0n1p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It will prompt for <code>YES</code> in capital letters, then ask you to type a passphrase twice. <strong>There is no recovery if you forget this.</strong> Put it in a password manager before you finish the install. I used Bitwarden.</p>
+<p>Now unlock the container and map it to <code>/dev/mapper/cryptroot</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>From here on, the live system reads and writes <code>/dev/mapper/cryptroot</code> as a normal block device — LUKS handles the encryption transparently.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why the mapper name matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The string <code>cryptroot</code> is a <em>contract</em>. It has to match the <code>rd.luks.name=&lt;UUID&gt;=cryptroot</code> value I put on the kernel command line later. If I named the mapper <code>arch</code> here and wrote <code>cryptroot</code> in GRUB later, the kernel would unlock the partition into <code>/dev/mapper/arch</code> and then sit forever waiting for <code>/dev/mapper/cryptroot</code> to appear. That is exactly the failure mode that bricked <a href="../2026-05-05-arch-luks-btrfs-lessons/">my first attempt</a>.</p>
+<p>Pick one name and use it everywhere. I’ll use <code>cryptroot</code> throughout this guide.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="chapter-3-create-the-btrfs-filesystem-and-its-subvolumes" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-3-create-the-btrfs-filesystem-and-its-subvolumes">Chapter 3: Create the Btrfs filesystem and its subvolumes</h2>
+<p>Format the unlocked mapper as Btrfs and format the ESP as FAT32:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkfs.fat</span> <span class="at">-F32</span> /dev/nvme0n1p1</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mkfs.btrfs</span> <span class="at">-L</span> arch /dev/mapper/cryptroot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Mount the top of the Btrfs volume just long enough to create subvolumes inside it:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/mapper/cryptroot /mnt</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> subvolume create /mnt/@</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> subvolume create /mnt/@home</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> subvolume create /mnt/@snapshots</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> subvolume create /mnt/@var_log</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> subvolume create /mnt/@swap</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Subvolume-by-subvolume:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Subvolume</th>
+<th>Mountpoint</th>
+<th>Why it’s separate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>@</code></td>
+<td><code>/</code></td>
+<td>The root filesystem. Snapshotted by snapper.</td>
+</tr>
+<tr class="even">
+<td><code>@home</code></td>
+<td><code>/home</code></td>
+<td>Separate so a root rollback doesn’t roll back my home directory.</td>
+</tr>
+<tr class="odd">
+<td><code>@snapshots</code></td>
+<td><code>/.snapshots</code></td>
+<td>Where snapper writes snapshots. Must be its own subvolume.</td>
+</tr>
+<tr class="even">
+<td><code>@var_log</code></td>
+<td><code>/var/log</code></td>
+<td>Logs are append-mostly and would noisy-up every snapshot if kept under <code>@</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>@swap</code></td>
+<td><code>/swap</code></td>
+<td>Dedicated subvolume for the hibernation swap file (must be NoCOW; see below).</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Names matter for tooling, not the kernel
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The names <code>@</code>, <code>@home</code>, <code>@snapshots</code>, and <code>@var_log</code> are conventions, not requirements — the kernel doesn’t care. But <strong>snapper</strong> and <strong>Timeshift</strong> default to those names. Rename them and you’ll fight your tools forever. I’m using exactly the default names so every guide I read in the future “just works.”</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="chapter-4-mount-the-subvolumes-with-the-right-options" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-4-mount-the-subvolumes-with-the-right-options">Chapter 4: Mount the subvolumes with the right options</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> noatime,compress=zstd:3,subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> /mnt/<span class="dt">{boot</span><span class="op">,</span><span class="dt">home</span><span class="op">,</span><span class="dt">.snapshots</span><span class="op">,</span><span class="dt">var/log</span><span class="op">,</span><span class="dt">swap}</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> noatime,compress=zstd:3,subvol=@home       /dev/mapper/cryptroot /mnt/home</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> noatime,compress=zstd:3,subvol=@snapshots  /dev/mapper/cryptroot /mnt/.snapshots</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> noatime,compress=zstd:3,subvol=@var_log    /dev/mapper/cryptroot /mnt/var/log</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> noatime,subvol=@swap                       /dev/mapper/cryptroot /mnt/swap</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The mount options earn their keep:</p>
+<ul>
+<li><code>noatime</code> — don’t update the access timestamp on every read. Reduces unnecessary writes on SSDs and is harmless for almost every workload.</li>
+<li><code>compress=zstd:3</code> — transparent Zstandard compression at level 3. Strong compression ratio (often 40 %+ on text and source) with negligible CPU cost. Modern Btrfs picks <code>zstd:3</code> if you just say <code>compress=zstd</code>; spelling out the level is documentation.</li>
+<li><code>subvol=@</code>, <code>subvol=@home</code>, … — tells Btrfs which subvolume is mounted at this path.</li>
+</ul>
+<p>Notably absent: the <code>ssd</code> option. Modern Btrfs auto-detects NVMe and SSD-class block devices reliably; specifying it is harmless but no longer informative. Also absent: <code>discard=async</code> — I use <code>fstrim.timer</code> (weekly batch TRIM) instead. Doing both is redundant and slightly slower.</p>
+<p>The <code>@swap</code> subvolume mounts <strong>without</strong> compression — a swap file must not be compressed (swap pages need to be readable as-is when the kernel pages them back in).</p>
+<section id="recovery-starting-the-mount-step-over" class="level3">
+<h3 class="anchored" data-anchor-id="recovery-starting-the-mount-step-over">Recovery: starting the mount step over</h3>
+<p>If you fumble a <code>mount -o</code>, this resets everything cleanly without rebuilding anything else:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> <span class="at">-R</span> /mnt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="kw">|</span> <span class="fu">grep</span> /mnt          <span class="co"># should print nothing</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>…then re-run the block above.</p>
+<hr>
+</section>
+</section>
+<section id="chapter-5-pacstrap-fstab-chroot" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-5-pacstrap-fstab-chroot">Chapter 5: Pacstrap, fstab, chroot</h2>
+<p>Same shape as the basic install, with the additions that LUKS + Btrfs + snapshots + zram require:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">reflector</span> <span class="at">--country</span> <span class="st">'United States'</span> <span class="at">--protocol</span> https <span class="at">--latest</span> 20 <span class="at">--age</span> 12 <span class="dt">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">--sort</span> rate <span class="at">--save</span> /etc/pacman.d/mirrorlist</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pacstrap</span> <span class="at">-K</span> /mnt <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    base linux linux-firmware linux-headers intel-ucode <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    btrfs-progs <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    grub efibootmgr grub-btrfs <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    snapper snap-pac <span class="dt">\</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    networkmanager openssh sudo <span class="dt">\</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    neovim git base-devel <span class="dt">\</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    zram-generator <span class="dt">\</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    inotify-tools</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Use <code>amd-ucode</code> instead of <code>intel-ucode</code> on AMD hardware.</p>
+<p>The new packages beyond Article 01:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 79%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>btrfs-progs</code></td>
+<td>Userspace Btrfs tools (<code>btrfs</code>, <code>mkfs.btrfs</code>, <code>btrfs filesystem mkswapfile</code>). Required on every Btrfs system.</td>
+</tr>
+<tr class="even">
+<td><code>grub-btrfs</code></td>
+<td>Generates extra GRUB menu entries for each Btrfs snapshot so you can boot directly into a prior state.</td>
+</tr>
+<tr class="odd">
+<td><code>snapper</code></td>
+<td>Snapshot manager. Takes per-config snapshots on a timer and on every <code>pacman</code> transaction (via <code>snap-pac</code>).</td>
+</tr>
+<tr class="even">
+<td><code>snap-pac</code></td>
+<td>Pacman hook that creates a snapper snapshot before and after every <code>pacman</code> transaction.</td>
+</tr>
+<tr class="odd">
+<td><code>zram-generator</code></td>
+<td>systemd-friendly zram setup. We’ll point it at half of RAM, zstd-compressed.</td>
+</tr>
+<tr class="even">
+<td><code>inotify-tools</code></td>
+<td>Used by <code>grub-btrfs</code>’s <code>grub-btrfsd</code> to watch the snapshots directory and re-generate GRUB on changes.</td>
+</tr>
+</tbody>
+</table>
+<p>Generate <code>fstab</code> and enter the new system:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">genfstab</span> <span class="at">-U</span> /mnt <span class="op">&gt;&gt;</span> /mnt/etc/fstab</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Sanity-check the generated fstab
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/fstab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Each line should reference <code>UUID=…</code> (not <code>/dev/nvme0n1pN</code>) and the Btrfs entries should each carry <code>subvol=@…</code> in their options. If you see anything mounted from <code>/dev/mapper/cryptroot</code> <em>without</em> a <code>subvol=</code> entry, edit that out — you’d be mounting the top-level Btrfs volume on top of itself.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="part-2-inside-the-chroot" class="level1">
+<h1>Part 2 — Inside the chroot</h1>
+<section id="chapter-6-locale-time-hostname-user" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-6-locale-time-hostname-user">Chapter 6: Locale, time, hostname, user</h2>
+<p>Identical to the <a href="../2026-05-01-first-arch-install/">basic install</a> — I won’t re-explain each step. The compressed version:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Editor + EDITOR var</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-sf</span> /usr/bin/nvim /usr/local/bin/vi</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export EDITOR=nvim'</span> <span class="op">&gt;&gt;</span> /etc/profile</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Timezone + hardware clock</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-sf</span> /usr/share/zoneinfo/America/New_York /etc/localtime</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="ex">hwclock</span> <span class="at">--systohc</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Locale</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/^#en_US.UTF-8/en_US.UTF-8/'</span> /etc/locale.gen</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ex">locale-gen</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"LANG=en_US.UTF-8"</span> <span class="op">&gt;</span> /etc/locale.conf</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"KEYMAP=us"</span>        <span class="op">&gt;</span> /etc/vconsole.conf</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Hostname</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"evanns-arch"</span> <span class="op">&gt;</span> /etc/hostname</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Root password</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># User account</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-m</span> <span class="at">-g</span> users <span class="at">-G</span> wheel,video,audio,input evanns</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> evanns</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># sudo for wheel</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/'</span> /etc/sudoers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Replace <code>evanns-arch</code> and <code>evanns</code> with whatever names you want. The extra groups (<code>video</code>, <code>audio</code>, <code>input</code>) preempt small annoyances later with Hyprland (<code>video</code> for GPU access, <code>input</code> for libinput devices, <code>audio</code> for the legacy ALSA path some apps still want).</p>
+<hr>
+</section>
+<section id="chapter-7-the-hibernation-swap-file" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-7-the-hibernation-swap-file">Chapter 7: The hibernation swap file</h2>
+<p>This is the new ground vs.&nbsp;both Article 01 (no swap file at all) and Article 02 (separate encrypted swap partition). Since the whole root volume is LUKS-encrypted, a swap file <em>inside</em> it is automatically encrypted too — no extra cryptsetup dance.</p>
+<section id="why-a-swap-file-and-zram" class="level3">
+<h3 class="anchored" data-anchor-id="why-a-swap-file-and-zram">Why a swap file <em>and</em> zram?</h3>
+<p>Different jobs, complementary defaults:</p>
+<ul>
+<li><strong>zram</strong> is fast, compressed swap in RAM. Used first (higher priority). Almost all everyday memory pressure goes here, and you never pay an SSD write for it.</li>
+<li><strong>Swap file</strong> is durable swap on disk. The only kind that survives a power cycle. Hibernation writes the contents of RAM into it; on resume, the kernel reads it back.</li>
+</ul>
+<p>zram alone cannot host hibernation — it lives in RAM and disappears at power-off. So we need both: zram for everyday performance, swap file for hibernation.</p>
+</section>
+<section id="create-the-swap-file-the-btrfs-correct-way" class="level3">
+<h3 class="anchored" data-anchor-id="create-the-swap-file-the-btrfs-correct-way">Create the swap file the Btrfs-correct way</h3>
+<p>The naïve <code>fallocate</code> + <code>mkswap</code> recipe corrupts Btrfs swap files. Modern <code>btrfs-progs</code> ships a single tool that does it right:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> filesystem mkswapfile <span class="at">--size</span> 20g <span class="at">--uuid</span> clear /swap/swapfile</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> /swap/swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What that one command does for you:</p>
+<ol type="1">
+<li>Creates a file at <code>/swap/swapfile</code>.</li>
+<li>Sets the <strong>NoCOW</strong> attribute (<code>chattr +C</code>) — required because copy-on-write swap files break in interesting and silent ways.</li>
+<li>Disables compression on the file.</li>
+<li>Preallocates extents (so the kernel can compute a stable offset for hibernation).</li>
+<li>Runs <code>mkswap</code> against it.</li>
+<li>With <code>--uuid clear</code>, leaves the swap UUID blank, which avoids a stale-UUID warning on first <code>swapon</code> after a fresh install.</li>
+</ol>
+<p>Pick a size that fits your RAM <strong>plus a small margin</strong>. For 16 GB RAM I’d use 20 GB. For 32 GB RAM I’d use 36 GB. Hibernation needs to be able to write the full contents of RAM to disk; running out of swap mid-hibernate corrupts the resume image.</p>
+<p>Persist the swap file in <code>/etc/fstab</code> (append; <code>genfstab</code> won’t have caught it):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'/swap/swapfile none swap defaults 0 0'</span> <span class="op">&gt;&gt;</span> /etc/fstab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="find-the-resume-offset" class="level3">
+<h3 class="anchored" data-anchor-id="find-the-resume-offset">Find the resume offset</h3>
+<p>Hibernation resume needs to know the <em>byte offset</em> of the swap file’s first physical block inside the underlying device — there’s no filesystem layer during resume, just the raw block device.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> inspect-internal map-swapfile <span class="at">-r</span> /swap/swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>-r</code> flag prints the offset in the resume-friendly units the kernel expects (pages, not bytes). Save the number it prints — we’ll feed it to GRUB in the next chapter.</p>
+<p>I’ll refer to it as <code>&lt;RESUME_OFFSET&gt;</code> below.</p>
+<hr>
+</section>
+</section>
+<section id="chapter-8-zram-for-everyday-swap" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-8-zram-for-everyday-swap">Chapter 8: zram for everyday swap</h2>
+<p>Create <code>/etc/systemd/zram-generator.conf</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[zram0]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="dt">zram-size </span><span class="ot">=</span><span class="st"> ram / 2</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="dt">compression-algorithm </span><span class="ot">=</span><span class="st"> zstd</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="dt">swap-priority </span><span class="ot">=</span><span class="st"> </span><span class="dv">100</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="dt">fs-type </span><span class="ot">=</span><span class="st"> swap</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What each key does:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 64%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>What it sets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>zram-size = ram / 2</code></td>
+<td>The zram device gets half of physical RAM. Compressed inside the kernel; typical 3–4× compression ratio means you effectively double your usable memory before the disk swap kicks in.</td>
+</tr>
+<tr class="even">
+<td><code>compression-algorithm</code></td>
+<td><code>zstd</code> is fast and compresses well — the right default in 2026.</td>
+</tr>
+<tr class="odd">
+<td><code>swap-priority = 100</code></td>
+<td>High priority means the kernel prefers zram over the swap file. The swap file’s priority defaults to ~–2 in <code>/etc/fstab</code>, so zram is used first; swap file only as overflow and for hibernation.</td>
+</tr>
+<tr class="even">
+<td><code>fs-type = swap</code></td>
+<td>Treat the zram device as swap, not a regular filesystem.</td>
+</tr>
+</tbody>
+</table>
+<p>Nothing else needed — the <code>systemd-zram-setup@zram0.service</code> unit is generated automatically at boot from this config.</p>
+<hr>
+</section>
+<section id="chapter-9-mkinitcpio-the-systemd-way" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-9-mkinitcpio-the-systemd-way">Chapter 9: mkinitcpio — the systemd way</h2>
+<p>This is the chapter that has to be right or nothing boots. We’re using the <em>systemd</em> initramfs (formerly called the “systemd hooks” or “sd-encrypt path”), which differs from the <code>udev</code>/<code>encrypt</code> flow my previous attempt used.</p>
+<p>Open <code>/etc/mkinitcpio.conf</code> and set exactly these two lines:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="va">MODULES</span><span class="op">=</span><span class="va">(</span>btrfs<span class="va">)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="va">HOOKS</span><span class="op">=</span><span class="va">(</span>base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck<span class="va">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Hook-by-hook (only the changed-vs-Article-01 ones):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 54%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hook</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>systemd</code></td>
+<td>Replaces <code>udev</code>. Boots a small systemd inside the initramfs and uses unit files to coordinate early boot.</td>
+</tr>
+<tr class="even">
+<td><code>sd-vconsole</code></td>
+<td>Loads the console keymap inside the initramfs — needed so your LUKS prompt accepts your password as typed.</td>
+</tr>
+<tr class="odd">
+<td><code>sd-encrypt</code></td>
+<td>systemd’s equivalent of the <code>encrypt</code> hook. Honors <code>rd.luks.name=…</code> on the kernel cmdline.</td>
+</tr>
+</tbody>
+</table>
+<p>Why <code>MODULES=(btrfs)</code> even though <code>filesystems</code> covers it? <code>autodetect</code> <em>should</em> pull in <code>btrfs.ko</code> automatically since the root filesystem is Btrfs, but being explicit costs nothing and guards against a one-off edge case where <code>autodetect</code> strips it.</p>
+<p>Now regenerate the initramfs for all installed kernels:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkinitcpio</span> <span class="at">-P</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A successful run ends with <code>Image generation successful</code> for each preset (<code>linux</code>, plus <code>linux-lts</code> if you installed it). Errors here are loud; address them now, not after reboot.</p>
+<hr>
+</section>
+<section id="chapter-10-grub-the-cmdline-that-actually-boots" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-10-grub-the-cmdline-that-actually-boots">Chapter 10: GRUB — the cmdline that actually boots</h2>
+<p>Get the <strong>UUID of the encrypted partition itself</strong> (<code>/dev/nvme0n1p2</code>, not the mapper):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">blkid</span> <span class="at">-s</span> UUID <span class="at">-o</span> value /dev/nvme0n1p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>That returns a string like <code>0e6caf44-4ba9-4279-8f29-ad2344ea4387</code>. Copy it.</p>
+<p>Open <code>/etc/default/grub</code> and find:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"loglevel=3 quiet"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Replace it with this single line (no real angle brackets, no extra quoting — just the bare UUID where it says <code>&lt;UUID&gt;</code>, and the integer where it says <code>&lt;RESUME_OFFSET&gt;</code>):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"loglevel=3 quiet zswap.enabled=0 rd.luks.name=&lt;UUID&gt;=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=&lt;RESUME_OFFSET&gt;"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The placeholders are placeholders
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Replace <code>&lt;UUID&gt;</code> with the bare UUID and <code>&lt;RESUME_OFFSET&gt;</code> with the integer from <code>btrfs inspect-internal map-swapfile -r</code>. <strong>Do not include the angle brackets in the actual file.</strong> That is exactly the second mistake I made in my <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt</a> and it’s the kind of typo that produces a polite kernel message followed by ninety seconds of timeout and an emergency shell.</p>
+</div>
+</div>
+<p>Kernel-parameter-by-kernel-parameter:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>loglevel=3</code></td>
+<td>Quieter kernel boot logs (warnings and above).</td>
+</tr>
+<tr class="even">
+<td><code>quiet</code></td>
+<td>Suppress most non-critical kernel boot output.</td>
+</tr>
+<tr class="odd">
+<td><code>zswap.enabled=0</code></td>
+<td>Disable zswap; we’re using zram for compressed swap.</td>
+</tr>
+<tr class="even">
+<td><code>rd.luks.name=&lt;UUID&gt;=cryptroot</code></td>
+<td>Unlock LUKS partition <code>&lt;UUID&gt;</code> and expose it at <code>/dev/mapper/cryptroot</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>root=/dev/mapper/cryptroot</code></td>
+<td>The unlocked mapper is the root device.</td>
+</tr>
+<tr class="even">
+<td><code>rootflags=subvol=@</code></td>
+<td>Mount the <code>@</code> Btrfs subvolume as <code>/</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>resume=/dev/mapper/cryptroot</code></td>
+<td>Resume hibernation from this device (the LUKS-unlocked Btrfs).</td>
+</tr>
+<tr class="even">
+<td><code>resume_offset=&lt;RESUME_OFFSET&gt;</code></td>
+<td>Byte offset (in pages) of the swap file’s first extent inside that device.</td>
+</tr>
+</tbody>
+</table>
+<p>Install the bootloader and generate the GRUB config:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">grub-install</span> <span class="at">--target</span><span class="op">=</span>x86_64-efi <span class="at">--efi-directory</span><span class="op">=</span>/boot <span class="at">--bootloader-id</span><span class="op">=</span>GRUB</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">grub-mkconfig</span> <span class="at">-o</span> /boot/grub/grub.cfg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>grub-mkconfig</code> output should end with <code>done</code>. If you see <code>error: failed to get canonical path of …</code>, your <code>/etc/fstab</code> has a typo — fix it before rebooting.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why we don’t need <code>GRUB_ENABLE_CRYPTODISK=y</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>GRUB_ENABLE_CRYPTODISK=y</code> matters when <strong>GRUB itself</strong> has to read encrypted blocks — i.e., when <code>/boot</code> (and therefore <code>grub.cfg</code>, kernels, and initramfs images) is inside a LUKS container. In this install, <code>/boot</code> is the unencrypted FAT32 ESP, so GRUB never has to decrypt anything; the kernel and initramfs are read in clear, and decryption happens inside the initramfs once it’s running. Leaving <code>GRUB_ENABLE_CRYPTODISK</code> unset is the right default.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="chapter-11-enable-services-and-reboot" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-11-enable-services-and-reboot">Chapter 11: Enable services and reboot</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> enable NetworkManager sshd fstrim.timer reflector.timer <span class="dt">\</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                 snapper-timeline.timer snapper-cleanup.timer <span class="dt">\</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                 grub-btrfsd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What each timer/service is for, in addition to what Article 01 enabled:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 86%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>snapper-timeline.timer</code></td>
+<td>Hourly snapshots (configurable).</td>
+</tr>
+<tr class="even">
+<td><code>snapper-cleanup.timer</code></td>
+<td>Garbage-collects old snapshots according to retention policy.</td>
+</tr>
+<tr class="odd">
+<td><code>grub-btrfsd.service</code></td>
+<td>Watches <code>/.snapshots/</code> and regenerates <code>grub.cfg</code> whenever snapper makes or deletes a snapshot — keeps the boot menu up to date with restorable points.</td>
+</tr>
+</tbody>
+</table>
+<p>Final sanity checks before reboot:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^MODULES='</span> /etc/mkinitcpio.conf</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^HOOKS='</span>   /etc/mkinitcpio.conf</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^GRUB_CMDLINE_LINUX_DEFAULT='</span> /etc/default/grub</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/fstab <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'subvol=|swap'</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expected (substituting your UUID and offset):</p>
+<pre class="text"><code>MODULES=(btrfs)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"</code></pre>
+<p>Then leave the chroot and reboot:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> <span class="at">-R</span> /mnt</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">swapoff</span> <span class="at">-a</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> close cryptroot</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">reboot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Pull the USB as the laptop starts. The expected sequence:</p>
+<ol type="1">
+<li>Firmware → GRUB menu (Arch is the only entry; press Enter).</li>
+<li>Kernel + initramfs load from the ESP.</li>
+<li>systemd-in-initramfs prompts: <strong><code>Please enter passphrase for disk arch (cryptroot):</code></strong>.</li>
+<li>You type the LUKS passphrase, hit Enter.</li>
+<li>The mapper appears, the <code>@</code> subvolume mounts as <code>/</code>, control hands off to the real systemd.</li>
+<li>You land at a <code>login:</code> prompt.</li>
+</ol>
+<p>If you instead drop into <code>emergency mode</code>, jump to the troubleshooting box at the bottom of this article before continuing.</p>
+<hr>
+</section>
+</section>
+<section id="part-3-first-boot-snapper-snapshots-sanity-checks" class="level1">
+<h1>Part 3 — First boot: snapper, snapshots, sanity checks</h1>
+<p>Log in as your user. First thing:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl status   <span class="co"># System should be "running"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> /               <span class="co"># Should show subvol=/@</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> /home           <span class="co"># Should show subvol=/@home</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>           <span class="co"># Should show /dev/zram0 (pri 100) AND /swap/swapfile</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="re-enable-ntp" class="level3">
+<h3 class="anchored" data-anchor-id="re-enable-ntp">Re-enable NTP</h3>
+<p>The <code>timedatectl set-ntp true</code> you ran from the live ISO only affected the live environment. The installed system has its own <code>systemd-timesyncd</code>, and on first boot it’s idle until you turn it on:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> timedatectl set-ntp true</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status            <span class="co"># "System clock synchronized: yes"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Without this the clock drifts to whatever the hardware RTC says, and <code>pacman</code> operations start failing with mysterious GPG / TLS errors as soon as the skew gets large enough. Turn it on now and forget about it forever.</p>
+</section>
+<section id="configure-snapper-for-properly" class="level3">
+<h3 class="anchored" data-anchor-id="configure-snapper-for-properly">Configure snapper for <code>/</code> properly</h3>
+<p><code>snapper -c root create-config /</code> would create its own <code>.snapshots</code> <em>subvolume</em>, which collides with the <code>@snapshots</code> we already mounted. The Arch-recommended dance:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> umount /.snapshots</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm <span class="at">-rf</span> /.snapshots</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root create-config /</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume delete /.snapshots   <span class="co"># delete the one snapper just created</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /.snapshots</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod 750 /.snapshots</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span>                              <span class="co"># remount @snapshots from fstab</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Tighten retention to something humane (the defaults keep too many):</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root set-config <span class="dt">\</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_HOURLY=5 <span class="dt">\</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_DAILY=7 <span class="dt">\</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_WEEKLY=2 <span class="dt">\</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_MONTHLY=1 <span class="dt">\</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_YEARLY=0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can do the same for <code>/home</code> if you want home directory rollback as well:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> home create-config /home</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Verify snap-pac is wired up:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-Syu</span>       <span class="co"># any pacman transaction now creates a pre + post snapshot</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should see two new snapshots — one pre, one post — bracketing the update. From here on, <em>every</em> <code>pacman</code> invocation gives you a rollback point.</p>
+</section>
+<section id="test-hibernation-before-you-trust-it" class="level3">
+<h3 class="anchored" data-anchor-id="test-hibernation-before-you-trust-it">Test hibernation before you trust it</h3>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl hibernate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. If the system resumes with windows where you left them and <code>dmesg | grep -i hibernate</code> shows a clean image read, you’re good. If it instead boots fresh, your <code>resume=</code> parameters didn’t take — re-check the cmdline and re-run <code>mkinitcpio -P &amp;&amp; grub-mkconfig -o /boot/grub/grub.cfg</code>.</p>
+<hr>
+</section>
+</section>
+<section id="part-4-caelestia-hyprland-desktop" class="level1">
+<h1>Part 4 — Caelestia (Hyprland desktop)</h1>
+<p>Now we layer the desktop. <a href="https://github.com/caelestia-dots/caelestia" target="_blank" rel="noopener">Caelestia</a> is a Hyprland-based dotfile bundle with a curated set of tools (foot, fish, fastfetch, starship, btop, eza, …) and a Quickshell-based status bar. The project ships both an AUR meta-package (<code>caelestia-meta</code>) and an <code>install.fish</code> script that symlinks configs into <code>~/.config</code>.</p>
+<section id="audio-stack-pipewire" class="level3">
+<h3 class="anchored" data-anchor-id="audio-stack-pipewire">1. Audio stack (PipeWire)</h3>
+<p><code>caelestia-meta</code> depends on <code>wireplumber</code> (the session manager), but it does <strong>not</strong> pull the PipeWire backend itself or the drop-in shims that replace PulseAudio / ALSA / JACK clients. Install the whole stack explicitly so the desktop has working sound from the first launch:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  pipewire pipewire-audio wireplumber <span class="dt">\</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  pipewire-pulse pipewire-alsa pipewire-jack <span class="dt">\</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  pavucontrol <span class="dt">\</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  sof-firmware</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When pacman prompts about a JACK provider, choose <strong><code>pipewire-jack</code></strong> so the PipeWire shim wins. When it prompts about a PulseAudio replacement, choose <strong><code>pipewire-pulse</code></strong> for the same reason.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 76%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pipewire</code></td>
+<td>The PipeWire server itself — handles audio (and video) graph routing.</td>
+</tr>
+<tr class="even">
+<td><code>pipewire-audio</code></td>
+<td>Audio subset of PipeWire’s daemon configs and helpers.</td>
+</tr>
+<tr class="odd">
+<td><code>wireplumber</code></td>
+<td>Session/policy manager on top of PipeWire (device probing, default routing).</td>
+</tr>
+<tr class="even">
+<td><code>pipewire-pulse</code></td>
+<td>PulseAudio-compatible socket — apps written for PulseAudio talk to PipeWire transparently.</td>
+</tr>
+<tr class="odd">
+<td><code>pipewire-alsa</code></td>
+<td>ALSA-to-PipeWire shim — apps using raw ALSA route through PipeWire.</td>
+</tr>
+<tr class="even">
+<td><code>pipewire-jack</code></td>
+<td>JACK-to-PipeWire shim — pro-audio apps that expect JACK get a working JACK.</td>
+</tr>
+<tr class="odd">
+<td><code>pavucontrol</code></td>
+<td>The classic PulseAudio volume / routing GUI. Works fine against <code>pipewire-pulse</code> and is still the easiest way to pin specific apps to specific outputs.</td>
+</tr>
+<tr class="even">
+<td><code>sof-firmware</code></td>
+<td>Sound Open Firmware blobs — required for most modern Intel laptop audio codecs.</td>
+</tr>
+</tbody>
+</table>
+<p>The PipeWire and WirePlumber user services start automatically on login via socket activation — you don’t need to <code>systemctl enable</code> anything by hand. Verify after the next desktop login with:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should say "PulseAudio (on PipeWire …)"</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># tree of devices/sinks/sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>pactl info</code> reports actual PulseAudio instead of PipeWire, something pulled <code>pulseaudio</code> in as a dependency conflict — <code>pacman -Qs pulseaudio</code> to confirm, then uninstall the offending package and reinstall <code>pipewire-pulse</code>.</p>
+</section>
+<section id="system-prerequisites-caelestia-expects-to-find" class="level3">
+<h3 class="anchored" data-anchor-id="system-prerequisites-caelestia-expects-to-find">2. System prerequisites Caelestia expects to find</h3>
+<p><code>caelestia-meta</code> lists a lot of dependencies but assumes a few CLI essentials are <em>already</em> on the system. Install these now so the install script and theme compilation both have everything they need on first run:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 64%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Why we want it before Caelestia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>terminus-font</code></td>
+<td>Crisp bitmap console font (<code>ter-132b</code>, <code>ter-116n</code>, …). Useful inside a TTY when X / Wayland is broken — i.e., exactly the situation you’ll be in if a Caelestia update misbehaves.</td>
+</tr>
+<tr class="even">
+<td><code>curl</code>, <code>wget</code></td>
+<td>Half of every shell script on the internet calls one of these. Neither is in <code>base</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>perl</code></td>
+<td>Pulled in by some build tools and <code>xdg-</code> utilities; safer to have it explicitly than discover it missing inside a failing build.</td>
+</tr>
+<tr class="even">
+<td><code>gcc</code>, <code>make</code>, <code>cmake</code></td>
+<td><code>gcc</code> and <code>make</code> come with <code>base-devel</code> (already installed in the chroot), but <code>cmake</code> doesn’t. Required for any package — Quickshell included — that builds with CMake.</td>
+</tr>
+<tr class="odd">
+<td><code>sassc</code></td>
+<td>Sass compiler. Used by the GTK theme and several status-bar widgets Caelestia bundles. Missing this is a silent “no styles loaded” failure on first launch.</td>
+</tr>
+<tr class="even">
+<td><code>fish</code></td>
+<td>The Caelestia install script (<code>install.fish</code>) is fish-only. <code>caelestia-meta</code> brings fish in too, but pre-installing it means the install script can run before the meta-package has even finished depsolving.</td>
+</tr>
+<tr class="odd">
+<td><code>bluez</code></td>
+<td>The Linux Bluetooth stack (kernel-side helpers, <code>bluetoothd</code>). Required for any Bluetooth headset, mouse, or keyboard.</td>
+</tr>
+<tr class="even">
+<td><code>bluez-utils</code></td>
+<td>Userspace utilities — <code>bluetoothctl</code>, <code>hciconfig</code>, the test scripts. Without it you’d have a running daemon you can’t talk to.</td>
+</tr>
+</tbody>
+</table>
+<p>Enable the Bluetooth daemon so it starts on every boot:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>--needed</code> flag tells pacman to skip anything already present (some of these are pulled in by <code>base-devel</code>), so this command is safe to re-run any time.</p>
+</section>
+<section id="lazyvim-on-top-of-neovim" class="level3">
+<h3 class="anchored" data-anchor-id="lazyvim-on-top-of-neovim">3. LazyVim on top of Neovim</h3>
+<p>Neovim is in <code>base</code> and was installed by pacstrap. <a href="https://www.lazyvim.org/" target="_blank" rel="noopener">LazyVim</a> layers a curated plugin set, sensible defaults, and a per-language LSP setup on top of it. The official install path is to drop the LazyVim <em>starter</em> config into <code>~/.config/nvim</code>:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The first <code>nvim</code> launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for <code>:Lazy</code> to report all plugins installed, then <code>:q</code>. If you prefer the AUR-packaged version instead, <code>yay -S lazyvim</code> after installing the AUR helper below also works — same end state.</p>
+</section>
+<section id="graphics-drivers" class="level3">
+<h3 class="anchored" data-anchor-id="graphics-drivers">4. Graphics drivers</h3>
+<p>Pick one block based on your GPU.</p>
+<p><strong>Intel iGPU</strong> (Iris, UHD, Arc):</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 79%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mesa</code></td>
+<td>The userspace OpenGL / Vulkan implementation for Intel, AMD, and most open-source GPU drivers. Required for any 3D acceleration under Wayland.</td>
+</tr>
+<tr class="even">
+<td><code>vulkan-intel</code></td>
+<td>Vulkan ICD (Installable Client Driver) for Intel GPUs. Needed so apps using Vulkan see the iGPU.</td>
+</tr>
+<tr class="odd">
+<td><code>intel-media-driver</code></td>
+<td>VA-API hardware video decode for Intel Broadwell and newer. Lets browsers and <code>mpv</code> decode H.264/HEVC/AV1 on the GPU instead of the CPU.</td>
+</tr>
+<tr class="even">
+<td><code>libva-utils</code></td>
+<td><code>vainfo</code> and friends — diagnostic CLIs for verifying VA-API works after install.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AMD</strong>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 79%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mesa</code></td>
+<td>OpenGL / Vulkan userspace (same as Intel).</td>
+</tr>
+<tr class="even">
+<td><code>vulkan-radeon</code></td>
+<td>Vulkan ICD for AMD GPUs (RADV driver).</td>
+</tr>
+<tr class="odd">
+<td><code>libva-mesa-driver</code></td>
+<td>VA-API hardware video decode for AMD via Mesa.</td>
+</tr>
+<tr class="even">
+<td><code>mesa-vdpau</code></td>
+<td>VDPAU hardware video decode for AMD (older API some apps still prefer).</td>
+</tr>
+<tr class="odd">
+<td><code>libva-utils</code></td>
+<td><code>vainfo</code> / diagnostics.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NVIDIA on Wayland</strong> — the open kernel modules are the recommended path in 2026:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 80%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nvidia-open-dkms</code></td>
+<td>NVIDIA’s open-source kernel modules, built against your current kernel via DKMS. Required for Turing (GTX 16xx / RTX 20xx) or newer.</td>
+</tr>
+<tr class="even">
+<td><code>nvidia-utils</code></td>
+<td>Userspace libraries — <code>libGL</code>, CUDA stub, <code>nvidia-smi</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>libva-nvidia-driver</code></td>
+<td>VA-API shim that routes hardware decode through NVDEC.</td>
+</tr>
+</tbody>
+</table>
+<p>Verify after install:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should see a list of supported codecs without errors. If you switched the kernel (added <code>linux-lts</code> etc.), re-run <code>mkinitcpio -P</code> so DKMS rebuilds NVIDIA against every installed kernel.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nothing to enable here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These are libraries, not services — there’s no <code>systemctl enable nvidia</code> to forget. The GPU comes up the moment the kernel loads its driver, well before login.</p>
+</div>
+</div>
+</section>
+<section id="install-an-aur-helper" class="level3">
+<h3 class="anchored" data-anchor-id="install-an-aur-helper">5. Install an AUR helper</h3>
+<p>Caelestia is distributed via the AUR and its install script defaults to <code>yay</code>:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 73%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>git</code></td>
+<td>The version-control client. Needed to clone the AUR PKGBUILD. Already installed in the chroot but listed with <code>--needed</code> so the line is self-contained.</td>
+</tr>
+<tr class="even">
+<td><code>base-devel</code></td>
+<td>Toolchain meta-package (<code>gcc</code>, <code>make</code>, <code>pkgconf</code>, <code>fakeroot</code>, <code>binutils</code>, …). Required for <em>any</em> PKGBUILD to compile. Also already in the chroot.</td>
+</tr>
+<tr class="odd">
+<td><code>yay-bin</code></td>
+<td>The AUR helper itself, distributed as a pre-built binary so the bootstrap doesn’t need to compile Go just to install yay. After this, <code>yay &lt;pkg&gt;</code> works like <code>pacman -S &lt;pkg&gt;</code> but also searches the AUR.</td>
+</tr>
+</tbody>
+</table>
+<p>No service to enable — <code>yay</code> is just a CLI tool.</p>
+</section>
+<section id="install-caelestia" class="level3">
+<h3 class="anchored" data-anchor-id="install-caelestia">6. Install Caelestia</h3>
+<p>The README pattern is one command per step:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Do not move the repo after running install.fish
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>install.fish</code> <strong>symlinks</strong> every config from <code>~/.local/share/caelestia/</code> into <code>~/.config/</code>. If you later move or delete the cloned repo, every symlink becomes a broken pointer and your desktop boots into a half-themed Hyprland with no bar. Treat <code>~/.local/share/caelestia/</code> as part of the install, not as scratch space. To update Caelestia later: <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> (no need to re-run install.fish unless dependencies change).</p>
+</div>
+</div>
+<p>Optional flags to pass to <code>install.fish</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 68%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Flag</th>
+<th>What it adds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--spotify</code></td>
+<td>Installs Spotify + the Spicetify theme matching Caelestia.</td>
+</tr>
+<tr class="even">
+<td><code>--vscode=code</code> or <code>=codium</code></td>
+<td>Installs VS Code (or Codium) with the Caelestia VSIX theme.</td>
+</tr>
+<tr class="odd">
+<td><code>--discord</code></td>
+<td>OpenAsar Discord + the Equicord client mod with Caelestia theme.</td>
+</tr>
+<tr class="even">
+<td><code>--zen</code></td>
+<td>Installs the Zen Browser with the Caelestia native-app manifest.</td>
+</tr>
+<tr class="odd">
+<td><code>--noconfirm</code></td>
+<td>Pass through to pacman/yay. Use only if you’ve read what’s being installed.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="install-applications-pre-reboot" class="level3">
+<h3 class="anchored" data-anchor-id="install-applications-pre-reboot">7. Install applications (pre-reboot)</h3>
+<p>Now — <em>before</em> the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 80%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>firefox</code></td>
+<td>The Firefox web browser. Wayland-native by default on recent versions; no extra config needed under Hyprland.</td>
+</tr>
+<tr class="even">
+<td><code>nautilus</code></td>
+<td>GNOME’s Files file manager. Plays well with Hyprland because it’s a regular GTK app — no GNOME shell required.</td>
+</tr>
+<tr class="odd">
+<td><code>libreoffice-fresh</code></td>
+<td>Latest stable LibreOffice (Writer, Calc, Impress, Draw, Math, Base). The <code>-fresh</code> variant lags real-stable by a few months; pick <code>libreoffice-still</code> if you prefer a slower release cadence.</td>
+</tr>
+<tr class="even">
+<td><code>gwenview</code></td>
+<td>KDE’s image viewer / lightweight editor. Strong EXIF and folder-browsing UX, opens almost any image format Qt understands.</td>
+</tr>
+<tr class="odd">
+<td><code>kate</code></td>
+<td>KDE’s GUI text editor. Useful as a fallback when you want a graphical editor outside of nvim.</td>
+</tr>
+<tr class="even">
+<td><code>ark</code></td>
+<td>KDE archive manager. Reads/writes <code>.zip</code>, <code>.7z</code>, <code>.tar.*</code>, <code>.rar</code> (read), <code>.iso</code>, etc.</td>
+</tr>
+<tr class="odd">
+<td><code>okular</code></td>
+<td>KDE’s document viewer. PDFs, ePub, DjVu, comic-book archives. Annotation support is the cleanest in the open-source space.</td>
+</tr>
+<tr class="even">
+<td><code>haruna</code></td>
+<td>Modern KDE video player built on <code>mpv</code>. Tabs, playlists, smart subtitle handling.</td>
+</tr>
+<tr class="odd">
+<td><code>swayimg</code></td>
+<td>Minimal Wayland-native image viewer (sxiv-style). Pairs well with a tiling compositor when you want a no-chrome image popup.</td>
+</tr>
+<tr class="even">
+<td><code>flatpak</code></td>
+<td>The Flatpak runtime — sandboxed cross-distro app packaging. Many apps (Bottles, OBS, Heroic Games Launcher, …) are easiest to install from Flathub.</td>
+</tr>
+<tr class="odd">
+<td><code>desktop-file-utils</code></td>
+<td>Provides <code>update-desktop-database</code>. Required by some Wayland app launchers (anyrun, fuzzel, walker) to index <code>.desktop</code> entries; safer to install up front.</td>
+</tr>
+<tr class="even">
+<td><code>discover</code> (AUR)</td>
+<td>KDE’s graphical software center. Can install/update native pacman packages <strong>and</strong> Flatpak apps from Flathub in one UI. Pulls in some KDE Frameworks deps but is the friendliest Flatpak GUI under Hyprland.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Add Flathub before opening Discover
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>flatpak</code> ships without any configured remote. Add Flathub once, system-wide, so Discover and <code>flatpak install</code> both see it:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Nothing to enable — <code>flatpak</code> has no daemon. The runtime kicks in only when you actually run a Flatpak app.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What about the rest of the KDE stack?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Installing a handful of KDE apps under Hyprland pulls in Qt and a slice of KDE Frameworks (KF6) — about 200–300 MB of dependencies. That’s expected and harmless; the libraries just sit on disk until an app loads them. You don’t need to install <code>plasma-desktop</code> or any other shell.</p>
+</div>
+</div>
+</section>
+<section id="install-a-login-manager-sddm" class="level3">
+<h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
+<p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above, supports Wayland natively, and renders a graphical login screen instead of a TTY.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 60%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>sddm</code></td>
+<td>The Simple Desktop Display Manager — graphical login greeter with a Wayland backend. Probes installed <code>*.desktop</code> session files (Hyprland ships one) and lets the user pick a session from the dropdown before logging in.</td>
+</tr>
+</tbody>
+</table>
+<p>Tell SDDM to start the <strong>Wayland</strong> greeter (so the login screen itself runs under Wayland, not X). Create <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="dt">GreeterEnvironment</span><span class="ot">=</span><span class="st">QT_WAYLAND_SHELL_INTEGRATION=layer-shell</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">kwin_wayland --no-lockscreen --no-global-shortcuts --locale1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Enable SDDM so it starts at every boot:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+How SDDM finds Hyprland
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you <code>pacman -S hyprland</code> (which <code>caelestia-meta</code> did for you), the package installs <code>/usr/share/wayland-sessions/hyprland.desktop</code>. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia’s variant pre-sets a few env vars for the bundled status bar).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prefer greetd + tuigreet?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you’d rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>…and write <code>/etc/greetd/config.toml</code> per the <a href="https://github.com/caelestia-dots/caelestia#login-manager" target="_blank" rel="noopener">Caelestia README</a>. Only enable <strong>one</strong> display manager at a time — having both <code>sddm.service</code> and <code>greetd.service</code> enabled causes a fight on VT1 that nobody wins.</p>
+</div>
+</div>
+</section>
+<section id="reboot-into-the-desktop" class="level3">
+<h3 class="anchored" data-anchor-id="reboot-into-the-desktop">9. Reboot into the desktop</h3>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.</p>
+<hr>
+</section>
+</section>
+<section id="part-5-verifying-everything-ended-up-where-it-should" class="level1">
+<h1>Part 5 — Verifying everything ended up where it should</h1>
+<p>Once you’re in Hyprland, open a <code>foot</code> terminal and run:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
+<hr>
+<section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting-timed-out-waiting-for-device-at-boot">Troubleshooting: “Timed out waiting for device” at boot</h2>
+<p>If you reboot and land in emergency mode after the LUKS prompt, the failure mode is almost always one of:</p>
+<ol type="1">
+<li><strong><code>&lt;UUID&gt;</code> or <code>&lt;RESUME_OFFSET&gt;</code> left as literal text</strong> in <code>/etc/default/grub</code>. Re-read <a href="#chapter-10-grub--the-cmdline-that-actually-boots">Chapter 10</a>.</li>
+<li><strong>Mapper name mismatch</strong> between <code>rd.luks.name=…=cryptroot</code> and <code>root=/dev/mapper/cryptroot</code>. They have to match exactly.</li>
+<li><strong><code>rootflags=subvol=@</code> missing.</strong> Without it, the kernel mounts the top-level Btrfs volume, which has no <code>/sbin/init</code>.</li>
+<li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
+</ol>
+<p>To recover, boot the install USB again and re-enter the system:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
+<p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Attribution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Arch Linux logo is a trademark of the Arch Linux project and is used here under <a href="https://archlinux.org/art/" target="_blank" rel="noopener">Arch Linux’s branding terms</a> for editorial purposes only. Caelestia is the work of the <a href="https://github.com/caelestia-dots" target="_blank" rel="noopener">caelestia-dots</a> project and its contributors.</p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/evannsmc\.com");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://github.com/evannsmc" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/evanns-morales/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://scholar.google.com/citations?user=kuWXwJsAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener">Scholar</a> · <a href="https://orcid.org/0009-0000-3928-6243" target="_blank" rel="noopener">ORCID</a> <br>© 2026 evannsmc · Evanns Morales-Cuadrado · All rights reserved</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

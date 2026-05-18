@@ -1,0 +1,954 @@
+---
+title: "Arch + LUKS + Btrfs + Caelestia: The Install I'm Actually Using"
+description: "Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in."
+author: "Evanns Morales-Cuadrado"
+date: "2026-05-17"
+categories: [arch linux, linux, installation, luks, btrfs, hyprland, caelestia, snapper, hibernation, grub, mkinitcpio, systemd, zram]
+image: ../../../files/tech-zone/arch-logo-dark.svg
+image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
+draft: false
+---
+
+::: {.callout-note}
+## What this is
+
+The install I'm actually running on my daily-driver laptop, in the order I executed it. It expands the boring-but-working [basic Arch install](../2026-05-01-first-arch-install/) with:
+
+- **LUKS2** full-disk encryption on the root partition,
+- **Btrfs** with proper subvolumes (`@`, `@home`, `@snapshots`, `@var_log`, `@swap`),
+- **zram** for fast, compressed, RAM-resident everyday swap,
+- a **NoCOW Btrfs swap file** big enough for hibernation (suspend-to-disk),
+- **snapper** + **grub-btrfs** for bootable, per-`pacman`-transaction snapshots,
+- and the **[Caelestia](https://github.com/caelestia-dots/caelestia){target="_blank" rel="noopener"}** Hyprland-based desktop on top.
+
+It is **single-boot**. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.
+:::
+
+## Why this is its own article (and not just "Article 02, fixed")
+
+My [first attempt at LUKS + Btrfs](../2026-05-05-arch-luks-btrfs-lessons/) dropped into emergency mode at boot. I traced the root cause to two typos in the kernel command line: `cryptdevice=UUID<…>` (missing `=`) and literal `<angle brackets>` around the UUID. Those are easy mistakes to make once and never make again, but I also took the chance to step back and pick a different default for *this* install, because I'm going to be living in it:
+
+1. **systemd-based initramfs** (`sd-encrypt`) instead of the older `udev`/`encrypt` hook. The kernel parameter format (`rd.luks.name=<UUID>=<name>`) is documented in `systemd-cryptsetup-generator(8)`, accepts no `:` separator, and is harder to mistype than `cryptdevice=`.
+2. **No dual-boot.** Last time I tried to land LUKS + Btrfs + zram + shared partition + dual-boot Ubuntu in one swing. This time the goal is one OS, fully working, with a desktop on top.
+3. **A real swap file on Btrfs** for hibernation, plus zram for normal swap pressure. This replaces last attempt's "separate encrypted swap partition" — same outcome, fewer partitions.
+4. **Snapper integration from day one**, so the very first `pacman -Syu` already creates a rollback point.
+
+The result is the install I trust enough to put my dissertation work, my dotfiles, and my GPG keys on.
+
+---
+
+# Part 1 — Bootstrap (same as the basic install)
+
+The first three chapters are identical to the [basic install](../2026-05-01-first-arch-install/) and I won't repeat them in full. The short version, in order:
+
+1. **Verify the ISO** with `sha256sum -c sha256sums.txt` and `gpg --verify`.
+2. **Boot the USB**, confirm UEFI mode with `cat /sys/firmware/efi/fw_platform_size` (should print `64`).
+3. **Connect to Wi-Fi** via `iwctl`, then `systemctl enable --now sshd` and `passwd` so you can SSH in from a real keyboard.
+4. **Keymap, timezone, NTP**: `loadkeys us`, `timedatectl set-timezone America/New_York`, `timedatectl set-ntp true`.
+
+Once you have a shell on the target machine with networking and the clock synced, you're ready to start diverging from the basic install.
+
+::: {.callout-tip}
+## Confirm what disk you're about to wipe
+
+```bash
+lsblk -d -o NAME,SIZE,MODEL,TRAN
+```
+
+The NVMe drive will show `TRAN=nvme`. Note the device — usually `/dev/nvme0n1`. Every command below uses `/dev/nvme0n1` and its partitions as a placeholder. **Substitute your actual device** if it differs. Wiping the wrong disk is the kind of mistake LUKS can't save you from.
+:::
+
+---
+
+## Chapter 1: Partitioning
+
+For this install I'm using exactly two partitions — the EFI System Partition, and one big Linux partition that I'll LUKS-encrypt and then carve into Btrfs subvolumes:
+
+| Partition           | Size       | Filesystem | Encryption | Purpose                                |
+|---------------------|-----------:|------------|------------|----------------------------------------|
+| EFI System          | 1 GiB      | FAT32      | none       | UEFI bootloader, kernel, initramfs     |
+| Linux               | remainder  | Btrfs      | LUKS2      | `/`, `/home`, snapshots, swap file     |
+
+That's it. No separate `/home` partition (Btrfs subvolumes give you the same isolation without the space-guessing problem). No separate swap partition (the swap file inside Btrfs replaces it). No shared data partition (single boot, so there's nothing to share with).
+
+```bash
+cfdisk /dev/nvme0n1
+```
+
+Inside `cfdisk`:
+
+1. `d` on every existing partition until the table is empty.
+2. `n` → 1 GiB → type **EFI System** → that's `/dev/nvme0n1p1`.
+3. `n` → accept the remaining space → type **Linux filesystem** → that's `/dev/nvme0n1p2`.
+4. `w`, then type `yes`.
+
+Verify:
+
+```bash
+lsblk
+```
+
+You should see `/dev/nvme0n1p1` at 1G and `/dev/nvme0n1p2` filling the rest.
+
+---
+
+## Chapter 2: Encrypt the Linux partition
+
+LUKS2 is the modern default in `cryptsetup`; there is no good reason to force LUKS1 unless you're booting from GRUB with an encrypted `/boot` (we're not — `/boot` lives on the unencrypted ESP).
+
+```bash
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p2
+```
+
+It will prompt for `YES` in capital letters, then ask you to type a passphrase twice. **There is no recovery if you forget this.** Put it in a password manager before you finish the install. I used Bitwarden.
+
+Now unlock the container and map it to `/dev/mapper/cryptroot`:
+
+```bash
+cryptsetup open /dev/nvme0n1p2 cryptroot
+```
+
+From here on, the live system reads and writes `/dev/mapper/cryptroot` as a normal block device — LUKS handles the encryption transparently.
+
+::: {.callout-note}
+## Why the mapper name matters
+
+The string `cryptroot` is a *contract*. It has to match the `rd.luks.name=<UUID>=cryptroot` value I put on the kernel command line later. If I named the mapper `arch` here and wrote `cryptroot` in GRUB later, the kernel would unlock the partition into `/dev/mapper/arch` and then sit forever waiting for `/dev/mapper/cryptroot` to appear. That is exactly the failure mode that bricked [my first attempt](../2026-05-05-arch-luks-btrfs-lessons/).
+
+Pick one name and use it everywhere. I'll use `cryptroot` throughout this guide.
+:::
+
+---
+
+## Chapter 3: Create the Btrfs filesystem and its subvolumes
+
+Format the unlocked mapper as Btrfs and format the ESP as FAT32:
+
+```bash
+mkfs.fat -F32 /dev/nvme0n1p1
+mkfs.btrfs -L arch /dev/mapper/cryptroot
+```
+
+Mount the top of the Btrfs volume just long enough to create subvolumes inside it:
+
+```bash
+mount /dev/mapper/cryptroot /mnt
+
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var_log
+btrfs subvolume create /mnt/@swap
+
+umount /mnt
+```
+
+Subvolume-by-subvolume:
+
+| Subvolume     | Mountpoint     | Why it's separate                                                               |
+|---------------|----------------|---------------------------------------------------------------------------------|
+| `@`           | `/`            | The root filesystem. Snapshotted by snapper.                                    |
+| `@home`       | `/home`        | Separate so a root rollback doesn't roll back my home directory.                |
+| `@snapshots`  | `/.snapshots`  | Where snapper writes snapshots. Must be its own subvolume.                      |
+| `@var_log`    | `/var/log`     | Logs are append-mostly and would noisy-up every snapshot if kept under `@`.     |
+| `@swap`       | `/swap`        | Dedicated subvolume for the hibernation swap file (must be NoCOW; see below).   |
+
+::: {.callout-tip}
+## Names matter for tooling, not the kernel
+
+The names `@`, `@home`, `@snapshots`, and `@var_log` are conventions, not requirements — the kernel doesn't care. But **snapper** and **Timeshift** default to those names. Rename them and you'll fight your tools forever. I'm using exactly the default names so every guide I read in the future "just works."
+:::
+
+---
+
+## Chapter 4: Mount the subvolumes with the right options
+
+```bash
+mount -o noatime,compress=zstd:3,subvol=@ /dev/mapper/cryptroot /mnt
+mkdir -p /mnt/{boot,home,.snapshots,var/log,swap}
+
+mount -o noatime,compress=zstd:3,subvol=@home       /dev/mapper/cryptroot /mnt/home
+mount -o noatime,compress=zstd:3,subvol=@snapshots  /dev/mapper/cryptroot /mnt/.snapshots
+mount -o noatime,compress=zstd:3,subvol=@var_log    /dev/mapper/cryptroot /mnt/var/log
+mount -o noatime,subvol=@swap                       /dev/mapper/cryptroot /mnt/swap
+
+mount /dev/nvme0n1p1 /mnt/boot
+```
+
+The mount options earn their keep:
+
+- `noatime` — don't update the access timestamp on every read. Reduces unnecessary writes on SSDs and is harmless for almost every workload.
+- `compress=zstd:3` — transparent Zstandard compression at level 3. Strong compression ratio (often 40 %+ on text and source) with negligible CPU cost. Modern Btrfs picks `zstd:3` if you just say `compress=zstd`; spelling out the level is documentation.
+- `subvol=@`, `subvol=@home`, … — tells Btrfs which subvolume is mounted at this path.
+
+Notably absent: the `ssd` option. Modern Btrfs auto-detects NVMe and SSD-class block devices reliably; specifying it is harmless but no longer informative. Also absent: `discard=async` — I use `fstrim.timer` (weekly batch TRIM) instead. Doing both is redundant and slightly slower.
+
+The `@swap` subvolume mounts **without** compression — a swap file must not be compressed (swap pages need to be readable as-is when the kernel pages them back in).
+
+### Recovery: starting the mount step over
+
+If you fumble a `mount -o`, this resets everything cleanly without rebuilding anything else:
+
+```bash
+umount -R /mnt
+mount | grep /mnt          # should print nothing
+```
+
+…then re-run the block above.
+
+---
+
+## Chapter 5: Pacstrap, fstab, chroot
+
+Same shape as the basic install, with the additions that LUKS + Btrfs + snapshots + zram require:
+
+```bash
+reflector --country 'United States' --protocol https --latest 20 --age 12 \
+          --sort rate --save /etc/pacman.d/mirrorlist
+
+pacstrap -K /mnt \
+    base linux linux-firmware linux-headers intel-ucode \
+    btrfs-progs \
+    grub efibootmgr grub-btrfs \
+    snapper snap-pac \
+    networkmanager openssh sudo \
+    neovim git base-devel \
+    zram-generator \
+    inotify-tools
+```
+
+Use `amd-ucode` instead of `intel-ucode` on AMD hardware.
+
+The new packages beyond Article 01:
+
+| Package           | Why |
+|-------------------|-----|
+| `btrfs-progs`     | Userspace Btrfs tools (`btrfs`, `mkfs.btrfs`, `btrfs filesystem mkswapfile`). Required on every Btrfs system. |
+| `grub-btrfs`      | Generates extra GRUB menu entries for each Btrfs snapshot so you can boot directly into a prior state. |
+| `snapper`         | Snapshot manager. Takes per-config snapshots on a timer and on every `pacman` transaction (via `snap-pac`). |
+| `snap-pac`        | Pacman hook that creates a snapper snapshot before and after every `pacman` transaction. |
+| `zram-generator` | systemd-friendly zram setup. We'll point it at half of RAM, zstd-compressed. |
+| `inotify-tools`   | Used by `grub-btrfs`'s `grub-btrfsd` to watch the snapshots directory and re-generate GRUB on changes. |
+
+Generate `fstab` and enter the new system:
+
+```bash
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+```
+
+::: {.callout-note}
+## Sanity-check the generated fstab
+
+```bash
+cat /etc/fstab
+```
+
+Each line should reference `UUID=…` (not `/dev/nvme0n1pN`) and the Btrfs entries should each carry `subvol=@…` in their options. If you see anything mounted from `/dev/mapper/cryptroot` *without* a `subvol=` entry, edit that out — you'd be mounting the top-level Btrfs volume on top of itself.
+:::
+
+---
+
+# Part 2 — Inside the chroot
+
+## Chapter 6: Locale, time, hostname, user
+
+Identical to the [basic install](../2026-05-01-first-arch-install/) — I won't re-explain each step. The compressed version:
+
+```bash
+# Editor + EDITOR var
+ln -sf /usr/bin/nvim /usr/local/bin/vi
+echo 'export EDITOR=nvim' >> /etc/profile
+
+# Timezone + hardware clock
+ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+hwclock --systohc
+
+# Locale
+sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=us"        > /etc/vconsole.conf
+
+# Hostname
+echo "evanns-arch" > /etc/hostname
+
+# Root password
+passwd
+
+# User account
+useradd -m -g users -G wheel,video,audio,input evanns
+passwd evanns
+
+# sudo for wheel
+sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+```
+
+Replace `evanns-arch` and `evanns` with whatever names you want. The extra groups (`video`, `audio`, `input`) preempt small annoyances later with Hyprland (`video` for GPU access, `input` for libinput devices, `audio` for the legacy ALSA path some apps still want).
+
+---
+
+## Chapter 7: The hibernation swap file
+
+This is the new ground vs. both Article 01 (no swap file at all) and Article 02 (separate encrypted swap partition). Since the whole root volume is LUKS-encrypted, a swap file *inside* it is automatically encrypted too — no extra cryptsetup dance.
+
+### Why a swap file *and* zram?
+
+Different jobs, complementary defaults:
+
+- **zram** is fast, compressed swap in RAM. Used first (higher priority). Almost all everyday memory pressure goes here, and you never pay an SSD write for it.
+- **Swap file** is durable swap on disk. The only kind that survives a power cycle. Hibernation writes the contents of RAM into it; on resume, the kernel reads it back.
+
+zram alone cannot host hibernation — it lives in RAM and disappears at power-off. So we need both: zram for everyday performance, swap file for hibernation.
+
+### Create the swap file the Btrfs-correct way
+
+The naïve `fallocate` + `mkswap` recipe corrupts Btrfs swap files. Modern `btrfs-progs` ships a single tool that does it right:
+
+```bash
+btrfs filesystem mkswapfile --size 20g --uuid clear /swap/swapfile
+swapon /swap/swapfile
+```
+
+What that one command does for you:
+
+1. Creates a file at `/swap/swapfile`.
+2. Sets the **NoCOW** attribute (`chattr +C`) — required because copy-on-write swap files break in interesting and silent ways.
+3. Disables compression on the file.
+4. Preallocates extents (so the kernel can compute a stable offset for hibernation).
+5. Runs `mkswap` against it.
+6. With `--uuid clear`, leaves the swap UUID blank, which avoids a stale-UUID warning on first `swapon` after a fresh install.
+
+Pick a size that fits your RAM **plus a small margin**. For 16 GB RAM I'd use 20 GB. For 32 GB RAM I'd use 36 GB. Hibernation needs to be able to write the full contents of RAM to disk; running out of swap mid-hibernate corrupts the resume image.
+
+Persist the swap file in `/etc/fstab` (append; `genfstab` won't have caught it):
+
+```bash
+echo '/swap/swapfile none swap defaults 0 0' >> /etc/fstab
+```
+
+### Find the resume offset
+
+Hibernation resume needs to know the *byte offset* of the swap file's first physical block inside the underlying device — there's no filesystem layer during resume, just the raw block device.
+
+```bash
+btrfs inspect-internal map-swapfile -r /swap/swapfile
+```
+
+The `-r` flag prints the offset in the resume-friendly units the kernel expects (pages, not bytes). Save the number it prints — we'll feed it to GRUB in the next chapter.
+
+I'll refer to it as `<RESUME_OFFSET>` below.
+
+---
+
+## Chapter 8: zram for everyday swap
+
+Create `/etc/systemd/zram-generator.conf`:
+
+```ini
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+```
+
+What each key does:
+
+| Key                       | What it sets |
+|---------------------------|---------------|
+| `zram-size = ram / 2`     | The zram device gets half of physical RAM. Compressed inside the kernel; typical 3–4× compression ratio means you effectively double your usable memory before the disk swap kicks in. |
+| `compression-algorithm`   | `zstd` is fast and compresses well — the right default in 2026. |
+| `swap-priority = 100`     | High priority means the kernel prefers zram over the swap file. The swap file's priority defaults to ~–2 in `/etc/fstab`, so zram is used first; swap file only as overflow and for hibernation. |
+| `fs-type = swap`          | Treat the zram device as swap, not a regular filesystem. |
+
+Nothing else needed — the `systemd-zram-setup@zram0.service` unit is generated automatically at boot from this config.
+
+---
+
+## Chapter 9: mkinitcpio — the systemd way
+
+This is the chapter that has to be right or nothing boots. We're using the *systemd* initramfs (formerly called the "systemd hooks" or "sd-encrypt path"), which differs from the `udev`/`encrypt` flow my previous attempt used.
+
+Open `/etc/mkinitcpio.conf` and set exactly these two lines:
+
+```bash
+MODULES=(btrfs)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+```
+
+Hook-by-hook (only the changed-vs-Article-01 ones):
+
+| Hook            | What it does |
+|-----------------|--------------|
+| `systemd`       | Replaces `udev`. Boots a small systemd inside the initramfs and uses unit files to coordinate early boot. |
+| `sd-vconsole`   | Loads the console keymap inside the initramfs — needed so your LUKS prompt accepts your password as typed. |
+| `sd-encrypt`    | systemd's equivalent of the `encrypt` hook. Honors `rd.luks.name=…` on the kernel cmdline. |
+
+Why `MODULES=(btrfs)` even though `filesystems` covers it? `autodetect` *should* pull in `btrfs.ko` automatically since the root filesystem is Btrfs, but being explicit costs nothing and guards against a one-off edge case where `autodetect` strips it.
+
+Now regenerate the initramfs for all installed kernels:
+
+```bash
+mkinitcpio -P
+```
+
+A successful run ends with `Image generation successful` for each preset (`linux`, plus `linux-lts` if you installed it). Errors here are loud; address them now, not after reboot.
+
+---
+
+## Chapter 10: GRUB — the cmdline that actually boots
+
+Get the **UUID of the encrypted partition itself** (`/dev/nvme0n1p2`, not the mapper):
+
+```bash
+blkid -s UUID -o value /dev/nvme0n1p2
+```
+
+That returns a string like `0e6caf44-4ba9-4279-8f29-ad2344ea4387`. Copy it.
+
+Open `/etc/default/grub` and find:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+```
+
+Replace it with this single line (no real angle brackets, no extra quoting — just the bare UUID where it says `<UUID>`, and the integer where it says `<RESUME_OFFSET>`):
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=<UUID>=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=<RESUME_OFFSET>"
+```
+
+::: {.callout-important}
+## The placeholders are placeholders
+
+Replace `<UUID>` with the bare UUID and `<RESUME_OFFSET>` with the integer from `btrfs inspect-internal map-swapfile -r`. **Do not include the angle brackets in the actual file.** That is exactly the second mistake I made in my [first attempt](../2026-05-05-arch-luks-btrfs-lessons/) and it's the kind of typo that produces a polite kernel message followed by ninety seconds of timeout and an emergency shell.
+:::
+
+Kernel-parameter-by-kernel-parameter:
+
+| Parameter                                    | Purpose                                                                                |
+|----------------------------------------------|----------------------------------------------------------------------------------------|
+| `loglevel=3`                                 | Quieter kernel boot logs (warnings and above).                                         |
+| `quiet`                                      | Suppress most non-critical kernel boot output.                                         |
+| `zswap.enabled=0`                            | Disable zswap; we're using zram for compressed swap.                                   |
+| `rd.luks.name=<UUID>=cryptroot`              | Unlock LUKS partition `<UUID>` and expose it at `/dev/mapper/cryptroot`.               |
+| `root=/dev/mapper/cryptroot`                 | The unlocked mapper is the root device.                                                |
+| `rootflags=subvol=@`                         | Mount the `@` Btrfs subvolume as `/`.                                                  |
+| `resume=/dev/mapper/cryptroot`               | Resume hibernation from this device (the LUKS-unlocked Btrfs).                         |
+| `resume_offset=<RESUME_OFFSET>`              | Byte offset (in pages) of the swap file's first extent inside that device.             |
+
+Install the bootloader and generate the GRUB config:
+
+```bash
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+The `grub-mkconfig` output should end with `done`. If you see `error: failed to get canonical path of …`, your `/etc/fstab` has a typo — fix it before rebooting.
+
+::: {.callout-note}
+## Why we don't need `GRUB_ENABLE_CRYPTODISK=y`
+
+`GRUB_ENABLE_CRYPTODISK=y` matters when **GRUB itself** has to read encrypted blocks — i.e., when `/boot` (and therefore `grub.cfg`, kernels, and initramfs images) is inside a LUKS container. In this install, `/boot` is the unencrypted FAT32 ESP, so GRUB never has to decrypt anything; the kernel and initramfs are read in clear, and decryption happens inside the initramfs once it's running. Leaving `GRUB_ENABLE_CRYPTODISK` unset is the right default.
+:::
+
+---
+
+## Chapter 11: Enable services and reboot
+
+```bash
+systemctl enable NetworkManager sshd fstrim.timer reflector.timer \
+                 snapper-timeline.timer snapper-cleanup.timer \
+                 grub-btrfsd.service
+```
+
+What each timer/service is for, in addition to what Article 01 enabled:
+
+| Unit                          | Why |
+|-------------------------------|-----|
+| `snapper-timeline.timer`      | Hourly snapshots (configurable). |
+| `snapper-cleanup.timer`       | Garbage-collects old snapshots according to retention policy. |
+| `grub-btrfsd.service`         | Watches `/.snapshots/` and regenerates `grub.cfg` whenever snapper makes or deletes a snapshot — keeps the boot menu up to date with restorable points. |
+
+Final sanity checks before reboot:
+
+```bash
+grep '^MODULES=' /etc/mkinitcpio.conf
+grep '^HOOKS='   /etc/mkinitcpio.conf
+grep '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub
+cat /etc/fstab | grep -E 'subvol=|swap'
+swapon --show
+```
+
+Expected (substituting your UUID and offset):
+
+```text
+MODULES=(btrfs)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"
+```
+
+Then leave the chroot and reboot:
+
+```bash
+exit
+umount -R /mnt
+swapoff -a
+cryptsetup close cryptroot
+reboot
+```
+
+Pull the USB as the laptop starts. The expected sequence:
+
+1. Firmware → GRUB menu (Arch is the only entry; press Enter).
+2. Kernel + initramfs load from the ESP.
+3. systemd-in-initramfs prompts: **`Please enter passphrase for disk arch (cryptroot):`**.
+4. You type the LUKS passphrase, hit Enter.
+5. The mapper appears, the `@` subvolume mounts as `/`, control hands off to the real systemd.
+6. You land at a `login:` prompt.
+
+If you instead drop into `emergency mode`, jump to the troubleshooting box at the bottom of this article before continuing.
+
+---
+
+# Part 3 — First boot: snapper, snapshots, sanity checks
+
+Log in as your user. First thing:
+
+```bash
+sudo systemctl status   # System should be "running"
+findmnt /               # Should show subvol=/@
+findmnt /home           # Should show subvol=/@home
+swapon --show           # Should show /dev/zram0 (pri 100) AND /swap/swapfile
+```
+
+### Re-enable NTP
+
+The `timedatectl set-ntp true` you ran from the live ISO only affected the live environment. The installed system has its own `systemd-timesyncd`, and on first boot it's idle until you turn it on:
+
+```bash
+sudo timedatectl set-ntp true
+timedatectl status            # "System clock synchronized: yes"
+```
+
+Without this the clock drifts to whatever the hardware RTC says, and `pacman` operations start failing with mysterious GPG / TLS errors as soon as the skew gets large enough. Turn it on now and forget about it forever.
+
+### Configure snapper for `/` properly
+
+`snapper -c root create-config /` would create its own `.snapshots` *subvolume*, which collides with the `@snapshots` we already mounted. The Arch-recommended dance:
+
+```bash
+sudo umount /.snapshots
+sudo rm -rf /.snapshots
+sudo snapper -c root create-config /
+sudo btrfs subvolume delete /.snapshots   # delete the one snapper just created
+sudo mkdir /.snapshots
+sudo chmod 750 /.snapshots
+sudo mount -a                              # remount @snapshots from fstab
+```
+
+Tighten retention to something humane (the defaults keep too many):
+
+```bash
+sudo snapper -c root set-config \
+    TIMELINE_LIMIT_HOURLY=5 \
+    TIMELINE_LIMIT_DAILY=7 \
+    TIMELINE_LIMIT_WEEKLY=2 \
+    TIMELINE_LIMIT_MONTHLY=1 \
+    TIMELINE_LIMIT_YEARLY=0
+```
+
+You can do the same for `/home` if you want home directory rollback as well:
+
+```bash
+sudo snapper -c home create-config /home
+```
+
+Verify snap-pac is wired up:
+
+```bash
+sudo pacman -Syu       # any pacman transaction now creates a pre + post snapshot
+sudo snapper -c root list
+```
+
+You should see two new snapshots — one pre, one post — bracketing the update. From here on, *every* `pacman` invocation gives you a rollback point.
+
+### Test hibernation before you trust it
+
+```bash
+sudo systemctl hibernate
+```
+
+The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. If the system resumes with windows where you left them and `dmesg | grep -i hibernate` shows a clean image read, you're good. If it instead boots fresh, your `resume=` parameters didn't take — re-check the cmdline and re-run `mkinitcpio -P && grub-mkconfig -o /boot/grub/grub.cfg`.
+
+---
+
+# Part 4 — Caelestia (Hyprland desktop)
+
+Now we layer the desktop. [Caelestia](https://github.com/caelestia-dots/caelestia){target="_blank" rel="noopener"} is a Hyprland-based dotfile bundle with a curated set of tools (foot, fish, fastfetch, starship, btop, eza, …) and a Quickshell-based status bar. The project ships both an AUR meta-package (`caelestia-meta`) and an `install.fish` script that symlinks configs into `~/.config`.
+
+### 1. Audio stack (PipeWire)
+
+`caelestia-meta` depends on `wireplumber` (the session manager), but it does **not** pull the PipeWire backend itself or the drop-in shims that replace PulseAudio / ALSA / JACK clients. Install the whole stack explicitly so the desktop has working sound from the first launch:
+
+```bash
+sudo pacman -S \
+  pipewire pipewire-audio wireplumber \
+  pipewire-pulse pipewire-alsa pipewire-jack \
+  pavucontrol \
+  sof-firmware
+```
+
+When pacman prompts about a JACK provider, choose **`pipewire-jack`** so the PipeWire shim wins. When it prompts about a PulseAudio replacement, choose **`pipewire-pulse`** for the same reason.
+
+| Package           | Role |
+|-------------------|------|
+| `pipewire`        | The PipeWire server itself — handles audio (and video) graph routing. |
+| `pipewire-audio`  | Audio subset of PipeWire's daemon configs and helpers. |
+| `wireplumber`     | Session/policy manager on top of PipeWire (device probing, default routing). |
+| `pipewire-pulse`  | PulseAudio-compatible socket — apps written for PulseAudio talk to PipeWire transparently. |
+| `pipewire-alsa`   | ALSA-to-PipeWire shim — apps using raw ALSA route through PipeWire. |
+| `pipewire-jack`   | JACK-to-PipeWire shim — pro-audio apps that expect JACK get a working JACK. |
+| `pavucontrol`     | The classic PulseAudio volume / routing GUI. Works fine against `pipewire-pulse` and is still the easiest way to pin specific apps to specific outputs. |
+| `sof-firmware`    | Sound Open Firmware blobs — required for most modern Intel laptop audio codecs. |
+
+The PipeWire and WirePlumber user services start automatically on login via socket activation — you don't need to `systemctl enable` anything by hand. Verify after the next desktop login with:
+
+```bash
+pactl info | grep 'Server Name'      # should say "PulseAudio (on PipeWire …)"
+wpctl status                          # tree of devices/sinks/sources
+```
+
+If `pactl info` reports actual PulseAudio instead of PipeWire, something pulled `pulseaudio` in as a dependency conflict — `pacman -Qs pulseaudio` to confirm, then uninstall the offending package and reinstall `pipewire-pulse`.
+
+### 2. System prerequisites Caelestia expects to find
+
+`caelestia-meta` lists a lot of dependencies but assumes a few CLI essentials are *already* on the system. Install these now so the install script and theme compilation both have everything they need on first run:
+
+```bash
+sudo pacman -S --needed \
+  terminus-font \
+  curl wget \
+  perl \
+  gcc make cmake \
+  sassc \
+  fish \
+  bluez bluez-utils
+```
+
+| Package          | Why we want it before Caelestia |
+|------------------|---------------------------------|
+| `terminus-font`  | Crisp bitmap console font (`ter-132b`, `ter-116n`, …). Useful inside a TTY when X / Wayland is broken — i.e., exactly the situation you'll be in if a Caelestia update misbehaves. |
+| `curl`, `wget`   | Half of every shell script on the internet calls one of these. Neither is in `base`. |
+| `perl`           | Pulled in by some build tools and `xdg-` utilities; safer to have it explicitly than discover it missing inside a failing build. |
+| `gcc`, `make`, `cmake` | `gcc` and `make` come with `base-devel` (already installed in the chroot), but `cmake` doesn't. Required for any package — Quickshell included — that builds with CMake. |
+| `sassc`          | Sass compiler. Used by the GTK theme and several status-bar widgets Caelestia bundles. Missing this is a silent "no styles loaded" failure on first launch. |
+| `fish`           | The Caelestia install script (`install.fish`) is fish-only. `caelestia-meta` brings fish in too, but pre-installing it means the install script can run before the meta-package has even finished depsolving. |
+| `bluez`          | The Linux Bluetooth stack (kernel-side helpers, `bluetoothd`). Required for any Bluetooth headset, mouse, or keyboard. |
+| `bluez-utils`    | Userspace utilities — `bluetoothctl`, `hciconfig`, the test scripts. Without it you'd have a running daemon you can't talk to. |
+
+Enable the Bluetooth daemon so it starts on every boot:
+
+```bash
+sudo systemctl enable --now bluetooth.service
+```
+
+The `--needed` flag tells pacman to skip anything already present (some of these are pulled in by `base-devel`), so this command is safe to re-run any time.
+
+### 3. LazyVim on top of Neovim
+
+Neovim is in `base` and was installed by pacstrap. [LazyVim](https://www.lazyvim.org/){target="_blank" rel="noopener"} layers a curated plugin set, sensible defaults, and a per-language LSP setup on top of it. The official install path is to drop the LazyVim *starter* config into `~/.config/nvim`:
+
+```bash
+# Back up any existing config (paranoid but cheap)
+mv ~/.config/nvim ~/.config/nvim.bak           2>/dev/null
+mv ~/.local/share/nvim ~/.local/share/nvim.bak 2>/dev/null
+mv ~/.local/state/nvim ~/.local/state/nvim.bak 2>/dev/null
+mv ~/.cache/nvim ~/.cache/nvim.bak             2>/dev/null
+
+# Clone the starter
+git clone https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git    # so it becomes *your* config repo, not theirs
+
+# First launch — plugins install themselves on the first time you open nvim
+nvim
+```
+
+The first `nvim` launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for `:Lazy` to report all plugins installed, then `:q`. If you prefer the AUR-packaged version instead, `yay -S lazyvim` after installing the AUR helper below also works — same end state.
+
+### 4. Graphics drivers
+
+Pick one block based on your GPU.
+
+**Intel iGPU** (Iris, UHD, Arc):
+
+```bash
+sudo pacman -S mesa vulkan-intel intel-media-driver libva-utils
+```
+
+| Package               | Role |
+|-----------------------|------|
+| `mesa`                | The userspace OpenGL / Vulkan implementation for Intel, AMD, and most open-source GPU drivers. Required for any 3D acceleration under Wayland. |
+| `vulkan-intel`        | Vulkan ICD (Installable Client Driver) for Intel GPUs. Needed so apps using Vulkan see the iGPU. |
+| `intel-media-driver`  | VA-API hardware video decode for Intel Broadwell and newer. Lets browsers and `mpv` decode H.264/HEVC/AV1 on the GPU instead of the CPU. |
+| `libva-utils`         | `vainfo` and friends — diagnostic CLIs for verifying VA-API works after install. |
+
+**AMD**:
+
+```bash
+sudo pacman -S mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils
+```
+
+| Package               | Role |
+|-----------------------|------|
+| `mesa`                | OpenGL / Vulkan userspace (same as Intel). |
+| `vulkan-radeon`       | Vulkan ICD for AMD GPUs (RADV driver). |
+| `libva-mesa-driver`   | VA-API hardware video decode for AMD via Mesa. |
+| `mesa-vdpau`          | VDPAU hardware video decode for AMD (older API some apps still prefer). |
+| `libva-utils`         | `vainfo` / diagnostics. |
+
+**NVIDIA on Wayland** — the open kernel modules are the recommended path in 2026:
+
+```bash
+sudo pacman -S nvidia-open-dkms nvidia-utils libva-nvidia-driver
+```
+
+| Package                | Role |
+|------------------------|------|
+| `nvidia-open-dkms`     | NVIDIA's open-source kernel modules, built against your current kernel via DKMS. Required for Turing (GTX 16xx / RTX 20xx) or newer. |
+| `nvidia-utils`         | Userspace libraries — `libGL`, CUDA stub, `nvidia-smi`. |
+| `libva-nvidia-driver`  | VA-API shim that routes hardware decode through NVDEC. |
+
+Verify after install:
+
+```bash
+vainfo
+```
+
+You should see a list of supported codecs without errors. If you switched the kernel (added `linux-lts` etc.), re-run `mkinitcpio -P` so DKMS rebuilds NVIDIA against every installed kernel.
+
+::: {.callout-note}
+## Nothing to enable here
+
+These are libraries, not services — there's no `systemctl enable nvidia` to forget. The GPU comes up the moment the kernel loads its driver, well before login.
+:::
+
+### 5. Install an AUR helper
+
+Caelestia is distributed via the AUR and its install script defaults to `yay`:
+
+```bash
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+cd /tmp/yay-bin
+makepkg -si
+cd ~
+```
+
+| Package         | Role |
+|-----------------|------|
+| `git`           | The version-control client. Needed to clone the AUR PKGBUILD. Already installed in the chroot but listed with `--needed` so the line is self-contained. |
+| `base-devel`    | Toolchain meta-package (`gcc`, `make`, `pkgconf`, `fakeroot`, `binutils`, …). Required for *any* PKGBUILD to compile. Also already in the chroot. |
+| `yay-bin`       | The AUR helper itself, distributed as a pre-built binary so the bootstrap doesn't need to compile Go just to install yay. After this, `yay <pkg>` works like `pacman -S <pkg>` but also searches the AUR. |
+
+No service to enable — `yay` is just a CLI tool.
+
+### 6. Install Caelestia
+
+The README pattern is one command per step:
+
+```bash
+# Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)
+yay -S caelestia-meta
+
+# Clone the dotfiles into the canonical location
+git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+
+# Run the installer (it requires fish, which caelestia-meta just installed)
+~/.local/share/caelestia/install.fish --aur-helper=yay
+```
+
+::: {.callout-warning}
+## Do not move the repo after running install.fish
+
+`install.fish` **symlinks** every config from `~/.local/share/caelestia/` into `~/.config/`. If you later move or delete the cloned repo, every symlink becomes a broken pointer and your desktop boots into a half-themed Hyprland with no bar. Treat `~/.local/share/caelestia/` as part of the install, not as scratch space. To update Caelestia later: `cd ~/.local/share/caelestia && git pull` (no need to re-run install.fish unless dependencies change).
+:::
+
+Optional flags to pass to `install.fish`:
+
+| Flag                          | What it adds |
+|-------------------------------|--------------|
+| `--spotify`                   | Installs Spotify + the Spicetify theme matching Caelestia. |
+| `--vscode=code` or `=codium`  | Installs VS Code (or Codium) with the Caelestia VSIX theme. |
+| `--discord`                   | OpenAsar Discord + the Equicord client mod with Caelestia theme. |
+| `--zen`                       | Installs the Zen Browser with the Caelestia native-app manifest. |
+| `--noconfirm`                 | Pass through to pacman/yay. Use only if you've read what's being installed. |
+
+### 7. Install applications (pre-reboot)
+
+Now — *before* the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.
+
+```bash
+sudo pacman -S \
+  firefox \
+  nautilus \
+  libreoffice-fresh \
+  gwenview kate ark okular \
+  haruna swayimg \
+  flatpak \
+  desktop-file-utils
+
+yay -S discover
+```
+
+| Package                | Role |
+|------------------------|------|
+| `firefox`              | The Firefox web browser. Wayland-native by default on recent versions; no extra config needed under Hyprland. |
+| `nautilus`             | GNOME's Files file manager. Plays well with Hyprland because it's a regular GTK app — no GNOME shell required. |
+| `libreoffice-fresh`    | Latest stable LibreOffice (Writer, Calc, Impress, Draw, Math, Base). The `-fresh` variant lags real-stable by a few months; pick `libreoffice-still` if you prefer a slower release cadence. |
+| `gwenview`             | KDE's image viewer / lightweight editor. Strong EXIF and folder-browsing UX, opens almost any image format Qt understands. |
+| `kate`                 | KDE's GUI text editor. Useful as a fallback when you want a graphical editor outside of nvim. |
+| `ark`                  | KDE archive manager. Reads/writes `.zip`, `.7z`, `.tar.*`, `.rar` (read), `.iso`, etc. |
+| `okular`               | KDE's document viewer. PDFs, ePub, DjVu, comic-book archives. Annotation support is the cleanest in the open-source space. |
+| `haruna`               | Modern KDE video player built on `mpv`. Tabs, playlists, smart subtitle handling. |
+| `swayimg`              | Minimal Wayland-native image viewer (sxiv-style). Pairs well with a tiling compositor when you want a no-chrome image popup. |
+| `flatpak`              | The Flatpak runtime — sandboxed cross-distro app packaging. Many apps (Bottles, OBS, Heroic Games Launcher, …) are easiest to install from Flathub. |
+| `desktop-file-utils`   | Provides `update-desktop-database`. Required by some Wayland app launchers (anyrun, fuzzel, walker) to index `.desktop` entries; safer to install up front. |
+| `discover` (AUR)       | KDE's graphical software center. Can install/update native pacman packages **and** Flatpak apps from Flathub in one UI. Pulls in some KDE Frameworks deps but is the friendliest Flatpak GUI under Hyprland. |
+
+::: {.callout-note}
+## Add Flathub before opening Discover
+
+`flatpak` ships without any configured remote. Add Flathub once, system-wide, so Discover and `flatpak install` both see it:
+
+```bash
+sudo flatpak remote-add --if-not-exists flathub \
+    https://flathub.org/repo/flathub.flatpakrepo
+```
+
+Nothing to enable — `flatpak` has no daemon. The runtime kicks in only when you actually run a Flatpak app.
+:::
+
+::: {.callout-tip}
+## What about the rest of the KDE stack?
+
+Installing a handful of KDE apps under Hyprland pulls in Qt and a slice of KDE Frameworks (KF6) — about 200–300 MB of dependencies. That's expected and harmless; the libraries just sit on disk until an app loads them. You don't need to install `plasma-desktop` or any other shell.
+:::
+
+### 8. Install a login manager (SDDM)
+
+Caelestia doesn't ship one. The project's README recommends `greetd` + `tuigreet`; I'm using **SDDM** instead because it matches the KDE apps installed above, supports Wayland natively, and renders a graphical login screen instead of a TTY.
+
+```bash
+sudo pacman -S sddm
+```
+
+| Package | Role |
+|---------|------|
+| `sddm`  | The Simple Desktop Display Manager — graphical login greeter with a Wayland backend. Probes installed `*.desktop` session files (Hyprland ships one) and lets the user pick a session from the dropdown before logging in. |
+
+Tell SDDM to start the **Wayland** greeter (so the login screen itself runs under Wayland, not X). Create `/etc/sddm.conf.d/wayland.conf`:
+
+```ini
+[General]
+DisplayServer=wayland
+GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
+
+[Wayland]
+CompositorCommand=kwin_wayland --no-lockscreen --no-global-shortcuts --locale1
+```
+
+Enable SDDM so it starts at every boot:
+
+```bash
+sudo systemctl enable sddm.service
+```
+
+::: {.callout-note}
+## How SDDM finds Hyprland
+
+When you `pacman -S hyprland` (which `caelestia-meta` did for you), the package installs `/usr/share/wayland-sessions/hyprland.desktop`. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia's variant pre-sets a few env vars for the bundled status bar).
+:::
+
+::: {.callout-tip}
+## Prefer greetd + tuigreet?
+
+If you'd rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:
+
+```bash
+sudo pacman -S greetd greetd-tuigreet
+sudo systemctl enable greetd.service
+```
+
+…and write `/etc/greetd/config.toml` per the [Caelestia README](https://github.com/caelestia-dots/caelestia#login-manager){target="_blank" rel="noopener"}. Only enable **one** display manager at a time — having both `sddm.service` and `greetd.service` enabled causes a fight on VT1 that nobody wins.
+:::
+
+### 9. Reboot into the desktop
+
+```bash
+sudo reboot
+```
+
+On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.
+
+---
+
+# Part 5 — Verifying everything ended up where it should
+
+Once you're in Hyprland, open a `foot` terminal and run:
+
+```bash
+# Filesystem & encryption
+lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS
+cryptsetup status cryptroot      # active LUKS mapping
+findmnt -t btrfs                 # all four Btrfs mountpoints
+sudo btrfs subvolume list /      # @, @home, @snapshots, @var_log, @swap
+
+# Swap + hibernation
+swapon --show                    # zram0 (pri 100) + /swap/swapfile
+zramctl                          # zstd-compressed zram device
+
+# Snapshots
+sudo snapper list                # at least two snapshots from the first pacman -Syu
+ls /.snapshots/                  # numbered snapshot directories
+
+# Compositor + desktop
+hyprctl version                  # Hyprland version
+hyprctl monitors                 # detected displays
+systemctl --user status caelestia-shell.service 2>/dev/null || true
+```
+
+If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.
+
+---
+
+## Troubleshooting: "Timed out waiting for device" at boot
+
+If you reboot and land in emergency mode after the LUKS prompt, the failure mode is almost always one of:
+
+1. **`<UUID>` or `<RESUME_OFFSET>` left as literal text** in `/etc/default/grub`. Re-read [Chapter 10](#chapter-10-grub--the-cmdline-that-actually-boots).
+2. **Mapper name mismatch** between `rd.luks.name=…=cryptroot` and `root=/dev/mapper/cryptroot`. They have to match exactly.
+3. **`rootflags=subvol=@` missing.** Without it, the kernel mounts the top-level Btrfs volume, which has no `/sbin/init`.
+4. **`mkinitcpio.conf` left as the defaults** — no `sd-encrypt` hook, no `btrfs` module. Re-edit, re-run `mkinitcpio -P`.
+
+To recover, boot the install USB again and re-enter the system:
+
+```bash
+cryptsetup open /dev/nvme0n1p2 cryptroot
+mount -o subvol=@ /dev/mapper/cryptroot /mnt
+mount /dev/nvme0n1p1 /mnt/boot
+arch-chroot /mnt
+```
+
+Then fix the offending file, re-run `mkinitcpio -P` and `grub-mkconfig -o /boot/grub/grub.cfg`, `exit`, `umount -R /mnt`, `cryptsetup close cryptroot`, `reboot`.
+
+If you want loud boot logs to see exactly what the kernel is waiting for, remove `quiet` and `loglevel=3` from `GRUB_CMDLINE_LINUX_DEFAULT` temporarily and regenerate the GRUB config.
+
+---
+
+::: {.callout-note}
+## Attribution
+
+The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only. Caelestia is the work of the [caelestia-dots](https://github.com/caelestia-dots){target="_blank" rel="noopener"} project and its contributors.
+:::
