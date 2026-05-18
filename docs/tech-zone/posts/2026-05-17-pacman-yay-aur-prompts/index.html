@@ -493,6 +493,10 @@ What this is
 <section id="part-2-pacman-commands-at-a-glance" class="level1">
 <h1>Part 2 — Pacman commands at a glance</h1>
 <p>The 95 % subset of pacman you actually use day-to-day:</p>
+<details>
+<summary>
+Click to expand: what each command does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 39%">
@@ -563,6 +567,7 @@ What this is
 </tr>
 </tbody>
 </table>
+</details>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -707,6 +712,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 (7/9) Updating linux initcpios...</code></pre>
 <p><strong>What it’s saying:</strong> between (or after) the actual package operations, pacman is running automated <em>hook scripts</em> that ship with various packages. Hooks live in <code>/usr/share/libalpm/hooks/</code> (system-provided) and <code>/etc/pacman.d/hooks/</code> (user-provided), and run when their trigger conditions match.</p>
 <p><strong>Common hooks you’ll see and what they do:</strong></p>
+<details>
+<summary>
+Click to expand: what each hook does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 17%">
@@ -753,6 +762,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <p><strong>Hooks are not interactive.</strong> They don’t ask you questions; they just run. If a hook fails, pacman reports it and the overall transaction may or may not succeed depending on the hook’s severity.</p>
 </section>
 <section id="marked-as-installed-as-a-dependency-explicit" class="level2">
@@ -804,6 +814,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tbody>
 </table>
 <p><strong>Common warnings that <em>look</em> scary but aren’t:</strong></p>
+<details>
+<summary>
+Click to expand: what each message means
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -845,6 +859,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <p><strong>Errors that are usually real:</strong></p>
 <table class="caption-top table">
 <thead>
@@ -909,6 +924,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 <p><strong>What it’s saying:</strong> here are matching packages from both the official repos (<code>extra/</code> etc.) and the AUR (<code>aur/</code>). The list is <strong>reverse-sorted</strong> — the most relevant result is at the bottom, right next to the prompt, so you can pick it quickly.</p>
 <p>The two numbers in parens after each AUR entry are <strong>votes</strong> and <strong>popularity</strong> — higher is generally more trustworthy (more users, longer-maintained). Repo packages instead show install size.</p>
 <p><strong>What to type:</strong></p>
+<details>
+<summary>
+Click to expand: what each selector means
+</summary>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -943,6 +962,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 </section>
 <section id="packages-to-cleanbuild" class="level2">
 <h2 class="anchored" data-anchor-id="packages-to-cleanbuild"><code>==&gt; Packages to cleanBuild?</code></h2>
@@ -953,6 +973,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 ==&gt; [N]one [A]ll [Ab]ort [I]nstalled [No]tInstalled or (1 2 3, 1-3, ^4)</code></pre>
 <p><strong>What it’s asking:</strong> yay’s cache already has cloned PKGBUILD directories for these packages, almost certainly because you’ve installed them (or attempted to) before. Should they be <strong>cleaned</strong> (deleted and re-fetched fresh) or <strong>reused as-is</strong>?</p>
 <p><strong>What to type:</strong></p>
+<details>
+<summary>
+Click to expand: what each answer means
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 57%">
@@ -991,6 +1015,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <p><strong>Default recommendation:</strong> <code>A</code> on a first install (clean slate), <code>N</code> on a retry where you know the previous failure was downstream (e.g., a make error you’ve already fixed in the source).</p>
 </section>
 <section id="diffs-to-show" class="level2">
@@ -1027,6 +1052,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 <section id="part-7-common-aur-build-failures" class="level1">
 <h1>Part 7 — Common AUR build failures</h1>
 <p>Most AUR builds “just work” — but when one fails, the error is usually in one of three places. Read the makepkg output top-to-bottom and stop at the first <code>error:</code> line.</p>
+<details>
+<summary>
+Click to expand: troubleshooting matrix
+</summary>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1063,6 +1092,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <p><strong>General recovery:</strong> if a single package in a multi-package yay install fails, yay stops. The packages that <em>did</em> build successfully are already installed. You can re-run <code>yay -S &lt;failed-pkg&gt;</code> to retry just the failing one once you’ve fixed the cause.</p>
 <hr>
 </section>
@@ -1098,6 +1128,10 @@ Errors occurred, no packages were upgraded.</code></pre>
 <section id="part-9-quick-reference-cheat-sheet" class="level1">
 <h1>Part 9 — Quick-reference cheat sheet</h1>
 <p>For when you just need the answer.</p>
+<details>
+<summary>
+Click to expand: what each prompt means
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
@@ -1164,6 +1198,7 @@ Errors occurred, no packages were upgraded.</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <hr>
 </section>
 <section id="part-10-living-alongside-opinionated-installers-gnu-stow-caelestia-chezmoi-yadm" class="level1">

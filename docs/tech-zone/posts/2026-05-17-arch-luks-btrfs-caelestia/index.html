@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-05-17">
 <meta name="description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
 
-<title>Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc</title>
+<title>Arch + LUKS + Btrfs + Caelestia – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,12 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc">
+<meta property="og:title" content="Arch + LUKS + Btrfs + Caelestia – evannsmc">
 <meta property="og:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
 <meta property="og:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
-<meta name="twitter:title" content="Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using – evannsmc">
+<meta name="twitter:title" content="Arch + LUKS + Btrfs + Caelestia – evannsmc">
 <meta name="twitter:description" content="Single-boot Arch Linux on an NVMe SSD: LUKS2 full-disk encryption, Btrfs with proper subvolumes (@, @home, @snapshots, @var_log, @swap), zram for everyday compressed swap, a NoCOW swap file on Btrfs for hibernation, snapper + grub-btrfs for bootable snapshots, and the Caelestia (Hyprland) desktop on top. A working, copy-pasteable expansion of my basic Arch install — with every correction from the failed-boot post-mortem already baked in.">
 <meta name="twitter:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta name="twitter:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Arch + LUKS + Btrfs + Caelestia: The Install I’m Actually Using</h1>
+<h1 class="title">Arch + LUKS + Btrfs + Caelestia</h1>
   <div class="quarto-categories">
     <div class="quarto-category">arch linux</div>
     <div class="quarto-category">linux</div>
@@ -502,8 +502,8 @@ How to read the hardware-specific examples in this guide
 <p>Click any tab to see the example specific to that machine. The tabs don’t change anything else on the page — they just show or hide the example content. Future readers (including future-me) get both the general guidance and the concrete “here’s what it looked like on a real machine I trust.”</p>
 </div>
 </div>
-<section id="why-this-is-its-own-article-and-not-just-article-02-fixed" class="level2">
-<h2 class="anchored" data-anchor-id="why-this-is-its-own-article-and-not-just-article-02-fixed">Why this is its own article (and not just “Article 02, fixed”)</h2>
+<section id="why-this-is-its-own-article-and-not-just-article-01-fixed" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-is-its-own-article-and-not-just-article-01-fixed">Why this is its own article (and not just “Article 01, fixed”)</h2>
 <p>My <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt at LUKS + Btrfs</a> dropped into emergency mode at boot. I traced the root cause to two typos in the kernel command line: <code>cryptdevice=UUID&lt;…&gt;</code> (missing <code>=</code>) and literal <code>&lt;angle brackets&gt;</code> around the UUID. Those are easy mistakes to make once and never make again, but I also took the chance to step back and pick a different default for <em>this</em> install, because I’m going to be living in it:</p>
 <ol type="1">
 <li><strong>systemd-based initramfs</strong> (<code>sd-encrypt</code>) instead of the older <code>udev</code>/<code>encrypt</code> hook. The kernel parameter format (<code>rd.luks.name=&lt;UUID&gt;=&lt;name&gt;</code>) is documented in <code>systemd-cryptsetup-generator(8)</code>, accepts no <code>:</code> separator, and is harder to mistype than <code>cryptdevice=</code>.</li>
@@ -630,6 +630,10 @@ Why the mapper name matters
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Subvolume-by-subvolume:</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -671,6 +675,7 @@ Why the mapper name matters
 </tr>
 </tbody>
 </table>
+</details>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -732,7 +737,11 @@ Names matter for tooling, not the kernel
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    inotify-tools <span class="dt">\</span></span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    reflector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Use <code>amd-ucode</code> instead of <code>intel-ucode</code> on AMD hardware.</p>
-<p>The new packages beyond Article 01:</p>
+<p>The new packages beyond Article 02:</p>
+<details>
+<summary>
+Click to expand: what each package does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -779,6 +788,7 @@ Names matter for tooling, not the kernel
 </tr>
 </tbody>
 </table>
+</details>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -951,7 +961,7 @@ Already booted and want to change the hostname later?
 </section>
 <section id="chapter-7-the-hibernation-swap-file" class="level2">
 <h2 class="anchored" data-anchor-id="chapter-7-the-hibernation-swap-file">Chapter 7: The hibernation swap file</h2>
-<p>This is the new ground vs.&nbsp;both Article 01 (no swap file at all) and Article 02 (separate encrypted swap partition). Since the whole root volume is LUKS-encrypted, a swap file <em>inside</em> it is automatically encrypted too — no extra cryptsetup dance.</p>
+<p>This is the new ground vs.&nbsp;both Article 02 (no swap file at all) and Article 01 (separate encrypted swap partition). Since the whole root volume is LUKS-encrypted, a swap file <em>inside</em> it is automatically encrypted too — no extra cryptsetup dance.</p>
 <section id="why-a-swap-file-and-zram" class="level3">
 <h3 class="anchored" data-anchor-id="why-a-swap-file-and-zram">Why a swap file <em>and</em> zram?</h3>
 <p>Different jobs, complementary defaults:</p>
@@ -1104,6 +1114,10 @@ The placeholders are placeholders
 </div>
 </div>
 <p>Kernel-parameter-by-kernel-parameter:</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 34%">
@@ -1150,6 +1164,7 @@ The placeholders are placeholders
 </tr>
 </tbody>
 </table>
+</details>
 <p>Install the bootloader and generate the GRUB config:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">grub-install</span> <span class="at">--target</span><span class="op">=</span>x86_64-efi <span class="at">--efi-directory</span><span class="op">=</span>/boot <span class="at">--bootloader-id</span><span class="op">=</span>GRUB</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">grub-mkconfig</span> <span class="at">-o</span> /boot/grub/grub.cfg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1174,7 +1189,7 @@ Why we don’t need <code>GRUB_ENABLE_CRYPTODISK=y</code>
 <div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> enable NetworkManager sshd fstrim.timer reflector.timer <span class="dt">\</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                 snapper-timeline.timer snapper-cleanup.timer <span class="dt">\</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                 grub-btrfsd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>What each timer/service is for, in addition to what Article 01 enabled:</p>
+<p>What each timer/service is for, in addition to what Article 02 enabled:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 86%">
@@ -1234,7 +1249,7 @@ Why there are <em>two</em> UUIDs in this output
 <li><code>rd.luks.name=</code><strong><code>d2c12564-…</code></strong><code>=cryptroot</code> is the <strong>LUKS partition UUID</strong>. It identifies the raw encrypted block device (<code>/dev/nvme0n1p2</code>). GRUB hands this string to the kernel; sd-encrypt uses it to find the partition to unlock.</li>
 <li><code>UUID=</code><strong><code>a0c30a40-…</code></strong> in every fstab line is the <strong>Btrfs filesystem UUID</strong> — the filesystem that lives <em>inside</em> the unlocked LUKS container, on <code>/dev/mapper/cryptroot</code>. genfstab uses this so the mount entries survive even if the underlying mapper changes name.</li>
 </ul>
-<p>Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into <code>rd.luks.name=</code>, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you’ll get the “Timed out waiting for device” emergency-mode failure mode from <a href="../2026-05-05-arch-luks-btrfs-lessons/">Article 02</a>. Verify with <code>blkid /dev/nvme0n1p2</code> (should print <code>TYPE="crypto_LUKS"</code>) — that’s the partition whose UUID belongs on the GRUB cmdline.</p>
+<p>Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into <code>rd.luks.name=</code>, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you’ll get the “Timed out waiting for device” emergency-mode failure mode from <a href="../2026-05-05-arch-luks-btrfs-lessons/">Article 01</a>. Verify with <code>blkid /dev/nvme0n1p2</code> (should print <code>TYPE="crypto_LUKS"</code>) — that’s the partition whose UUID belongs on the GRUB cmdline.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1341,6 +1356,10 @@ A few <code>nmcli</code> patterns worth knowing
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<details>
+<summary>
+Click to expand: what each command does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 84%">
@@ -1383,6 +1402,7 @@ A few <code>nmcli</code> patterns worth knowing
 </tr>
 </tbody>
 </table>
+</details>
 <p>The saved-connection file lives at <code>/etc/NetworkManager/system-connections/&lt;SSID&gt;.nmconnection</code>, mode 600, root-owned, with the passphrase <strong>in plaintext</strong> — back it up or treat it as a secret accordingly.</p>
 </div>
 </div>
@@ -1437,6 +1457,10 @@ System clock synchronized: yes
 <p><strong>Why it’s tempting:</strong> rolling back an accidental <code>rm</code>, an editor that ate a file, or a misbehaving app that scrambled your dotfiles.</p>
 <p><strong>Why it’s not free:</strong> snapshots are copy-on-write, so they cost nothing <em>until files diverge</em>. The catch is that <code>/home</code> on a working machine is full of “write-once-delete-soon” data — <code>cargo target/</code>, <code>node_modules/</code>, <code>~/.cache/</code>, ROS <code>build/</code> and <code>install/</code>, training checkpoints, downloaded tarballs. Every snapshot pins those deleted extents until the snapshot ages out, so a build-heavy <code>/home</code> (research code, ML, robotics workspaces) can balloon snapper’s footprint by many gigabytes in days.</p>
 <p><strong>What snapper for <code>/home</code> doesn’t do:</strong> it doesn’t protect against disk failure, theft, fire, or <code>sudo rm -rf /</code> across the whole filesystem. Those need a <em>backup</em> — <code>restic</code> or <code>borg</code> to a NAS, an external drive, or a cloud bucket. Snapshots and backups solve different problems; for <code>/home</code> data you actually care about, the backup is the load-bearing tool.</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 62%">
@@ -1471,6 +1495,7 @@ System clock synchronized: yes
 </tr>
 </tbody>
 </table>
+</details>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1555,6 +1580,10 @@ Mark build / cache directories NoCOW <em>regardless</em> of whether you enable h
 </table>
 <p>The CoW <em>cost</em> (the fragmentation we just talked about) only shows up on files with a <strong>write-modify-write-modify</strong> pattern — build artifacts, browser cache, ML checkpoints, VM disk images, hot database files. For the rest of <code>/home</code> (code repos, papers, photos, configs, downloads, dotfiles), files are written once and read many times — CoW’s overhead on those is essentially zero, and you get checksums + compression + reflinks for free.</p>
 <p><strong>The rule that actually works:</strong> NoCOW the <em>specific subtrees</em> with bad write patterns, leave everything else CoW.</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 48%">
@@ -1589,6 +1618,7 @@ Mark build / cache directories NoCOW <em>regardless</em> of whether you enable h
 </tr>
 </tbody>
 </table>
+</details>
 <p>The targeted <code>chattr +C</code> on just those subtrees is the minimum NoCOW footprint that solves fragmentation without giving up checksums, compression, or reflinks on the parts of <code>/home</code> that actually benefit from them.</p>
 </div>
 </div>
@@ -1629,6 +1659,10 @@ Mark build / cache directories NoCOW <em>regardless</em> of whether you enable h
 <section id="what-this-table-is-and-what-each-column-shows" class="level3">
 <h3 class="anchored" data-anchor-id="what-this-table-is-and-what-each-column-shows">What this table is and what each column shows</h3>
 <p><code>snapper list</code> prints every snapshot for the named config (<code>-c root</code> here means the <code>/</code> snapper config we set up earlier). Each row is one snapshot. Column-by-column:</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -1675,6 +1709,7 @@ Mark build / cache directories NoCOW <em>regardless</em> of whether you enable h
 </tr>
 </tbody>
 </table>
+</details>
 <p>A few specifics about what we’re seeing above:</p>
 <ul>
 <li><strong>Snapshot <code>0 │ single │ current</code></strong> is snapper’s reference placeholder, created when you ran <code>snapper -c root create-config /</code>. It’s not a real point-in-time copy — it’s an abstract pointer to “the live state of <code>/</code> <em>right now</em>.” You can’t roll back <em>to</em> it (you’re already there), but tools use it as the “before” half of various diffs.</li>
@@ -1771,1670 +1806,38 @@ Hibernation + LUKS: what this gives you, security-wise
 </section>
 </section>
 </section>
-<section id="part-4-caelestia-hyprland-desktop" class="level1">
-<h1>Part 4 — Caelestia (Hyprland desktop)</h1>
-<p>Now we layer the desktop. <a href="https://github.com/caelestia-dots/caelestia" target="_blank" rel="noopener">Caelestia</a> is a Hyprland-based dotfile bundle with a curated set of tools (foot, fish, fastfetch, starship, btop, eza, …) and a Quickshell-based status bar. The project ships both an AUR meta-package (<code>caelestia-meta</code>) and an <code>install.fish</code> script that symlinks configs into <code>~/.config</code>.</p>
-<section id="audio-stack-pipewire" class="level3">
-<h3 class="anchored" data-anchor-id="audio-stack-pipewire">1. Audio stack (PipeWire)</h3>
-<p><code>caelestia-meta</code> depends on <code>wireplumber</code> (the session manager), but it does <strong>not</strong> pull the PipeWire backend itself or the drop-in shims that replace PulseAudio / ALSA / JACK clients. Install the whole stack explicitly so the desktop has working sound from the first launch:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  pipewire pipewire-audio wireplumber <span class="dt">\</span></span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  pipewire-pulse pipewire-alsa pipewire-jack <span class="dt">\</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  pavucontrol <span class="dt">\</span></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  sof-firmware</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>When pacman prompts about a JACK provider, choose <strong><code>pipewire-jack</code></strong> so the PipeWire shim wins. When it prompts about a PulseAudio replacement, choose <strong><code>pipewire-pulse</code></strong> for the same reason.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 76%">
-<col style="width: 24%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pipewire</code></td>
-<td>The PipeWire server itself — handles audio (and video) graph routing.</td>
-</tr>
-<tr class="even">
-<td><code>pipewire-audio</code></td>
-<td>Audio subset of PipeWire’s daemon configs and helpers.</td>
-</tr>
-<tr class="odd">
-<td><code>wireplumber</code></td>
-<td>Session/policy manager on top of PipeWire (device probing, default routing).</td>
-</tr>
-<tr class="even">
-<td><code>pipewire-pulse</code></td>
-<td>PulseAudio-compatible socket — apps written for PulseAudio talk to PipeWire transparently.</td>
-</tr>
-<tr class="odd">
-<td><code>pipewire-alsa</code></td>
-<td>ALSA-to-PipeWire shim — apps using raw ALSA route through PipeWire.</td>
-</tr>
-<tr class="even">
-<td><code>pipewire-jack</code></td>
-<td>JACK-to-PipeWire shim — pro-audio apps that expect JACK get a working JACK.</td>
-</tr>
-<tr class="odd">
-<td><code>pavucontrol</code></td>
-<td>The classic PulseAudio volume / routing GUI. Works fine against <code>pipewire-pulse</code> and is still the easiest way to pin specific apps to specific outputs.</td>
-</tr>
-<tr class="even">
-<td><code>sof-firmware</code></td>
-<td>Sound Open Firmware blobs — required for most modern Intel laptop audio codecs.</td>
-</tr>
-</tbody>
-</table>
-<p>The PipeWire and WirePlumber user services start automatically once a graphical session is active (SDDM → Hyprland triggers <code>graphical-session.target</code> for your user, which fans out and starts the socket-activated PipeWire units). On a bare TTY before that happens, they’re idle and <code>pactl</code> / <code>wpctl</code> will return <code>Connection refused</code> — that’s not a broken install, just “no graphical session has woken them yet.”</p>
-<p>To verify the install <em>now</em>, before the desktop is up, kick the user services manually one time:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> enable <span class="at">--now</span> pipewire.socket pipewire-pulse.socket wireplumber.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then run the verification commands:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should print: PulseAudio (on PipeWire 1.6.x)</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># should print a tree of devices, sinks, and sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>pactl info</code> reports <code>PulseAudio (on PipeWire …)</code>, the stack is wired correctly and <code>pipewire-pulse</code> is intercepting the PulseAudio API as intended. If <code>wpctl status</code> shows your audio devices (built-in speakers, headphone jack, HDMI sinks), WirePlumber’s device probing is alive.</p>
+<section id="part-4-layer-on-the-caelestia-desktop-separate-article" class="level1">
+<h1>Part 4 — Layer on the Caelestia desktop (separate article)</h1>
+<p>You now have a working, encrypted, snapshot-able single-boot Arch system. The PipeWire audio stack, the Caelestia Hyprland bundle, the GPU drivers, the AUR helper, the KDE apps under Hyprland, the SDDM login manager, the wallpaper chain that survives reboots, and the Hyprland 0.55 Lua override path are all covered in their own dedicated article so this one can stay focused on the install layer:</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Two common failure modes after install
+→ <a href="../2026-05-18-caelestia-desktop/">Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</a>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 32%">
-<col style="width: 50%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Symptom</th>
-<th>What’s wrong</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pactl info</code> reports actual PulseAudio (no “on PipeWire” suffix)</td>
-<td>Something pulled <code>pulseaudio</code> in as a dependency conflict and the real PulseAudio daemon won</td>
-<td><code>pacman -Qs pulseaudio</code> to find the offending package, uninstall it, then reinstall <code>pipewire-pulse</code></td>
-</tr>
-<tr class="even">
-<td><code>Connection refused</code> from <code>pactl</code> / <code>wpctl</code> on a bare TTY</td>
-<td>User services aren’t running yet — no graphical session has triggered them</td>
-<td>Run the <code>systemctl --user enable --now</code> line above. After your next graphical login, they auto-start and you’ll never need to do this by hand again.</td>
-</tr>
-<tr class="odd">
-<td><code>Connection refused</code> even after <code>systemctl --user start</code></td>
-<td><code>XDG_RUNTIME_DIR</code> isn’t set, or the user manager isn’t running</td>
-<td><code>loginctl show-user $USER -p Linger</code> — if <code>Linger=no</code> and you SSH’d in, log out and log in directly at the TTY instead, or <code>sudo loginctl enable-linger $USER</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="system-prerequisites-caelestia-expects-to-find" class="level3">
-<h3 class="anchored" data-anchor-id="system-prerequisites-caelestia-expects-to-find">2. System prerequisites Caelestia expects to find</h3>
-<p><code>caelestia-meta</code> lists a lot of dependencies but assumes a few CLI essentials are <em>already</em> on the system. Install these now so the install script and theme compilation both have everything they need on first run:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 35%">
-<col style="width: 64%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Why we want it before Caelestia</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>terminus-font</code></td>
-<td>Crisp bitmap console font (<code>ter-132b</code>, <code>ter-116n</code>, …). Useful inside a TTY when X / Wayland is broken — i.e., exactly the situation you’ll be in if a Caelestia update misbehaves.</td>
-</tr>
-<tr class="even">
-<td><code>curl</code>, <code>wget</code></td>
-<td>Half of every shell script on the internet calls one of these. Neither is in <code>base</code>.</td>
-</tr>
-<tr class="odd">
-<td><code>perl</code></td>
-<td>Pulled in by some build tools and <code>xdg-</code> utilities; safer to have it explicitly than discover it missing inside a failing build.</td>
-</tr>
-<tr class="even">
-<td><code>gcc</code>, <code>make</code>, <code>cmake</code></td>
-<td><code>gcc</code> and <code>make</code> come with <code>base-devel</code> (already installed in the chroot), but <code>cmake</code> doesn’t. Required for any package — Quickshell included — that builds with CMake.</td>
-</tr>
-<tr class="odd">
-<td><code>sassc</code></td>
-<td>Sass compiler. Used by the GTK theme and several status-bar widgets Caelestia bundles. Missing this is a silent “no styles loaded” failure on first launch.</td>
-</tr>
-<tr class="even">
-<td><code>fish</code></td>
-<td>The Caelestia install script (<code>install.fish</code>) is fish-only. <code>caelestia-meta</code> brings fish in too, but pre-installing it means the install script can run before the meta-package has even finished depsolving.</td>
-</tr>
-<tr class="odd">
-<td><code>bluez</code></td>
-<td>The Linux Bluetooth stack (kernel-side helpers, <code>bluetoothd</code>). Required for any Bluetooth headset, mouse, or keyboard.</td>
-</tr>
-<tr class="even">
-<td><code>bluez-utils</code></td>
-<td>Userspace utilities — <code>bluetoothctl</code>, <code>hciconfig</code>, the test scripts. Without it you’d have a running daemon you can’t talk to.</td>
-</tr>
-</tbody>
-</table>
-<p>Enable the Bluetooth daemon so it starts on every boot:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The <code>--needed</code> flag tells pacman to skip anything already present (some of these are pulled in by <code>base-devel</code>), so this command is safe to re-run any time.</p>
-</section>
-<section id="lazyvim-on-top-of-neovim" class="level3">
-<h3 class="anchored" data-anchor-id="lazyvim-on-top-of-neovim">3. LazyVim on top of Neovim</h3>
-<p>Neovim is in <code>base</code> and was installed by pacstrap. <a href="https://www.lazyvim.org/" target="_blank" rel="noopener">LazyVim</a> layers a curated plugin set, sensible defaults, and a per-language LSP setup on top of it. The official install path is to drop the LazyVim <em>starter</em> config into <code>~/.config/nvim</code>:</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
-<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The first <code>nvim</code> launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for <code>:Lazy</code> to report all plugins installed, then <code>:q</code>. If you prefer the AUR-packaged version instead, <code>yay -S lazyvim</code> after installing the AUR helper below also works — same end state.</p>
-</section>
-<section id="section-4-graphics-drivers" class="level3">
-<h3 class="anchored" data-anchor-id="section-4-graphics-drivers">4. Graphics drivers</h3>
-<p>First figure out which GPU(s) you actually have — don’t guess, the wrong driver set wastes a few hundred MB of install and either does nothing useful or causes silent breakage at first compositor launch.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'VGA|3D|Display'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Interpret the output by vendor string:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 38%">
-<col style="width: 24%">
-<col style="width: 36%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>What <code>lspci</code> reports</th>
-<th>GPU you have</th>
-<th>Run block(s) below</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>Intel Corporation … (Graphics\|Iris\|UHD\|Arc) …</code></td>
-<td>Intel iGPU (or Arc dGPU)</td>
-<td><strong>Intel</strong></td>
-</tr>
-<tr class="even">
-<td><code>Advanced Micro Devices, Inc. [AMD/ATI] …</code></td>
-<td>AMD GPU (APU iGPU or Radeon dGPU)</td>
-<td><strong>AMD</strong></td>
-</tr>
-<tr class="odd">
-<td><code>NVIDIA Corporation …</code></td>
-<td>NVIDIA dGPU</td>
-<td><strong>NVIDIA</strong></td>
-</tr>
-<tr class="even">
-<td>One Intel line <strong>and</strong> one NVIDIA line</td>
-<td>Hybrid laptop (Intel iGPU + NVIDIA dGPU)</td>
-<td><strong>Both Intel and NVIDIA</strong></td>
-</tr>
-<tr class="odd">
-<td>One AMD line <strong>and</strong> one NVIDIA line</td>
-<td>Hybrid (AMD APU + NVIDIA dGPU)</td>
-<td><strong>Both AMD and NVIDIA</strong></td>
-</tr>
-<tr class="even">
-<td>Two AMD lines</td>
-<td>AMD APU + AMD dGPU</td>
-<td><strong>AMD</strong> (covers both)</td>
-</tr>
-</tbody>
-</table>
-<p>On a hybrid laptop, install both blocks — the drivers coexist, Hyprland defaults to the iGPU for everyday work to save power, and apps that need the dGPU request it explicitly.</p>
-<section id="machine-examples" class="level4">
-<h4 class="anchored" data-anchor-id="machine-examples">Machine examples</h4>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Generic</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Dell Precision (Intel Iris Xe + RTX A2000)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Dell Pro 16 Plus</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>A clean run on an unknown machine should look like this — one or two <code>lspci</code> lines, no errors, then the install of the matching driver block(s). The specific package names and DKMS output below are <em>templates</em>; substitute your kernel version and driver version.</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> lspci <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'VGA|3D|Display'</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co"># one or two lines, depending on whether you have a hybrid GPU laptop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then run the matching driver block from the lists below, verify with <code>vainfo</code> (Intel/AMD VA-API) and/or <code>nvidia-smi</code> (NVIDIA), and reboot if you installed the NVIDIA driver for the first time.</p>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>The mobile workstation I’ve fully installed and tested this guide on. <strong>Alder Lake-P</strong> + <strong>GA107GLM (Ampere)</strong> — a hybrid laptop, so both driver blocks were needed.</p>
-<p><code>lspci -nn | grep -E 'VGA|3D|Display'</code>:</p>
-<pre class="text"><code>0000:00:02.0 VGA compatible controller [0300]: Intel Corporation Alder Lake-P GT2 [Iris Xe Graphics] [8086:46a6] (rev 0c)
-0000:01:00.0 3D controller [0302]: NVIDIA Corporation GA107GLM [RTX A2000 8GB Laptop GPU] [10de:25ba] (rev a1)</code></pre>
-<p>Two GPU lines → install both blocks. Intel first:</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Verify Intel side with <code>vainfo</code>. On the Precision you should see the <strong>full Iris Xe codec set including hardware AV1 decode</strong> (<code>VAProfileAV1Profile0 : VAEntrypointVLD</code>) — confirms <code>intel-media-driver 26.1.5</code> is loaded:</p>
-<pre class="text"><code>$ vainfo
-Trying display: drm
-vainfo: VA-API version: 1.23 (libva 2.22.0)
-vainfo: Driver version: Intel iHD driver for Intel(R) Gen Graphics - 26.1.5 ()
-vainfo: Supported profile and entrypoints
-      VAProfileNone                   :    VAEntrypointVideoProc
-      VAProfileH264High               :    VAEntrypointVLD
-      VAProfileHEVCMain10             :    VAEntrypointVLD
-      VAProfileVP9Profile2            :    VAEntrypointVLD
-      VAProfileAV1Profile0            :    VAEntrypointVLD          # &lt;-- Iris Xe HW AV1 decode
-      ...</code></pre>
-<p>Then NVIDIA:</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The DKMS hook compiles <code>nvidia/595.71.05 -k 7.0.7-arch2-1</code> (driver version × kernel version) and rebuilds the initramfs to include nvidia early. You’ll see snap-pac take pre/post snapshots bracketing the transaction.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-On a hybrid: <code>nvidia-smi</code> will fail <em>until</em> you reboot
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Immediately after <code>pacman -S nvidia-open-dkms</code>, running <code>nvidia-smi</code> returns:</p>
-<pre class="text"><code>NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver.
-Make sure that the latest NVIDIA driver is installed and running.</code></pre>
-<p>And <code>sudo modprobe nvidia</code> returns:</p>
-<pre class="text"><code>modprobe: ERROR: could not insert 'nvidia': No such device</code></pre>
-<p><strong>This is expected and not a broken install.</strong> The running kernel was booted <em>before</em> nvidia-open-dkms existed, so the <code>nouveau</code> open-source NVIDIA driver is still bound to the dGPU. nouveau owns the device; nvidia can’t bind on top. The package install dropped a nouveau blacklist file <em>and</em> rebuilt your initramfs to load nvidia early on next boot — both take effect only after a reboot.</p>
-<p><strong>Fix:</strong> <code>sudo reboot</code>. After re-entering your LUKS passphrase and logging back in:</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> lsmod <span class="kw">|</span> <span class="fu">grep</span> nvidia</span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="co"># expected: nvidia, nvidia_drm, nvidia_modeset, nvidia_uvm</span></span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nvidia-smi</span>
-<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="co"># expected: table showing "NVIDIA RTX A2000 8GB Laptop GPU", driver 595.71.05, ~5-10 W idle</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>nvidia-smi</code> <em>still</em> fails post-reboot, add <code>nvidia_drm.modeset=1</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> in <code>/etc/default/grub</code>, re-run <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, and reboot again. On nvidia-open 595+ this parameter is usually defaulted, but some hybrid configurations need it explicit.</p>
-</div>
-</div>
-<section id="success-state-on-the-dell-precision-after-the-reboot" class="level4">
-<h4 class="anchored" data-anchor-id="success-state-on-the-dell-precision-after-the-reboot">Success state on the Dell Precision after the reboot</h4>
-<p>What you should see if everything came up cleanly:</p>
-<pre class="text"><code>$ lsmod | grep nvidia
-nvidia_drm            151552  0
-nvidia_modeset       2195456  1 nvidia_drm
-nvidia_uvm           2490368  0
-nvidia              16568320  2 nvidia_uvm,nvidia_modeset
-drm_ttm_helper         20480  2 nvidia_drm,xe
-video                  81920  5 dell_wmi,dell_laptop,xe,i915,nvidia_modeset</code></pre>
-<p>All four NVIDIA modules loaded — <code>nvidia</code>, <code>nvidia_drm</code>, <code>nvidia_modeset</code>, <code>nvidia_uvm</code>. Notice that <code>video</code> shows <strong>both <code>i915</code> and <code>xe</code> loaded for the Intel side</strong>: <code>xe</code> is the modern Mesa-friendly Intel driver, <code>i915</code> is the legacy one — current kernels load both and let the device pick. Alder Lake-P GT2 binds <code>i915</code>; <code>xe</code> is loaded as available. <code>dell_wmi</code> and <code>dell_laptop</code> are the Dell ACPI bits (lid switch, brightness, backlight) wired into the video subsystem.</p>
-<pre class="text"><code>$ nvidia-smi
-Sun May 17 22:44:06 2026
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 595.71.05              Driver Version: 595.71.05      CUDA Version: 13.2     |
-+-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|=========================================+========================+======================|
-|   0  NVIDIA RTX A2000 8GB Lap...    Off |   00000000:01:00.0 Off |                  N/A |
-| N/A   55C    P0              8W /   35W |       0MiB /   8192MiB |      0%      Default |
-+-----------------------------------------+------------------------+----------------------+
-
-| Processes: No running processes found |</code></pre>
-<p>Key things to read out of that table:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 57%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Value</th>
-<th>What it tells you</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Driver Version</strong></td>
-<td><code>595.71.05</code></td>
-<td>nvidia-open from Arch’s <code>nvidia-open-dkms</code> package</td>
-</tr>
-<tr class="even">
-<td><strong>CUDA Version</strong></td>
-<td><code>13.2</code></td>
-<td>The CUDA version the driver supports — install <code>pacman -S cuda</code> later if you want to do ML/PyTorch work, it’ll talk to this driver</td>
-</tr>
-<tr class="odd">
-<td><strong>Persistence-M</strong></td>
-<td><code>Off</code></td>
-<td>Power management lets the GPU sleep between accesses (correct for a laptop; saves battery)</td>
-</tr>
-<tr class="even">
-<td><strong>Temp</strong></td>
-<td><code>55°C</code></td>
-<td>Idle temp after nvidia-smi briefly woke it; will drop in the next few seconds</td>
-</tr>
-<tr class="odd">
-<td><strong>Pwr Usage / Cap</strong></td>
-<td><code>8 W / 35 W</code></td>
-<td>Wake-up draw; the long-term idle floor is ~0.5 W when D3cold-suspended</td>
-</tr>
-<tr class="even">
-<td><strong>Memory-Usage</strong></td>
-<td><code>0 MiB / 8192 MiB</code></td>
-<td>All 8 GB of VRAM available</td>
-</tr>
-<tr class="odd">
-<td><strong>GPU-Util</strong></td>
-<td><code>0 %</code></td>
-<td>Nothing using the GPU right now (no processes)</td>
-</tr>
-</tbody>
-</table>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Verify dGPU dynamic power management is on (it should be, by default)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>nvidia-open</code> driver versions 525+ enable D3cold runtime power management <strong>automatically</strong> for capable Turing-or-newer GPUs. The RTX A2000 is one of them, so on a current Arch install the dGPU should be runtime-suspending without any kernel-cmdline work from you. Confirm with:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/driver/nvidia/gpus/0000:01:00.0/power</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On the Precision, this prints:</p>
-<pre class="text"><code>Runtime D3 status:          Enabled (fine-grained)
-Tegra iGPU Rail-Gating:     Disabled
-Video Memory:               Off
-
-GPU Hardware Support:
- Video Memory Self Refresh: Supported
- Video Memory Off:          Supported
-
-S0ix Power Management:
- Platform Support:          Supported
- Status:                    Disabled
-
-Notebook Dynamic Boost:     Supported</code></pre>
-<p>The two lines that matter:</p>
-<ul>
-<li><strong><code>Runtime D3 status: Enabled (fine-grained)</code></strong> — runtime PM is on, and “fine-grained” means the driver can suspend individual function blocks independently (best-case power management).</li>
-<li><strong><code>Video Memory: Off</code></strong> — the 8 GB of GDDR6 is fully powered down right now, dropping idle draw to ~0.5 W instead of the ~8 W you see while <code>nvidia-smi</code> is querying.</li>
-</ul>
-<p><code>S0ix Power Management … Status: Disabled</code> is <strong>not a problem</strong> — S0ix is the system-wide modern-standby state, and <code>Disabled</code> here just means your laptop isn’t currently suspended. It’ll activate the next time you <code>systemctl suspend</code>.</p>
-<p><strong>Only if <code>Runtime D3 status: Disabled</code></strong> (older driver, or some hybrid configs where auto-enable doesn’t trigger) do you need to opt in manually — add <code>nvidia.NVreg_DynamicPowerManagement=0x02</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and re-run <code>sudo grub-mkconfig -o /boot/grub/grub.cfg</code>. On nvidia-open 595+ with an Ampere or newer card, this is unnecessary.</p>
-</div>
-</div>
-<p>After the reboot, the four Hyprland NVIDIA env vars (set later, in <code>~/.config/hypr/hyprland.conf</code>) become relevant — see the env-vars table above.</p>
-</section>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p><em>Placeholder.</em> I haven’t installed this stack on the Dell Pro 16 Plus yet. When I do, this tab will land with: the real <code>lspci</code> output (likely Intel Lunar Lake or Arrow Lake iGPU only, no dGPU on the Pro line), the matching <code>pacman -S</code> block, <code>vainfo</code> confirmation, and any laptop-specific quirks I hit (firmware updates, ACPI workarounds, audio codec patches).</p>
-</div>
-</div>
-</div>
-<p><strong>Intel iGPU</strong> (Iris, UHD, Arc):</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 79%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>mesa</code></td>
-<td>The userspace OpenGL / Vulkan implementation for Intel, AMD, and most open-source GPU drivers. Required for any 3D acceleration under Wayland.</td>
-</tr>
-<tr class="even">
-<td><code>vulkan-intel</code></td>
-<td>Vulkan ICD (Installable Client Driver) for Intel GPUs. Needed so apps using Vulkan see the iGPU.</td>
-</tr>
-<tr class="odd">
-<td><code>intel-media-driver</code></td>
-<td>VA-API hardware video decode for Intel Broadwell and newer. Lets browsers and <code>mpv</code> decode H.264/HEVC/AV1 on the GPU instead of the CPU.</td>
-</tr>
-<tr class="even">
-<td><code>libva-utils</code></td>
-<td><code>vainfo</code> and friends — diagnostic CLIs for verifying VA-API works after install.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>AMD</strong>:</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 79%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>mesa</code></td>
-<td>OpenGL / Vulkan userspace (same as Intel).</td>
-</tr>
-<tr class="even">
-<td><code>vulkan-radeon</code></td>
-<td>Vulkan ICD for AMD GPUs (RADV driver).</td>
-</tr>
-<tr class="odd">
-<td><code>libva-mesa-driver</code></td>
-<td>VA-API hardware video decode for AMD via Mesa.</td>
-</tr>
-<tr class="even">
-<td><code>mesa-vdpau</code></td>
-<td>VDPAU hardware video decode for AMD (older API some apps still prefer).</td>
-</tr>
-<tr class="odd">
-<td><code>libva-utils</code></td>
-<td><code>vainfo</code> / diagnostics.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>NVIDIA on Wayland</strong> — the open kernel modules are the recommended path in 2026:</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 80%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>nvidia-open-dkms</code></td>
-<td>NVIDIA’s open-source kernel modules, built against your current kernel via DKMS. Required for Turing (GTX 16xx / RTX 20xx) or newer.</td>
-</tr>
-<tr class="even">
-<td><code>nvidia-utils</code></td>
-<td>Userspace libraries — <code>libGL</code>, CUDA stub, <code>nvidia-smi</code>.</td>
-</tr>
-<tr class="odd">
-<td><code>libva-nvidia-driver</code></td>
-<td>VA-API shim that routes hardware decode through NVDEC.</td>
-</tr>
-</tbody>
-</table>
-<p>Verify after install:</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You should see a list of supported codecs without errors. If you switched the kernel (added <code>linux-lts</code> etc.), re-run <code>mkinitcpio -P</code> so DKMS rebuilds NVIDIA against every installed kernel.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Nothing to enable here
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>These are libraries, not services — there’s no <code>systemctl enable nvidia</code> to forget. The GPU comes up the moment the kernel loads its driver, well before login.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Hybrid laptops (Intel + NVIDIA, AMD + NVIDIA): install both blocks
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If your <code>lspci</code> showed two GPU lines — typical on mobile workstations (Dell Precision, ThinkPad P-series, HP ZBook) and most gaming laptops — install the driver blocks for <strong>both</strong> vendors. The drivers coexist without conflict; the kernel loads each as its hardware appears, and Wayland compositors pick which one to render on a per-app basis.</p>
-<p>The default behavior under Hyprland on a hybrid:</p>
-<ul>
-<li>The <strong>iGPU</strong> (Intel Iris Xe, AMD Radeon Graphics) is the <strong>primary render device</strong> — it draws your compositor, your windows, your animations, video playback, and almost every app. It idles at low power and keeps your battery happy.</li>
-<li>The <strong>dGPU</strong> (NVIDIA RTX, AMD Radeon dGPU) <strong>idles at ~5 W until explicitly asked</strong> to render. Apps that want it call <code>prime-run &lt;app&gt;</code> or set <code>__NV_PRIME_RENDER_OFFLOAD=1</code> themselves (CUDA jobs, ML training, Blender, games, video encoders).</li>
-</ul>
-<p>A few things to expect during the NVIDIA install on a hybrid:</p>
-<ul>
-<li><strong>Pacman prompts to pick a <code>libglvnd</code> provider</strong> — pick <code>nvidia-utils</code>. <code>mesa</code> and <code>nvidia-utils</code> both provide pieces of libGL; the GLVND dispatcher at runtime routes calls to whichever GPU each app is actually rendering on.</li>
-<li><strong>DKMS compiles the <code>nvidia</code> kernel modules</strong> against your current kernel (~30–60 seconds, runs inside pacman’s post-install hook). <code>linux-headers</code> from pacstrap is what makes this work — without it, the compile fails loudly. The <code>-open-dkms</code> variant builds against NVIDIA’s open kernel modules, which is the recommended path for any GPU <strong>Turing or newer</strong> (GTX 16-series, RTX 20-series, all RTX 30-series, all RTX 40/50-series, all RTX A/L workstation cards).</li>
-<li>A <strong><code>nvidia.conf</code> modules-load file</strong> drops into <code>/etc/modules-load.d/</code> so the modules load on next boot, before the display server starts.</li>
-</ul>
-<p>Verify both halves of the GPU stack after install:</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span>            <span class="co"># Intel iGPU: lists h264, h265, vp9, av1 decode entrypoints</span></span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>        <span class="co"># NVIDIA dGPU: prints a table showing the dGPU name,</span></span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>                  <span class="co">#              driver version, and current power draw (~5–10 W idle)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>nvidia-smi</code> returns <em>“No devices were found”</em> or hangs, the kernel modules didn’t load — usually a silent DKMS build failure. Recovery: <code>sudo dkms autoinstall &amp;&amp; sudo modprobe nvidia</code>, then re-check.</p>
-<section id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up" class="level4">
-<h4 class="anchored" data-anchor-id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up">Hyprland env vars for NVIDIA (set once Caelestia is up)</h4>
-<p>Don’t worry about these yet — flagging so you know to look for them after Caelestia is installed and Hyprland is running. NVIDIA on Wayland needs a handful of environment variables to interoperate cleanly with Hyprland and the apps that run inside it. Caelestia’s bundled <code>hyprland.conf</code> may already set them; if not, add them to <code>~/.config/hypr/hyprland.conf</code> (Hyprland’s syntax is <code>env = NAME,VALUE</code> — comma, not equals):</p>
-<pre class="text"><code>env = LIBVA_DRIVER_NAME,nvidia
-env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-env = NVD_BACKEND,direct
-env = ELECTRON_OZONE_PLATFORM_HINT,auto</code></pre>
-<p>What each variable does:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 35%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Variable</th>
-<th>What it does</th>
-<th>When to set it</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>LIBVA_DRIVER_NAME=nvidia</code></td>
-<td>VA-API (Video Acceleration API) is the Linux API for hardware-accelerated video decode/encode. This env var tells clients (browsers, <code>mpv</code>, <code>obs</code>) which VA-API driver to load. <code>nvidia</code> routes decode to the NVIDIA GPU via the <code>libva-nvidia-driver</code> shim.</td>
-<td>Set if you want the dGPU doing video decode (faster on 4K, more CPU-cool). <strong>Omit on battery-sensitive workflows</strong> — leaving it unset (or setting <code>iHD</code> for Intel) keeps decode on the iGPU, which is more power-efficient.</td>
-</tr>
-<tr class="even">
-<td><code>__GLX_VENDOR_LIBRARY_NAME=nvidia</code></td>
-<td>GLVND (GL Vendor-Neutral Dispatch) is the library that lets multiple GPU drivers coexist on one system. This env var tells GLVND to route OpenGL/GLX calls through the NVIDIA libGL implementation.</td>
-<td>Set when you want OpenGL apps (legacy X11 apps running via Xwayland) to use the NVIDIA dGPU instead of the Intel iGPU. Less important for native Wayland apps, which use EGL via the compositor’s chosen device.</td>
-</tr>
-<tr class="odd">
-<td><code>NVD_BACKEND=direct</code></td>
-<td>Tells the <code>libva-nvidia-driver</code> shim to talk to NVDEC (NVIDIA’s hardware video decoder) via the <em>direct</em> backend, rather than going through CUDA-based intermediaries. The direct backend is lower-latency and the recommended path for current driver versions.</td>
-<td>Always set this when <code>LIBVA_DRIVER_NAME=nvidia</code> is also set. The two work together — the first picks NVIDIA for VA-API, the second tells NVIDIA <em>how</em> to do the decode.</td>
-</tr>
-<tr class="even">
-<td><code>ELECTRON_OZONE_PLATFORM_HINT=auto</code></td>
-<td>Chromium and Electron apps (VSCode, Discord, Slack, Obsidian, Signal, Spotify, Zen Browser) use the “Ozone” rendering abstraction. <code>auto</code> tells them to detect Wayland and prefer the native Wayland backend over Xwayland.</td>
-<td>Always set this on Hyprland regardless of GPU — <em>not NVIDIA-specific</em>. Without it, Electron apps run via Xwayland (works, but ignores fractional scaling, has worse touchpad gestures, and is slightly laggier on hi-DPI displays).</td>
-</tr>
-</tbody>
-</table>
-<p>A few additional notes:</p>
-<ul>
-<li><p><strong>Apply after adding</strong> — Hyprland reloads its config on save <em>for most</em> settings, but <code>env</code> lines only take effect for apps started <em>after</em> the change. Either log out and log back in, or <code>hyprctl reload</code> and then close+reopen each app you want to pick up the new env.</p></li>
-<li><p><strong>For the iGPU-only render path</strong> (your default for desktop work), no env vars are needed at all — Hyprland uses the iGPU automatically. The vars above only matter when you want NVIDIA to do specific work.</p></li>
-<li><p><strong>For running a <em>specific</em> app on the dGPU</strong>, you don’t have to flip any global env vars — just launch it with offload:</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prime-run</span> blender        <span class="co"># or: __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia blender</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><code>prime-run</code> is a tiny wrapper script that comes with <code>nvidia-prime</code> (worth <code>pacman -S nvidia-prime</code> if you do a lot of per-app dGPU offload).</p></li>
-<li><p><strong>Older NVIDIA driver workarounds you might see online</strong> — older guides recommend <code>WLR_NO_HARDWARE_CURSORS=1</code> (fixes invisible cursor on pre-555 drivers) and <code>GBM_BACKEND=nvidia-drm</code> (sets the GBM allocator). With <code>nvidia-open-dkms</code> ≥ 580 (current as of mid-2026) neither is needed — skip them unless you actually see a problem they describe.</p></li>
-</ul>
-</section>
-</div>
-</div>
-</section>
-</section>
-<section id="install-an-aur-helper" class="level3">
-<h3 class="anchored" data-anchor-id="install-an-aur-helper">5. Install an AUR helper</h3>
-<p>Caelestia is distributed via the AUR and its install script defaults to <code>yay</code>:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 73%">
-<col style="width: 26%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>git</code></td>
-<td>The version-control client. Needed to clone the AUR PKGBUILD. Already installed in the chroot but listed with <code>--needed</code> so the line is self-contained.</td>
-</tr>
-<tr class="even">
-<td><code>base-devel</code></td>
-<td>Toolchain meta-package (<code>gcc</code>, <code>make</code>, <code>pkgconf</code>, <code>fakeroot</code>, <code>binutils</code>, …). Required for <em>any</em> PKGBUILD to compile. Also already in the chroot.</td>
-</tr>
-<tr class="odd">
-<td><code>yay-bin</code></td>
-<td>The AUR helper itself, distributed as a pre-built binary so the bootstrap doesn’t need to compile Go just to install yay. After this, <code>yay &lt;pkg&gt;</code> works like <code>pacman -S &lt;pkg&gt;</code> but also searches the AUR.</td>
-</tr>
-</tbody>
-</table>
-<p>No service to enable — <code>yay</code> is just a CLI tool.</p>
-</section>
-<section id="install-caelestia" class="level3">
-<h3 class="anchored" data-anchor-id="install-caelestia">6. Install Caelestia</h3>
-<p>The README pattern is one command per step:</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
-<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Do not move the repo after running install.fish
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>install.fish</code> <strong>symlinks</strong> every config from <code>~/.local/share/caelestia/</code> into <code>~/.config/</code>. If you later move or delete the cloned repo, every symlink becomes a broken pointer and your desktop boots into a half-themed Hyprland with no bar. Treat <code>~/.local/share/caelestia/</code> as part of the install, not as scratch space. To update Caelestia later: <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> (no need to re-run install.fish unless dependencies change).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Common failure: <code>caelestia-meta</code> <code>.SRCINFO</code> parsing aborts the install
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A reproducible failure mode I hit on a fresh install — and the fix that worked. The first time <code>install.fish</code> runs, you may see all 9 AUR packages build successfully (<code>==&gt; Validating source files with sha256sums... Passed</code> for each), then <strong>the install phase aborts</strong> with:</p>
-<pre class="text"><code>:: (1/9) Parsing SRCINFO: caelestia-meta
- -&gt; failed to parse caelestia-meta: Unable to read file: .SRCINFO: open .SRCINFO: no such file or directory
-:: Installing hypr* configs...
-fish: Unknown command: hyprctl
-~/.local/share/caelestia/install.fish (line 169):
-    hyprctl reload
-    ^~~~~~^
-fish: Unknown command: caelestia
-~/.local/share/caelestia/install.fish (line 303):
-    caelestia scheme set -n shadotheme</code></pre>
-<p>What happened: <code>caelestia-meta</code> is a pure meta-package (no source code, just dependency declarations). On some yay versions and some AUR mirror states, the <code>.SRCINFO</code> file gets missed during the build → install handoff, and yay aborts the install phase. install.fish doesn’t check yay’s exit status — it cheerfully continues into the config-symlinking step and tries to call <code>hyprctl</code> and <code>caelestia</code>, neither of which exist on disk because the install never happened. The “<code>Unknown command: hyprctl</code> / <code>Unknown command: caelestia</code>” errors are downstream symptoms; the <em>real</em> failure is the SRCINFO line above them.</p>
-<p><strong>Recovery in four steps:</strong></p>
-<ol type="1">
-<li><p><strong>Confirm what’s actually installed</strong> — most likely <em>nothing</em> from the Caelestia stack made it past the parse failure:</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pacman</span> <span class="at">-Qs</span> hyprland foot fish fastfetch quickshell caelestia</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong>Install the official-repo deps directly with pacman</strong> (skip the broken meta-package’s dependency-resolution path):</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  hyprland foot fish fastfetch starship btop eza fuzzel jq <span class="dt">\</span></span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  xdg-desktop-portal-hyprland hyprpicker wl-clipboard cliphist <span class="dt">\</span></span>
-<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  trash-cli adw-gtk-theme papirus-icon-theme <span class="dt">\</span></span>
-<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd ttf-material-symbols-variable <span class="dt">\</span></span>
-<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  inotify-tools ddcutil brightnessctl power-profiles-daemon <span class="dt">\</span></span>
-<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  dart-sass swappy grim slurp sndio gpu-screen-recorder <span class="dt">\</span></span>
-<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  libnotify python-pillow uwsm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong>Install the AUR components individually, omitting <code>caelestia-meta</code></strong> — yay caches the source tarballs even when it cleans the built <code>.pkg.tar.zst</code> artifacts, so the rebuild is fast (Quickshell’s ~1–3 min CMake compile is the only meaningful wait):</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  caelestia-shell quickshell-git libcava caelestia-cli <span class="dt">\</span></span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>  app2unit python-materialyoucolor ttf-rubik-vf qtengine</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>For the yay prompts: <code>N</code> to cleanBuild (cache is good), <code>N</code> to diffs, <code>N</code> to PKGBUILDs to edit, <code>N</code> to remove make deps after install, <code>Y</code> to “Proceed with installation?”. (See the <a href="../2026-05-17-pacman-yay-aur-prompts/">pacman + yay reference article</a> for full prompt explanations.)</p></li>
-<li><p><strong>Re-run install.fish</strong> so it finishes the config-symlinking step now that <code>hyprctl</code> and <code>caelestia</code> exist:</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>At the prompts: pick <code>1</code> for “backup already exists” (your <code>~/.config</code> was backed up on the first attempt), and <code>Y</code> to every “Overwrite?” question (these are stale partial symlinks from the first run; let install.fish refresh them).</p></li>
-</ol>
-<p><strong>Verify the recovery:</strong></p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> hyprctl caelestia quickshell foot fish    <span class="co"># all 5 should print /usr/bin/&lt;name&gt;</span></span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                                   <span class="co"># prints "HYPRLAND_INSTANCE_SIGNATURE not set!" — that's EXPECTED on a TTY/SSH session (you're outside Hyprland; the binary works, it just has nothing to talk to until a session is running)</span></span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--help</span>                                  <span class="co"># prints subcommand list</span></span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> ~/.config/hypr/                             <span class="co"># should show symlinks into ~/.local/share/caelestia/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If all four commands return sane output, you’re recovered. The “HYPRLAND_INSTANCE_SIGNATURE not set!” message is <strong>not</strong> an error — it’s <code>hyprctl</code> correctly reporting that there’s no running Hyprland for it to talk to from your current shell. You’ll see a real version string once you’re inside a Hyprland session (after the SDDM reboot in Section 9).</p>
-<p><strong>Why skip <code>caelestia-meta</code> going forward?</strong> It’s a <em>convenience</em> meta-package — its only role is to declare dependencies. With the 8 component AUR packages + the pacman-installed repo deps, you have functionally the same installed state. You can retry <code>yay -S caelestia-meta</code> later if you want it formally recorded; if it still fails with the SRCINFO error, the practical impact is zero (you just <code>yay -Syu &lt;component&gt;</code> to update each piece individually instead of <code>yay -Syu caelestia-meta</code> to update the whole bundle).</p>
-</div>
-</div>
-<p>Optional flags to pass to <code>install.fish</code>:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 68%">
-<col style="width: 31%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Flag</th>
-<th>What it adds</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>--spotify</code></td>
-<td>Installs Spotify + the Spicetify theme matching Caelestia.</td>
-</tr>
-<tr class="even">
-<td><code>--vscode=code</code> or <code>=codium</code></td>
-<td>Installs VS Code (or Codium) with the Caelestia VSIX theme.</td>
-</tr>
-<tr class="odd">
-<td><code>--discord</code></td>
-<td>OpenAsar Discord + the Equicord client mod with Caelestia theme.</td>
-</tr>
-<tr class="even">
-<td><code>--zen</code></td>
-<td>Installs the Zen Browser with the Caelestia native-app manifest.</td>
-</tr>
-<tr class="odd">
-<td><code>--noconfirm</code></td>
-<td>Pass through to pacman/yay. Use only if you’ve read what’s being installed.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="install-applications-pre-reboot" class="level3">
-<h3 class="anchored" data-anchor-id="install-applications-pre-reboot">7. Install applications (pre-reboot)</h3>
-<p>Now — <em>before</em> the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
-<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils <span class="dt">\</span></span>
-<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>  discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Heads up: <code>discover</code> is in the official repos now
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Older guides (and an earlier draft of this article) reach for <code>yay -S discover</code> because Discover used to be AUR-only on non-Plasma desktops. As of recent Arch, <strong>it’s back in the official <code>extra</code> repo</strong> — <code>sudo pacman -S discover</code> works directly, no AUR build needed. If you do run <code>yay -S discover</code> you’ll see the output line <code>Sync Explicit (1): discover-6.6.5-1</code> (note: <strong>Sync</strong>, not <strong>AUR</strong>) — yay just forwards to pacman.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Provider prompts you’ll see during this install — what to pick
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This pacman command triggers several <code>:: There are N providers available for X:</code> prompts because some of these apps depend on virtual package names that multiple real packages can satisfy. Picking the wrong one isn’t usually fatal but means extra dependencies you don’t need (or worse codec coverage in your media apps). Here’s what each likely prompt will look like and what I recommend:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 28%">
-<col style="width: 32%">
-<col style="width: 21%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Prompt</th>
-<th>Options</th>
-<th>Pick</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>:: There are N providers available for ttf-font:</code></td>
-<td>gnu-free-fonts / noto-fonts / ttf-bitstream-vera / ttf-croscore / ttf-dejavu / ttf-droid / ttf-ibm-plex / ttf-input / ttf-input-nerd / ttf-liberation / ttf-roboto</td>
-<td><strong><code>noto-fonts</code></strong></td>
-<td>Google’s Unicode-spanning family — broadest script coverage (Latin, Cyrillic, CJK fallbacks, Devanagari, Arabic, …), the de-facto modern Linux desktop default. Complements the JetBrains Mono + Material Symbols fonts Caelestia already pulled in.</td>
-</tr>
-<tr class="even">
-<td><code>:: There are 2 providers available for qt6-multimedia-backend:</code></td>
-<td>qt6-multimedia-ffmpeg / qt6-multimedia-gstreamer</td>
-<td><strong><code>qt6-multimedia-ffmpeg</code></strong></td>
-<td>Qt 6.7+’s own recommended default. Broader codec coverage via ffmpeg, fewer transitive deps, less GNOME-stack interop you don’t need on Hyprland.</td>
-</tr>
-<tr class="odd">
-<td><code>:: There are 2 providers available for phonon-qt6-backend:</code></td>
-<td>phonon-qt6-vlc / phonon-qt6-gstreamer</td>
-<td><strong><code>phonon-qt6-vlc</code></strong></td>
-<td>Used by some KDE apps (Okular’s PDF annotations, parts of KDE Frameworks). VLC backend has wider codec support than GStreamer for the same reason as above.</td>
-</tr>
-<tr class="even">
-<td><code>:: There are N providers available for java-runtime</code> <em>(only if libreoffice prompts)</em></td>
-<td>jre-openjdk / jre21-openjdk / jre17-openjdk / …</td>
-<td><strong><code>jre-openjdk</code></strong> (latest non-LTS) or <strong><code>jre21-openjdk</code></strong> (current LTS)</td>
-<td>LibreOffice optionally uses Java for Base (database UI) and some macros. The latest LTS (21 as of mid-2026) is the safe default.</td>
-</tr>
-<tr class="odd">
-<td><code>:: There are N providers available for cron</code> <em>(rarely seen)</em></td>
-<td>cronie / systemd-cron / fcron</td>
-<td><strong><code>cronie</code></strong></td>
-<td>Arch’s traditional cron. You probably don’t need cron at all on this install (systemd timers do the job), but if something pulls it in, cronie is the safest pick.</td>
-</tr>
-</tbody>
-</table>
-<p>For any of these, <strong>just hitting Enter</strong> also works if <code>default=1</code> happens to be the recommendation. Double-check by reading the chosen option name before pressing — the <em>order</em> of options can shift between Arch updates as new providers are added.</p>
-<p>If a different prompt comes up that’s not in this table, the <a href="../2026-05-17-pacman-yay-aur-prompts/">pacman / yay reference article</a> has the full “how to read these” treatment.</p>
-</div>
-</div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 80%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>firefox</code></td>
-<td>The Firefox web browser. Wayland-native by default on recent versions; no extra config needed under Hyprland.</td>
-</tr>
-<tr class="even">
-<td><code>nautilus</code></td>
-<td>GNOME’s Files file manager. Plays well with Hyprland because it’s a regular GTK app — no GNOME shell required.</td>
-</tr>
-<tr class="odd">
-<td><code>libreoffice-fresh</code></td>
-<td>Latest stable LibreOffice (Writer, Calc, Impress, Draw, Math, Base). The <code>-fresh</code> variant lags real-stable by a few months; pick <code>libreoffice-still</code> if you prefer a slower release cadence.</td>
-</tr>
-<tr class="even">
-<td><code>gwenview</code></td>
-<td>KDE’s image viewer / lightweight editor. Strong EXIF and folder-browsing UX, opens almost any image format Qt understands.</td>
-</tr>
-<tr class="odd">
-<td><code>kate</code></td>
-<td>KDE’s GUI text editor. Useful as a fallback when you want a graphical editor outside of nvim.</td>
-</tr>
-<tr class="even">
-<td><code>ark</code></td>
-<td>KDE archive manager. Reads/writes <code>.zip</code>, <code>.7z</code>, <code>.tar.*</code>, <code>.rar</code> (read), <code>.iso</code>, etc.</td>
-</tr>
-<tr class="odd">
-<td><code>okular</code></td>
-<td>KDE’s document viewer. PDFs, ePub, DjVu, comic-book archives. Annotation support is the cleanest in the open-source space.</td>
-</tr>
-<tr class="even">
-<td><code>haruna</code></td>
-<td>Modern KDE video player built on <code>mpv</code>. Tabs, playlists, smart subtitle handling.</td>
-</tr>
-<tr class="odd">
-<td><code>swayimg</code></td>
-<td>Minimal Wayland-native image viewer (sxiv-style). Pairs well with a tiling compositor when you want a no-chrome image popup.</td>
-</tr>
-<tr class="even">
-<td><code>flatpak</code></td>
-<td>The Flatpak runtime — sandboxed cross-distro app packaging. Many apps (Bottles, OBS, Heroic Games Launcher, …) are easiest to install from Flathub.</td>
-</tr>
-<tr class="odd">
-<td><code>desktop-file-utils</code></td>
-<td>Provides <code>update-desktop-database</code>. Required by some Wayland app launchers (anyrun, fuzzel, walker) to index <code>.desktop</code> entries; safer to install up front.</td>
-</tr>
-<tr class="even">
-<td><code>discover</code> (AUR)</td>
-<td>KDE’s graphical software center. Can install/update native pacman packages <strong>and</strong> Flatpak apps from Flathub in one UI. Pulls in some KDE Frameworks deps but is the friendliest Flatpak GUI under Hyprland.</td>
-</tr>
-</tbody>
-</table>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Add Flathub before opening Discover
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>flatpak</code> ships without any configured remote. Add Flathub once, system-wide, so Discover and <code>flatpak install</code> both see it:</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
-<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Nothing to enable — <code>flatpak</code> has no daemon. The runtime kicks in only when you actually run a Flatpak app.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-What about the rest of the KDE stack?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Installing a handful of KDE apps under Hyprland pulls in Qt and a slice of KDE Frameworks (KF6) — about 200–300 MB of dependencies. That’s expected and harmless; the libraries just sit on disk until an app loads them. You don’t need to install <code>plasma-desktop</code> or any other shell.</p>
-</div>
-</div>
-</section>
-<section id="install-a-login-manager-sddm" class="level3">
-<h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
-<p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 80%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>sddm</code></td>
-<td>The Simple Desktop Display Manager — login greeter that probes installed <code>*.desktop</code> session files (Hyprland ships one) and lets you pick a session from the dropdown before authenticating.</td>
-</tr>
-<tr class="even">
-<td><code>qt6-svg</code></td>
-<td>SVG rendering for the SDDM theme. Required by the default Breeze theme and almost every third-party theme.</td>
-</tr>
-<tr class="odd">
-<td><code>qt6-virtualkeyboard</code></td>
-<td>On-screen keyboard support. Optional for desktops but harmless and recommended if you might use this install on a touch device later.</td>
-</tr>
-</tbody>
-</table>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Expect SDDM to pull in <code>xorg-server</code> + a few X11 deps
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>On current Arch (SDDM 0.21.0-6 as of mid-2026), the <code>sddm</code> package pulls these as transitive dependencies:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 31%">
-<col style="width: 68%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Why it’s pulled in</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>xorg-server</code></td>
-<td>SDDM’s default greeter renders via an X.Org server, not directly via DRM/KMS. Despite SDDM being marketed as Qt6/Wayland-aware, the <em>greeter screen itself</em> still runs under X11 on current Arch packaging.</td>
-</tr>
-<tr class="even">
-<td><code>xorg-xauth</code></td>
-<td>X11 cookie/authority management — required by xorg-server.</td>
-</tr>
-<tr class="odd">
-<td><code>xf86-input-libinput</code></td>
-<td>libinput → X11 input driver, so the SDDM greeter sees your keyboard and mouse.</td>
-</tr>
-<tr class="even">
-<td><code>libxmu</code></td>
-<td>Misc X utilities, an xorg-server dep.</td>
-</tr>
-</tbody>
-</table>
-<p>About ~40 MB of X11 stack you can’t avoid. <strong>This is mandatory on current Arch packaging — not optional.</strong> The good news: the session SDDM <em>launches</em> (Hyprland) is still pure Wayland, so the X server only runs for the few seconds of greeter rendering during login. After you authenticate, X is gone and Hyprland is running natively on Wayland.</p>
-<p>If you want to avoid pulling X11 entirely, use <code>greetd + tuigreet</code> instead (next callout) — that’s a TTY-based greeter and stays Wayland-pure end-to-end.</p>
-</div>
-</div>
-<p>Enable SDDM so it starts at every boot:</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You should see one <code>Created symlink '/etc/systemd/system/display-manager.service' → '/usr/lib/systemd/system/sddm.service'</code> line — that’s the proof SDDM is registered as the system’s display manager.</p>
-<p>Verify it’s set up to start at boot:</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> is-enabled sddm.service     <span class="co"># should print: enabled</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Don’t <code>systemctl start sddm.service</code> right now — that would try to seize your current TTY (or fight with your SSH session). The reboot in Step 9 is the right time for SDDM to start.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-How SDDM finds Hyprland
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>When <code>caelestia-meta</code> installed <code>hyprland</code>, the package dropped <code>/usr/share/wayland-sessions/hyprland.desktop</code>. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia’s variant pre-sets a few env vars for the bundled status bar).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Prefer greetd + tuigreet?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If you’d rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
-<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>…and write <code>/etc/greetd/config.toml</code> per the <a href="https://github.com/caelestia-dots/caelestia#login-manager" target="_blank" rel="noopener">Caelestia README</a>. Only enable <strong>one</strong> display manager at a time — having both <code>sddm.service</code> and <code>greetd.service</code> enabled causes a fight on VT1 that nobody wins.</p>
-</div>
-</div>
-</section>
-<section id="reboot-into-the-desktop" class="level3">
-<h3 class="anchored" data-anchor-id="reboot-into-the-desktop">9. Reboot into the desktop</h3>
-<div class="sourceCode" id="cb97"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If you’ve been running the install over SSH, this will close your session — that’s normal. <strong>Walk to the laptop’s physical display + keyboard for the first graphical login.</strong> SDDM renders on the local seat, not over SSH; you cannot drive the first login from a remote shell (see the <a href="#ssh-vs-local-seat">SSH vs local seat</a> note above).</p>
-<p>The expected sequence on the screen:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 11%">
-<col style="width: 33%">
-<col style="width: 54%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Stage</th>
-<th>What you should see</th>
-<th>What’s happening under the hood</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td><strong>GRUB menu</strong> — Arch is the only entry; press Enter or wait the default timeout</td>
-<td>UEFI firmware booted GRUB from the ESP</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><strong><code>Please enter passphrase for disk … (cryptroot):</code></strong></td>
-<td>systemd-in-initramfs is asking sd-encrypt to unlock <code>/dev/nvme0n1p2</code></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>A brief pause (~2–3 s) after correct passphrase</td>
-<td>Kernel mounts the <code>@</code> Btrfs subvolume as <code>/</code>, real systemd takes over, services start</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td><strong>SDDM graphical login screen</strong> appears on the local display</td>
-<td>This is the moment-of-truth — proof Section 8 worked. The greeter is X11-backed (xorg-server briefly active), about to launch a Wayland session</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Session dropdown in the bottom corner</td>
-<td>Shows “Hyprland” and possibly “Caelestia” — both launch Hyprland with the same configs (Caelestia’s variant pre-sets a few env vars for the bundled status bar). Pick either.</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Type your user password → Enter</td>
-<td>SDDM authenticates via PAM, kills xorg-server, hands over the seat to Hyprland</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>Brief flicker, then <strong>Caelestia bar appears across the top</strong>, your wallpaper renders</td>
-<td>Hyprland is up, Quickshell is rendering the status bar, your dGPU is back in D3cold (battery-friendly idle)</td>
-</tr>
-</tbody>
-</table>
-<p>If anything weird happens between SDDM and the bar fully rendering — black screen, fallback to TTY, SDDM crashes back to its login — see the troubleshooting section at the bottom of the article.</p>
+<p>The post-install half: audio, GPU, AUR, Caelestia itself, KDE-Frameworks-under-Hyprland apps, SDDM, wallpaper, and customization paths. Pick it up on top of the install you just finished.</p>
+</div>
+</div>
+<p>Before you click through, a short final-checks block for the install layer itself — these are the commands you can run <em>right now</em>, from a TTY login, to confirm everything from Parts 1–3 came up correctly:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show at least the initial set from Part 3</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If those return sane output, the encrypted Btrfs install is rock-solid and you’re ready to layer the desktop on top.</p>
 <hr>
-</section>
-</section>
-<section id="part-5-verifying-everything-ended-up-where-it-should" class="level1">
-<h1>Part 5 — Verifying everything ended up where it should</h1>
-<section id="what-the-first-login-looks-like-and-the-one-cosmetic-error-youll-probably-see" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-first-login-looks-like-and-the-one-cosmetic-error-youll-probably-see">What the first login looks like (and the one cosmetic error you’ll probably see)</h2>
-<p>When you authenticate at the SDDM greeter and Hyprland starts, expect to see:</p>
-<ul>
-<li><strong>A black desktop background</strong> — Caelestia doesn’t set a wallpaper out-of-the-box. The bar, side panels, and Quickshell widgets render correctly <em>on top of</em> black; that’s the default fallback because Caelestia’s own wallpaper layer simply hasn’t been told which file to render yet. Not a bug — just an empty wallpaper slot. Fix in the “Setting your first wallpaper” callout below.</li>
-</ul>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Run Hyprland-interacting commands <em>inside</em> the session, not over SSH
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A trap worth knowing about before you try to set a wallpaper (or anything else that talks to the compositor): <strong><code>caelestia wallpaper</code>, <code>hyprctl</code>, <code>hyprlock</code>, and most other Hyprland-aware tools fail when run from an SSH session.</strong> The error looks like:</p>
-<pre class="text"><code>File "/usr/lib/python3.14/site-packages/caelestia/utils/hypr.py", line 13, in message
-    sock.connect(socket_path)
-FileNotFoundError: [Errno 2] No such file or directory</code></pre>
-<p>…or for <code>hyprctl</code>:</p>
-<pre class="text"><code>HYPRLAND_INSTANCE_SIGNATURE not set! (is hyprland running?)</code></pre>
-<p><strong>Why:</strong> Hyprland’s IPC socket lives at <code>$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock</code>, and both of those env vars are only set inside processes Hyprland itself spawned. An SSH session gets a fresh environment with neither set, so the socket path resolves to garbage and clients fail to connect. Same architectural reason <code>Hyprland</code> itself can’t start over SSH — the compositor and its IPC are bound to the local seat.</p>
-<p><strong>Fix:</strong> open a <code>foot</code> terminal <em>inside</em> the Hyprland session (the default Caelestia keybind is <code>Super + Return</code>) and run the command there. From inside the session, the env vars are set automatically and the socket exists.</p>
-<p><strong>Workaround for the determined</strong> — if you really need to drive <code>caelestia</code> or <code>hyprctl</code> from SSH, export the env vars by hand first:</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_RUNTIME_DIR</span><span class="op">=</span>/run/user/<span class="va">$(</span><span class="fu">id</span> <span class="at">-u</span><span class="va">)</span></span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">HYPRLAND_INSTANCE_SIGNATURE</span><span class="op">=</span><span class="va">$(</span><span class="fu">ls</span> <span class="st">"</span><span class="va">$XDG_RUNTIME_DIR</span><span class="st">/hypr/"</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span></span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now caelestia / hyprctl find the socket</span></span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-r</span> ~/Pictures/Wallpapers/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The cleaner mental model: <strong>SSH for headless work</strong> (package installs, file edits, system inspection, snapshot management), <strong>the local Hyprland session for anything that talks to the compositor</strong> (wallpaper, screen lock, audio routing, window layouts).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Setting your first wallpaper (and how Caelestia’s wallpaper layer actually works)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Important correction</strong>: an earlier version of this section claimed Caelestia’s Quickshell-based bar also handles the wallpaper layer. That’s wrong. Caelestia <em>delegates</em> wallpaper rendering to an external daemon — specifically <strong><code>awww</code></strong> (a fork of <code>swww</code> that the Caelestia maintainers prefer). The Quickshell shell decides <em>which</em> wallpaper to display and sends the path to the daemon via IPC; the daemon does the actual decode + Wayland layer-shell rendering.</p>
-<p>The full chain on a working install:</p>
-<pre class="text"><code>caelestia wallpaper -f IMG     # CLI wrapper
-        ↓
-~/.local/state/caelestia/wallpaper/path.txt    # state file written
-        ↓
-awww img IMG                   # daemon called (via Quickshell.execDetached)
-        ↓
-awww-daemon                    # claims Wayland BACKGROUND layer-shell surface
-        ↓
-your monitor                   # pixels appear</code></pre>
-<p>If any step in that chain is missing or broken, you get the symptoms in the recovery section below.</p>
-<p>To actually set a wallpaper, use the <code>caelestia wallpaper</code> subcommand. Its flags (per <code>caelestia wallpaper --help</code>):</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 70%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Flag</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>-f, --file FILE</code></td>
-<td>Set a specific image as the wallpaper</td>
-</tr>
-<tr class="even">
-<td><code>-r, --random [DIR]</code></td>
-<td>Pick a random image from <code>DIR</code> (defaults to whatever Caelestia is configured to scan)</td>
-</tr>
-<tr class="odd">
-<td><code>-p, --print [PATH]</code></td>
-<td>Preview the color scheme an image would generate, <strong>without switching to it</strong></td>
-</tr>
-<tr class="even">
-<td><code>-n, --no-filter</code></td>
-<td>Don’t reject images smaller than your monitor (useful for stylized low-res art)</td>
-</tr>
-<tr class="odd">
-<td><code>-t, --threshold N</code></td>
-<td>Minimum percentage of monitor size for the image to be accepted</td>
-</tr>
-<tr class="even">
-<td><code>-N, --no-smart</code></td>
-<td>Don’t auto-update the desktop color scheme based on the wallpaper’s dominant color</td>
-</tr>
-</tbody>
-</table>
-<p>Common patterns:</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a specific wallpaper</span></span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg</span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Random from a folder — the typical "I cloned a wallpapers repo" workflow</span></span>
-<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-r</span> ~/Pictures/Wallpapers/</span>
-<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the color scheme without committing — useful for picking</span></span>
-<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-p</span> ~/Pictures/Wallpapers/sunset.jpg</span>
-<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set without auto-retheming the bar</span></span>
-<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/sunset.jpg <span class="at">-N</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>When you run <code>-f</code> or <code>-r</code>, <strong>two things happen at once</strong>:</p>
-<ol type="1">
-<li>The wallpaper appears on the background layer (replacing the black fallback).</li>
-<li>Caelestia’s <code>python-materialyoucolor</code> library extracts the dominant color from the image and <strong>re-themes the bar, widgets, and accent colors</strong> to match. This is the Material You-style coordinated look. If you don’t want this, add <code>-N</code>.</li>
-</ol>
-<p>To make this your default on every login, add a line to <code>~/.config/caelestia/hypr-user.conf</code> (or to a stow-managed personal overlay — see <a href="../2026-05-17-pacman-yay-aur-prompts/#part-10-living-alongside-opinionated-installers-gnu-stow--caelestia--chezmoi--yadm">Part 10 of the pacman/yay article</a>):</p>
-<pre class="text"><code>exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers</code></pre>
-<p>That way every Hyprland session starts with a random wallpaper from your collection (and a fresh accent-color scheme to match). Use an absolute path — <code>exec-once</code> lines don’t always expand <code>~</code>.</p>
-<p>If <code>caelestia wallpaper -f</code> reports an image is too small, override with <code>-n</code> (no size filter). If you have a fixed favorite, use <code>-f</code> instead of <code>-r</code>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-The three-line recipe that makes wallpapers Just Work from first login
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>After hitting every layer of failure (no daemon installed, daemon not finding Wayland, picker scanning the wrong directory, mid-session env changes not propagating), this is what your <code>~/.config/caelestia/hypr-user.conf</code> needs to contain to make the whole wallpaper chain self-starting on every reboot:</p>
-<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;your-username&gt;/Pictures/Wallpapers
-exec-once = awww-daemon
-exec-once = caelestia wallpaper -r /home/&lt;your-username&gt;/Pictures/Wallpapers -n</code></pre>
-<p>Substitute <code>&lt;your-username&gt;</code> with your actual home directory name (e.g., <code>evanns</code>). The order matters and the lines do specific things:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 70%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Line</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>env = CAELESTIA_WALLPAPERS_DIR,…</code></td>
-<td>Tells the Caelestia shell (Quickshell) where to scan for wallpapers when the launcher’s <code>&gt;wallpaper</code> picker is opened. The shell reads this env var at startup; without it, the picker scans whatever default <code>GlobalConfig.paths.wallpaperDir</code> is and shows “no wallpapers found” if your collection isn’t there.</td>
-</tr>
-<tr class="even">
-<td><code>exec-once = awww-daemon</code></td>
-<td>Starts the wallpaper-rendering daemon. <strong>This is the daemon that actually paints pixels</strong> — Caelestia/Quickshell only decides which wallpaper to display; awww-daemon does the rendering. Must be installed (<code>yay -S swww</code> resolves to <code>awww</code> which provides swww’s interface).</td>
-</tr>
-<tr class="odd">
-<td><code>exec-once = caelestia wallpaper -r DIR -n</code></td>
-<td>Picks a random wallpaper from your folder at login and tells awww to paint it. The <code>-n</code> flag skips the size filter (which can over-reject wallpapers smaller than your monitor).</td>
-</tr>
-</tbody>
-</table>
-<p>Append all three lines if you don’t have them yet:</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;&gt;</span> ~/.config/caelestia/hypr-user.conf <span class="op">&lt;&lt;'EOF'</span></span>
-<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="st"># Wallpaper chain — picker dir + daemon + initial random wallpaper</span></span>
-<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="st">env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;your-username&gt;/Pictures/Wallpapers</span></span>
-<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a><span class="st">exec-once = awww-daemon</span></span>
-<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a><span class="st">exec-once = caelestia wallpaper -r /home/&lt;your-username&gt;/Pictures/Wallpapers -n</span></span>
-<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then verify:</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-E</span> <span class="st">'^(exec-once|env)'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On every future reboot or fresh login: Hyprland reads <code>hypr-user.conf</code>, exports the env var into the spawn environment, fires <code>exec-once</code> lines top-to-bottom (awww-daemon before caelestia wallpaper, which is the order you need), and the wallpaper appears within a couple seconds of session start. Zero manual work.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Recovery: “black background after login,” “no wallpapers found” in the picker, or both
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A full troubleshooting walkthrough for the most common wallpaper failure modes — each step diagnoses one layer of the chain so you can stop as soon as you find the broken piece.</p>
-<section id="symptom-1-black-background-no-wallpaper-paints-even-after-caelestia-wallpaper--f" class="level3">
-<h3 class="anchored" data-anchor-id="symptom-1-black-background-no-wallpaper-paints-even-after-caelestia-wallpaper--f">Symptom 1: Black background, no wallpaper paints even after <code>caelestia wallpaper -f</code></h3>
-<p>The wallpaper daemon (<code>awww-daemon</code>) isn’t running. Test:</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pgrep</span> <span class="at">-af</span> awww-daemon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If empty, install (if needed) and start:</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> swww     <span class="co"># resolves to "awww" which provides swww — same end result</span></span>
-<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="ex">awww-daemon</span> <span class="kw">&amp;</span> <span class="bu">disown</span></span>
-<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/<span class="op">&lt;</span>some-image<span class="op">&gt;</span>.jpg <span class="at">-n</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>A wallpaper should appear immediately. If <code>awww-daemon</code> panics with <code>failed to connect to socket</code>, see Symptom 4 below.</p>
-</section>
-<section id="symptom-2-wallpaper-picker-says-no-wallpapers-found-try-putting-some-in-pictureswallpapers" class="level3">
-<h3 class="anchored" data-anchor-id="symptom-2-wallpaper-picker-says-no-wallpapers-found-try-putting-some-in-pictureswallpapers">Symptom 2: <code>&gt;wallpaper</code> picker says “no wallpapers found, try putting some in ~/Pictures/Wallpapers”</h3>
-<p>The picker’s scan directory doesn’t match where your wallpapers actually live. The picker reads <code>Paths.wallsdir</code>, which resolves to <code>$CAELESTIA_WALLPAPERS_DIR</code> if set, otherwise <code>GlobalConfig.paths.wallpaperDir</code>. If neither is configured, the scan falls through to an unset/empty path.</p>
-<p>Fix: set the env var via <code>hypr-user.conf</code>:</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers'</span> <span class="op">&gt;&gt;</span> ~/.config/caelestia/hypr-user.conf</span>
-<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then <strong>restart the Caelestia shell</strong> so it picks up the new env (env changes in <code>hypr-user.conf</code> apply to processes Hyprland <em>spawns</em>, not to ones already running):</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> shell <span class="at">-k</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null    <span class="co"># kill the running shell</span></span>
-<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> shell <span class="at">-d</span> <span class="kw">&amp;</span>              <span class="co"># restart as daemon</span></span>
-<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="bu">disown</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Re-open the launcher, type <code>&gt;wallpaper</code>, and the picker should now show your collection.</p>
-</section>
-<section id="symptom-3-caelestia-wallpaper--r-dir--n-exits-0-silently-but-nothing-changes-on-screen" class="level3">
-<h3 class="anchored" data-anchor-id="symptom-3-caelestia-wallpaper--r-dir--n-exits-0-silently-but-nothing-changes-on-screen">Symptom 3: <code>caelestia wallpaper -r DIR -n</code> exits 0 silently but nothing changes on screen</h3>
-<p>You’re running the command from a shell that doesn’t have Hyprland’s env vars set — usually because you’re SSH’d in. The CLI exits cleanly because with <code>-n</code> it skips the monitor-size IPC query, but the actual paint call to awww silently fails because the IPC socket isn’t reachable.</p>
-<p>Fix: run the command from inside the Hyprland session. Press <code>Super + Return</code> at the laptop keyboard to open a foot terminal that <em>is</em> a child of Hyprland (inherits the env vars), and run the command there.</p>
-<p>If you really need to do it from SSH, export the env vars manually first:</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_RUNTIME_DIR</span><span class="op">=</span>/run/user/<span class="va">$(</span><span class="fu">id</span> <span class="at">-u</span><span class="va">)</span></span>
-<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">HYPRLAND_INSTANCE_SIGNATURE</span><span class="op">=</span><span class="va">$(</span><span class="fu">ls</span> <span class="st">"</span><span class="va">$XDG_RUNTIME_DIR</span><span class="st">/hypr/"</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span></span>
-<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WAYLAND_DISPLAY</span><span class="op">=</span>wayland-1</span>
-<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> wallpaper <span class="at">-f</span> ~/Pictures/Wallpapers/<span class="op">&lt;</span>some-image<span class="op">&gt;</span>.jpg <span class="at">-n</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note all <em>three</em> env vars — <code>XDG_RUNTIME_DIR</code>, <code>HYPRLAND_INSTANCE_SIGNATURE</code>, <em>and</em> <code>WAYLAND_DISPLAY</code>. Missing <code>WAYLAND_DISPLAY</code> causes awww-daemon to panic with <code>failed to connect to socket</code> looking for <code>wayland-0</code> instead of the actual <code>wayland-1</code> socket.</p>
-</section>
-<section id="symptom-4-awww-daemon-panics-with-failed-to-connect-to-socket" class="level3">
-<h3 class="anchored" data-anchor-id="symptom-4-awww-daemon-panics-with-failed-to-connect-to-socket">Symptom 4: <code>awww-daemon</code> panics with “failed to connect to socket”</h3>
-<p>Missing <code>WAYLAND_DISPLAY</code> env var. From the shell where you’re trying to start the daemon:</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WAYLAND_DISPLAY</span><span class="op">=</span>wayland-1     <span class="co"># or whatever ls /run/user/$(id -u)/wayland-* shows</span></span>
-<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="ex">awww-daemon</span> <span class="kw">&amp;</span> <span class="bu">disown</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>awww-daemon</code> instead complains about a missing cache dir (<code>~/.cache/awww: No such file or directory</code>), that’s a <strong>non-fatal warning</strong> — the daemon creates the directory on first paint. Continue.</p>
-</section>
-<section id="symptom-5-wallpaper-paints-when-set-manually-but-not-on-next-login" class="level3">
-<h3 class="anchored" data-anchor-id="symptom-5-wallpaper-paints-when-set-manually-but-not-on-next-login">Symptom 5: Wallpaper paints when set manually but not on next login</h3>
-<p>Your <code>~/.config/caelestia/hypr-user.conf</code> is missing the <code>exec-once = awww-daemon</code> line (or it’s after the <code>caelestia wallpaper</code> line). Hyprland fires <code>exec-once</code> lines in declaration order — the daemon needs to be running <em>before</em> the wallpaper command tries to paint.</p>
-<p>Verify with:</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-E</span> <span class="st">'^(exec-once|env)'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Expected (in this order):</p>
-<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/&lt;user&gt;/Pictures/Wallpapers
-exec-once = awww-daemon
-exec-once = caelestia wallpaper -r /home/&lt;user&gt;/Pictures/Wallpapers -n</code></pre>
-<p>If <code>awww-daemon</code> appears <em>after</em> <code>caelestia wallpaper</code>, edit the file with nvim and reorder. If it’s missing entirely, append:</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="at">-i</span> <span class="st">'/exec-once = caelestia wallpaper/i exec-once = awww-daemon'</span> ~/.config/caelestia/hypr-user.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>(The <code>sed</code> inserts <code>awww-daemon</code> immediately <em>before</em> the <code>caelestia wallpaper</code> line. Run it once; running it twice would create duplicate lines.)</p>
-</section>
-</div>
-</div>
-<ul>
-<li><strong>Caelestia’s status bar across the top</strong> with the time, system tray, and workspace indicators rendered.</li>
-<li><strong>Side panels</strong> (notification feed, calendar, control center, etc., depending on which keybinds you trigger).</li>
-<li><strong>Default Hyprland window borders</strong> around any foot terminals you open with <code>Super+Return</code>.</li>
-</ul>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-If you see a “config error” overlay at the bottom of the screen referencing <code>$cConf/hypr-vars.conf</code>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A small upstream Caelestia bug: on some installs the bundle’s <code>hyprland.conf</code> references a <code>hypr-vars.conf</code> file that isn’t shipped, and Hyprland prints any failed <code>source =</code> directive as a red overlay at the bottom of the screen. The line that triggers it looks like:</p>
-<pre class="text"><code>source = $cConf/hypr-vars.conf</code></pre>
-<p>Everything else loads fine — bar, widgets, keybinds, animations all work — but the overlay is visually noisy. To clear it:</p>
-<ol type="1">
-<li><p>Open the Caelestia-side Hyprland config (this is the <em>real</em> file; your <code>~/.config/hypr/hyprland.conf</code> is a symlink to it):</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span> ~/.local/share/caelestia/hypr/hyprland.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p>Find the line <code>source = $cConf/hypr-vars.conf</code> and <strong>comment it out</strong> by prefixing with <code>#</code>:</p>
-<pre class="text"><code># source = $cConf/hypr-vars.conf</code></pre></li>
-<li><p>Save, exit nvim, and reload Hyprland’s config without restarting your session:</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ol>
-<p>The error overlay disappears immediately. Your terminals and any open windows stay exactly where they were — <code>hyprctl reload</code> re-parses the config in place, it doesn’t kill the session.</p>
-<p>If Caelestia later ships a fix (or you <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> and the line gets re-added because upstream added it back without the missing file), repeat the comment-out. You can also just <code>touch ~/.config/hypr/hypr-vars.conf</code> to create an empty file at the expected path — that satisfies the source directive without you having to remember to re-comment after each pull. Both fixes are valid; commenting is simpler, the empty-file trick is more <code>git pull</code>-resistant.</p>
-</div>
-</div>
-</section>
-<section id="customizing-hyprland-after-caelestia-is-installed-hyprlang-vs.-lua" class="level2">
-<h2 class="anchored" data-anchor-id="customizing-hyprland-after-caelestia-is-installed-hyprlang-vs.-lua">Customizing Hyprland after Caelestia is installed (hyprlang vs.&nbsp;Lua)</h2>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Hyprland 0.55+ uses Lua as its primary config language
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Starting with Hyprland 0.55 (mid-2026), the project officially deprecated its custom <code>hyprlang</code> config format in favor of <strong>embedded Lua</strong>. The canonical config path is now <strong><code>~/.config/hypr/hyprland.lua</code></strong> instead of <code>hyprland.conf</code>. Hyprland still reads the legacy <code>hyprland.conf</code> for backwards compatibility — and that’s what Caelestia ships — but new features land in the Lua API first, and the project’s wiki examples are now all in Lua.</p>
-<p>What this means for your install:</p>
-<ul>
-<li>Caelestia bundles <code>~/.local/share/caelestia/hypr/hyprland.conf</code> (hyprlang). This is still fully supported. You do <strong>not</strong> need to migrate Caelestia’s bundle to Lua — the legacy parser handles it.</li>
-<li>Your <em>personal overrides</em> can be written in either hyprlang (<code>~/.config/caelestia/hypr-user.conf</code>, the slot Caelestia exposes) or Lua (<code>~/.config/hypr/hyprland.lua</code>, the modern Hyprland-native path). Both files are loaded automatically — they coexist without interfering.</li>
-<li>For anything beyond simple <code>bind</code> / <code>exec-once</code> / <code>env</code> lines — loops, functions, conditional logic, runtime event handlers — Lua is much cleaner.</li>
-</ul>
-</div>
-</div>
-<section id="the-right-place-to-put-your-overrides-cardinal-rule" class="level3">
-<h3 class="anchored" data-anchor-id="the-right-place-to-put-your-overrides-cardinal-rule">The right place to put your overrides (cardinal rule)</h3>
-<p><strong>Never edit <code>~/.local/share/caelestia/hypr/*.conf</code> directly.</strong> That’s Caelestia upstream — <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> will clobber any changes you make there. Two safe slots for personal customization:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 26%">
-<col style="width: 34%">
-<col style="width: 39%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>Format</th>
-<th>Use for</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>~/.config/caelestia/hypr-user.conf</code></td>
-<td><strong>hyprlang</strong> (legacy)</td>
-<td>Simple overrides that match the bundle’s style: a few keybinds, env vars, exec-once lines. Caelestia explicitly sources this file.</td>
-</tr>
-<tr class="even">
-<td><code>~/.config/hypr/hyprland.lua</code></td>
-<td><strong>Lua</strong> (modern, Hyprland 0.55+)</td>
-<td>Anything you want loops, functions, event handlers, or programmatic logic for. Loaded automatically by Hyprland alongside the legacy config.</td>
-</tr>
-<tr class="odd">
-<td><code>~/.config/caelestia/hypr-vars.conf</code></td>
-<td><strong>hyprlang</strong></td>
-<td>Variable overrides Caelestia exposes (<code>$gap</code>, <code>$borderwidth</code>, accent colors). Vars only, not full directives.</td>
-</tr>
-</tbody>
-</table>
-<p>You can use both <code>hypr-user.conf</code> and <code>hyprland.lua</code> together — they’re additive, not exclusive. Many users keep the existing 3-line hyprlang recipe in <code>hypr-user.conf</code> (env + two exec-once) and put everything else in Lua.</p>
-</section>
-<section id="the-lua-api-at-a-glance" class="level3">
-<h3 class="anchored" data-anchor-id="the-lua-api-at-a-glance">The Lua API at a glance</h3>
-<p>Hyprland exposes a global <code>hl</code> table with these methods:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 52%">
-<col style="width: 47%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>API call</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>hl.config({ section = { key = value } })</code></td>
-<td>Set any config section — <code>general</code>, <code>decoration</code>, <code>animations</code>, <code>input</code>, <code>dwindle</code>, etc.</td>
-</tr>
-<tr class="even">
-<td><code>hl.bind(MODS .. " + " .. KEY, hl.dsp.exec_cmd("..."))</code></td>
-<td>Bind a key combination to a dispatcher.</td>
-</tr>
-<tr class="odd">
-<td><code>hl.dsp.exec_cmd(cmd)</code>, <code>hl.dsp.workspace(n)</code>, <code>hl.dsp.window.close()</code>, <code>hl.dsp.movetoworkspace(n)</code></td>
-<td>Built-in dispatchers — exec a shell command, switch workspace, close window, etc.</td>
-</tr>
-<tr class="even">
-<td><code>hl.monitor({ output, mode, position, scale })</code></td>
-<td>Configure a monitor — equivalent to <code>monitor =</code> in hyprlang.</td>
-</tr>
-<tr class="odd">
-<td><code>hl.env(name, value)</code></td>
-<td>Set an env var for child processes. Equivalent to <code>env = NAME,VALUE</code>.</td>
-</tr>
-<tr class="even">
-<td><code>hl.on("hyprland.start", fn)</code></td>
-<td>Run <code>fn</code> once at session start. Equivalent to <code>exec-once</code>. Other events fire on workspace change, window open, etc.</td>
-</tr>
-<tr class="odd">
-<td><code>hl.exec_cmd(cmd)</code></td>
-<td>Execute a shell command. Use inside event handlers.</td>
-</tr>
-<tr class="even">
-<td><code>hl.window_rule({ name, match = { class, title }, ...props })</code></td>
-<td>Per-app window behavior. Replaces <code>windowrulev2</code>.</td>
-</tr>
-<tr class="odd">
-<td><code>hl.workspace_rule({ workspace, gaps_in, gaps_out, ... })</code></td>
-<td>Per-workspace rules.</td>
-</tr>
-<tr class="even">
-<td><code>hl.gesture({ fingers, direction, action })</code></td>
-<td>Touchpad gestures.</td>
-</tr>
-<tr class="odd">
-<td><code>hl.device({ name, sensitivity, ... })</code></td>
-<td>Per-input-device overrides.</td>
-</tr>
-<tr class="even">
-<td><code>hl.curve(name, { type = "bezier", points = ... })</code>, <code>hl.animation({...})</code></td>
-<td>Custom animation curves and per-element timing.</td>
-</tr>
-</tbody>
-</table>
-<p>Full reference: <a href="https://wiki.hypr.land/Configuring/Start/" target="_blank" rel="noopener">wiki.hypr.land/Configuring/Start/</a>.</p>
-</section>
-<section id="worked-example-porting-the-wallpaper-recipe-from-hyprlang-to-lua" class="level3">
-<h3 class="anchored" data-anchor-id="worked-example-porting-the-wallpaper-recipe-from-hyprlang-to-lua">Worked example: porting the wallpaper recipe from hyprlang to Lua</h3>
-<p>The 3-line hyprlang recipe (in <code>hypr-user.conf</code>):</p>
-<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers
-exec-once = awww-daemon
-exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n</code></pre>
-<p>Equivalent in Lua (in <code>~/.config/hypr/hyprland.lua</code>):</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"CAELESTIA_WALLPAPERS_DIR"</span><span class="op">,</span> <span class="st">"/home/evanns/Pictures/Wallpapers"</span><span class="op">)</span></span>
-<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>on<span class="op">(</span><span class="st">"hyprland.start"</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
-<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"awww-daemon"</span><span class="op">)</span></span>
-<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span><span class="op">)</span></span>
-<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Both forms produce identical session behavior. The Lua version becomes useful once you add <em>conditional</em> logic — e.g., “use a different wallpaper folder on Mondays,” “skip wallpaper auto-start if a specific file exists” — none of which is expressible in hyprlang.</p>
-</section>
-<section id="a-larger-lua-example-keybinds-window-rules-env-vars-event-handlers" class="level3">
-<h3 class="anchored" data-anchor-id="a-larger-lua-example-keybinds-window-rules-env-vars-event-handlers">A larger Lua example — keybinds, window rules, env vars, event handlers</h3>
-<p>For readers who want a full personal Lua override file as a starting template:</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- ~/.config/hypr/hyprland.lua</span></span>
-<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- Personal overrides on top of Caelestia. Hyprland 0.55+ native Lua format.</span></span>
-<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">mainMod</span> <span class="op">=</span> <span class="st">"SUPER"</span></span>
-<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Keybinds (programmatic — no copy-paste 9 lines for workspace switching) =====</span></span>
-<span id="cb122-7"><a href="#cb122-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-8"><a href="#cb122-8" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">apps</span> <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb122-9"><a href="#cb122-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"B"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"firefox"</span>     <span class="op">},</span></span>
-<span id="cb122-10"><a href="#cb122-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"E"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"nautilus"</span>    <span class="op">},</span></span>
-<span id="cb122-11"><a href="#cb122-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span> <span class="op">..</span> <span class="st">" SHIFT"</span><span class="op">,</span> <span class="va">key</span> <span class="op">=</span> <span class="st">"Return"</span><span class="op">,</span> <span class="va">cmd</span> <span class="op">=</span> <span class="st">"foot"</span>        <span class="op">},</span></span>
-<span id="cb122-12"><a href="#cb122-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"P"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"pavucontrol"</span> <span class="op">},</span></span>
-<span id="cb122-13"><a href="#cb122-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb122-14"><a href="#cb122-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="cn">_</span><span class="op">,</span> <span class="va">app</span> <span class="kw">in</span> <span class="fu">ipairs</span><span class="op">(</span><span class="va">apps</span><span class="op">)</span> <span class="cf">do</span></span>
-<span id="cb122-15"><a href="#cb122-15" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">app</span><span class="op">.</span><span class="va">mods</span> <span class="op">..</span> <span class="st">" + "</span> <span class="op">..</span> <span class="va">app</span><span class="op">.</span><span class="va">key</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="va">app</span><span class="op">.</span><span class="va">cmd</span><span class="op">))</span></span>
-<span id="cb122-16"><a href="#cb122-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb122-17"><a href="#cb122-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-18"><a href="#cb122-18" aria-hidden="true" tabindex="-1"></a><span class="co">-- Workspace switching 1-9 + move-to-workspace, generated in a loop</span></span>
-<span id="cb122-19"><a href="#cb122-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">9</span> <span class="cf">do</span></span>
-<span id="cb122-20"><a href="#cb122-20" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" + "</span> <span class="op">..</span> <span class="va">i</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>workspace<span class="op">(</span><span class="fu">tostring</span><span class="op">(</span><span class="va">i</span><span class="op">)))</span></span>
-<span id="cb122-21"><a href="#cb122-21" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" SHIFT + "</span> <span class="op">..</span> <span class="va">i</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>movetoworkspace<span class="op">(</span><span class="fu">tostring</span><span class="op">(</span><span class="va">i</span><span class="op">)))</span></span>
-<span id="cb122-22"><a href="#cb122-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb122-23"><a href="#cb122-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-24"><a href="#cb122-24" aria-hidden="true" tabindex="-1"></a><span class="co">-- Roll a new random wallpaper on demand</span></span>
-<span id="cb122-25"><a href="#cb122-25" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" + W"</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>exec_cmd<span class="op">(</span></span>
-<span id="cb122-26"><a href="#cb122-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span></span>
-<span id="cb122-27"><a href="#cb122-27" aria-hidden="true" tabindex="-1"></a><span class="op">))</span></span>
-<span id="cb122-28"><a href="#cb122-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-29"><a href="#cb122-29" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Window rules =====</span></span>
-<span id="cb122-30"><a href="#cb122-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-31"><a href="#cb122-31" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>window_rule<span class="op">({</span></span>
-<span id="cb122-32"><a href="#cb122-32" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span>  <span class="op">=</span> <span class="st">"float-pavucontrol"</span><span class="op">,</span></span>
-<span id="cb122-33"><a href="#cb122-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">match</span> <span class="op">=</span> <span class="op">{</span> <span class="va">class</span> <span class="op">=</span> <span class="st">"^(pavucontrol)$"</span> <span class="op">},</span></span>
-<span id="cb122-34"><a href="#cb122-34" aria-hidden="true" tabindex="-1"></a>  <span class="va">float</span> <span class="op">=</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb122-35"><a href="#cb122-35" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
-<span id="cb122-36"><a href="#cb122-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-37"><a href="#cb122-37" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>window_rule<span class="op">({</span></span>
-<span id="cb122-38"><a href="#cb122-38" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span>  <span class="op">=</span> <span class="st">"send-rqt-windows-to-ws3"</span><span class="op">,</span></span>
-<span id="cb122-39"><a href="#cb122-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">match</span> <span class="op">=</span> <span class="op">{</span> <span class="va">class</span> <span class="op">=</span> <span class="st">"^(rqt_.*)$"</span> <span class="op">},</span>          <span class="co">-- ROS rqt tools</span></span>
-<span id="cb122-40"><a href="#cb122-40" aria-hidden="true" tabindex="-1"></a>  <span class="va">workspace</span> <span class="op">=</span> <span class="st">"3"</span><span class="op">,</span></span>
-<span id="cb122-41"><a href="#cb122-41" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
-<span id="cb122-42"><a href="#cb122-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-43"><a href="#cb122-43" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Env vars (NVIDIA on Wayland + Electron Wayland hint) =====</span></span>
-<span id="cb122-44"><a href="#cb122-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-45"><a href="#cb122-45" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"CAELESTIA_WALLPAPERS_DIR"</span><span class="op">,</span> <span class="st">"/home/evanns/Pictures/Wallpapers"</span><span class="op">)</span></span>
-<span id="cb122-46"><a href="#cb122-46" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"LIBVA_DRIVER_NAME"</span><span class="op">,</span> <span class="st">"nvidia"</span><span class="op">)</span></span>
-<span id="cb122-47"><a href="#cb122-47" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"__GLX_VENDOR_LIBRARY_NAME"</span><span class="op">,</span> <span class="st">"nvidia"</span><span class="op">)</span></span>
-<span id="cb122-48"><a href="#cb122-48" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"NVD_BACKEND"</span><span class="op">,</span> <span class="st">"direct"</span><span class="op">)</span></span>
-<span id="cb122-49"><a href="#cb122-49" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"ELECTRON_OZONE_PLATFORM_HINT"</span><span class="op">,</span> <span class="st">"auto"</span><span class="op">)</span></span>
-<span id="cb122-50"><a href="#cb122-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-51"><a href="#cb122-51" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Session startup (replaces exec-once) =====</span></span>
-<span id="cb122-52"><a href="#cb122-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-53"><a href="#cb122-53" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>on<span class="op">(</span><span class="st">"hyprland.start"</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
-<span id="cb122-54"><a href="#cb122-54" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"awww-daemon"</span><span class="op">)</span></span>
-<span id="cb122-55"><a href="#cb122-55" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span><span class="op">)</span></span>
-<span id="cb122-56"><a href="#cb122-56" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Reload after editing:</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Most changes apply instantly. The exceptions are the same as for hyprlang: <code>hl.env(...)</code> only affects <em>newly-spawned</em> processes, and certain Caelestia-shell-rendered things (bar, picker) may need <code>caelestia shell -k &amp;&amp; caelestia shell -d &amp;</code> to pick up env changes.</p>
-</section>
-<section id="path-a-vs.-path-b-which-to-pick" class="level3">
-<h3 class="anchored" data-anchor-id="path-a-vs.-path-b-which-to-pick">Path A vs.&nbsp;Path B — which to pick</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 52%">
-<col style="width: 32%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Path</th>
-<th>What it looks like</th>
-<th>When to use</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>A</strong> — Keep the hyprlang <code>hypr-user.conf</code> + add a small Lua file alongside</td>
-<td>The 3-line wallpaper recipe stays in <code>hypr-user.conf</code>; new things (keybinds, window rules, event handlers) go in <code>hyprland.lua</code>. Both load automatically.</td>
-<td>Recommended for the typical reader. Lowest friction. Lets you adopt Lua incrementally instead of rewriting everything at once.</td>
-</tr>
-<tr class="even">
-<td><strong>B</strong> — Move everything to <code>hyprland.lua</code> and leave <code>hypr-user.conf</code> empty</td>
-<td>All personal overrides as Lua. <code>hypr-user.conf</code> exists but is empty (Caelestia still sources it; an empty file is fine).</td>
-<td>When you’re comfortable with Lua and want a single file for all your customization. Cleaner long-term.</td>
-</tr>
-</tbody>
-</table>
-<p>For your install, <strong>Path A is the natural next step</strong> — you already have the working hyprlang wallpaper recipe; adding a <code>~/.config/hypr/hyprland.lua</code> for any <em>new</em> customization just means you’re using the modern API for new work. Migrate the rest gradually if and when you want.</p>
-</section>
-<section id="discovering-whats-already-configured" class="level3">
-<h3 class="anchored" data-anchor-id="discovering-whats-already-configured">Discovering what’s already configured</h3>
-<div class="sourceCode" id="cb124"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> getoption general:gaps_in            <span class="co"># current value of a setting</span></span>
-<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> getoption decoration:rounding</span>
-<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> binds                                 <span class="co"># all your active keybinds — Caelestia's + yours</span></span>
-<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                              <span class="co"># detected displays with res/scale/refresh</span></span>
-<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> clients                               <span class="co"># currently open windows (use for class: in window rules)</span></span>
-<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> devices                               <span class="co"># input devices (touchpad, keyboard)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>These work regardless of whether the config came from hyprlang or Lua — Hyprland normalizes both into the same in-memory state.</p>
-</section>
-</section>
-<section id="verification-commands" class="level2">
-<h2 class="anchored" data-anchor-id="verification-commands">Verification commands</h2>
-<p>Open a <code>foot</code> terminal — Caelestia’s default keybind is <code>Super+Return</code> — and run:</p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
-<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
-<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
-<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-11"><a href="#cb125-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show MANY (one per pacman transaction during install)</span></span>
-<span id="cb125-12"><a href="#cb125-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list        <span class="co"># expect snapshots numbered well into the 40s if you followed every step</span></span>
-<span id="cb125-13"><a href="#cb125-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span>
-<span id="cb125-14"><a href="#cb125-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-15"><a href="#cb125-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + Wayland</span></span>
-<span id="cb125-16"><a href="#cb125-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"</span></span>
-<span id="cb125-17"><a href="#cb125-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays with resolution, refresh rate, scale</span></span>
-<span id="cb125-18"><a href="#cb125-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$WAYLAND_DISPLAY</span>            <span class="co"># something like "wayland-1" — proves you're in a Wayland session, not Xwayland</span></span>
-<span id="cb125-19"><a href="#cb125-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-20"><a href="#cb125-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Audio (PipeWire stack)</span></span>
-<span id="cb125-21"><a href="#cb125-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>  <span class="co"># "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API</span></span>
-<span id="cb125-22"><a href="#cb125-22" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                     <span class="co"># tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there</span></span>
-<span id="cb125-23"><a href="#cb125-23" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status pipewire wireplumber pipewire-pulse <span class="kw">|</span> <span class="fu">grep</span> Active</span>
-<span id="cb125-24"><a href="#cb125-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># all three should be Active: active (running)</span></span>
-<span id="cb125-25"><a href="#cb125-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-26"><a href="#cb125-26" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU (on hybrid laptops — Dell Precision example)</span></span>
-<span id="cb125-27"><a href="#cb125-27" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>                       <span class="co"># confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)</span></span>
-<span id="cb125-28"><a href="#cb125-28" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span>     <span class="co"># iGPU VA-API confirms working video decode</span></span>
-<span id="cb125-29"><a href="#cb125-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-30"><a href="#cb125-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Caelestia-specific</span></span>
-<span id="cb125-31"><a href="#cb125-31" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--version</span>              <span class="co"># CLI version</span></span>
-<span id="cb125-32"><a href="#cb125-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
-<span id="cb125-33"><a href="#cb125-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># may or may not exist depending on Caelestia version — fine either way</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
-<hr>
-</section>
 <section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
 <h2 class="anchored" data-anchor-id="troubleshooting-timed-out-waiting-for-device-at-boot">Troubleshooting: “Timed out waiting for device” at boot</h2>
 <p>If you reboot and land in emergency mode after the LUKS prompt, the failure mode is almost always one of:</p>
@@ -3445,10 +1848,10 @@ exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n</code></p
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>

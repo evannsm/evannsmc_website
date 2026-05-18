@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-05-05">
 <meta name="description" content="A post-mortem on my second pass at installing Arch Linux: full-disk LUKS encryption, Btrfs subvolumes for / and /home, zram for everyday swap, a shared data partition, and a dedicated encrypted swap partition for hibernation, set up to dual-boot with Ubuntu. GRUB loaded, the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode. Here’s the plan, the failure, and everything I’ve tried so far.">
 
-<title>[In progress] An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc</title>
+<title>An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,12 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="[In progress] An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc">
+<meta property="og:title" content="An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc">
 <meta property="og:description" content="A post-mortem on my second pass at installing Arch Linux: full-disk LUKS encryption, Btrfs subvolumes for / and /home, zram for everyday swap, a shared data partition, and a dedicated encrypted swap partition for hibernation, set up to dual-boot with Ubuntu. GRUB loaded, the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode. Here’s the plan, the failure, and everything I’ve tried so far.">
 <meta property="og:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
-<meta name="twitter:title" content="[In progress] An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc">
+<meta name="twitter:title" content="An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned – evannsmc">
 <meta name="twitter:description" content="A post-mortem on my second pass at installing Arch Linux: full-disk LUKS encryption, Btrfs subvolumes for / and /home, zram for everyday swap, a shared data partition, and a dedicated encrypted swap partition for hibernation, set up to dual-boot with Ubuntu. GRUB loaded, the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode. Here’s the plan, the failure, and everything I’ve tried so far.">
 <meta name="twitter:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta name="twitter:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">[In progress] An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned</h1>
+<h1 class="title">An Ambitious Arch Install That Didn’t Boot — LUKS, Btrfs, and What I Learned</h1>
   <div class="quarto-categories">
     <div class="quarto-category">arch linux</div>
     <div class="quarto-category">linux</div>
@@ -683,6 +683,10 @@ Why these names
 HOOKS   = scripts and procedures executed during early boot</code></pre>
 <p><code>btrfs</code> goes in <code>MODULES</code> because the initramfs needs the Btrfs <em>driver</em> before it can mount the root filesystem. <code>encrypt</code>, <code>block</code>, <code>keyboard</code>, and <code>filesystems</code> go in <code>HOOKS</code> because they’re early-boot logic: detect block devices, accept a passphrase, unlock the LUKS container, mount the filesystem.</p>
 <p>Hook-by-hook:</p>
+<details>
+<summary>
+Click to expand: what each hook does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 19%">
@@ -745,6 +749,7 @@ HOOKS   = scripts and procedures executed during early boot</code></pre>
 </tr>
 </tbody>
 </table>
+</details>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -837,6 +842,10 @@ Don’t use angle brackets in the actual file
 </div>
 </div>
 <p>What each kernel parameter does:</p>
+<details>
+<summary>
+Click to expand
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -875,6 +884,7 @@ Don’t use angle brackets in the actual file
 </tr>
 </tbody>
 </table>
+</details>
 <p>While you’re in <code>/etc/default/grub</code>, also set:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_ENABLE_CRYPTODISK</span><span class="op">=</span>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This tells <code>grub-mkconfig</code> to emit a config that GRUB itself understands cryptographically (it lets GRUB read encrypted <code>/boot</code> if you put <code>/boot</code> inside LUKS later).</p>

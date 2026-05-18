@@ -794,6 +794,10 @@ Why this order matters
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    git base-devel intel-ucode</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>-K</code> flag initializes a fresh pacman keyring inside <code>/mnt</code>. Without it, <code>pacman</code> running inside the chroot later would inherit the live ISO’s keyring, which can cause confusing key-trust errors during your first <code>pacman -Syu</code>.</p>
 <p>Here’s what each package is for:</p>
+<details>
+<summary>
+Click to expand: what each package does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 58%">
@@ -852,6 +856,7 @@ Why this order matters
 </tr>
 </tbody>
 </table>
+</details>
 </section>
 <section id="generate-fstab-and-chroot-in" class="level3">
 <h3 class="anchored" data-anchor-id="generate-fstab-and-chroot-in">3. Generate <code>fstab</code> and chroot in</h3>
@@ -934,6 +939,10 @@ Why this order matters
 <span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  ipset <span class="dt">\</span></span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  firewalld <span class="dt">\</span></span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  reflector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Click to expand: what each package does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 83%">
@@ -980,6 +989,7 @@ Why this order matters
 </tr>
 </tbody>
 </table>
+</details>
 </section>
 <section id="install-more-useful-packages" class="level3">
 <h3 class="anchored" data-anchor-id="install-more-useful-packages">9. Install more useful packages</h3>
@@ -993,6 +1003,10 @@ Why this order matters
 <span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  kitty <span class="dt">\</span></span>
 <span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  firefox</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When <code>pacman</code> asks which JACK provider to use, pick <code>pipewire-jack</code>. When it asks which font provider for emoji, pick <code>noto-fonts</code>.</p>
+<details>
+<summary>
+Click to expand: what each package does
+</summary>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 89%">
@@ -1039,6 +1053,7 @@ Why this order matters
 </tr>
 </tbody>
 </table>
+</details>
 <hr>
 </section>
 </section>
