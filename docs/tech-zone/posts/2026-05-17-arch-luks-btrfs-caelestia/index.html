@@ -3153,42 +3153,285 @@ If you see a “config error” overlay at the bottom of the screen referencing 
 </div>
 </div>
 </section>
+<section id="customizing-hyprland-after-caelestia-is-installed-hyprlang-vs.-lua" class="level2">
+<h2 class="anchored" data-anchor-id="customizing-hyprland-after-caelestia-is-installed-hyprlang-vs.-lua">Customizing Hyprland after Caelestia is installed (hyprlang vs.&nbsp;Lua)</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hyprland 0.55+ uses Lua as its primary config language
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Starting with Hyprland 0.55 (mid-2026), the project officially deprecated its custom <code>hyprlang</code> config format in favor of <strong>embedded Lua</strong>. The canonical config path is now <strong><code>~/.config/hypr/hyprland.lua</code></strong> instead of <code>hyprland.conf</code>. Hyprland still reads the legacy <code>hyprland.conf</code> for backwards compatibility — and that’s what Caelestia ships — but new features land in the Lua API first, and the project’s wiki examples are now all in Lua.</p>
+<p>What this means for your install:</p>
+<ul>
+<li>Caelestia bundles <code>~/.local/share/caelestia/hypr/hyprland.conf</code> (hyprlang). This is still fully supported. You do <strong>not</strong> need to migrate Caelestia’s bundle to Lua — the legacy parser handles it.</li>
+<li>Your <em>personal overrides</em> can be written in either hyprlang (<code>~/.config/caelestia/hypr-user.conf</code>, the slot Caelestia exposes) or Lua (<code>~/.config/hypr/hyprland.lua</code>, the modern Hyprland-native path). Both files are loaded automatically — they coexist without interfering.</li>
+<li>For anything beyond simple <code>bind</code> / <code>exec-once</code> / <code>env</code> lines — loops, functions, conditional logic, runtime event handlers — Lua is much cleaner.</li>
+</ul>
+</div>
+</div>
+<section id="the-right-place-to-put-your-overrides-cardinal-rule" class="level3">
+<h3 class="anchored" data-anchor-id="the-right-place-to-put-your-overrides-cardinal-rule">The right place to put your overrides (cardinal rule)</h3>
+<p><strong>Never edit <code>~/.local/share/caelestia/hypr/*.conf</code> directly.</strong> That’s Caelestia upstream — <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> will clobber any changes you make there. Two safe slots for personal customization:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 34%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Format</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~/.config/caelestia/hypr-user.conf</code></td>
+<td><strong>hyprlang</strong> (legacy)</td>
+<td>Simple overrides that match the bundle’s style: a few keybinds, env vars, exec-once lines. Caelestia explicitly sources this file.</td>
+</tr>
+<tr class="even">
+<td><code>~/.config/hypr/hyprland.lua</code></td>
+<td><strong>Lua</strong> (modern, Hyprland 0.55+)</td>
+<td>Anything you want loops, functions, event handlers, or programmatic logic for. Loaded automatically by Hyprland alongside the legacy config.</td>
+</tr>
+<tr class="odd">
+<td><code>~/.config/caelestia/hypr-vars.conf</code></td>
+<td><strong>hyprlang</strong></td>
+<td>Variable overrides Caelestia exposes (<code>$gap</code>, <code>$borderwidth</code>, accent colors). Vars only, not full directives.</td>
+</tr>
+</tbody>
+</table>
+<p>You can use both <code>hypr-user.conf</code> and <code>hyprland.lua</code> together — they’re additive, not exclusive. Many users keep the existing 3-line hyprlang recipe in <code>hypr-user.conf</code> (env + two exec-once) and put everything else in Lua.</p>
+</section>
+<section id="the-lua-api-at-a-glance" class="level3">
+<h3 class="anchored" data-anchor-id="the-lua-api-at-a-glance">The Lua API at a glance</h3>
+<p>Hyprland exposes a global <code>hl</code> table with these methods:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>API call</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>hl.config({ section = { key = value } })</code></td>
+<td>Set any config section — <code>general</code>, <code>decoration</code>, <code>animations</code>, <code>input</code>, <code>dwindle</code>, etc.</td>
+</tr>
+<tr class="even">
+<td><code>hl.bind(MODS .. " + " .. KEY, hl.dsp.exec_cmd("..."))</code></td>
+<td>Bind a key combination to a dispatcher.</td>
+</tr>
+<tr class="odd">
+<td><code>hl.dsp.exec_cmd(cmd)</code>, <code>hl.dsp.workspace(n)</code>, <code>hl.dsp.window.close()</code>, <code>hl.dsp.movetoworkspace(n)</code></td>
+<td>Built-in dispatchers — exec a shell command, switch workspace, close window, etc.</td>
+</tr>
+<tr class="even">
+<td><code>hl.monitor({ output, mode, position, scale })</code></td>
+<td>Configure a monitor — equivalent to <code>monitor =</code> in hyprlang.</td>
+</tr>
+<tr class="odd">
+<td><code>hl.env(name, value)</code></td>
+<td>Set an env var for child processes. Equivalent to <code>env = NAME,VALUE</code>.</td>
+</tr>
+<tr class="even">
+<td><code>hl.on("hyprland.start", fn)</code></td>
+<td>Run <code>fn</code> once at session start. Equivalent to <code>exec-once</code>. Other events fire on workspace change, window open, etc.</td>
+</tr>
+<tr class="odd">
+<td><code>hl.exec_cmd(cmd)</code></td>
+<td>Execute a shell command. Use inside event handlers.</td>
+</tr>
+<tr class="even">
+<td><code>hl.window_rule({ name, match = { class, title }, ...props })</code></td>
+<td>Per-app window behavior. Replaces <code>windowrulev2</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>hl.workspace_rule({ workspace, gaps_in, gaps_out, ... })</code></td>
+<td>Per-workspace rules.</td>
+</tr>
+<tr class="even">
+<td><code>hl.gesture({ fingers, direction, action })</code></td>
+<td>Touchpad gestures.</td>
+</tr>
+<tr class="odd">
+<td><code>hl.device({ name, sensitivity, ... })</code></td>
+<td>Per-input-device overrides.</td>
+</tr>
+<tr class="even">
+<td><code>hl.curve(name, { type = "bezier", points = ... })</code>, <code>hl.animation({...})</code></td>
+<td>Custom animation curves and per-element timing.</td>
+</tr>
+</tbody>
+</table>
+<p>Full reference: <a href="https://wiki.hypr.land/Configuring/Start/" target="_blank" rel="noopener">wiki.hypr.land/Configuring/Start/</a>.</p>
+</section>
+<section id="worked-example-porting-the-wallpaper-recipe-from-hyprlang-to-lua" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-porting-the-wallpaper-recipe-from-hyprlang-to-lua">Worked example: porting the wallpaper recipe from hyprlang to Lua</h3>
+<p>The 3-line hyprlang recipe (in <code>hypr-user.conf</code>):</p>
+<pre class="text"><code>env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n</code></pre>
+<p>Equivalent in Lua (in <code>~/.config/hypr/hyprland.lua</code>):</p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"CAELESTIA_WALLPAPERS_DIR"</span><span class="op">,</span> <span class="st">"/home/evanns/Pictures/Wallpapers"</span><span class="op">)</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>on<span class="op">(</span><span class="st">"hyprland.start"</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"awww-daemon"</span><span class="op">)</span></span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span><span class="op">)</span></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Both forms produce identical session behavior. The Lua version becomes useful once you add <em>conditional</em> logic — e.g., “use a different wallpaper folder on Mondays,” “skip wallpaper auto-start if a specific file exists” — none of which is expressible in hyprlang.</p>
+</section>
+<section id="a-larger-lua-example-keybinds-window-rules-env-vars-event-handlers" class="level3">
+<h3 class="anchored" data-anchor-id="a-larger-lua-example-keybinds-window-rules-env-vars-event-handlers">A larger Lua example — keybinds, window rules, env vars, event handlers</h3>
+<p>For readers who want a full personal Lua override file as a starting template:</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- ~/.config/hypr/hyprland.lua</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- Personal overrides on top of Caelestia. Hyprland 0.55+ native Lua format.</span></span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">mainMod</span> <span class="op">=</span> <span class="st">"SUPER"</span></span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Keybinds (programmatic — no copy-paste 9 lines for workspace switching) =====</span></span>
+<span id="cb122-7"><a href="#cb122-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-8"><a href="#cb122-8" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">apps</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb122-9"><a href="#cb122-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"B"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"firefox"</span>     <span class="op">},</span></span>
+<span id="cb122-10"><a href="#cb122-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"E"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"nautilus"</span>    <span class="op">},</span></span>
+<span id="cb122-11"><a href="#cb122-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span> <span class="op">..</span> <span class="st">" SHIFT"</span><span class="op">,</span> <span class="va">key</span> <span class="op">=</span> <span class="st">"Return"</span><span class="op">,</span> <span class="va">cmd</span> <span class="op">=</span> <span class="st">"foot"</span>        <span class="op">},</span></span>
+<span id="cb122-12"><a href="#cb122-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="va">mods</span> <span class="op">=</span> <span class="va">mainMod</span><span class="op">,</span>             <span class="va">key</span> <span class="op">=</span> <span class="st">"P"</span><span class="op">,</span>      <span class="va">cmd</span> <span class="op">=</span> <span class="st">"pavucontrol"</span> <span class="op">},</span></span>
+<span id="cb122-13"><a href="#cb122-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb122-14"><a href="#cb122-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="cn">_</span><span class="op">,</span> <span class="va">app</span> <span class="kw">in</span> <span class="fu">ipairs</span><span class="op">(</span><span class="va">apps</span><span class="op">)</span> <span class="cf">do</span></span>
+<span id="cb122-15"><a href="#cb122-15" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">app</span><span class="op">.</span><span class="va">mods</span> <span class="op">..</span> <span class="st">" + "</span> <span class="op">..</span> <span class="va">app</span><span class="op">.</span><span class="va">key</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="va">app</span><span class="op">.</span><span class="va">cmd</span><span class="op">))</span></span>
+<span id="cb122-16"><a href="#cb122-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb122-17"><a href="#cb122-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-18"><a href="#cb122-18" aria-hidden="true" tabindex="-1"></a><span class="co">-- Workspace switching 1-9 + move-to-workspace, generated in a loop</span></span>
+<span id="cb122-19"><a href="#cb122-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">9</span> <span class="cf">do</span></span>
+<span id="cb122-20"><a href="#cb122-20" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" + "</span> <span class="op">..</span> <span class="va">i</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>workspace<span class="op">(</span><span class="fu">tostring</span><span class="op">(</span><span class="va">i</span><span class="op">)))</span></span>
+<span id="cb122-21"><a href="#cb122-21" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" SHIFT + "</span> <span class="op">..</span> <span class="va">i</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>movetoworkspace<span class="op">(</span><span class="fu">tostring</span><span class="op">(</span><span class="va">i</span><span class="op">)))</span></span>
+<span id="cb122-22"><a href="#cb122-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb122-23"><a href="#cb122-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-24"><a href="#cb122-24" aria-hidden="true" tabindex="-1"></a><span class="co">-- Roll a new random wallpaper on demand</span></span>
+<span id="cb122-25"><a href="#cb122-25" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>bind<span class="op">(</span><span class="va">mainMod</span> <span class="op">..</span> <span class="st">" + W"</span><span class="op">,</span> <span class="va">hl</span><span class="op">.</span><span class="va">dsp</span><span class="op">.</span>exec_cmd<span class="op">(</span></span>
+<span id="cb122-26"><a href="#cb122-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span></span>
+<span id="cb122-27"><a href="#cb122-27" aria-hidden="true" tabindex="-1"></a><span class="op">))</span></span>
+<span id="cb122-28"><a href="#cb122-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-29"><a href="#cb122-29" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Window rules =====</span></span>
+<span id="cb122-30"><a href="#cb122-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-31"><a href="#cb122-31" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>window_rule<span class="op">({</span></span>
+<span id="cb122-32"><a href="#cb122-32" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span>  <span class="op">=</span> <span class="st">"float-pavucontrol"</span><span class="op">,</span></span>
+<span id="cb122-33"><a href="#cb122-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">match</span> <span class="op">=</span> <span class="op">{</span> <span class="va">class</span> <span class="op">=</span> <span class="st">"^(pavucontrol)$"</span> <span class="op">},</span></span>
+<span id="cb122-34"><a href="#cb122-34" aria-hidden="true" tabindex="-1"></a>  <span class="va">float</span> <span class="op">=</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb122-35"><a href="#cb122-35" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb122-36"><a href="#cb122-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-37"><a href="#cb122-37" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>window_rule<span class="op">({</span></span>
+<span id="cb122-38"><a href="#cb122-38" aria-hidden="true" tabindex="-1"></a>  <span class="va">name</span>  <span class="op">=</span> <span class="st">"send-rqt-windows-to-ws3"</span><span class="op">,</span></span>
+<span id="cb122-39"><a href="#cb122-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">match</span> <span class="op">=</span> <span class="op">{</span> <span class="va">class</span> <span class="op">=</span> <span class="st">"^(rqt_.*)$"</span> <span class="op">},</span>          <span class="co">-- ROS rqt tools</span></span>
+<span id="cb122-40"><a href="#cb122-40" aria-hidden="true" tabindex="-1"></a>  <span class="va">workspace</span> <span class="op">=</span> <span class="st">"3"</span><span class="op">,</span></span>
+<span id="cb122-41"><a href="#cb122-41" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb122-42"><a href="#cb122-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-43"><a href="#cb122-43" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Env vars (NVIDIA on Wayland + Electron Wayland hint) =====</span></span>
+<span id="cb122-44"><a href="#cb122-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-45"><a href="#cb122-45" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"CAELESTIA_WALLPAPERS_DIR"</span><span class="op">,</span> <span class="st">"/home/evanns/Pictures/Wallpapers"</span><span class="op">)</span></span>
+<span id="cb122-46"><a href="#cb122-46" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"LIBVA_DRIVER_NAME"</span><span class="op">,</span> <span class="st">"nvidia"</span><span class="op">)</span></span>
+<span id="cb122-47"><a href="#cb122-47" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"__GLX_VENDOR_LIBRARY_NAME"</span><span class="op">,</span> <span class="st">"nvidia"</span><span class="op">)</span></span>
+<span id="cb122-48"><a href="#cb122-48" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"NVD_BACKEND"</span><span class="op">,</span> <span class="st">"direct"</span><span class="op">)</span></span>
+<span id="cb122-49"><a href="#cb122-49" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>env<span class="op">(</span><span class="st">"ELECTRON_OZONE_PLATFORM_HINT"</span><span class="op">,</span> <span class="st">"auto"</span><span class="op">)</span></span>
+<span id="cb122-50"><a href="#cb122-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-51"><a href="#cb122-51" aria-hidden="true" tabindex="-1"></a><span class="co">-- ===== Session startup (replaces exec-once) =====</span></span>
+<span id="cb122-52"><a href="#cb122-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-53"><a href="#cb122-53" aria-hidden="true" tabindex="-1"></a><span class="va">hl</span><span class="op">.</span>on<span class="op">(</span><span class="st">"hyprland.start"</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
+<span id="cb122-54"><a href="#cb122-54" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"awww-daemon"</span><span class="op">)</span></span>
+<span id="cb122-55"><a href="#cb122-55" aria-hidden="true" tabindex="-1"></a>  <span class="va">hl</span><span class="op">.</span>exec_cmd<span class="op">(</span><span class="st">"caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"</span><span class="op">)</span></span>
+<span id="cb122-56"><a href="#cb122-56" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Reload after editing:</p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> reload</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Most changes apply instantly. The exceptions are the same as for hyprlang: <code>hl.env(...)</code> only affects <em>newly-spawned</em> processes, and certain Caelestia-shell-rendered things (bar, picker) may need <code>caelestia shell -k &amp;&amp; caelestia shell -d &amp;</code> to pick up env changes.</p>
+</section>
+<section id="path-a-vs.-path-b-which-to-pick" class="level3">
+<h3 class="anchored" data-anchor-id="path-a-vs.-path-b-which-to-pick">Path A vs.&nbsp;Path B — which to pick</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 52%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Path</th>
+<th>What it looks like</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>A</strong> — Keep the hyprlang <code>hypr-user.conf</code> + add a small Lua file alongside</td>
+<td>The 3-line wallpaper recipe stays in <code>hypr-user.conf</code>; new things (keybinds, window rules, event handlers) go in <code>hyprland.lua</code>. Both load automatically.</td>
+<td>Recommended for the typical reader. Lowest friction. Lets you adopt Lua incrementally instead of rewriting everything at once.</td>
+</tr>
+<tr class="even">
+<td><strong>B</strong> — Move everything to <code>hyprland.lua</code> and leave <code>hypr-user.conf</code> empty</td>
+<td>All personal overrides as Lua. <code>hypr-user.conf</code> exists but is empty (Caelestia still sources it; an empty file is fine).</td>
+<td>When you’re comfortable with Lua and want a single file for all your customization. Cleaner long-term.</td>
+</tr>
+</tbody>
+</table>
+<p>For your install, <strong>Path A is the natural next step</strong> — you already have the working hyprlang wallpaper recipe; adding a <code>~/.config/hypr/hyprland.lua</code> for any <em>new</em> customization just means you’re using the modern API for new work. Migrate the rest gradually if and when you want.</p>
+</section>
+<section id="discovering-whats-already-configured" class="level3">
+<h3 class="anchored" data-anchor-id="discovering-whats-already-configured">Discovering what’s already configured</h3>
+<div class="sourceCode" id="cb124"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> getoption general:gaps_in            <span class="co"># current value of a setting</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> getoption decoration:rounding</span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> binds                                 <span class="co"># all your active keybinds — Caelestia's + yours</span></span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                              <span class="co"># detected displays with res/scale/refresh</span></span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> clients                               <span class="co"># currently open windows (use for class: in window rules)</span></span>
+<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> devices                               <span class="co"># input devices (touchpad, keyboard)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These work regardless of whether the config came from hyprlang or Lua — Hyprland normalizes both into the same in-memory state.</p>
+</section>
+</section>
 <section id="verification-commands" class="level2">
 <h2 class="anchored" data-anchor-id="verification-commands">Verification commands</h2>
 <p>Open a <code>foot</code> terminal — Caelestia’s default keybind is <code>Super+Return</code> — and run:</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
-<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
-<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
-<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show MANY (one per pacman transaction during install)</span></span>
-<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list        <span class="co"># expect snapshots numbered well into the 40s if you followed every step</span></span>
-<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span>
-<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + Wayland</span></span>
-<span id="cb120-16"><a href="#cb120-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"</span></span>
-<span id="cb120-17"><a href="#cb120-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays with resolution, refresh rate, scale</span></span>
-<span id="cb120-18"><a href="#cb120-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$WAYLAND_DISPLAY</span>            <span class="co"># something like "wayland-1" — proves you're in a Wayland session, not Xwayland</span></span>
-<span id="cb120-19"><a href="#cb120-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-20"><a href="#cb120-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Audio (PipeWire stack)</span></span>
-<span id="cb120-21"><a href="#cb120-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>  <span class="co"># "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API</span></span>
-<span id="cb120-22"><a href="#cb120-22" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                     <span class="co"># tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there</span></span>
-<span id="cb120-23"><a href="#cb120-23" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status pipewire wireplumber pipewire-pulse <span class="kw">|</span> <span class="fu">grep</span> Active</span>
-<span id="cb120-24"><a href="#cb120-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># all three should be Active: active (running)</span></span>
-<span id="cb120-25"><a href="#cb120-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-26"><a href="#cb120-26" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU (on hybrid laptops — Dell Precision example)</span></span>
-<span id="cb120-27"><a href="#cb120-27" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>                       <span class="co"># confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)</span></span>
-<span id="cb120-28"><a href="#cb120-28" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span>     <span class="co"># iGPU VA-API confirms working video decode</span></span>
-<span id="cb120-29"><a href="#cb120-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-30"><a href="#cb120-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Caelestia-specific</span></span>
-<span id="cb120-31"><a href="#cb120-31" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--version</span>              <span class="co"># CLI version</span></span>
-<span id="cb120-32"><a href="#cb120-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
-<span id="cb120-33"><a href="#cb120-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># may or may not exist depending on Caelestia version — fine either way</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb125"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all five Btrfs mountpoints (@, @home, @snapshots, @var_log, @swap)</span></span>
+<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># same five subvolumes, listed by ID</span></span>
+<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile (pri -1)</span></span>
+<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-11"><a href="#cb125-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show MANY (one per pacman transaction during install)</span></span>
+<span id="cb125-12"><a href="#cb125-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list        <span class="co"># expect snapshots numbered well into the 40s if you followed every step</span></span>
+<span id="cb125-13"><a href="#cb125-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span>
+<span id="cb125-14"><a href="#cb125-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-15"><a href="#cb125-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + Wayland</span></span>
+<span id="cb125-16"><a href="#cb125-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># now prints "Hyprland, built from branch ..." — no more "INSTANCE_SIGNATURE not set"</span></span>
+<span id="cb125-17"><a href="#cb125-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays with resolution, refresh rate, scale</span></span>
+<span id="cb125-18"><a href="#cb125-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$WAYLAND_DISPLAY</span>            <span class="co"># something like "wayland-1" — proves you're in a Wayland session, not Xwayland</span></span>
+<span id="cb125-19"><a href="#cb125-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-20"><a href="#cb125-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Audio (PipeWire stack)</span></span>
+<span id="cb125-21"><a href="#cb125-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>  <span class="co"># "PulseAudio (on PipeWire 1.6.x)" — confirms pipewire-pulse is intercepting PA API</span></span>
+<span id="cb125-22"><a href="#cb125-22" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                     <span class="co"># tree of audio devices, sinks, sources — your laptop speakers/headphone jack should be there</span></span>
+<span id="cb125-23"><a href="#cb125-23" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status pipewire wireplumber pipewire-pulse <span class="kw">|</span> <span class="fu">grep</span> Active</span>
+<span id="cb125-24"><a href="#cb125-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># all three should be Active: active (running)</span></span>
+<span id="cb125-25"><a href="#cb125-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-26"><a href="#cb125-26" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU (on hybrid laptops — Dell Precision example)</span></span>
+<span id="cb125-27"><a href="#cb125-27" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>                       <span class="co"># confirms dGPU still alive and idle at ~0.5 W (or wakes briefly to query)</span></span>
+<span id="cb125-28"><a href="#cb125-28" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span>     <span class="co"># iGPU VA-API confirms working video decode</span></span>
+<span id="cb125-29"><a href="#cb125-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-30"><a href="#cb125-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Caelestia-specific</span></span>
+<span id="cb125-31"><a href="#cb125-31" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--version</span>              <span class="co"># CLI version</span></span>
+<span id="cb125-32"><a href="#cb125-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb125-33"><a href="#cb125-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># may or may not exist depending on Caelestia version — fine either way</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
 <hr>
 </section>
@@ -3202,10 +3445,10 @@ If you see a “config error” overlay at the bottom of the screen referencing 
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>

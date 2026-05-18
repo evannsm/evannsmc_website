@@ -2041,6 +2041,169 @@ The error overlay disappears immediately. Your terminals and any open windows st
 If Caelestia later ships a fix (or you `cd ~/.local/share/caelestia && git pull` and the line gets re-added because upstream added it back without the missing file), repeat the comment-out. You can also just `touch ~/.config/hypr/hypr-vars.conf` to create an empty file at the expected path — that satisfies the source directive without you having to remember to re-comment after each pull. Both fixes are valid; commenting is simpler, the empty-file trick is more `git pull`-resistant.
 :::
 
+## Customizing Hyprland after Caelestia is installed (hyprlang vs. Lua)
+
+::: {.callout-important}
+## Hyprland 0.55+ uses Lua as its primary config language
+
+Starting with Hyprland 0.55 (mid-2026), the project officially deprecated its custom `hyprlang` config format in favor of **embedded Lua**. The canonical config path is now **`~/.config/hypr/hyprland.lua`** instead of `hyprland.conf`. Hyprland still reads the legacy `hyprland.conf` for backwards compatibility — and that's what Caelestia ships — but new features land in the Lua API first, and the project's wiki examples are now all in Lua.
+
+What this means for your install:
+
+- Caelestia bundles `~/.local/share/caelestia/hypr/hyprland.conf` (hyprlang). This is still fully supported. You do **not** need to migrate Caelestia's bundle to Lua — the legacy parser handles it.
+- Your *personal overrides* can be written in either hyprlang (`~/.config/caelestia/hypr-user.conf`, the slot Caelestia exposes) or Lua (`~/.config/hypr/hyprland.lua`, the modern Hyprland-native path). Both files are loaded automatically — they coexist without interfering.
+- For anything beyond simple `bind` / `exec-once` / `env` lines — loops, functions, conditional logic, runtime event handlers — Lua is much cleaner.
+:::
+
+### The right place to put your overrides (cardinal rule)
+
+**Never edit `~/.local/share/caelestia/hypr/*.conf` directly.** That's Caelestia upstream — `cd ~/.local/share/caelestia && git pull` will clobber any changes you make there. Two safe slots for personal customization:
+
+| File | Format | Use for |
+|------|--------|---------|
+| `~/.config/caelestia/hypr-user.conf` | **hyprlang** (legacy) | Simple overrides that match the bundle's style: a few keybinds, env vars, exec-once lines. Caelestia explicitly sources this file. |
+| `~/.config/hypr/hyprland.lua` | **Lua** (modern, Hyprland 0.55+) | Anything you want loops, functions, event handlers, or programmatic logic for. Loaded automatically by Hyprland alongside the legacy config. |
+| `~/.config/caelestia/hypr-vars.conf` | **hyprlang** | Variable overrides Caelestia exposes (`$gap`, `$borderwidth`, accent colors). Vars only, not full directives. |
+
+You can use both `hypr-user.conf` and `hyprland.lua` together — they're additive, not exclusive. Many users keep the existing 3-line hyprlang recipe in `hypr-user.conf` (env + two exec-once) and put everything else in Lua.
+
+### The Lua API at a glance
+
+Hyprland exposes a global `hl` table with these methods:
+
+| API call | Purpose |
+|----------|---------|
+| `hl.config({ section = { key = value } })` | Set any config section — `general`, `decoration`, `animations`, `input`, `dwindle`, etc. |
+| `hl.bind(MODS .. " + " .. KEY, hl.dsp.exec_cmd("..."))` | Bind a key combination to a dispatcher. |
+| `hl.dsp.exec_cmd(cmd)`, `hl.dsp.workspace(n)`, `hl.dsp.window.close()`, `hl.dsp.movetoworkspace(n)` | Built-in dispatchers — exec a shell command, switch workspace, close window, etc. |
+| `hl.monitor({ output, mode, position, scale })` | Configure a monitor — equivalent to `monitor =` in hyprlang. |
+| `hl.env(name, value)` | Set an env var for child processes. Equivalent to `env = NAME,VALUE`. |
+| `hl.on("hyprland.start", fn)` | Run `fn` once at session start. Equivalent to `exec-once`. Other events fire on workspace change, window open, etc. |
+| `hl.exec_cmd(cmd)` | Execute a shell command. Use inside event handlers. |
+| `hl.window_rule({ name, match = { class, title }, ...props })` | Per-app window behavior. Replaces `windowrulev2`. |
+| `hl.workspace_rule({ workspace, gaps_in, gaps_out, ... })` | Per-workspace rules. |
+| `hl.gesture({ fingers, direction, action })` | Touchpad gestures. |
+| `hl.device({ name, sensitivity, ... })` | Per-input-device overrides. |
+| `hl.curve(name, { type = "bezier", points = ... })`, `hl.animation({...})` | Custom animation curves and per-element timing. |
+
+Full reference: [wiki.hypr.land/Configuring/Start/](https://wiki.hypr.land/Configuring/Start/){target="_blank" rel="noopener"}.
+
+### Worked example: porting the wallpaper recipe from hyprlang to Lua
+
+The 3-line hyprlang recipe (in `hypr-user.conf`):
+
+```text
+env = CAELESTIA_WALLPAPERS_DIR,/home/evanns/Pictures/Wallpapers
+exec-once = awww-daemon
+exec-once = caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n
+```
+
+Equivalent in Lua (in `~/.config/hypr/hyprland.lua`):
+
+```lua
+hl.env("CAELESTIA_WALLPAPERS_DIR", "/home/evanns/Pictures/Wallpapers")
+
+hl.on("hyprland.start", function()
+  hl.exec_cmd("awww-daemon")
+  hl.exec_cmd("caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n")
+end)
+```
+
+Both forms produce identical session behavior. The Lua version becomes useful once you add *conditional* logic — e.g., "use a different wallpaper folder on Mondays," "skip wallpaper auto-start if a specific file exists" — none of which is expressible in hyprlang.
+
+### A larger Lua example — keybinds, window rules, env vars, event handlers
+
+For readers who want a full personal Lua override file as a starting template:
+
+```lua
+-- ~/.config/hypr/hyprland.lua
+-- Personal overrides on top of Caelestia. Hyprland 0.55+ native Lua format.
+
+local mainMod = "SUPER"
+
+-- ===== Keybinds (programmatic — no copy-paste 9 lines for workspace switching) =====
+
+local apps = {
+  { mods = mainMod,             key = "B",      cmd = "firefox"     },
+  { mods = mainMod,             key = "E",      cmd = "nautilus"    },
+  { mods = mainMod .. " SHIFT", key = "Return", cmd = "foot"        },
+  { mods = mainMod,             key = "P",      cmd = "pavucontrol" },
+}
+for _, app in ipairs(apps) do
+  hl.bind(app.mods .. " + " .. app.key, hl.dsp.exec_cmd(app.cmd))
+end
+
+-- Workspace switching 1-9 + move-to-workspace, generated in a loop
+for i = 1, 9 do
+  hl.bind(mainMod .. " + " .. i, hl.dsp.workspace(tostring(i)))
+  hl.bind(mainMod .. " SHIFT + " .. i, hl.dsp.movetoworkspace(tostring(i)))
+end
+
+-- Roll a new random wallpaper on demand
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(
+  "caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n"
+))
+
+-- ===== Window rules =====
+
+hl.window_rule({
+  name  = "float-pavucontrol",
+  match = { class = "^(pavucontrol)$" },
+  float = true,
+})
+
+hl.window_rule({
+  name  = "send-rqt-windows-to-ws3",
+  match = { class = "^(rqt_.*)$" },          -- ROS rqt tools
+  workspace = "3",
+})
+
+-- ===== Env vars (NVIDIA on Wayland + Electron Wayland hint) =====
+
+hl.env("CAELESTIA_WALLPAPERS_DIR", "/home/evanns/Pictures/Wallpapers")
+hl.env("LIBVA_DRIVER_NAME", "nvidia")
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+hl.env("NVD_BACKEND", "direct")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+
+-- ===== Session startup (replaces exec-once) =====
+
+hl.on("hyprland.start", function()
+  hl.exec_cmd("awww-daemon")
+  hl.exec_cmd("caelestia wallpaper -r /home/evanns/Pictures/Wallpapers -n")
+end)
+```
+
+Reload after editing:
+
+```bash
+hyprctl reload
+```
+
+Most changes apply instantly. The exceptions are the same as for hyprlang: `hl.env(...)` only affects *newly-spawned* processes, and certain Caelestia-shell-rendered things (bar, picker) may need `caelestia shell -k && caelestia shell -d &` to pick up env changes.
+
+### Path A vs. Path B — which to pick
+
+| Path | What it looks like | When to use |
+|------|---------------------|-------------|
+| **A** — Keep the hyprlang `hypr-user.conf` + add a small Lua file alongside | The 3-line wallpaper recipe stays in `hypr-user.conf`; new things (keybinds, window rules, event handlers) go in `hyprland.lua`. Both load automatically. | Recommended for the typical reader. Lowest friction. Lets you adopt Lua incrementally instead of rewriting everything at once. |
+| **B** — Move everything to `hyprland.lua` and leave `hypr-user.conf` empty | All personal overrides as Lua. `hypr-user.conf` exists but is empty (Caelestia still sources it; an empty file is fine). | When you're comfortable with Lua and want a single file for all your customization. Cleaner long-term. |
+
+For your install, **Path A is the natural next step** — you already have the working hyprlang wallpaper recipe; adding a `~/.config/hypr/hyprland.lua` for any *new* customization just means you're using the modern API for new work. Migrate the rest gradually if and when you want.
+
+### Discovering what's already configured
+
+```bash
+hyprctl getoption general:gaps_in            # current value of a setting
+hyprctl getoption decoration:rounding
+hyprctl binds                                 # all your active keybinds — Caelestia's + yours
+hyprctl monitors                              # detected displays with res/scale/refresh
+hyprctl clients                               # currently open windows (use for class: in window rules)
+hyprctl devices                               # input devices (touchpad, keyboard)
+```
+
+These work regardless of whether the config came from hyprlang or Lua — Hyprland normalizes both into the same in-memory state.
+
 ## Verification commands
 
 Open a `foot` terminal — Caelestia's default keybind is `Super+Return` — and run:
