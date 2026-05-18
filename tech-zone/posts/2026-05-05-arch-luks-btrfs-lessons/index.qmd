@@ -1,5 +1,5 @@
 ---
-title: "[In progress] An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned"
+title: "An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned"
 description: "A post-mortem on my second pass at installing Arch Linux: full-disk LUKS encryption, Btrfs subvolumes for / and /home, zram for everyday swap, a shared data partition, and a dedicated encrypted swap partition for hibernation, set up to dual-boot with Ubuntu. GRUB loaded, the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode. Here's the plan, the failure, and everything I've tried so far."
 author: "Evanns Morales-Cuadrado"
 date: "2026-05-05"
@@ -218,6 +218,9 @@ HOOKS   = scripts and procedures executed during early boot
 
 Hook-by-hook:
 
+<details>
+<summary>Click to expand: what each hook does</summary>
+
 | Hook          | What it does                                                |
 |---------------|-------------------------------------------------------------|
 | `base`        | Minimum tooling for early boot.                             |
@@ -232,6 +235,8 @@ Hook-by-hook:
 | `encrypt`     | Unlocks the LUKS container.                                 |
 | `filesystems` | Adds filesystem drivers.                                    |
 | `fsck`        | Filesystem check support — less critical for Btrfs.         |
+
+</details>
 
 ::: {.callout-note}
 ## udev vs. systemd initramfs
@@ -360,6 +365,9 @@ The `<uuid>` above is a placeholder. The real line must contain the bare UUID �
 
 What each kernel parameter does:
 
+<details>
+<summary>Click to expand</summary>
+
 | Parameter                          | Purpose                                                                 |
 |------------------------------------|-------------------------------------------------------------------------|
 | `loglevel=3`                       | Quieter boot logs.                                                      |
@@ -368,6 +376,8 @@ What each kernel parameter does:
 | `cryptdevice=UUID=<uuid>:arch`     | Find this LUKS partition by UUID, unlock it, expose it as `/dev/mapper/arch`. |
 | `root=/dev/mapper/arch`            | The unlocked mapper is the root device.                                 |
 | `rootflags=subvol=@`               | Mount the `@` subvolume as `/`.                                         |
+
+</details>
 
 While you're in `/etc/default/grub`, also set:
 

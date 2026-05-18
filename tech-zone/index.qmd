@@ -631,7 +631,7 @@ main.content.column-page {
       autocomplete="off"
     />
     <span class="tz-filter-count" aria-live="polite">
-      showing <strong id="tz-count-shown">10</strong> of <strong>10</strong>
+      showing <strong id="tz-count-shown">9</strong> of <strong>9</strong>
     </span>
   </div>
 
@@ -639,178 +639,116 @@ main.content.column-page {
   <p class="tz-section-kicker">published</p>
 
   <!-- ─────── Card grid ─────── -->
+  <!-- Display order: most-recent / highest-numbered at top.
+       Article number assignment is narrative-order: the ambitious failure that
+       motivated everything else is #01, basic install #02, working full install
+       with Caelestia #03, pacman/AUR reference #04, Caelestia desktop split-out
+       from #03 is #05, three-variant install compilation is #06. -->
   <div class="tz-card-grid" id="tz-card-grid">
 
-    <!-- CARD 01 — Basic Arch install (success) -->
-    <a class="tz-card success" href="./posts/2026-05-01-first-arch-install/"
-       data-tags="arch linux first install ext4 grub systemd basic boot"
-       aria-label="Read: My First Arch Linux Install — A Basic Setup on an Old Laptop">
+    <!-- CARD 06 — Three single-boot Arch install variants (compilation) -->
+    <a class="tz-card success" href="./posts/2026-05-18-arch-install-variants/"
+       data-tags="arch linux btrfs luks snapper grub mkinitcpio compilation variants subvolumes encryption hibernation single-boot"
+       aria-label="Read: Three Single-Boot Arch Variants — Btrfs, LUKS, or Both">
       <div class="tz-card-summary">
         <div class="tz-card-tags">
           <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">first install</span>
-          <span class="tz-tag">ext4</span>
-          <span class="tz-tag">grub</span>
-          <span class="tz-tag">systemd</span>
+          <span class="tz-tag">btrfs</span>
+          <span class="tz-tag">luks</span>
+          <span class="tz-tag">snapper</span>
+          <span class="tz-tag">compilation</span>
         </div>
 
         <div class="tz-card-name-row">
-          <span class="tz-card-number">01</span>
-          <h3 class="tz-card-name">My First Arch Linux Install: A Basic Setup on an Old Laptop</h3>
+          <span class="tz-card-number">06</span>
+          <h3 class="tz-card-name">Three Single-Boot Arch Variants: Btrfs, LUKS, or Both</h3>
         </div>
 
         <div class="tz-card-meta">
-          <span class="tz-card-date">2026-05-01</span>
-          <span class="tz-status-pill ok">boot ok</span>
+          <span class="tz-card-date">2026-05-18</span>
+          <span class="tz-status-pill warn">derived</span>
         </div>
 
         <p class="tz-card-preview-copy">
-          A copy-pasteable walkthrough of installing Arch Linux 2026.05.01 on an old test laptop — verifying
-          the ISO, partitioning, pacstrapping, configuring locale and users, and getting GRUB to actually boot
-          the thing. No Btrfs, no LUKS, no zram — just the boring, dependable first install.
+          A side-by-side compilation of three single-boot variants — <code>Arch + Btrfs</code>,
+          <code>Arch + LUKS</code>, and <code>Arch + LUKS + Btrfs</code> — distilled from what I
+          learned writing Articles 01–04. Each variant is a complete, copy-pasteable procedure
+          isolated to one variable change relative to the basic install. Reasoned from the wiki and
+          the lessons of those four articles; not all three are runs I executed line-by-line.
         </p>
 
         <div class="tz-screen" aria-hidden="true">
           <div class="tz-screen-bar">
             <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span class="label">post-install — boot check</span>
-            <span class="badge ok">boot ok</span>
+            <span class="label">install variants — pick a tab</span>
+            <span class="badge ok">derived</span>
           </div>
-          <div class="tz-screen-body"><span class="p">[evannsmc@arch ~]$</span> <span class="c">lsblk</span>
-NAME        SIZE  TYPE  MOUNTPOINTS
-nvme0n1     465G  disk
-├─nvme0n1p1   1G  part  /boot
-├─nvme0n1p2  35G  part  <span class="mute">[SWAP]</span>
-├─nvme0n1p3 200G  part  /
-└─nvme0n1p4 229G  part  /home
+          <div class="tz-screen-body"><span class="p">[ tab ]</span> <span class="c">Arch + Btrfs</span>
+  ↳ <span class="mute">subvolumes + snapper, no encryption</span>
 
-<span class="p">[evannsmc@arch ~]$</span> <span class="c">systemctl is-system-running</span>
-<span class="ok">running</span>
+<span class="p">[ tab ]</span> <span class="c">Arch + LUKS</span>
+  ↳ <span class="mute">encryption + ext4, no subvolumes</span>
 
-<span class="p">[evannsmc@arch ~]$</span> <span class="c">uname -r</span>
-6.13.4-arch1-1<span class="u">_</span></div>
+<span class="p">[ tab ]</span> <span class="c">Arch + LUKS + Btrfs</span>
+  ↳ <span class="mute">concise version of Article 03</span>
+  ↳ <span class="mute">links out to Article 05 for the desktop</span><span class="u">_</span></div>
         </div>
 
-        <span class="tz-card-cta">read the install log <span class="arrow">→</span></span>
+        <span class="tz-card-cta">read the variants <span class="arrow">→</span></span>
       </div>
     </a>
 
-    <!-- CARD 02 — Ambitious LUKS+Btrfs install (failed) -->
-    <a class="tz-card failed" href="./posts/2026-05-05-arch-luks-btrfs-lessons/"
-       data-tags="arch linux luks btrfs mkinitcpio debugging boot failure dual-boot ubuntu zram"
-       aria-label="Read: An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned">
+    <!-- CARD 05 — Caelestia (Hyprland Desktop) standalone -->
+    <a class="tz-card success" href="./posts/2026-05-18-caelestia-desktop/"
+       data-tags="arch linux caelestia hyprland sddm pipewire wayland nvidia lua dotfiles wallpaper quickshell desktop"
+       aria-label="Read: Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar">
       <div class="tz-card-summary">
         <div class="tz-card-tags">
-          <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">luks</span>
-          <span class="tz-tag">btrfs</span>
-          <span class="tz-tag">mkinitcpio</span>
-          <span class="tz-tag">debugging</span>
-        </div>
-
-        <div class="tz-card-name-row">
-          <span class="tz-card-number">02</span>
-          <h3 class="tz-card-name">An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs & Lessons</h3>
-        </div>
-
-        <div class="tz-card-meta">
-          <span class="tz-card-date">2026-05-05</span>
-          <span class="tz-status-pill fail">in progress</span>
-        </div>
-
-        <p class="tz-card-preview-copy">
-          The opposite of the boring install: full-disk LUKS, Btrfs subvolumes for <code>/</code> and
-          <code>/home</code>, zram swap, a shared data partition, and dual-boot with Ubuntu. GRUB loaded,
-          the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode.
-          The plan, the failure, and everything I've tried so far.
-        </p>
-
-        <div class="tz-screen" aria-hidden="true">
-          <div class="tz-screen-bar">
-            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span class="label">boot — emergency.target</span>
-            <span class="badge fail">boot failed</span>
-          </div>
-          <div class="tz-screen-body"><span class="mute">A start job is running for /dev/disk/by-uuid/0e6caf44-…</span>
-<span class="mute">A password is required to access the Arch volume.</span>
-
-<span class="err">[FAIL]</span> <span class="mute">Timed out waiting for device</span>
-        <span class="mute">/dev/disk/by-uuid/0e6caf44-...</span>
-<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for /sysroot.</span>
-<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for initrd-root-fs.target.</span>
-
-<span class="w">You are in emergency mode.</span>
-
-<span class="p">root@archiso ~ #</span> <span class="c">ls /dev/mapper</span>
-control  arch  <span class="mute">…</span><span class="u">_</span></div>
-        </div>
-
-        <span class="tz-card-cta">read the post-mortem <span class="arrow">→</span></span>
-      </div>
-    </a>
-
-    <!-- CARD 03 — LUKS + BTRFS + Caelestia (working) -->
-    <a class="tz-card success" href="./posts/2026-05-17-arch-luks-btrfs-caelestia/"
-       data-tags="arch linux luks btrfs caelestia hyprland snapper hibernation zram sd-encrypt grub pipewire"
-       aria-label="Read: Arch + LUKS + Btrfs + Caelestia — The Install I'm Actually Using">
-      <div class="tz-card-summary">
-        <div class="tz-card-tags">
-          <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">luks</span>
-          <span class="tz-tag">btrfs</span>
           <span class="tz-tag">caelestia</span>
           <span class="tz-tag">hyprland</span>
-          <span class="tz-tag">snapper</span>
-          <span class="tz-tag">hibernation</span>
+          <span class="tz-tag">sddm</span>
+          <span class="tz-tag">pipewire</span>
+          <span class="tz-tag">lua</span>
         </div>
 
         <div class="tz-card-name-row">
-          <span class="tz-card-number">03</span>
-          <h3 class="tz-card-name">Arch + LUKS + Btrfs + Caelestia — The Install I'm Actually Using</h3>
+          <span class="tz-card-number">05</span>
+          <h3 class="tz-card-name">Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</h3>
         </div>
 
         <div class="tz-card-meta">
-          <span class="tz-card-date">2026-05-17</span>
-          <span class="tz-status-pill ok">boot ok</span>
+          <span class="tz-card-date">2026-05-18</span>
+          <span class="tz-status-pill ok">desktop</span>
         </div>
 
         <p class="tz-card-preview-copy">
-          Article 02's ambition, executed correctly: <code>LUKS2</code> on the root partition,
-          <code>Btrfs</code> with the canonical <code>@</code>/<code>@home</code>/<code>@snapshots</code>/<code>@var_log</code>/<code>@swap</code>
-          subvolumes, zram for everyday swap plus a NoCOW Btrfs swap file for hibernation,
-          snapper + grub-btrfs from day one, and the Caelestia Hyprland desktop on top —
-          with every <code>cryptdevice=</code> typo from the failed-boot post-mortem fixed.
+          The desktop half of Article 03, split into its own piece. PipeWire audio, GPU drivers for
+          Intel / AMD / NVIDIA / hybrid laptops, an AUR helper, the Caelestia bundle install
+          (including the <code>SRCINFO</code> failure-and-recovery), KDE-Frameworks apps under
+          Hyprland, SDDM as the login manager, the wallpaper-chain recipe, and the new
+          Hyprland 0.55 <code>hyprland.lua</code> override path.
         </p>
 
         <div class="tz-screen" aria-hidden="true">
           <div class="tz-screen-bar">
             <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span class="label">first boot — sanity checks</span>
-            <span class="badge ok">boot ok</span>
+            <span class="label">first login — Caelestia + Hyprland</span>
+            <span class="badge ok">desktop</span>
           </div>
-          <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">cryptsetup status cryptroot</span>
-<span class="mute">  type:    LUKS2</span>
-<span class="mute">  cipher:  aes-xts-plain64</span>
-<span class="mute">  device:  /dev/nvme0n1p2</span>
+          <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">hyprctl version | head -1</span>
+Hyprland, built from branch main
 
-<span class="p">[evanns@arch ~]$</span> <span class="c">findmnt -t btrfs -o TARGET,OPTIONS</span>
-TARGET       OPTIONS
-/            <span class="ok">subvol=/@</span>,compress=zstd:3,noatime
-/home        <span class="ok">subvol=/@home</span>,compress=zstd:3
-/.snapshots  <span class="ok">subvol=/@snapshots</span>,compress=zstd:3
-/var/log     <span class="ok">subvol=/@var_log</span>,compress=zstd:3
-/swap        <span class="ok">subvol=/@swap</span>,noatime
+<span class="p">[evanns@arch ~]$</span> <span class="c">pactl info | grep 'Server Name'</span>
+Server Name: <span class="ok">PulseAudio (on PipeWire 1.6.x)</span>
 
-<span class="p">[evanns@arch ~]$</span> <span class="c">swapon --show</span>
-NAME           TYPE       SIZE PRIO
-/dev/zram0     partition  8G   <span class="ok">100</span>
-/swap/swapfile file      20G   <span class="mute">-2</span>
+<span class="p">[evanns@arch ~]$</span> <span class="c">caelestia --version</span>
+caelestia 0.6.x
 
-<span class="p">[evanns@arch ~]$</span> <span class="c">hyprctl version | head -1</span>
-Hyprland, built from branch main<span class="u">_</span></div>
+<span class="p">[evanns@arch ~]$</span> <span class="c">systemctl --user is-active wireplumber</span>
+<span class="ok">active</span><span class="u">_</span></div>
         </div>
 
-        <span class="tz-card-cta">read the build log <span class="arrow">→</span></span>
+        <span class="tz-card-cta">read the desktop log <span class="arrow">→</span></span>
       </div>
     </a>
 
@@ -868,6 +806,179 @@ Hyprland, built from branch main<span class="u">_</span></div>
       </div>
     </a>
 
+    <!-- CARD 03 — LUKS + BTRFS + Caelestia (working) -->
+    <a class="tz-card success" href="./posts/2026-05-17-arch-luks-btrfs-caelestia/"
+       data-tags="arch linux luks btrfs caelestia hyprland snapper hibernation zram sd-encrypt grub pipewire"
+       aria-label="Read: Arch + LUKS + Btrfs + Caelestia">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">luks</span>
+          <span class="tz-tag">btrfs</span>
+          <span class="tz-tag">caelestia</span>
+          <span class="tz-tag">hyprland</span>
+          <span class="tz-tag">snapper</span>
+          <span class="tz-tag">hibernation</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">03</span>
+          <h3 class="tz-card-name">Arch + LUKS + Btrfs + Caelestia</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-17</span>
+          <span class="tz-status-pill ok">boot ok</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          Article 01's ambition, executed correctly: <code>LUKS2</code> on the root partition,
+          <code>Btrfs</code> with the canonical <code>@</code>/<code>@home</code>/<code>@snapshots</code>/<code>@var_log</code>/<code>@swap</code>
+          subvolumes, zram for everyday swap plus a NoCOW Btrfs swap file for hibernation,
+          snapper + grub-btrfs from day one, and the Caelestia Hyprland desktop on top —
+          with every <code>cryptdevice=</code> typo from the failed-boot post-mortem fixed.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">first boot — sanity checks</span>
+            <span class="badge ok">boot ok</span>
+          </div>
+          <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">cryptsetup status cryptroot</span>
+<span class="mute">  type:    LUKS2</span>
+<span class="mute">  cipher:  aes-xts-plain64</span>
+<span class="mute">  device:  /dev/nvme0n1p2</span>
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">findmnt -t btrfs -o TARGET,OPTIONS</span>
+TARGET       OPTIONS
+/            <span class="ok">subvol=/@</span>,compress=zstd:3,noatime
+/home        <span class="ok">subvol=/@home</span>,compress=zstd:3
+/.snapshots  <span class="ok">subvol=/@snapshots</span>,compress=zstd:3
+/var/log     <span class="ok">subvol=/@var_log</span>,compress=zstd:3
+/swap        <span class="ok">subvol=/@swap</span>,noatime
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">swapon --show</span>
+NAME           TYPE       SIZE PRIO
+/dev/zram0     partition  8G   <span class="ok">100</span>
+/swap/swapfile file      20G   <span class="mute">-2</span>
+
+<span class="p">[evanns@arch ~]$</span> <span class="c">hyprctl version | head -1</span>
+Hyprland, built from branch main<span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the build log <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- CARD 02 — Basic Arch install (success) -->
+    <a class="tz-card success" href="./posts/2026-05-01-first-arch-install/"
+       data-tags="arch linux first install ext4 grub systemd basic boot"
+       aria-label="Read: My First Arch Linux Install — A Basic Setup on an Old Laptop">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">first install</span>
+          <span class="tz-tag">ext4</span>
+          <span class="tz-tag">grub</span>
+          <span class="tz-tag">systemd</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">02</span>
+          <h3 class="tz-card-name">My First Arch Linux Install: A Basic Setup on an Old Laptop</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-01</span>
+          <span class="tz-status-pill ok">boot ok</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          A copy-pasteable walkthrough of installing Arch Linux 2026.05.01 on an old test laptop — verifying
+          the ISO, partitioning, pacstrapping, configuring locale and users, and getting GRUB to actually boot
+          the thing. No Btrfs, no LUKS, no zram — just the boring, dependable first install.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">post-install — boot check</span>
+            <span class="badge ok">boot ok</span>
+          </div>
+          <div class="tz-screen-body"><span class="p">[evannsmc@arch ~]$</span> <span class="c">lsblk</span>
+NAME        SIZE  TYPE  MOUNTPOINTS
+nvme0n1     465G  disk
+├─nvme0n1p1   1G  part  /boot
+├─nvme0n1p2  35G  part  <span class="mute">[SWAP]</span>
+├─nvme0n1p3 200G  part  /
+└─nvme0n1p4 229G  part  /home
+
+<span class="p">[evannsmc@arch ~]$</span> <span class="c">systemctl is-system-running</span>
+<span class="ok">running</span>
+
+<span class="p">[evannsmc@arch ~]$</span> <span class="c">uname -r</span>
+6.13.4-arch1-1<span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the install log <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- CARD 01 — Ambitious LUKS+Btrfs install (failed) -->
+    <a class="tz-card failed" href="./posts/2026-05-05-arch-luks-btrfs-lessons/"
+       data-tags="arch linux luks btrfs mkinitcpio debugging boot failure dual-boot ubuntu zram"
+       aria-label="Read: An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs, and What I Learned">
+      <div class="tz-card-summary">
+        <div class="tz-card-tags">
+          <span class="tz-tag">arch linux</span>
+          <span class="tz-tag">luks</span>
+          <span class="tz-tag">btrfs</span>
+          <span class="tz-tag">mkinitcpio</span>
+          <span class="tz-tag">debugging</span>
+        </div>
+
+        <div class="tz-card-name-row">
+          <span class="tz-card-number">01</span>
+          <h3 class="tz-card-name">An Ambitious Arch Install That Didn't Boot — LUKS, Btrfs & Lessons</h3>
+        </div>
+
+        <div class="tz-card-meta">
+          <span class="tz-card-date">2026-05-05</span>
+          <span class="tz-status-pill fail">boot failed</span>
+        </div>
+
+        <p class="tz-card-preview-copy">
+          The opposite of the boring install: full-disk LUKS, Btrfs subvolumes for <code>/</code> and
+          <code>/home</code>, zram swap, a shared data partition, and dual-boot with Ubuntu. GRUB loaded,
+          the LUKS prompt accepted my passphrase, and then the kernel dropped me into emergency mode.
+          The plan, the failure, and everything I've tried so far.
+        </p>
+
+        <div class="tz-screen" aria-hidden="true">
+          <div class="tz-screen-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="label">boot — emergency.target</span>
+            <span class="badge fail">boot failed</span>
+          </div>
+          <div class="tz-screen-body"><span class="mute">A start job is running for /dev/disk/by-uuid/0e6caf44-…</span>
+<span class="mute">A password is required to access the Arch volume.</span>
+
+<span class="err">[FAIL]</span> <span class="mute">Timed out waiting for device</span>
+        <span class="mute">/dev/disk/by-uuid/0e6caf44-...</span>
+<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for /sysroot.</span>
+<span class="err">[DEPEND]</span> <span class="mute">Dependency failed for initrd-root-fs.target.</span>
+
+<span class="w">You are in emergency mode.</span>
+
+<span class="p">root@archiso ~ #</span> <span class="c">ls /dev/mapper</span>
+control  arch  <span class="mute">…</span><span class="u">_</span></div>
+        </div>
+
+        <span class="tz-card-cta">read the post-mortem <span class="arrow">→</span></span>
+      </div>
+    </a>
+
   </div>
 
   <!-- ─────── Upcoming / planned articles ─────── -->
@@ -883,10 +994,10 @@ Hyprland, built from branch main<span class="u">_</span></div>
 
   <div class="tz-card-grid" id="tz-planned-grid">
 
-    <!-- CARD 03 — 2019 Mac mini Arch install (special Wi-Fi) -->
+    <!-- CARD 07 — 2019 Mac mini Arch install (special Wi-Fi) -->
     <div class="tz-card planned" role="article"
          data-tags="arch linux mac mini 2019 broadcom wifi bcm4360 broadcom-wl firmware basic ext4 grub"
-         aria-labelledby="tz-planned-03">
+         aria-labelledby="tz-planned-07">
       <div class="tz-card-summary">
         <div class="tz-card-tags">
           <span class="tz-tag">arch linux</span>
@@ -897,8 +1008,8 @@ Hyprland, built from branch main<span class="u">_</span></div>
         </div>
 
         <div class="tz-card-name-row">
-          <span class="tz-card-number">03</span>
-          <h3 class="tz-card-name" id="tz-planned-03">Arch on a 2019 Mac mini — Same Basic Install, Special Wi-Fi Card</h3>
+          <span class="tz-card-number">07</span>
+          <h3 class="tz-card-name" id="tz-planned-07">Arch on a 2019 Mac mini — Same Basic Install, Special Wi-Fi Card</h3>
         </div>
 
         <div class="tz-card-meta">
@@ -915,7 +1026,7 @@ Hyprland, built from branch main<span class="u">_</span></div>
         <div class="tz-planned-scope">
           <span class="label">scope</span>
           <ul>
-            <li>Mirrors Article 01 (ext4, GRUB, systemd, no LUKS, no Btrfs)</li>
+            <li>Mirrors Article 02 (ext4, GRUB, systemd, no LUKS, no Btrfs)</li>
             <li>Diverges on Wi-Fi: <code>broadcom-wl</code> via wired install + DKMS</li>
             <li>Notes on Apple T2 / EFI quirks specific to this Mac mini revision</li>
           </ul>
@@ -923,129 +1034,14 @@ Hyprland, built from branch main<span class="u">_</span></div>
       </div>
     </div>
 
-    <!-- CARD 04 — Arch + LUKS only -->
-    <div class="tz-card planned" role="article"
-         data-tags="arch linux luks encryption full disk encryption ext4 cryptsetup mkinitcpio"
-         aria-labelledby="tz-planned-04">
-      <div class="tz-card-summary">
-        <div class="tz-card-tags">
-          <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">luks</span>
-          <span class="tz-tag">encryption</span>
-          <span class="tz-tag">ext4</span>
-          <span class="tz-tag">cryptsetup</span>
-        </div>
+    <!-- CARDs 04/05/06 (LUKS-only / Btrfs-only / LUKS+Btrfs) retired —
+         their content is now compiled into the published "Three Single-Boot
+         Arch Variants" article (CARD 06 in the published grid above). -->
 
-        <div class="tz-card-name-row">
-          <span class="tz-card-number">04</span>
-          <h3 class="tz-card-name" id="tz-planned-04">Arch + LUKS — One Step Up: Add Encryption, Change Nothing Else</h3>
-        </div>
-
-        <div class="tz-card-meta">
-          <span class="tz-card-date">tba</span>
-          <span class="tz-status-pill warn">planned</span>
-        </div>
-
-        <p class="tz-card-preview-copy">
-          The minimum diff from Article 01: same ext4 root, same GRUB, same partitioning — but the
-          root device is now a LUKS container that asks for a passphrase at boot. The goal is to
-          isolate the encryption variable from the filesystem variable.
-        </p>
-
-        <div class="tz-planned-scope">
-          <span class="label">scope</span>
-          <ul>
-            <li>Single-disk LUKS1/LUKS2 on the root partition, unencrypted <code>/boot</code></li>
-            <li><code>encrypt</code> hook in <code>mkinitcpio.conf</code>, kernel cmdline via GRUB</li>
-            <li>No Btrfs, no subvolumes, no zram — pure encryption-only delta</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- CARD 05 — Arch + BTRFS only -->
-    <div class="tz-card planned" role="article"
-         data-tags="arch linux btrfs subvolumes snapper snapshots filesystem"
-         aria-labelledby="tz-planned-05">
-      <div class="tz-card-summary">
-        <div class="tz-card-tags">
-          <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">btrfs</span>
-          <span class="tz-tag">subvolumes</span>
-          <span class="tz-tag">snapper</span>
-        </div>
-
-        <div class="tz-card-name-row">
-          <span class="tz-card-number">05</span>
-          <h3 class="tz-card-name" id="tz-planned-05">Arch + Btrfs — Same as Article 01, But With Subvolumes</h3>
-        </div>
-
-        <div class="tz-card-meta">
-          <span class="tz-card-date">tba</span>
-          <span class="tz-status-pill warn">planned</span>
-        </div>
-
-        <p class="tz-card-preview-copy">
-          The mirror of Article 04, swapping the variable: plain unencrypted disk, but Btrfs with
-          proper subvolumes for <code>/</code>, <code>/home</code>, and <code>/.snapshots</code>, plus
-          snapper integration so rollbacks are a real option. Isolates filesystem from encryption.
-        </p>
-
-        <div class="tz-planned-scope">
-          <span class="label">scope</span>
-          <ul>
-            <li>Btrfs subvolume layout: <code>@</code>, <code>@home</code>, <code>@snapshots</code>, <code>@log</code></li>
-            <li>snapper + <code>grub-btrfs</code> for bootable snapshots</li>
-            <li>No LUKS — clear-text disk, so the bootloader story stays simple</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- CARD 06 — Arch + LUKS + BTRFS (single-boot) -->
-    <div class="tz-card planned" role="article"
-         data-tags="arch linux luks btrfs encryption subvolumes snapper zram single boot"
-         aria-labelledby="tz-planned-06">
-      <div class="tz-card-summary">
-        <div class="tz-card-tags">
-          <span class="tz-tag">arch linux</span>
-          <span class="tz-tag">luks</span>
-          <span class="tz-tag">btrfs</span>
-          <span class="tz-tag">snapper</span>
-          <span class="tz-tag">zram</span>
-        </div>
-
-        <div class="tz-card-name-row">
-          <span class="tz-card-number">06</span>
-          <h3 class="tz-card-name" id="tz-planned-06">Arch + LUKS + Btrfs — The Encrypted, Snapshot-Ready Single-Boot</h3>
-        </div>
-
-        <div class="tz-card-meta">
-          <span class="tz-card-date">tba</span>
-          <span class="tz-status-pill warn">planned</span>
-        </div>
-
-        <p class="tz-card-preview-copy">
-          The combined version of Articles 04 and 05: LUKS underneath, Btrfs subvolumes on top,
-          zram for swap, snapper for rollbacks. Functionally the install Article 02 was reaching for —
-          but kept as a single-boot so the bootloader and initramfs only have one OS to wake up.
-        </p>
-
-        <div class="tz-planned-scope">
-          <span class="label">scope</span>
-          <ul>
-            <li>LUKS container → Btrfs → subvolumes (no LVM in between)</li>
-            <li>zram swap; no separate swap partition</li>
-            <li>Single-boot only — multi-boot lives in Articles 07 &amp; 08</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- CARD 07 — Dual-boot Arch + Ubuntu, shared partition -->
+    <!-- CARD 08 — Dual-boot Arch + Ubuntu, shared partition -->
     <div class="tz-card planned" role="article"
          data-tags="arch linux ubuntu dual boot luks btrfs shared partition grub os-prober"
-         aria-labelledby="tz-planned-07">
+         aria-labelledby="tz-planned-08">
       <div class="tz-card-summary">
         <div class="tz-card-tags">
           <span class="tz-tag">arch linux</span>
@@ -1056,8 +1052,8 @@ Hyprland, built from branch main<span class="u">_</span></div>
         </div>
 
         <div class="tz-card-name-row">
-          <span class="tz-card-number">07</span>
-          <h3 class="tz-card-name" id="tz-planned-07">Dual-Boot Arch + Ubuntu — With a Shared Data Partition</h3>
+          <span class="tz-card-number">08</span>
+          <h3 class="tz-card-name" id="tz-planned-08">Dual-Boot Arch + Ubuntu — With a Shared Data Partition</h3>
         </div>
 
         <div class="tz-card-meta">
@@ -1066,9 +1062,9 @@ Hyprland, built from branch main<span class="u">_</span></div>
         </div>
 
         <p class="tz-card-preview-copy">
-          Everything from Article 06, then add an Ubuntu install alongside it and a shared partition
-          both distros can read and write so the documents I actually need on both systems live in
-          exactly one place — not synced, not copied, just mounted twice.
+          Everything from Article 06 (the LUKS+Btrfs single-boot variant), then add an Ubuntu install
+          alongside it and a shared partition both distros can read and write so the documents I actually
+          need on both systems live in exactly one place — not synced, not copied, just mounted twice.
         </p>
 
         <div class="tz-planned-scope">
@@ -1082,10 +1078,10 @@ Hyprland, built from branch main<span class="u">_</span></div>
       </div>
     </div>
 
-    <!-- CARD 08 — Triple-boot Arch + Ubuntu + Windows -->
+    <!-- CARD 09 — Triple-boot Arch + Ubuntu + Windows -->
     <div class="tz-card planned" role="article"
          data-tags="arch linux ubuntu windows triple boot luks btrfs shared partition efi bitlocker culmination"
-         aria-labelledby="tz-planned-08">
+         aria-labelledby="tz-planned-09">
       <div class="tz-card-summary">
         <div class="tz-card-tags">
           <span class="tz-tag">arch linux</span>
@@ -1096,8 +1092,8 @@ Hyprland, built from branch main<span class="u">_</span></div>
         </div>
 
         <div class="tz-card-name-row">
-          <span class="tz-card-number">08</span>
-          <h3 class="tz-card-name" id="tz-planned-08">Triple-Boot Arch + Ubuntu + Windows — Closing the Loop on Article 02</h3>
+          <span class="tz-card-number">09</span>
+          <h3 class="tz-card-name" id="tz-planned-09">Triple-Boot Arch + Ubuntu + Windows — Closing the Loop on Article 01</h3>
         </div>
 
         <div class="tz-card-meta">
@@ -1107,17 +1103,17 @@ Hyprland, built from branch main<span class="u">_</span></div>
 
         <p class="tz-card-preview-copy">
           The full-circle finale: every prior article stacked, plus a minimal Windows partition for
-          collaborators who live in Office-suite land. The same target that broke the second install —
-          but reached on purpose this time, with every lesson from Articles 01–07 underneath.
+          collaborators who live in Office-suite land. The same target that broke the ambitious install —
+          but reached on purpose this time, with every lesson from Articles 01–08 underneath.
         </p>
 
         <div class="tz-planned-scope">
           <span class="label">scope</span>
           <ul>
             <li>Windows installed first (it owns the EFI; everyone else adapts)</li>
-            <li>Arch + Ubuntu with shared LUKS/Btrfs layout from Articles 06–07</li>
+            <li>Arch + Ubuntu with shared LUKS/Btrfs layout from Articles 06 &amp; 08</li>
             <li>Shared data partition readable from Windows, Arch, and Ubuntu</li>
-            <li>Retrospective: which choices from Article 02 finally paid off</li>
+            <li>Retrospective: which choices from Article 01 finally paid off</li>
           </ul>
         </div>
       </div>

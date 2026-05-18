@@ -368,6 +368,9 @@ The `-K` flag initializes a fresh pacman keyring inside `/mnt`. Without it, `pac
 
 Here's what each package is for:
 
+<details>
+<summary>Click to expand: what each package does</summary>
+
 | Package             | Why it's here |
 |---------------------|---------------|
 | `base`              | Minimum set of utilities that make the system *Arch* (coreutils, glibc, bash, systemd, etc.). |
@@ -381,6 +384,8 @@ Here's what each package is for:
 | `git`               | Needed for fetching dotfiles, AUR helpers, basically anything later. |
 | `base-devel`        | `make`, `gcc`, `pkgconf`, `fakeroot`, etc. — required for building AUR packages. |
 | `intel-ucode`       | Early CPU microcode updates for Intel chips. Use `amd-ucode` instead if your laptop has an AMD CPU. |
+
+</details>
 
 ### 3. Generate `fstab` and chroot in
 
@@ -500,6 +505,9 @@ pacman -Syu \
   reflector
 ```
 
+<details>
+<summary>Click to expand: what each package does</summary>
+
 | Package                  | Why |
 |--------------------------|-----|
 | `linux-headers`          | Kernel headers — required to build out-of-tree modules (DKMS, NVIDIA, ZFS, …). Skip only if you know you'll never build a module. |
@@ -510,6 +518,8 @@ pacman -Syu \
 | `ipset`                  | Lets the firewall match against large IP sets efficiently. Useful even if you don't use it directly — many tools depend on it. |
 | `firewalld`              | Friendly firewall daemon with zones (home / work / public). Optional, but I prefer it over hand-writing nftables rules. |
 | `reflector`              | Same mirror-ranker we used from the live ISO; install it inside the system so it can refresh the mirror list on a timer. |
+
+</details>
 
 ### 9. Install more useful packages
 
@@ -527,6 +537,9 @@ pacman -Syu \
 
 When `pacman` asks which JACK provider to use, pick `pipewire-jack`. When it asks which font provider for emoji, pick `noto-fonts`.
 
+<details>
+<summary>Click to expand: what each package does</summary>
+
 | Package                                   | Why |
 |-------------------------------------------|-----|
 | `man-db man-pages texinfo`                | Man pages and info pages. Skip only if you genuinely never read documentation locally. |
@@ -537,6 +550,8 @@ When `pacman` asks which JACK provider to use, pick `pipewire-jack`. When it ask
 | `ttf-iosevka-nerd`                        | My terminal font, patched with Nerd Font icons. |
 | `kitty`                                   | My terminal emulator. Pick `alacritty`, `wezterm`, or `foot` if you prefer. |
 | `firefox`                                 | Browser. Optional in the strict sense — you can install your browser of choice later. |
+
+</details>
 
 ---
 

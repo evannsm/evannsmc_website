@@ -50,6 +50,9 @@ Three layers, one transaction.
 
 The 95 % subset of pacman you actually use day-to-day:
 
+<details>
+<summary>Click to expand: what each command does</summary>
+
 | Command | What it does |
 |---------|--------------|
 | `pacman -S <pkg>` | Install package from the official repos |
@@ -66,6 +69,8 @@ The 95 % subset of pacman you actually use day-to-day:
 | `pacman -Qe` | List **explicitly-installed** packages (the ones *you* asked for) |
 | `pacman -Qdt` | List orphan packages (installed as deps but nothing depends on them now) |
 | `pacman -F <filename>` | Search the repos for the package that ships a given filename |
+
+</details>
 
 ::: {.callout-tip}
 ## Read this if you only remember three of those
@@ -184,6 +189,9 @@ Errors occurred, no packages were upgraded.
 
 **Common hooks you'll see and what they do:**
 
+<details>
+<summary>Click to expand: what each hook does</summary>
+
 | Hook | When it fires | What it does |
 |------|---------------|--------------|
 | `snap-pac` (snapper) | Any pacman transaction (if `snap-pac` is installed) | Creates pre + post Btrfs snapshots bracketing the transaction so you can roll back |
@@ -192,6 +200,8 @@ Errors occurred, no packages were upgraded.
 | `glib-compile-schemas` | GTK app installs | Compiles XML schema files into the binary cache GLib reads |
 | `update-desktop-database` | Desktop-entry installs | Refreshes the `.desktop` database app launchers read |
 | `fontconfig` | Font installs | Rebuilds the font cache |
+
+</details>
 
 **Hooks are not interactive.** They don't ask you questions; they just run. If a hook fails, pacman reports it and the overall transaction may or may not succeed depending on the hook's severity.
 
@@ -219,6 +229,9 @@ Pacman uses three severity prefixes:
 
 **Common warnings that *look* scary but aren't:**
 
+<details>
+<summary>Click to expand: what each message means</summary>
+
 | Message | What it means | What to do |
 |---------|---------------|------------|
 | `warning: nvidia-utils-595.71.05-2 is up to date -- reinstalling` | You explicitly asked to install something that's already installed. Pacman reinstalls it (overwrites the same files). | Nothing — totally fine. |
@@ -226,6 +239,8 @@ Pacman uses three severity prefixes:
 | `==> WARNING: Possibly missing firmware for module: 'qat_6xxx'` (mkinitcpio) | The kernel module exists but its firmware blob isn't installed. The module won't load unless you have Intel QAT enterprise crypto hardware — which you don't if you're on a normal laptop. | Ignore. |
 | `==> WARNING: Possibly missing firmware for module: 'aic94xx'` etc. | Same pattern — server-class storage controllers most people don't have | Ignore. |
 | `fatal library error, lookup self` (snap-pac during a pacman transaction) | snap-pac tried to take a snapper snapshot but snapper isn't yet configured, and perl's library path inside the pacman-triggered subprocess isn't fully resolved | Ignore. Goes away once snapper is configured with `snapper -c root create-config /`. |
+
+</details>
 
 **Errors that are usually real:**
 
@@ -276,6 +291,9 @@ The two numbers in parens after each AUR entry are **votes** and **popularity** 
 
 **What to type:**
 
+<details>
+<summary>Click to expand: what each selector means</summary>
+
 | Selector | Means |
 |----------|-------|
 | `1` | install entry 1 |
@@ -284,6 +302,8 @@ The two numbers in parens after each AUR entry are **votes** and **popularity** 
 | `^4` | install everything except entry 4 |
 | `A` | install all |
 | `N` or just **Enter** | install none (cancel) |
+
+</details>
 
 ## `==> Packages to cleanBuild?`
 
@@ -299,6 +319,9 @@ The two numbers in parens after each AUR entry are **votes** and **popularity** 
 
 **What to type:**
 
+<details>
+<summary>Click to expand: what each answer means</summary>
+
 | Answer | When |
 |--------|------|
 | `N` (None) | Reuse cached. Fast. Right for a **re-run of the same install** where you trust the cache. |
@@ -307,6 +330,8 @@ The two numbers in parens after each AUR entry are **votes** and **popularity** 
 | `I` (Installed) | Clean only packages that are currently installed (refetch updates to PKGBUILDs you've already built). |
 | `No` (NotInstalled) | Clean only packages not yet installed. |
 | `1 2 3` / `1-3` / `^4` | Clean only the specific entries you list. |
+
+</details>
 
 **Default recommendation:** `A` on a first install (clean slate), `N` on a retry where you know the previous failure was downstream (e.g., a make error you've already fixed in the source).
 
@@ -356,6 +381,9 @@ When yay hands the built packages to pacman, the normal snap-pac hook fires — 
 
 Most AUR builds "just work" — but when one fails, the error is usually in one of three places. Read the makepkg output top-to-bottom and stop at the first `error:` line.
 
+<details>
+<summary>Click to expand: troubleshooting matrix</summary>
+
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | `==> ERROR: One or more PGP signatures could not be verified` | Missing GPG key for source verification | The PKGBUILD usually prints the key ID; `gpg --recv-keys <KEY-ID>` then retry |
@@ -363,6 +391,8 @@ Most AUR builds "just work" — but when one fails, the error is usually in one 
 | `error: failed to commit transaction (conflicting files)` after build succeeds | Built package conflicts with an installed file | Same as the [pacman file-conflict case](#file-in-x-is-owned-by-both-x-and-y) — usually fixed with `--overwrite '/path'` |
 | `Could not resolve all dependencies.` | Missing dep that isn't in the AUR or repos | Usually a transitive AUR dep that doesn't exist anymore; check the AUR comments page |
 | Compilation fails with `gcc` errors | Source incompatible with current toolchain | Usually means the AUR PKGBUILD is stale and needs maintainer attention — check the package's AUR comments page; sometimes a patch is mentioned there |
+
+</details>
 
 **General recovery:** if a single package in a multi-package yay install fails, yay stops. The packages that *did* build successfully are already installed. You can re-run `yay -S <failed-pkg>` to retry just the failing one once you've fixed the cause.
 
@@ -407,6 +437,9 @@ A typical mkinitcpio-triggered-by-pacman run:
 
 For when you just need the answer.
 
+<details>
+<summary>Click to expand: what each prompt means</summary>
+
 | Prompt | Default | What I usually type | Why |
 |--------|---------|----------------------|-----|
 | `:: Proceed with installation? [Y/n]` | Y | Enter (Y) — but **read the package list first** | Final go/no-go |
@@ -417,6 +450,8 @@ For when you just need the answer.
 | `==> PKGBUILDs to edit? [N/A/…]` | N | `N` | Not patching upstream |
 | `==> Confirm package PGP keys` | — | `Y` if the key matches the AUR comments page; otherwise abort | Real security check, but rare |
 | `Optional dependencies for X` | — | Read, then nothing (install later if I want them) | Informational |
+
+</details>
 
 ---
 
