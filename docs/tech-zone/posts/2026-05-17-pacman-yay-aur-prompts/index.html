@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-05-17">
 <meta name="description" content="A practical reference for the interactive prompts, warnings, and errors you’ll see when installing packages on Arch Linux. Decodes every common pacman question (Y/n confirmations, optional dependencies, provider selection, file conflicts, hooks), every yay/paru question (cleanBuild, diffs, PKGBUILDs to edit), and the warnings that look scary but aren’t (snap-pac perl errors, missing-firmware messages, sd-vconsole notices). Written so future-you can paste a prompt into the search and find the right answer in five seconds.">
 
-<title>Pacman, Yay, and the AUR: What Every Prompt Actually Means – evannsmc</title>
+<title>Pacman, Yay, Paru, and the AUR: What Every Prompt Actually Means – evannsmc</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,12 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="Pacman, Yay, and the AUR: What Every Prompt Actually Means – evannsmc">
+<meta property="og:title" content="Pacman, Yay, Paru, and the AUR: What Every Prompt Actually Means – evannsmc">
 <meta property="og:description" content="A practical reference for the interactive prompts, warnings, and errors you’ll see when installing packages on Arch Linux. Decodes every common pacman question (Y/n confirmations, optional dependencies, provider selection, file conflicts, hooks), every yay/paru question (cleanBuild, diffs, PKGBUILDs to edit), and the warnings that look scary but aren’t (snap-pac perl errors, missing-firmware messages, sd-vconsole notices). Written so future-you can paste a prompt into the search and find the right answer in five seconds.">
 <meta property="og:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta property="og:site_name" content="evannsmc">
 <meta property="og:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
-<meta name="twitter:title" content="Pacman, Yay, and the AUR: What Every Prompt Actually Means – evannsmc">
+<meta name="twitter:title" content="Pacman, Yay, Paru, and the AUR: What Every Prompt Actually Means – evannsmc">
 <meta name="twitter:description" content="A practical reference for the interactive prompts, warnings, and errors you’ll see when installing packages on Arch Linux. Decodes every common pacman question (Y/n confirmations, optional dependencies, provider selection, file conflicts, hooks), every yay/paru question (cleanBuild, diffs, PKGBUILDs to edit), and the warnings that look scary but aren’t (snap-pac perl errors, missing-firmware messages, sd-vconsole notices). Written so future-you can paste a prompt into the search and find the right answer in five seconds.">
 <meta name="twitter:image" content="https://evannsmc.com/files/tech-zone/arch-logo-dark.svg">
 <meta name="twitter:image:alt" content="The Arch Linux logo — official wordmark from archlinux.org.">
@@ -412,12 +412,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pacman, Yay, and the AUR: What Every Prompt Actually Means</h1>
+<h1 class="title">Pacman, Yay, Paru, and the AUR: What Every Prompt Actually Means</h1>
   <div class="quarto-categories">
     <div class="quarto-category">arch linux</div>
     <div class="quarto-category">pacman</div>
     <div class="quarto-category">aur</div>
     <div class="quarto-category">yay</div>
+    <div class="quarto-category">paru</div>
     <div class="quarto-category">package management</div>
     <div class="quarto-category">reference</div>
   </div>
@@ -487,7 +488,7 @@ What this is
 └──────────────────────────────────────────────────────────────────┘</code></pre>
 <p><strong>Pacman is always at the bottom.</strong> It does the actual installing — whether the package came from the official repos (<code>pacman -S htop</code>) or from the AUR via yay (<code>yay -S caelestia-meta</code> → builds it → calls pacman to install the result). Every prompt you see ultimately comes from either pacman or yay; understanding which is which is the first step to decoding them.</p>
 <p><strong>AUR</strong> = Arch User Repository — a community-maintained collection of <em>PKGBUILDs</em> (recipes for building packages), <strong>not</strong> packages themselves. To install something from the AUR you (or your helper) need to clone the PKGBUILD, run <code>makepkg</code> to build it, then pacman-install the result.</p>
-<p><strong><code>yay</code> and <code>paru</code></strong> are <em>AUR helpers</em> — they wrap that “clone + makepkg + pacman” loop into a single command and add nice quality-of-life features (parallel downloads, dependency resolution across repo + AUR, interactive search). Caelestia’s install script defaults to yay; the prompts and behaviors below also apply (with minor cosmetic differences) to paru.</p>
+<p><strong><code>yay</code> and <code>paru</code></strong> are <em>AUR helpers</em> — they wrap that “clone + makepkg + pacman” loop into a single command and add nice quality-of-life features (parallel downloads, dependency resolution across repo + AUR, interactive search). They’re near-equivalent in capability; the article below covers <strong>yay</strong> in Part 6 and <strong>paru</strong> in Part 6.5 with the same level of detail, since they differ in defaults, configuration model, and flags often enough that you’ll want to know both if you’ve ever picked between them. Caelestia’s install script defaults to yay, but <code>--aur-helper=paru</code> works equally well.</p>
 <hr>
 </section>
 <section id="part-2-pacman-commands-at-a-glance" class="level1">
@@ -894,13 +895,13 @@ Click to expand: what each message means
 </table>
 <hr>
 </section>
-<section id="part-5-the-aur-and-how-yay-wraps-it" class="level1">
-<h1>Part 5 — The AUR and how yay wraps it</h1>
+<section id="part-5-the-aur-and-how-yay-paru-wrap-it" class="level1">
+<h1>Part 5 — The AUR and how yay / paru wrap it</h1>
 <p>The Arch User Repository is a public collection of <strong>PKGBUILDs</strong> — shell-script recipes that tell <code>makepkg</code> how to download, build, and package some piece of software that isn’t in Arch’s official repos. The AUR itself stores no compiled packages; you (or your helper) build them on the spot.</p>
-<p><strong><code>yay -S caelestia-meta</code></strong> does roughly:</p>
+<p><strong><code>yay -S caelestia-meta</code></strong> (or <code>paru -S caelestia-meta</code>) does roughly:</p>
 <ol type="1">
 <li>Search the AUR for <code>caelestia-meta</code>.</li>
-<li>Fetch its PKGBUILD into <code>~/.cache/yay/caelestia-meta/</code>.</li>
+<li>Fetch its PKGBUILD into the helper’s cache — <code>~/.cache/yay/caelestia-meta/</code> for yay, <code>~/.cache/paru/clone/caelestia-meta/</code> for paru.</li>
 <li>Walk its dependencies. Any AUR dep gets its PKGBUILD fetched too (recursively).</li>
 <li>Show you the full plan: “I’m about to fetch N PKGBUILDs, build them, and install M packages.”</li>
 <li>Ask: clean the build cache? show diffs? edit PKGBUILDs?</li>
@@ -908,7 +909,7 @@ Click to expand: what each message means
 <li>Hand the resulting <code>.pkg.tar.zst</code> files to pacman with <code>pacman -U</code>.</li>
 <li>Pacman runs its normal install + hook pipeline.</li>
 </ol>
-<p>That’s why yay’s prompts come <strong>first</strong> (about the build), then pacman’s prompts come <strong>last</strong> (about the install).</p>
+<p>That’s why the helper’s prompts come <strong>first</strong> (about the build), then pacman’s prompts come <strong>last</strong> (about the install). The lifecycle is the same for yay and paru — the differences (covered in Parts 6 and 6.5) are in the prompt wording, the cache path, the configuration model, and the defaults each project shipped.</p>
 <hr>
 </section>
 <section id="part-6-yays-interactive-prompts-decoded" class="level1">
@@ -1046,6 +1047,345 @@ Click to expand: what each answer means
 (2/2) Performing snapper post snapshots for the following configurations...
 ==&gt; root: 15</code></pre>
 <p>When yay hands the built packages to pacman, the normal snap-pac hook fires — you get a numbered snapshot pair around the install. <code>==&gt; root: 14</code> means snapshot <strong>14</strong> was created in the <code>root</code> snapper config. You can <code>snapper -c root list</code> later to see them.</p>
+<hr>
+</section>
+</section>
+<section id="part-6.5-paru-same-job-different-defaults" class="level1">
+<h1>Part 6.5 — paru: same job, different defaults</h1>
+<p><code>paru</code> is the second well-maintained AUR helper most Arch users settle on. It does the same job as yay (clone PKGBUILD → makepkg → hand result to pacman) and most of its prompts read identically. <strong>The differences worth knowing are the defaults, the configuration model, and a few quality-of-life flags that yay doesn’t have or shapes differently.</strong> This section mirrors Part 6 with paru-specific notes.</p>
+<section id="installing-paru" class="level2">
+<h2 class="anchored" data-anchor-id="installing-paru">Installing paru</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/paru-bin.git /tmp/paru-bin</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/paru-bin</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Click to expand: what each package does
+</summary>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 70%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>git</code></td>
+<td>Clone the AUR PKGBUILD repo. Already in the chroot via Part 5, listed with <code>--needed</code> so the line is self-contained.</td>
+</tr>
+<tr class="even">
+<td><code>base-devel</code></td>
+<td>Toolchain meta-package (<code>gcc</code>, <code>make</code>, <code>pkgconf</code>, <code>fakeroot</code>, <code>binutils</code>, …). Required for <em>any</em> PKGBUILD to compile. Also already in the chroot.</td>
+</tr>
+<tr class="odd">
+<td><code>paru-bin</code></td>
+<td>The AUR helper itself, distributed as a pre-built binary so the bootstrap doesn’t need to compile Rust just to install paru. After this, <code>paru &lt;pkg&gt;</code> works like <code>pacman -S &lt;pkg&gt;</code> but also searches the AUR.</td>
+</tr>
+</tbody>
+</table>
+</details>
+<p>If you’d rather build paru from source (instead of <code>paru-bin</code>), <code>git clone https://aur.archlinux.org/paru.git</code> and <code>makepkg -si</code>. The source build pulls <code>rust</code> (~500 MB) — <code>-bin</code> is what you want unless you’re a Rust developer who already has the toolchain installed.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+yay and paru can both be installed at the same time
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>They don’t conflict — they’re independent helpers operating on the same AUR and the same pacman backend. Some people keep yay for <code>-Syu</code> (mass updates) and paru for interactive searches because they like paru’s news-aggregation output. Others stick to one. There’s no downside to having both other than a few MB of disk.</p>
+</div>
+</div>
+</section>
+<section id="search-results-numbered-list-1" class="level2">
+<h2 class="anchored" data-anchor-id="search-results-numbered-list-1">Search results numbered list</h2>
+<pre class="text"><code>$ paru foo
+3 aur/foo-git  1.0.r123.gabcdef-1  [+12 ~0.42]  Latest git of foo
+2 aur/foo      1.0-1                [+8  ~0.31]  Stable foo
+1 extra/foo    1.0-1                                Stable foo (official)
+:: Packages to install (eg: 1 2 3, 1-3 or ^4)
+::</code></pre>
+<p><strong>What it’s saying:</strong> same as yay — repo and AUR matches together, reverse-sorted with the most-relevant at the bottom (paru calls this <code>BottomUp</code> and it’s on by default). Vote count is <code>+N</code>, popularity is <code>~F</code>. Both default to <code>BottomUp = true</code>, so the visual is near-identical.</p>
+<p><strong>What to type:</strong> same selectors as yay — <code>1</code>, <code>1 3 5</code>, <code>1-3</code>, <code>^4</code>, <code>A</code>, <code>N</code> / Enter. paru also accepts the <code>::</code> prompt-style entries which pacman uses; yay uses <code>==&gt;</code> for the same prompts. <strong>The substance is identical, the prompt prefix differs.</strong></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Want top-down output instead?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Run <code>paru --topdown foo</code> or set <code>TopDown = true</code> in <code>~/.config/paru/paru.conf</code>. (Yay equivalent: <code>yay --topdown foo</code> or <code>Edit: yay -Y --topdown --save</code> to persist.)</p>
+</div>
+</div>
+</section>
+<section id="packages-to-cleanbuild-1" class="level2">
+<h2 class="anchored" data-anchor-id="packages-to-cleanbuild-1"><code>:: Packages to cleanBuild?</code></h2>
+<pre class="text"><code>  3 caelestia-shell        (Build Files Exist)
+  2 quickshell-git         (Build Files Exist)
+  1 libcava                (Build Files Exist)
+:: Packages to cleanBuild?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)</code></pre>
+<p><strong>What it’s asking:</strong> same as yay’s <code>cleanBuild</code> — paru already has these PKGBUILD directories in <code>~/.cache/paru/clone/</code>, should they be wiped and re-fetched fresh?</p>
+<p><strong>What to type:</strong> identical answer set to yay’s. Same recommendations: <code>A</code> on a first install (clean slate), <code>N</code> on a retry where you’ve already fixed something downstream.</p>
+<details>
+<summary>
+Click to expand: where yay and paru’s cache lives
+</summary>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 41%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Helper</th>
+<th>PKGBUILD cache directory</th>
+<th>Built <code>.pkg.tar.zst</code> files</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>yay</td>
+<td><code>~/.cache/yay/&lt;pkg&gt;/</code></td>
+<td>inside each <code>&lt;pkg&gt;/</code> directory</td>
+</tr>
+<tr class="even">
+<td>paru</td>
+<td><code>~/.cache/paru/clone/&lt;pkg&gt;/</code></td>
+<td>inside each <code>&lt;pkg&gt;/</code> directory</td>
+</tr>
+</tbody>
+</table>
+<p>paru groups its clones under a <code>clone/</code> subdirectory so the cache dir can also hold paru’s internal state files (<code>aur.json</code>, news cache). yay puts each package’s clone directly under <code>~/.cache/yay/</code> with no grouping.</p>
+</details>
+</section>
+<section id="diffs-to-show-1" class="level2">
+<h2 class="anchored" data-anchor-id="diffs-to-show-1"><code>:: Diffs to show?</code></h2>
+<pre class="text"><code>:: Diffs to show?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)</code></pre>
+<p><strong>What it’s asking:</strong> same as yay’s diff prompt — show you the upstream-vs-cached PKGBUILD diff before building?</p>
+<p><strong>What to type:</strong> <code>N</code> (the default). Same audience and reasoning as Part 6.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+paru’s distinctive “interactive review” mode
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Where paru genuinely differs from yay: you can flip a setting in <code>~/.config/paru/paru.conf</code> to make the <strong>diffs and PKGBUILD-editing prompts default to interactive</strong> instead of <code>N</code>. Add:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[options]</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Review</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now every AUR install drops you into a <code>less</code>-style pager showing the PKGBUILD before the build, and asks “edit? [y/N]” for each one. <strong>This is the AUR-trust-but-verify workflow.</strong> Yay has <code>--review</code> as a per-invocation flag but no persistent equivalent.</p>
+<p>This is the single feature most people install paru <em>for</em>. If you don’t care to review PKGBUILDs, the persistent-review mode is wasted on you; if you do care, paru saves you from typing <code>--review</code> every time.</p>
+</div>
+</div>
+</section>
+<section id="pkgbuilds-to-edit-1" class="level2">
+<h2 class="anchored" data-anchor-id="pkgbuilds-to-edit-1"><code>:: PKGBUILDs to edit?</code></h2>
+<pre class="text"><code>:: PKGBUILDs to edit?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)</code></pre>
+<p><strong>What it’s asking:</strong> same as yay’s PKGBUILD-edit prompt.</p>
+<p><strong>What to type:</strong> <code>N</code> by default. Or if you set <code>Review</code> in <code>paru.conf</code> (above), this prompt is replaced by paru’s built-in pager.</p>
+</section>
+<section id="proceed-with-installation-1" class="level2">
+<h2 class="anchored" data-anchor-id="proceed-with-installation-1"><code>:: Proceed with installation?</code></h2>
+<p>Identical to yay — after all build prompts, paru shows the final list of <code>.pkg.tar.zst</code> files and hands them to pacman’s <code>:: Proceed with installation? [Y/n]</code> from <a href="#proceed-with-installation-yn">Part 3</a>. Same answer: <code>Y</code> or Enter.</p>
+</section>
+<section id="snapshots-created-by-snap-pac-during-aur-builds-1" class="level2">
+<h2 class="anchored" data-anchor-id="snapshots-created-by-snap-pac-during-aur-builds-1">Snapshots created by snap-pac during AUR builds</h2>
+<p>Identical to yay — when paru hands the built packages to pacman, snap-pac fires and creates a pre/post snapshot pair. The snapshot numbers print under <code>==&gt; root: N</code> exactly as in the yay flow.</p>
+</section>
+<section id="parus-configuration-file" class="level2">
+<h2 class="anchored" data-anchor-id="parus-configuration-file">paru’s configuration file</h2>
+<p>This is where paru differs most visibly from yay. paru reads <code>/etc/paru.conf</code> and <code>~/.config/paru/paru.conf</code> in pacman.conf style (INI-with-blanks, no <code>=</code>), while yay reads <code>~/.config/yay/config.json</code> in JSON.</p>
+<p>A typical <code>~/.config/paru/paru.conf</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ~/.config/paru/paru.conf</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[options]</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="dt">BottomUp                       # newest results at bottom (default)</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="dt">SudoLoop                       # rotate sudo timestamp so long builds don't re-prompt</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="dt">CleanAfter                     # wipe successful-build artifacts to save disk</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="dt">Review                         # default to interactive PKGBUILD review (see callout above)</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="dt">NewsOnUpgrade                  # show recent arch-announce posts before -Syu installs</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="dt">UpgradeMenu                    # let me pick which packages to upgrade on -Syu</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="kw">[bin]</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="dt">FileManager </span><span class="ot">=</span><span class="st"> ranger           # optional — used when you press 'f' in the review pager</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="dt">Sudo </span><span class="ot">=</span><span class="st"> sudo                    # alternative: doas</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Click to expand: what each common option does
+</summary>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>BottomUp</code></td>
+<td>Search results print with the most-relevant at the bottom (closest to your cursor). Default.</td>
+</tr>
+<tr class="even">
+<td><code>TopDown</code></td>
+<td>Opposite — most-relevant at top. Set this if you scroll back in the terminal and prefer top-to-bottom reading.</td>
+</tr>
+<tr class="odd">
+<td><code>SudoLoop</code></td>
+<td>paru re-runs <code>sudo -v</code> in a loop during long builds so your sudo timestamp doesn’t expire mid-install. Useful for <code>caelestia-meta</code> and other multi-minute compiles.</td>
+</tr>
+<tr class="even">
+<td><code>CleanAfter</code></td>
+<td>After a successful build, delete the cached build artifacts (the <code>src/</code> and <code>pkg/</code> subdirs). Saves disk; rebuilds will re-extract from the cached source tarball.</td>
+</tr>
+<tr class="odd">
+<td><code>Review</code></td>
+<td>Default to interactive PKGBUILD review (pager + edit prompt) for every AUR install. The single most distinctive paru feature.</td>
+</tr>
+<tr class="even">
+<td><code>NewsOnUpgrade</code></td>
+<td>Before <code>paru -Syu</code> installs anything, print the most recent posts from the <a href="https://lists.archlinux.org/mailman3/lists/arch-announce.lists.archlinux.org/" target="_blank" rel="noopener">arch-announce mailing list</a>. Catches things like “manual intervention required for X” announcements before they bite. yay has no equivalent.</td>
+</tr>
+<tr class="odd">
+<td><code>UpgradeMenu</code></td>
+<td>On <code>-Syu</code>, paru shows the list of pending package updates and lets you deselect specific entries before proceeding. Yay equivalent is <code>--menu</code> per-invocation.</td>
+</tr>
+<tr class="even">
+<td><code>Devel</code></td>
+<td>When set, paru considers all <code>-git</code>/<code>-svn</code>/<code>-hg</code> packages outdated on every <code>-Syu</code> and rebuilds them. Useful if you depend on bleeding-edge AUR git packages.</td>
+</tr>
+<tr class="odd">
+<td><code>BatchInstall</code></td>
+<td>Batch multiple AUR packages into a single pacman invocation at the end of the run, instead of one pacman call per built package. On by default; major speedup for big multi-package transactions.</td>
+</tr>
+</tbody>
+</table>
+</details>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Don’t mix yay’s config.json semantics with paru.conf
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you migrate from yay to paru and try to translate <code>~/.config/yay/config.json</code> directly into <code>paru.conf</code>, <strong>the option names don’t match one-to-one</strong> and several behaviors that are command-line flags in yay are config options in paru (and vice versa). The right move is to read <a href="https://wiki.archlinux.org/title/Paru" target="_blank" rel="noopener">paru’s wiki</a> once and pick the options you actually want, not to mechanically translate. The config formats look superficially similar but they’re independent specifications.</p>
+</div>
+</div>
+</section>
+<section id="flag-differences-worth-knowing" class="level2">
+<h2 class="anchored" data-anchor-id="flag-differences-worth-knowing">Flag differences worth knowing</h2>
+<p>paru and yay share most flags, but a handful behave differently or only exist in one:</p>
+<details>
+<summary>
+Click to expand: side-by-side flag comparison
+</summary>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 24%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Behavior I want</th>
+<th>yay</th>
+<th>paru</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Update only AUR packages (skip repo updates)</td>
+<td><code>yay -Sua</code></td>
+<td><code>paru -Sua</code></td>
+</tr>
+<tr class="even">
+<td>Force-review every PKGBUILD this run</td>
+<td><code>yay --editmenu --diffmenu</code></td>
+<td><code>paru --review</code> or persistent <code>Review</code> in config</td>
+</tr>
+<tr class="odd">
+<td>Show only AUR results (no repo matches)</td>
+<td><code>yay -Ssaur foo</code></td>
+<td><code>paru -Ssa foo</code></td>
+</tr>
+<tr class="even">
+<td>Print recent Arch news before continuing</td>
+<td><code>yay -Pw</code> (separate cmd)</td>
+<td><code>paru -Pw</code> <strong>or</strong> <code>NewsOnUpgrade</code> for automatic</td>
+</tr>
+<tr class="odd">
+<td>Clean the build cache fully</td>
+<td><code>yay -Sc</code></td>
+<td><code>paru -Sc</code></td>
+</tr>
+<tr class="even">
+<td>Show package statistics (size, deps, votes)</td>
+<td><code>yay -Si &lt;pkg&gt;</code></td>
+<td><code>paru -Si &lt;pkg&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>Edit installed PKGBUILD for an already-installed AUR package</td>
+<td>(none — re-clone)</td>
+<td><code>paru -G &lt;pkg&gt;</code> then edit, then <code>paru -B .</code></td>
+</tr>
+<tr class="even">
+<td>Run only the build, don’t install</td>
+<td><code>yay -G &lt;pkg&gt;</code> + <code>makepkg</code></td>
+<td><code>paru -G &lt;pkg&gt;</code> + <code>makepkg</code></td>
+</tr>
+<tr class="odd">
+<td>Sandboxed build (no network during build)</td>
+<td>not supported</td>
+<td><code>paru --bclean --chroot</code> with <code>devtools</code> set up</td>
+</tr>
+</tbody>
+</table>
+</details>
+<p>The flag that I find genuinely useful and yay doesn’t have a clean equivalent of is <strong><code>paru -G</code></strong> — fetches the PKGBUILD without building, so you can read it, edit it locally, then <code>paru -B .</code> from the directory to build your edited version. yay’s <code>-G</code> exists but its build flow assumes you’ll re-clone; paru’s keeps your local edits visible.</p>
+</section>
+<section id="when-to-pick-paru-when-to-pick-yay" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-pick-paru-when-to-pick-yay">When to pick paru, when to pick yay</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quick decision rubric
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Pick <code>paru</code></strong> if you care about reading PKGBUILDs before they run (the persistent <code>Review</code> workflow), you want news-on-upgrade automatically, you’d rather configure behavior in an INI file than via CLI flags, or you prefer Rust over Go for ideological/maintenance reasons.</li>
+<li><strong>Pick <code>yay</code></strong> if you want the most-installed-by-default option (Caelestia and most install guides reach for yay first), you’re already used to its flag set, you don’t care about reviewing PKGBUILDs, or you simply want zero opinions about which to use and the most established option.</li>
+<li><strong>Pick both</strong> if you can’t decide — they coexist fine, share zero state, and you can experiment with each on the same machine.</li>
+</ul>
+<p>For the install in <a href="../2026-05-17-arch-luks-btrfs-caelestia/">Article 03</a> and <a href="../2026-05-18-caelestia-desktop/">Article 05 (Caelestia)</a>, either works. The Caelestia install script accepts <code>--aur-helper=paru</code> and behaves identically.</p>
+</div>
+</div>
 <hr>
 </section>
 </section>
@@ -1216,7 +1556,7 @@ Click to expand: what each prompt means
 <section id="the-answer-stow-your-personal-overlay-not-the-bundle" class="level2">
 <h2 class="anchored" data-anchor-id="the-answer-stow-your-personal-overlay-not-the-bundle">The answer: stow your <em>personal overlay</em>, not the bundle</h2>
 <p><code>stow</code> (GNU Stow) is a symlink-farm manager. Install it once:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> stow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> stow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then structure your personal additions in a separate repo:</p>
 <pre class="text"><code>~/dotfiles/                         &lt;- YOUR repo (separate from any bundle)
 ├── fish/                           &lt;- a "stow package"
@@ -1236,19 +1576,19 @@ Click to expand: what each prompt means
                 └── plugins/
                     └── my-extras.lua    &lt;- adds a LazyVim plugin without touching starter</code></pre>
 <p>Then from <code>~/dotfiles/</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> fish        <span class="co"># symlinks ~/.config/fish/conf.d/99-aliases.fish → ../dotfiles/fish/.config/fish/conf.d/99-aliases.fish</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> hypr</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> nvim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> fish        <span class="co"># symlinks ~/.config/fish/conf.d/99-aliases.fish → ../dotfiles/fish/.config/fish/conf.d/99-aliases.fish</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> hypr</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> nvim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Each top-level directory under <code>~/dotfiles/</code> becomes a <em>stow package</em> you can install or remove independently. <code>stow -D fish</code> removes the symlinks; <code>stow -R fish</code> re-stows (useful after pulling new files).</p>
 <p>The recovery flow on a fresh machine becomes:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Install Arch + bundle as normal (e.g., this guide's Section 6)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Add your overlay</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="op">&lt;</span>you<span class="op">&gt;</span>/dotfiles.git ~/dotfiles</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/dotfiles</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> <span class="pp">*</span>/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Install Arch + bundle as normal (e.g., this guide's Section 6)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Add your overlay</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="op">&lt;</span>you<span class="op">&gt;</span>/dotfiles.git ~/dotfiles</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/dotfiles</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="ex">stow</span> <span class="pp">*</span>/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="two-rules-that-keep-this-clean" class="level2">
 <h2 class="anchored" data-anchor-id="two-rules-that-keep-this-clean">Two rules that keep this clean</h2>

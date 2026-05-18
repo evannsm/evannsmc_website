@@ -1107,7 +1107,7 @@ The placeholders are placeholders
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Replace <code>&lt;UUID&gt;</code> with the bare UUID and <code>&lt;RESUME_OFFSET&gt;</code> with the integer from <code>btrfs inspect-internal map-swapfile -r</code>. <strong>Do not include the angle brackets in the actual file.</strong> That is exactly the second mistake I made in my <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt</a> and it’s the kind of typo that produces a polite kernel message followed by ninety seconds of timeout and an emergency shell.</p>
+<p>Replace <code>&lt;UUID&gt;</code> with the bare UUID and <code>&lt;RESUME_OFFSET&gt;</code> with the integer from <code>btrfs inspect-internal map-swapfile -r</code>. <strong>Do not include the angle brackets in the actual file.</strong> That is exactly the second mistake I made in my <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt</a> and it’s the kind of typo that produces a polite kernel message followed by ninety seconds of timeout and an emergency shell — recovery in the <a href="#emergency-timed-out-waiting-for-device">🚨 emergency section at the bottom of this article</a>.</p>
 </div>
 </div>
 <p>Kernel-parameter-by-kernel-parameter:</p>
@@ -1246,7 +1246,7 @@ Why there are <em>two</em> UUIDs in this output
 <li><code>rd.luks.name=</code><strong><code>d2c12564-…</code></strong><code>=cryptroot</code> is the <strong>LUKS partition UUID</strong>. It identifies the raw encrypted block device (<code>/dev/nvme0n1p2</code>). GRUB hands this string to the kernel; sd-encrypt uses it to find the partition to unlock.</li>
 <li><code>UUID=</code><strong><code>a0c30a40-…</code></strong> in every fstab line is the <strong>Btrfs filesystem UUID</strong> — the filesystem that lives <em>inside</em> the unlocked LUKS container, on <code>/dev/mapper/cryptroot</code>. genfstab uses this so the mount entries survive even if the underlying mapper changes name.</li>
 </ul>
-<p>Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into <code>rd.luks.name=</code>, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you’ll get the “Timed out waiting for device” emergency-mode failure mode from <a href="../2026-05-05-arch-luks-btrfs-lessons/">Article 01</a>. Verify with <code>blkid /dev/nvme0n1p2</code> (should print <code>TYPE="crypto_LUKS"</code>) — that’s the partition whose UUID belongs on the GRUB cmdline.</p>
+<p>Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into <code>rd.luks.name=</code>, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you’ll get the “Timed out waiting for device” emergency-mode failure mode from <a href="../2026-05-05-arch-luks-btrfs-lessons/">Article 01</a> (recovery: <a href="#emergency-timed-out-waiting-for-device">🚨 emergency section at the bottom of this article</a>). Verify with <code>blkid /dev/nvme0n1p2</code> (should print <code>TYPE="crypto_LUKS"</code>) — that’s the partition whose UUID belongs on the GRUB cmdline.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1278,7 +1278,7 @@ The swapon –show line above
 <li>The mapper appears, the <code>@</code> subvolume mounts as <code>/</code>, control hands off to the real systemd.</li>
 <li>You land at a <code>login:</code> prompt.</li>
 </ol>
-<p>If you instead drop into <code>emergency mode</code>, jump to the troubleshooting box at the bottom of this article before continuing.</p>
+<p>If you instead drop into <code>emergency mode</code>, jump to the <a href="#emergency-timed-out-waiting-for-device">🚨 emergency section at the bottom of this article</a> before continuing — that’s the documented recovery path for the “Timed out waiting for device” failure mode.</p>
 <hr>
 </section>
 </section>
@@ -1806,38 +1806,9 @@ Hibernation + LUKS: what this gives you, security-wise
 </section>
 </section>
 </section>
-<section id="part-4-pick-your-desktop-layer" class="level1">
-<h1>Part 4 — Pick your desktop layer</h1>
-<p>You now have a working, encrypted, snapshot-able single-boot Arch system on the console. <strong>The next step — putting a graphical session in front of it — is its own choice</strong>, and I deliberately keep it out of this article so the install layer above stays desktop-agnostic. PipeWire audio, GPU drivers, the AUR helper, the login manager, the bar, the wallpaper layer, every keybind — none of that is required for the install to be considered “done.” It’s a separate body of work.</p>
-<p>Two paths, depending on how much opinionation you want from your desktop:</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Path A → Caelestia: a turnkey Hyprland bundle (Article 05)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><a href="../2026-05-18-caelestia-desktop/"><strong>Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</strong></a> walks through a single coherent dotfile bundle: a Quickshell-based status bar, themed terminal (<code>foot</code>), <code>fish</code> + <code>starship</code>, a curated tool set, the Material-You-style wallpaper-driven retheming, GPU drivers (Intel / AMD / NVIDIA / hybrid), the AUR helper, KDE-Frameworks apps under Hyprland, and SDDM. Fast to get to “looks like a screenshot” — but you inherit the Caelestia project’s design opinions wholesale, and on older hardware the Quickshell bar adds measurable latency. See <a href="../2026-05-18-caelestia-desktop/#caveats-from-actually-using-it">my honest retrospective at the top of Article 05</a> before committing.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Path B → Custom Hyprland (upcoming)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A from-scratch Hyprland setup built piece by piece — your own status bar choice (<code>waybar</code>, <code>ironbar</code>, <code>eww</code>, plain <code>hyprland-eyepatch</code>, …), your own terminal, your own keybinds, your own theme — with no project-bundle layer on top. Slower to “first screenshot” but every component is one you picked, and there’s no surprise opinion baked in. This is the path I’m taking on my next laptop. The article is dashed in the upcoming section on the <a href="../../">Tech Zone landing</a>.</p>
-</div>
-</div>
-<p>If you don’t know which to pick: try <strong>Caelestia</strong> first if you want a polished Hyprland desktop in an evening and don’t mind inheriting opinions you’ll later strip; pick <strong>Custom Hyprland</strong> if you’d rather take longer and own every line of <code>hyprland.conf</code> / <code>hyprland.lua</code> from day one.</p>
-<p>Before you click through to either, a short final-checks block for the install layer itself — these are the commands you can run <em>right now</em>, from a TTY login, to confirm everything from Parts 1–3 came up correctly:</p>
+<section id="part-3-5-sanity-check" class="level1">
+<h1>Part 3.5 — Sanity check: confirm Parts 1–3 actually came up</h1>
+<p>Before you touch a desktop layer or anything else, <strong>prove the install you just did is real</strong>. Boot the laptop, log in at the TTY as your regular user, and run this block:</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
@@ -1851,11 +1822,70 @@ Path B → Custom Hyprland (upcoming)
 <span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots — should now show at least the initial set from Part 3</span></span>
 <span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span>
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories matching the list above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If those return sane output, the encrypted Btrfs install is rock-solid and you’re ready to layer the desktop on top — Path A or Path B above, your call.</p>
+<p><strong>What pass looks like:</strong></p>
+<ul>
+<li><code>lsblk</code> shows <code>nvme0n1p2</code> typed <code>crypto_LUKS</code> with a mapper <code>cryptroot</code> (or whatever name you picked) sitting on top of it, typed <code>btrfs</code>.</li>
+<li><code>cryptsetup status cryptroot</code> prints <code>is active and is in use</code> with <code>type: LUKS2</code>.</li>
+<li><code>findmnt -t btrfs</code> lists <code>/</code>, <code>/home</code>, <code>/.snapshots</code>, <code>/var/log</code>, <code>/swap</code>, all with <code>subvol=…</code> and <code>compress=zstd:3</code>.</li>
+<li><code>swapon --show</code> shows zram at priority 100 plus your swap file at a lower priority.</li>
+<li><code>snapper -c root list</code> has at least one row.</li>
+</ul>
+<p><strong>If any line fails or returns empty:</strong> something in Parts 1–3 didn’t quite land. Don’t try to layer a desktop on top of that — fix the install first. The most common failure mode (kernel cmdline / mkinitcpio mistakes manifesting as an emergency-mode boot) has its own emergency section at the <a href="#emergency-timed-out-waiting-for-device">end of this article</a>. If you’re stuck on something else (snapper config not found, a subvolume missing from <code>findmnt</code>), the chapter that set up the failing piece is usually the right place to re-read — Chapter 5 (fstab), Chapter 9 (mkinitcpio), Chapter 10 (GRUB), or Chapter 12 (snapper).</p>
+<p>Only continue to Part 4 once every line above looks the way it should. The install layer is the foundation everything else sits on; a wobble here will compound the moment you start a desktop.</p>
 <hr>
-<section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshooting-timed-out-waiting-for-device-at-boot">Troubleshooting: “Timed out waiting for device” at boot</h2>
-<p>If you reboot and land in emergency mode after the LUKS prompt, the failure mode is almost always one of:</p>
+</section>
+<section id="part-4-pick-your-desktop-layer" class="level1">
+<h1>Part 4 — Pick your desktop layer</h1>
+<p>You now have a verified, encrypted, snapshot-able single-boot Arch system on the console. <strong>The next step — putting a graphical session in front of it — is its own choice</strong>, and I deliberately keep it out of this article so the install layer above stays desktop-agnostic. PipeWire audio, GPU drivers, the AUR helper, the login manager, the bar, the wallpaper layer, every keybind — none of that is required for the install to be considered “done.” It’s a separate body of work.</p>
+<p>Two paths, neither obviously faster than the other in practice — pick by <strong>taste</strong>, not by “how quick is it”:</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Path A → Caelestia: a Hyprland bundle (Article 05)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="../2026-05-18-caelestia-desktop/"><strong>Caelestia (Hyprland Desktop) — From Bare Arch to a Working Bar</strong></a> walks through a single coherent dotfile bundle: a Quickshell-based status bar, themed terminal (<code>foot</code>), <code>fish</code> + <code>starship</code>, a curated tool set, the Material-You-style wallpaper-driven retheming, GPU drivers (Intel / AMD / NVIDIA / hybrid), the AUR helper, KDE-Frameworks apps under Hyprland, and SDDM. <strong>When it works on the first try, you have a polished Hyprland desktop in a couple hours.</strong> When it doesn’t, you have a <code>caelestia-meta</code> <code>.SRCINFO</code> parse failure, a missing wallpaper daemon, a <code>hyprland.conf</code> <code>source =</code> line pointing at a file the bundle doesn’t ship, and the SSH-vs-local-seat trap with <code>hyprctl</code> — every one of which I hit and document in Article 05’s recovery callouts. You also inherit the Caelestia project’s design opinions wholesale, and on older hardware the Quickshell bar adds measurable latency. Read <a href="../2026-05-18-caelestia-desktop/#caveats-from-actually-using-it">my honest retrospective at the top of Article 05</a> <strong>before</strong> committing.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Path B → Custom Hyprland (upcoming)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A from-scratch Hyprland setup built piece by piece — your own status bar choice (<code>waybar</code>, <code>ironbar</code>, <code>eww</code>, …), your own terminal, your own keybinds, your own theme — with no project-bundle layer on top. Every component is one you picked, and there’s no surprise opinion baked in. <strong>More upfront decisions, but no “now what?” moments when a bundle script fails halfway through and leaves you in a half-themed Hyprland.</strong> This is the path I’m taking on my next laptop. Article dashed in the upcoming section on the <a href="../../">Tech Zone landing</a>.</p>
+</div>
+</div>
+<p>If you don’t know which to pick:</p>
+<ul>
+<li><strong>Pick Caelestia</strong> if you want to see what a polished Hyprland desktop <em>can</em> look like as a reference point — even with a rough install, the finished product is a useful target — and you don’t mind inheriting opinions you’ll likely strip later.</li>
+<li><strong>Pick Custom Hyprland</strong> if you’d rather own every line of <code>hyprland.conf</code> / <code>hyprland.lua</code> from day one, you have a clear idea of what you want, and you’d rather front-load the decision-making than discover a baked-in choice halfway through living in it.</li>
+</ul>
+<p>Either way: take Article 05’s caveats as a warning, not a deterrent. The bundle is fine when it works. It’s just not a <em>guaranteed</em> fast path.</p>
+<hr>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🚨 Emergency: “Timed out waiting for device” at boot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>You only need this section if something has gone horribly wrong.</strong> Specifically: you rebooted into the new system after Part 3, GRUB loaded, the LUKS prompt accepted your passphrase, and then the kernel dropped into a <code>systemd</code> emergency shell with a <code>Timed out waiting for device</code> line followed by a couple of <code>Dependency failed for /sysroot</code> lines and <code>You are in emergency mode.</code></p>
+<p><strong>This is the exact failure mode that bricked the <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt at this install (Article 01)</a>.</strong> Don’t panic — your data is intact (the LUKS volume is still there, just not being mounted as root); you need to fix one of four typos and rebuild. If your install is <em>not</em> in emergency mode and the <a href="#part-3-5-sanity-check">Part 3.5 sanity check</a> passed, you can skip this section entirely.</p>
+</div>
+</div>
+<p>If you land in emergency mode after the LUKS prompt, the failure mode is almost always one of:</p>
 <ol type="1">
 <li><strong><code>&lt;UUID&gt;</code> or <code>&lt;RESUME_OFFSET&gt;</code> left as literal text</strong> in <code>/etc/default/grub</code>. Re-read <a href="#chapter-10-grub--the-cmdline-that-actually-boots">Chapter 10</a>.</li>
 <li><strong>Mapper name mismatch</strong> between <code>rd.luks.name=…=cryptroot</code> and <code>root=/dev/mapper/cryptroot</code>. They have to match exactly.</li>
@@ -1868,7 +1898,7 @@ Path B → Custom Hyprland (upcoming)
 <span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
 <span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
-<p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
+<p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config. Once it boots cleanly, re-run the <a href="#part-3-5-sanity-check">Part 3.5 sanity check</a> — that’s the official “all good” gate.</p>
 <hr>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1885,7 +1915,6 @@ Attribution
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

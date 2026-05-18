@@ -1,9 +1,9 @@
 ---
-title: "Pacman, Yay, and the AUR: What Every Prompt Actually Means"
+title: "Pacman, Yay, Paru, and the AUR: What Every Prompt Actually Means"
 description: "A practical reference for the interactive prompts, warnings, and errors you'll see when installing packages on Arch Linux. Decodes every common pacman question (Y/n confirmations, optional dependencies, provider selection, file conflicts, hooks), every yay/paru question (cleanBuild, diffs, PKGBUILDs to edit), and the warnings that look scary but aren't (snap-pac perl errors, missing-firmware messages, sd-vconsole notices). Written so future-you can paste a prompt into the search and find the right answer in five seconds."
 author: "Evanns Morales-Cuadrado"
 date: "2026-05-17"
-categories: [arch linux, pacman, aur, yay, package management, reference]
+categories: [arch linux, pacman, aur, yay, paru, package management, reference]
 image: ../../../files/tech-zone/arch-logo-dark.svg
 image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
 draft: false
@@ -42,7 +42,7 @@ Three layers, one transaction.
 
 **AUR** = Arch User Repository — a community-maintained collection of *PKGBUILDs* (recipes for building packages), **not** packages themselves. To install something from the AUR you (or your helper) need to clone the PKGBUILD, run `makepkg` to build it, then pacman-install the result.
 
-**`yay` and `paru`** are *AUR helpers* — they wrap that "clone + makepkg + pacman" loop into a single command and add nice quality-of-life features (parallel downloads, dependency resolution across repo + AUR, interactive search). Caelestia's install script defaults to yay; the prompts and behaviors below also apply (with minor cosmetic differences) to paru.
+**`yay` and `paru`** are *AUR helpers* — they wrap that "clone + makepkg + pacman" loop into a single command and add nice quality-of-life features (parallel downloads, dependency resolution across repo + AUR, interactive search). They're near-equivalent in capability; the article below covers **yay** in Part 6 and **paru** in Part 6.5 with the same level of detail, since they differ in defaults, configuration model, and flags often enough that you'll want to know both if you've ever picked between them. Caelestia's install script defaults to yay, but `--aur-helper=paru` works equally well.
 
 ---
 
@@ -253,14 +253,14 @@ Pacman uses three severity prefixes:
 
 ---
 
-# Part 5 — The AUR and how yay wraps it
+# Part 5 — The AUR and how yay / paru wrap it
 
 The Arch User Repository is a public collection of **PKGBUILDs** — shell-script recipes that tell `makepkg` how to download, build, and package some piece of software that isn't in Arch's official repos. The AUR itself stores no compiled packages; you (or your helper) build them on the spot.
 
-**`yay -S caelestia-meta`** does roughly:
+**`yay -S caelestia-meta`** (or `paru -S caelestia-meta`) does roughly:
 
 1. Search the AUR for `caelestia-meta`.
-2. Fetch its PKGBUILD into `~/.cache/yay/caelestia-meta/`.
+2. Fetch its PKGBUILD into the helper's cache — `~/.cache/yay/caelestia-meta/` for yay, `~/.cache/paru/clone/caelestia-meta/` for paru.
 3. Walk its dependencies. Any AUR dep gets its PKGBUILD fetched too (recursively).
 4. Show you the full plan: "I'm about to fetch N PKGBUILDs, build them, and install M packages."
 5. Ask: clean the build cache? show diffs? edit PKGBUILDs?
@@ -268,7 +268,7 @@ The Arch User Repository is a public collection of **PKGBUILDs** — shell-scrip
 7. Hand the resulting `.pkg.tar.zst` files to pacman with `pacman -U`.
 8. Pacman runs its normal install + hook pipeline.
 
-That's why yay's prompts come **first** (about the build), then pacman's prompts come **last** (about the install).
+That's why the helper's prompts come **first** (about the build), then pacman's prompts come **last** (about the install). The lifecycle is the same for yay and paru — the differences (covered in Parts 6 and 6.5) are in the prompt wording, the cache path, the configuration model, and the defaults each project shipped.
 
 ---
 
@@ -374,6 +374,215 @@ After all the build prompts, yay shows the final list of `.pkg.tar.zst` files it
 ```
 
 When yay hands the built packages to pacman, the normal snap-pac hook fires — you get a numbered snapshot pair around the install. `==> root: 14` means snapshot **14** was created in the `root` snapper config. You can `snapper -c root list` later to see them.
+
+---
+
+# Part 6.5 — paru: same job, different defaults
+
+`paru` is the second well-maintained AUR helper most Arch users settle on. It does the same job as yay (clone PKGBUILD → makepkg → hand result to pacman) and most of its prompts read identically. **The differences worth knowing are the defaults, the configuration model, and a few quality-of-life flags that yay doesn't have or shapes differently.** This section mirrors Part 6 with paru-specific notes.
+
+## Installing paru
+
+```bash
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/paru-bin.git /tmp/paru-bin
+cd /tmp/paru-bin
+makepkg -si
+cd ~
+```
+
+<details>
+<summary>Click to expand: what each package does</summary>
+
+| Package      | Role |
+|--------------|------|
+| `git`        | Clone the AUR PKGBUILD repo. Already in the chroot via Part 5, listed with `--needed` so the line is self-contained. |
+| `base-devel` | Toolchain meta-package (`gcc`, `make`, `pkgconf`, `fakeroot`, `binutils`, …). Required for *any* PKGBUILD to compile. Also already in the chroot. |
+| `paru-bin`   | The AUR helper itself, distributed as a pre-built binary so the bootstrap doesn't need to compile Rust just to install paru. After this, `paru <pkg>` works like `pacman -S <pkg>` but also searches the AUR. |
+
+</details>
+
+If you'd rather build paru from source (instead of `paru-bin`), `git clone https://aur.archlinux.org/paru.git` and `makepkg -si`. The source build pulls `rust` (~500 MB) — `-bin` is what you want unless you're a Rust developer who already has the toolchain installed.
+
+::: {.callout-tip}
+## yay and paru can both be installed at the same time
+
+They don't conflict — they're independent helpers operating on the same AUR and the same pacman backend. Some people keep yay for `-Syu` (mass updates) and paru for interactive searches because they like paru's news-aggregation output. Others stick to one. There's no downside to having both other than a few MB of disk.
+:::
+
+## Search results numbered list
+
+```text
+$ paru foo
+3 aur/foo-git  1.0.r123.gabcdef-1  [+12 ~0.42]  Latest git of foo
+2 aur/foo      1.0-1                [+8  ~0.31]  Stable foo
+1 extra/foo    1.0-1                                Stable foo (official)
+:: Packages to install (eg: 1 2 3, 1-3 or ^4)
+::
+```
+
+**What it's saying:** same as yay — repo and AUR matches together, reverse-sorted with the most-relevant at the bottom (paru calls this `BottomUp` and it's on by default). Vote count is `+N`, popularity is `~F`. Both default to `BottomUp = true`, so the visual is near-identical.
+
+**What to type:** same selectors as yay — `1`, `1 3 5`, `1-3`, `^4`, `A`, `N` / Enter. paru also accepts the `:: ` prompt-style entries which pacman uses; yay uses `==> ` for the same prompts. **The substance is identical, the prompt prefix differs.**
+
+::: {.callout-tip}
+## Want top-down output instead?
+
+Run `paru --topdown foo` or set `TopDown = true` in `~/.config/paru/paru.conf`. (Yay equivalent: `yay --topdown foo` or `Edit: yay -Y --topdown --save` to persist.)
+:::
+
+## `:: Packages to cleanBuild?`
+
+```text
+  3 caelestia-shell        (Build Files Exist)
+  2 quickshell-git         (Build Files Exist)
+  1 libcava                (Build Files Exist)
+:: Packages to cleanBuild?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** same as yay's `cleanBuild` — paru already has these PKGBUILD directories in `~/.cache/paru/clone/`, should they be wiped and re-fetched fresh?
+
+**What to type:** identical answer set to yay's. Same recommendations: `A` on a first install (clean slate), `N` on a retry where you've already fixed something downstream.
+
+<details>
+<summary>Click to expand: where yay and paru's cache lives</summary>
+
+| Helper | PKGBUILD cache directory | Built `.pkg.tar.zst` files |
+|--------|---------------------------|------------------------------|
+| yay    | `~/.cache/yay/<pkg>/`     | inside each `<pkg>/` directory |
+| paru   | `~/.cache/paru/clone/<pkg>/` | inside each `<pkg>/` directory |
+
+paru groups its clones under a `clone/` subdirectory so the cache dir can also hold paru's internal state files (`aur.json`, news cache). yay puts each package's clone directly under `~/.cache/yay/` with no grouping.
+
+</details>
+
+## `:: Diffs to show?`
+
+```text
+:: Diffs to show?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** same as yay's diff prompt — show you the upstream-vs-cached PKGBUILD diff before building?
+
+**What to type:** `N` (the default). Same audience and reasoning as Part 6.
+
+::: {.callout-tip}
+## paru's distinctive "interactive review" mode
+
+Where paru genuinely differs from yay: you can flip a setting in `~/.config/paru/paru.conf` to make the **diffs and PKGBUILD-editing prompts default to interactive** instead of `N`. Add:
+
+```ini
+[options]
+Review
+```
+
+Now every AUR install drops you into a `less`-style pager showing the PKGBUILD before the build, and asks "edit? [y/N]" for each one. **This is the AUR-trust-but-verify workflow.** Yay has `--review` as a per-invocation flag but no persistent equivalent.
+
+This is the single feature most people install paru *for*. If you don't care to review PKGBUILDs, the persistent-review mode is wasted on you; if you do care, paru saves you from typing `--review` every time.
+:::
+
+## `:: PKGBUILDs to edit?`
+
+```text
+:: PKGBUILDs to edit?
+:: [N]one [A]ll [Ab]ort [I]nstalled [No]Installed or (1 2 3, 1-3, ^4)
+```
+
+**What it's asking:** same as yay's PKGBUILD-edit prompt.
+
+**What to type:** `N` by default. Or if you set `Review` in `paru.conf` (above), this prompt is replaced by paru's built-in pager.
+
+## `:: Proceed with installation?`
+
+Identical to yay — after all build prompts, paru shows the final list of `.pkg.tar.zst` files and hands them to pacman's `:: Proceed with installation? [Y/n]` from [Part 3](#proceed-with-installation-yn). Same answer: `Y` or Enter.
+
+## Snapshots created by snap-pac during AUR builds
+
+Identical to yay — when paru hands the built packages to pacman, snap-pac fires and creates a pre/post snapshot pair. The snapshot numbers print under `==> root: N` exactly as in the yay flow.
+
+## paru's configuration file
+
+This is where paru differs most visibly from yay. paru reads `/etc/paru.conf` and `~/.config/paru/paru.conf` in pacman.conf style (INI-with-blanks, no `=`), while yay reads `~/.config/yay/config.json` in JSON.
+
+A typical `~/.config/paru/paru.conf`:
+
+```ini
+#
+# ~/.config/paru/paru.conf
+#
+
+[options]
+BottomUp                       # newest results at bottom (default)
+SudoLoop                       # rotate sudo timestamp so long builds don't re-prompt
+CleanAfter                     # wipe successful-build artifacts to save disk
+Review                         # default to interactive PKGBUILD review (see callout above)
+NewsOnUpgrade                  # show recent arch-announce posts before -Syu installs
+UpgradeMenu                    # let me pick which packages to upgrade on -Syu
+
+[bin]
+FileManager = ranger           # optional — used when you press 'f' in the review pager
+Sudo = sudo                    # alternative: doas
+```
+
+<details>
+<summary>Click to expand: what each common option does</summary>
+
+| Option           | What it does |
+|------------------|--------------|
+| `BottomUp`       | Search results print with the most-relevant at the bottom (closest to your cursor). Default. |
+| `TopDown`        | Opposite — most-relevant at top. Set this if you scroll back in the terminal and prefer top-to-bottom reading. |
+| `SudoLoop`       | paru re-runs `sudo -v` in a loop during long builds so your sudo timestamp doesn't expire mid-install. Useful for `caelestia-meta` and other multi-minute compiles. |
+| `CleanAfter`     | After a successful build, delete the cached build artifacts (the `src/` and `pkg/` subdirs). Saves disk; rebuilds will re-extract from the cached source tarball. |
+| `Review`         | Default to interactive PKGBUILD review (pager + edit prompt) for every AUR install. The single most distinctive paru feature. |
+| `NewsOnUpgrade`  | Before `paru -Syu` installs anything, print the most recent posts from the [arch-announce mailing list](https://lists.archlinux.org/mailman3/lists/arch-announce.lists.archlinux.org/){target="_blank" rel="noopener"}. Catches things like "manual intervention required for X" announcements before they bite. yay has no equivalent. |
+| `UpgradeMenu`    | On `-Syu`, paru shows the list of pending package updates and lets you deselect specific entries before proceeding. Yay equivalent is `--menu` per-invocation. |
+| `Devel`          | When set, paru considers all `-git`/`-svn`/`-hg` packages outdated on every `-Syu` and rebuilds them. Useful if you depend on bleeding-edge AUR git packages. |
+| `BatchInstall`   | Batch multiple AUR packages into a single pacman invocation at the end of the run, instead of one pacman call per built package. On by default; major speedup for big multi-package transactions. |
+
+</details>
+
+::: {.callout-warning}
+## Don't mix yay's config.json semantics with paru.conf
+
+If you migrate from yay to paru and try to translate `~/.config/yay/config.json` directly into `paru.conf`, **the option names don't match one-to-one** and several behaviors that are command-line flags in yay are config options in paru (and vice versa). The right move is to read [paru's wiki](https://wiki.archlinux.org/title/Paru){target="_blank" rel="noopener"} once and pick the options you actually want, not to mechanically translate. The config formats look superficially similar but they're independent specifications.
+:::
+
+## Flag differences worth knowing
+
+paru and yay share most flags, but a handful behave differently or only exist in one:
+
+<details>
+<summary>Click to expand: side-by-side flag comparison</summary>
+
+| Behavior I want                               | yay                       | paru                              |
+|------------------------------------------------|---------------------------|------------------------------------|
+| Update only AUR packages (skip repo updates)   | `yay -Sua`                | `paru -Sua`                        |
+| Force-review every PKGBUILD this run           | `yay --editmenu --diffmenu` | `paru --review` or persistent `Review` in config |
+| Show only AUR results (no repo matches)        | `yay -Ssaur foo`          | `paru -Ssa foo`                    |
+| Print recent Arch news before continuing       | `yay -Pw` (separate cmd)  | `paru -Pw` **or** `NewsOnUpgrade` for automatic |
+| Clean the build cache fully                    | `yay -Sc`                 | `paru -Sc`                         |
+| Show package statistics (size, deps, votes)    | `yay -Si <pkg>`           | `paru -Si <pkg>`                   |
+| Edit installed PKGBUILD for an already-installed AUR package | (none — re-clone)         | `paru -G <pkg>` then edit, then `paru -B .` |
+| Run only the build, don't install              | `yay -G <pkg>` + `makepkg`| `paru -G <pkg>` + `makepkg`        |
+| Sandboxed build (no network during build)      | not supported             | `paru --bclean --chroot` with `devtools` set up |
+
+</details>
+
+The flag that I find genuinely useful and yay doesn't have a clean equivalent of is **`paru -G`** — fetches the PKGBUILD without building, so you can read it, edit it locally, then `paru -B .` from the directory to build your edited version. yay's `-G` exists but its build flow assumes you'll re-clone; paru's keeps your local edits visible.
+
+## When to pick paru, when to pick yay
+
+::: {.callout-tip}
+## Quick decision rubric
+
+- **Pick `paru`** if you care about reading PKGBUILDs before they run (the persistent `Review` workflow), you want news-on-upgrade automatically, you'd rather configure behavior in an INI file than via CLI flags, or you prefer Rust over Go for ideological/maintenance reasons.
+- **Pick `yay`** if you want the most-installed-by-default option (Caelestia and most install guides reach for yay first), you're already used to its flag set, you don't care about reviewing PKGBUILDs, or you simply want zero opinions about which to use and the most established option.
+- **Pick both** if you can't decide — they coexist fine, share zero state, and you can experiment with each on the same machine.
+
+For the install in [Article 03](../2026-05-17-arch-luks-btrfs-caelestia/) and [Article 05 (Caelestia)](../2026-05-18-caelestia-desktop/), either works. The Caelestia install script accepts `--aur-helper=paru` and behaves identically.
+:::
 
 ---
 
