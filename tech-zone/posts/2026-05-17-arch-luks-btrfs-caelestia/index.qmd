@@ -2055,6 +2055,38 @@ What this means for your install:
 - For anything beyond simple `bind` / `exec-once` / `env` lines — loops, functions, conditional logic, runtime event handlers — Lua is much cleaner.
 :::
 
+::: {.callout-note}
+## Caelestia version vs. Caelestia config format — they're different things
+
+Worth being precise about, because they're easy to conflate:
+
+| Layer | What's on your system | Status |
+|-------|------------------------|--------|
+| **Hyprland binary** | `hyprland-0.55.1-1` (current Arch release as of mid-2026) | Modern. Supports both hyprlang and Lua simultaneously. |
+| **Caelestia's bundled config format** | hyprlang (`~/.local/share/caelestia/hypr/hyprland.conf`) | Legacy format. Still fully parsed by Hyprland 0.55+ for backwards compatibility. |
+| **The personal-overrides slot Caelestia exposes** | `~/.config/caelestia/hypr-user.conf` (hyprlang) | Legacy format, sourced by the bundle's main config. |
+| **The Hyprland-native modern slot** | `~/.config/hypr/hyprland.lua` (you create this) | Modern Lua format. Loaded automatically alongside the legacy files. |
+
+So **Caelestia is not "on an older Hyprland"** — you're running the current Hyprland release. Caelestia just hasn't migrated its *config file* from hyprlang to Lua yet. Likely reasons:
+
+1. The hyprlang → Lua transition is brand-new (0.55 is a recent release). Rewriting hundreds of lines of bundled config in a freshly-stable API takes time and testing.
+2. hyprlang still works perfectly. There's no functional pressure to migrate — users get identical behavior either way.
+3. The Caelestia maintainers may be waiting for the Lua API to settle before committing to a rewrite.
+
+Expect Caelestia to migrate eventually (probably within a release or two). When they do, `cd ~/.local/share/caelestia && git pull` will pull down a Lua-formatted bundle, and Hyprland's loader will pick it up seamlessly — no action needed on your end other than verifying nothing broke after the pull.
+
+To check what versions you actually have:
+
+```bash
+pacman -Qi hyprland | grep -E '^(Name|Version)'
+pacman -Qi caelestia-shell | grep -E '^(Name|Version)'
+hyprctl version | head -5
+cd ~/.local/share/caelestia && git log --oneline -1
+```
+
+Four lines: Hyprland binary version, Caelestia shell version, what `hyprctl` reports (sometimes diverges from package version on `-git` installs), and the latest commit you have from the Caelestia repo.
+:::
+
 ### The right place to put your overrides (cardinal rule)
 
 **Never edit `~/.local/share/caelestia/hypr/*.conf` directly.** That's Caelestia upstream — `cd ~/.local/share/caelestia && git pull` will clobber any changes you make there. Two safe slots for personal customization:
