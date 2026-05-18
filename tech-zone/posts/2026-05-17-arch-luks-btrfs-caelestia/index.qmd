@@ -865,6 +865,33 @@ chattr +C ~/ros2_ws/{build,install,log}
 `chattr +C` only affects *new* files — existing files in the directory keep their old (COW) attributes. So set this on empty directories before they fill up, or recreate the directory contents to inherit it.
 :::
 
+::: {.callout-note}
+## "If I'm not snapshotting `/home`, why not just NoCOW the whole thing?"
+
+Reasonable question — and the answer is a trade-off. NoCOW disables four things Btrfs gives you by default, three of which you probably want for most of `/home`:
+
+| What CoW gives you | What NoCOW takes away |
+|--------------------|-----------------------|
+| **Per-extent data checksums** — Btrfs verifies every read; silently catches bitrot on disk and refuses to return corrupted data. | NoCOW files have no per-extent checksums. A flipped bit in a paper draft or a git pack file returns wrong bytes instead of failing loudly. |
+| **Transparent compression** (your `compress=zstd:3` mount option) — text-heavy data (source code, LaTeX, JSON, logs, markdown) typically compresses 50–70 %. | NoCOW disables compression for that file. A typical `/home` of code + papers loses several GB of effective free space if NoCOW'd whole. |
+| **Reflinks** — `cp --reflink=auto` finishes in milliseconds and uses zero extra disk because both names point at the same extents. Git, snapshot-y backup tools, and `cp` itself rely on this. | NoCOW files can't be reflinked; `cp --reflink=auto` silently falls back to a normal byte-for-byte copy. |
+| **Snapshot semantics** — if you ever change your mind and `snapper -c home create-config /home`, snapshots correctly preserve file state. | NoCOW files appear in snapshots but modifications are visible across all of them — snapshots silently don't capture the "before" state. Breaks rollback for those files. |
+
+The CoW *cost* (the fragmentation we just talked about) only shows up on files with a **write-modify-write-modify** pattern — build artifacts, browser cache, ML checkpoints, VM disk images, hot database files. For the rest of `/home` (code repos, papers, photos, configs, downloads, dotfiles), files are written once and read many times — CoW's overhead on those is essentially zero, and you get checksums + compression + reflinks for free.
+
+**The rule that actually works:** NoCOW the *specific subtrees* with bad write patterns, leave everything else CoW.
+
+| Should be NoCOW | Should stay CoW |
+|-----------------|------------------|
+| `~/.cache` (browser, thumbnail, font, IDE caches) | Code repositories (`~/code/<project>`) |
+| `~/.cargo/target/`, `~/ros2_ws/build/install/log/`, `~/.gradle/`, `node_modules/` | Papers, manuscripts, LaTeX trees |
+| ML training output (checkpoints overwritten each epoch) | Photos, videos, music, downloads |
+| KVM/QEMU `.qcow2` disk images (CoW-inside-CoW is pathological) | Dotfiles, `~/.config`, `~/.local/share` |
+| Hot SQLite databases (some IDE indexes, some mail clients) | Everything else in `/home` not explicitly listed left |
+
+The targeted `chattr +C` on just those subtrees is the minimum NoCOW footprint that solves fragmentation without giving up checksums, compression, or reflinks on the parts of `/home` that actually benefit from them.
+:::
+
 Verify snap-pac is wired up:
 
 ```bash

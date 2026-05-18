@@ -1493,6 +1493,86 @@ Mark build / cache directories NoCOW <em>regardless</em> of whether you enable h
 <p><code>chattr +C</code> only affects <em>new</em> files — existing files in the directory keep their old (COW) attributes. So set this on empty directories before they fill up, or recreate the directory contents to inherit it.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+“If I’m not snapshotting <code>/home</code>, why not just NoCOW the whole thing?”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reasonable question — and the answer is a trade-off. NoCOW disables four things Btrfs gives you by default, three of which you probably want for most of <code>/home</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 46%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>What CoW gives you</th>
+<th>What NoCOW takes away</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Per-extent data checksums</strong> — Btrfs verifies every read; silently catches bitrot on disk and refuses to return corrupted data.</td>
+<td>NoCOW files have no per-extent checksums. A flipped bit in a paper draft or a git pack file returns wrong bytes instead of failing loudly.</td>
+</tr>
+<tr class="even">
+<td><strong>Transparent compression</strong> (your <code>compress=zstd:3</code> mount option) — text-heavy data (source code, LaTeX, JSON, logs, markdown) typically compresses 50–70 %.</td>
+<td>NoCOW disables compression for that file. A typical <code>/home</code> of code + papers loses several GB of effective free space if NoCOW’d whole.</td>
+</tr>
+<tr class="odd">
+<td><strong>Reflinks</strong> — <code>cp --reflink=auto</code> finishes in milliseconds and uses zero extra disk because both names point at the same extents. Git, snapshot-y backup tools, and <code>cp</code> itself rely on this.</td>
+<td>NoCOW files can’t be reflinked; <code>cp --reflink=auto</code> silently falls back to a normal byte-for-byte copy.</td>
+</tr>
+<tr class="even">
+<td><strong>Snapshot semantics</strong> — if you ever change your mind and <code>snapper -c home create-config /home</code>, snapshots correctly preserve file state.</td>
+<td>NoCOW files appear in snapshots but modifications are visible across all of them — snapshots silently don’t capture the “before” state. Breaks rollback for those files.</td>
+</tr>
+</tbody>
+</table>
+<p>The CoW <em>cost</em> (the fragmentation we just talked about) only shows up on files with a <strong>write-modify-write-modify</strong> pattern — build artifacts, browser cache, ML checkpoints, VM disk images, hot database files. For the rest of <code>/home</code> (code repos, papers, photos, configs, downloads, dotfiles), files are written once and read many times — CoW’s overhead on those is essentially zero, and you get checksums + compression + reflinks for free.</p>
+<p><strong>The rule that actually works:</strong> NoCOW the <em>specific subtrees</em> with bad write patterns, leave everything else CoW.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 48%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Should be NoCOW</th>
+<th>Should stay CoW</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~/.cache</code> (browser, thumbnail, font, IDE caches)</td>
+<td>Code repositories (<code>~/code/&lt;project&gt;</code>)</td>
+</tr>
+<tr class="even">
+<td><code>~/.cargo/target/</code>, <code>~/ros2_ws/build/install/log/</code>, <code>~/.gradle/</code>, <code>node_modules/</code></td>
+<td>Papers, manuscripts, LaTeX trees</td>
+</tr>
+<tr class="odd">
+<td>ML training output (checkpoints overwritten each epoch)</td>
+<td>Photos, videos, music, downloads</td>
+</tr>
+<tr class="even">
+<td>KVM/QEMU <code>.qcow2</code> disk images (CoW-inside-CoW is pathological)</td>
+<td>Dotfiles, <code>~/.config</code>, <code>~/.local/share</code></td>
+</tr>
+<tr class="odd">
+<td>Hot SQLite databases (some IDE indexes, some mail clients)</td>
+<td>Everything else in <code>/home</code> not explicitly listed left</td>
+</tr>
+</tbody>
+</table>
+<p>The targeted <code>chattr +C</code> on just those subtrees is the minimum NoCOW footprint that solves fragmentation without giving up checksums, compression, or reflinks on the parts of <code>/home</code> that actually benefit from them.</p>
+</div>
+</div>
 <p>Verify snap-pac is wired up:</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-Syu</span>       <span class="co"># any pacman transaction now creates a pre + post snapshot</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
