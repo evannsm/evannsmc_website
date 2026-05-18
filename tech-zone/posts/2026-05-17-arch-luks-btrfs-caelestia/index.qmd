@@ -677,7 +677,7 @@ You should see a line like `Device 'wlan0' successfully activated with '<uuid>'`
 
 ```bash
 ip -brief address                    # wlan0 should have an inet address now
-ping -c 3 archlinux.org              # should see <1% packet loss
+ping -c 3 ping.archlinux.org         # should see <1% packet loss
 ```
 
 ::: {.callout-tip}
