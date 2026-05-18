@@ -1270,6 +1270,63 @@ $ nvidia-smi
 If `nvidia-smi` *still* fails post-reboot, add `nvidia_drm.modeset=1` to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`, re-run `grub-mkconfig -o /boot/grub/grub.cfg`, and reboot again. On nvidia-open 595+ this parameter is usually defaulted, but some hybrid configurations need it explicit.
 :::
 
+#### Success state on the Dell Precision after the reboot
+
+What you should see if everything came up cleanly:
+
+```text
+$ lsmod | grep nvidia
+nvidia_drm            151552  0
+nvidia_modeset       2195456  1 nvidia_drm
+nvidia_uvm           2490368  0
+nvidia              16568320  2 nvidia_uvm,nvidia_modeset
+drm_ttm_helper         20480  2 nvidia_drm,xe
+video                  81920  5 dell_wmi,dell_laptop,xe,i915,nvidia_modeset
+```
+
+All four NVIDIA modules loaded — `nvidia`, `nvidia_drm`, `nvidia_modeset`, `nvidia_uvm`. Notice that `video` shows **both `i915` and `xe` loaded for the Intel side**: `xe` is the modern Mesa-friendly Intel driver, `i915` is the legacy one — current kernels load both and let the device pick. Alder Lake-P GT2 binds `i915`; `xe` is loaded as available. `dell_wmi` and `dell_laptop` are the Dell ACPI bits (lid switch, brightness, backlight) wired into the video subsystem.
+
+```text
+$ nvidia-smi
+Sun May 17 22:44:06 2026
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.71.05              Driver Version: 595.71.05      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|=========================================+========================+======================|
+|   0  NVIDIA RTX A2000 8GB Lap...    Off |   00000000:01:00.0 Off |                  N/A |
+| N/A   55C    P0              8W /   35W |       0MiB /   8192MiB |      0%      Default |
++-----------------------------------------+------------------------+----------------------+
+
+| Processes: No running processes found |
+```
+
+Key things to read out of that table:
+
+| Field | Value | What it tells you |
+|-------|-------|-------------------|
+| **Driver Version** | `595.71.05` | nvidia-open from Arch's `nvidia-open-dkms` package |
+| **CUDA Version** | `13.2` | The CUDA version the driver supports — install `pacman -S cuda` later if you want to do ML/PyTorch work, it'll talk to this driver |
+| **Persistence-M** | `Off` | Power management lets the GPU sleep between accesses (correct for a laptop; saves battery) |
+| **Temp** | `55°C` | Idle temp after nvidia-smi briefly woke it; will drop in the next few seconds |
+| **Pwr Usage / Cap** | `8 W / 35 W` | Wake-up draw; the long-term idle floor is ~0.5 W when D3cold-suspended |
+| **Memory-Usage** | `0 MiB / 8192 MiB` | All 8 GB of VRAM available |
+| **GPU-Util** | `0 %` | Nothing using the GPU right now (no processes) |
+
+::: {.callout-note}
+## Post-Caelestia tuning: dGPU dynamic power management
+
+The default `Perf: P0` state with `Pwr: 8 W` after a `nvidia-smi` query is the GPU briefly awake and not yet runtime-suspended. For best laptop battery life you want **D3cold runtime power management** enabled, which lets the dGPU drop to ~0.5 W when nothing is asking for it. Confirm with:
+
+```bash
+cat /proc/driver/nvidia/gpus/0000:01:00.0/power
+# look for: "Runtime D3 status: Enabled"
+```
+
+If it says `Disabled`, you can opt in by adding `nvidia.NVreg_DynamicPowerManagement=0x02` to `GRUB_CMDLINE_LINUX_DEFAULT` and re-running `sudo grub-mkconfig -o /boot/grub/grub.cfg`. This is a **post-Caelestia tuning step** — leave it alone during the install, come back to it once the desktop is up and you can benchmark battery before/after.
+:::
+
 After the reboot, the four Hyprland NVIDIA env vars (set later, in `~/.config/hypr/hyprland.conf`) become relevant — see the env-vars table above.
 
 ##### Dell Pro 16 Plus
