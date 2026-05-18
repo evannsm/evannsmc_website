@@ -208,6 +208,7 @@ reflector --country 'United States' --protocol https --latest 20 --age 12 \
 
 pacstrap -K /mnt \
     base linux linux-firmware linux-headers intel-ucode \
+    cryptsetup \
     btrfs-progs \
     grub efibootmgr grub-btrfs \
     snapper snap-pac \
@@ -223,6 +224,7 @@ The new packages beyond Article 01:
 
 | Package           | Why |
 |-------------------|-----|
+| `cryptsetup`      | LUKS userspace + the `/usr/lib/initcpio/install/sd-encrypt` hook script. **Not pulled in by `base`** on current Arch — without it, the next time mkinitcpio runs (e.g., on a kernel update) it would silently produce an initramfs that can't unlock your disk. Install it explicitly. |
 | `btrfs-progs`     | Userspace Btrfs tools (`btrfs`, `mkfs.btrfs`, `btrfs filesystem mkswapfile`). Required on every Btrfs system. |
 | `grub-btrfs`      | Generates extra GRUB menu entries for each Btrfs snapshot so you can boot directly into a prior state. |
 | `snapper`         | Snapshot manager. Takes per-config snapshots on a timer and on every `pacman` transaction (via `snap-pac`). |
@@ -307,7 +309,6 @@ The naïve `fallocate` + `mkswap` recipe corrupts Btrfs swap files. Modern `btrf
 
 ```bash
 btrfs filesystem mkswapfile --size 20g --uuid clear /swap/swapfile
-swapon /swap/swapfile
 ```
 
 What that one command does for you:
@@ -318,6 +319,12 @@ What that one command does for you:
 4. Preallocates extents (so the kernel can compute a stable offset for hibernation).
 5. Runs `mkswap` against it.
 6. With `--uuid clear`, leaves the swap UUID blank, which avoids a stale-UUID warning on first `swapon` after a fresh install.
+
+::: {.callout-important}
+## Don't `swapon` from inside the chroot
+
+It's tempting to immediately run `swapon /swap/swapfile` to "verify" it works. **Don't.** That would activate the swap file on the *live USB's kernel* (the chroot doesn't have its own), which then prevents you from unmounting `/mnt` cleanly at reboot time, and can leave the swap signature in an "in use" state when you try to power-cycle. The first boot of the installed system will activate the swap file via `/etc/fstab` automatically — that's the right time.
+:::
 
 Pick a size that fits your RAM **plus a small margin**. For 16 GB RAM I'd use 20 GB. For 32 GB RAM I'd use 36 GB. Hibernation needs to be able to write the full contents of RAM to disk; running out of swap mid-hibernate corrupts the resume image.
 
@@ -489,15 +496,17 @@ HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block 
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"
 ```
 
-Then leave the chroot and reboot:
+Then leave the chroot and reboot, in this exact order:
 
 ```bash
-exit
-umount -R /mnt
-swapoff -a
-cryptsetup close cryptroot
+exit                             # leave the chroot first
+swapoff -a                       # turn off any active swap (no-op if you didn't swapon)
+umount -R /mnt                   # then unmount the new system
+cryptsetup close cryptroot       # then lock the LUKS container back up
 reboot
 ```
+
+The order matters: you cannot `umount` a Btrfs subvolume that still has an active swap file on it, and you cannot `cryptsetup close` a mapper that still has mounted filesystems on top of it. Each command depends on the previous one having completed cleanly.
 
 Pull the USB as the laptop starts. The expected sequence:
 
@@ -838,26 +847,32 @@ Installing a handful of KDE apps under Hyprland pulls in Qt and a slice of KDE F
 
 ### 8. Install a login manager (SDDM)
 
-Caelestia doesn't ship one. The project's README recommends `greetd` + `tuigreet`; I'm using **SDDM** instead because it matches the KDE apps installed above, supports Wayland natively, and renders a graphical login screen instead of a TTY.
+Caelestia doesn't ship one. The project's README recommends `greetd` + `tuigreet`; I'm using **SDDM** instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.
 
 ```bash
-sudo pacman -S sddm
+sudo pacman -S sddm qt6-svg qt6-virtualkeyboard
 ```
 
-| Package | Role |
-|---------|------|
-| `sddm`  | The Simple Desktop Display Manager — graphical login greeter with a Wayland backend. Probes installed `*.desktop` session files (Hyprland ships one) and lets the user pick a session from the dropdown before logging in. |
+| Package                | Role |
+|------------------------|------|
+| `sddm`                 | The Simple Desktop Display Manager — login greeter that probes installed `*.desktop` session files (Hyprland ships one) and lets you pick a session from the dropdown before authenticating. |
+| `qt6-svg`              | SVG rendering for the SDDM theme. Required by the default Breeze theme and almost every third-party theme. |
+| `qt6-virtualkeyboard`  | On-screen keyboard support. Optional for desktops but harmless and recommended if you might use this install on a touch device later. |
 
-Tell SDDM to start the **Wayland** greeter (so the login screen itself runs under Wayland, not X). Create `/etc/sddm.conf.d/wayland.conf`:
+::: {.callout-note}
+## Why I'm not setting `DisplayServer=wayland`
+
+SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (`kwin_wayland`, `weston`, etc.) which we don't have installed. SDDM's default mode (Qt running directly against the framebuffer/DRM-KMS via `kms`) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that's independent of how the greeter is rendered.
+
+If you ever want to switch to the Wayland greeter, install one of the supported compositors (`pacman -S weston`) and add this to `/etc/sddm.conf.d/wayland.conf`:
 
 ```ini
 [General]
 DisplayServer=wayland
-GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
-
 [Wayland]
-CompositorCommand=kwin_wayland --no-lockscreen --no-global-shortcuts --locale1
+CompositorCommand=weston --shell=fullscreen-shell.so
 ```
+:::
 
 Enable SDDM so it starts at every boot:
 
@@ -868,7 +883,7 @@ sudo systemctl enable sddm.service
 ::: {.callout-note}
 ## How SDDM finds Hyprland
 
-When you `pacman -S hyprland` (which `caelestia-meta` did for you), the package installs `/usr/share/wayland-sessions/hyprland.desktop`. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia's variant pre-sets a few env vars for the bundled status bar).
+When `caelestia-meta` installed `hyprland`, the package dropped `/usr/share/wayland-sessions/hyprland.desktop`. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia's variant pre-sets a few env vars for the bundled status bar).
 :::
 
 ::: {.callout-tip}

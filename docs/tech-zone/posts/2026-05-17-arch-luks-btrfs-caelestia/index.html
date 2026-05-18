@@ -703,13 +703,14 @@ Names matter for tooling, not the kernel
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pacstrap</span> <span class="at">-K</span> /mnt <span class="dt">\</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    base linux linux-firmware linux-headers intel-ucode <span class="dt">\</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    btrfs-progs <span class="dt">\</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    grub efibootmgr grub-btrfs <span class="dt">\</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    snapper snap-pac <span class="dt">\</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    networkmanager openssh sudo <span class="dt">\</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    neovim git base-devel <span class="dt">\</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    zram-generator <span class="dt">\</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    inotify-tools</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    cryptsetup <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    btrfs-progs <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    grub efibootmgr grub-btrfs <span class="dt">\</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    snapper snap-pac <span class="dt">\</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    networkmanager openssh sudo <span class="dt">\</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    neovim git base-devel <span class="dt">\</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    zram-generator <span class="dt">\</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    inotify-tools</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Use <code>amd-ucode</code> instead of <code>intel-ucode</code> on AMD hardware.</p>
 <p>The new packages beyond Article 01:</p>
 <table class="caption-top table">
@@ -725,26 +726,30 @@ Names matter for tooling, not the kernel
 </thead>
 <tbody>
 <tr class="odd">
+<td><code>cryptsetup</code></td>
+<td>LUKS userspace + the <code>/usr/lib/initcpio/install/sd-encrypt</code> hook script. <strong>Not pulled in by <code>base</code></strong> on current Arch — without it, the next time mkinitcpio runs (e.g., on a kernel update) it would silently produce an initramfs that can’t unlock your disk. Install it explicitly.</td>
+</tr>
+<tr class="even">
 <td><code>btrfs-progs</code></td>
 <td>Userspace Btrfs tools (<code>btrfs</code>, <code>mkfs.btrfs</code>, <code>btrfs filesystem mkswapfile</code>). Required on every Btrfs system.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>grub-btrfs</code></td>
 <td>Generates extra GRUB menu entries for each Btrfs snapshot so you can boot directly into a prior state.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>snapper</code></td>
 <td>Snapshot manager. Takes per-config snapshots on a timer and on every <code>pacman</code> transaction (via <code>snap-pac</code>).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>snap-pac</code></td>
 <td>Pacman hook that creates a snapper snapshot before and after every <code>pacman</code> transaction.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>zram-generator</code></td>
 <td>systemd-friendly zram setup. We’ll point it at half of RAM, zstd-compressed.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>inotify-tools</code></td>
 <td>Used by <code>grub-btrfs</code>’s <code>grub-btrfsd</code> to watch the snapshots directory and re-generate GRUB on changes.</td>
 </tr>
@@ -819,8 +824,7 @@ Sanity-check the generated fstab
 <section id="create-the-swap-file-the-btrfs-correct-way" class="level3">
 <h3 class="anchored" data-anchor-id="create-the-swap-file-the-btrfs-correct-way">Create the swap file the Btrfs-correct way</h3>
 <p>The naïve <code>fallocate</code> + <code>mkswap</code> recipe corrupts Btrfs swap files. Modern <code>btrfs-progs</code> ships a single tool that does it right:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> filesystem mkswapfile <span class="at">--size</span> 20g <span class="at">--uuid</span> clear /swap/swapfile</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> /swap/swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">btrfs</span> filesystem mkswapfile <span class="at">--size</span> 20g <span class="at">--uuid</span> clear /swap/swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>What that one command does for you:</p>
 <ol type="1">
 <li>Creates a file at <code>/swap/swapfile</code>.</li>
@@ -830,6 +834,19 @@ Sanity-check the generated fstab
 <li>Runs <code>mkswap</code> against it.</li>
 <li>With <code>--uuid clear</code>, leaves the swap UUID blank, which avoids a stale-UUID warning on first <code>swapon</code> after a fresh install.</li>
 </ol>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Don’t <code>swapon</code> from inside the chroot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It’s tempting to immediately run <code>swapon /swap/swapfile</code> to “verify” it works. <strong>Don’t.</strong> That would activate the swap file on the <em>live USB’s kernel</em> (the chroot doesn’t have its own), which then prevents you from unmounting <code>/mnt</code> cleanly at reboot time, and can leave the swap signature in an “in use” state when you try to power-cycle. The first boot of the installed system will activate the swap file via <code>/etc/fstab</code> automatically — that’s the right time.</p>
+</div>
+</div>
 <p>Pick a size that fits your RAM <strong>plus a small margin</strong>. For 16 GB RAM I’d use 20 GB. For 32 GB RAM I’d use 36 GB. Hibernation needs to be able to write the full contents of RAM to disk; running out of swap mid-hibernate corrupts the resume image.</p>
 <p>Persist the swap file in <code>/etc/fstab</code> (append; <code>genfstab</code> won’t have caught it):</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'/swap/swapfile none swap defaults 0 0'</span> <span class="op">&gt;&gt;</span> /etc/fstab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1054,12 +1071,13 @@ Why we don’t need <code>GRUB_ENABLE_CRYPTODISK=y</code>
 <pre class="text"><code>MODULES=(btrfs)
 HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"</code></pre>
-<p>Then leave the chroot and reboot:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> <span class="at">-R</span> /mnt</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">swapoff</span> <span class="at">-a</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> close cryptroot</span>
+<p>Then leave the chroot and reboot, in this exact order:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span>                             <span class="co"># leave the chroot first</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapoff</span> <span class="at">-a</span>                       <span class="co"># turn off any active swap (no-op if you didn't swapon)</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">umount</span> <span class="at">-R</span> /mnt                   <span class="co"># then unmount the new system</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> close cryptroot       <span class="co"># then lock the LUKS container back up</span></span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">reboot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The order matters: you cannot <code>umount</code> a Btrfs subvolume that still has an active swap file on it, and you cannot <code>cryptsetup close</code> a mapper that still has mounted filesystems on top of it. Each command depends on the previous one having completed cleanly.</p>
 <p>Pull the USB as the laptop starts. The expected sequence:</p>
 <ol type="1">
 <li>Firmware → GRUB menu (Arch is the only entry; press Enter).</li>
@@ -1578,12 +1596,12 @@ What about the rest of the KDE stack?
 </section>
 <section id="install-a-login-manager-sddm" class="level3">
 <h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
-<p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above, supports Wayland natively, and renders a graphical login screen instead of a TTY.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 60%">
-<col style="width: 40%">
+<col style="width: 80%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1594,17 +1612,36 @@ What about the rest of the KDE stack?
 <tbody>
 <tr class="odd">
 <td><code>sddm</code></td>
-<td>The Simple Desktop Display Manager — graphical login greeter with a Wayland backend. Probes installed <code>*.desktop</code> session files (Hyprland ships one) and lets the user pick a session from the dropdown before logging in.</td>
+<td>The Simple Desktop Display Manager — login greeter that probes installed <code>*.desktop</code> session files (Hyprland ships one) and lets you pick a session from the dropdown before authenticating.</td>
+</tr>
+<tr class="even">
+<td><code>qt6-svg</code></td>
+<td>SVG rendering for the SDDM theme. Required by the default Breeze theme and almost every third-party theme.</td>
+</tr>
+<tr class="odd">
+<td><code>qt6-virtualkeyboard</code></td>
+<td>On-screen keyboard support. Optional for desktops but harmless and recommended if you might use this install on a touch device later.</td>
 </tr>
 </tbody>
 </table>
-<p>Tell SDDM to start the <strong>Wayland</strong> greeter (so the login screen itself runs under Wayland, not X). Create <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why I’m not setting <code>DisplayServer=wayland</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (<code>kwin_wayland</code>, <code>weston</code>, etc.) which we don’t have installed. SDDM’s default mode (Qt running directly against the framebuffer/DRM-KMS via <code>kms</code>) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that’s independent of how the greeter is rendered.</p>
+<p>If you ever want to switch to the Wayland greeter, install one of the supported compositors (<code>pacman -S weston</code>) and add this to <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="dt">GreeterEnvironment</span><span class="ot">=</span><span class="st">QT_WAYLAND_SHELL_INTEGRATION=layer-shell</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">kwin_wayland --no-lockscreen --no-global-shortcuts --locale1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 <p>Enable SDDM so it starts at every boot:</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1617,7 +1654,7 @@ How SDDM finds Hyprland
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>When you <code>pacman -S hyprland</code> (which <code>caelestia-meta</code> did for you), the package installs <code>/usr/share/wayland-sessions/hyprland.desktop</code>. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia’s variant pre-sets a few env vars for the bundled status bar).</p>
+<p>When <code>caelestia-meta</code> installed <code>hyprland</code>, the package dropped <code>/usr/share/wayland-sessions/hyprland.desktop</code>. SDDM scans that directory on every login screen render, so Hyprland appears in the session dropdown automatically — no extra config needed. Caelestia also drops its own session entry; pick whichever you prefer (they both launch Hyprland; Caelestia’s variant pre-sets a few env vars for the bundled status bar).</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
