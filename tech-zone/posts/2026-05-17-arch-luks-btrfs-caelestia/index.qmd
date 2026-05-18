@@ -316,6 +316,28 @@ sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
 Replace `evanns` with whatever username you want. I'm using `arch` as the bare hostname (so the shell prompt reads `evanns@arch`) — if you'd rather have a more descriptive hostname like `arch-thinkpad` or `lab-laptop`, change both the `/etc/hostname` line and the trailing `arch.localdomain arch` token in `/etc/hosts`. The extra groups (`video`, `audio`, `input`) preempt small annoyances later with Hyprland (`video` for GPU access, `input` for libinput devices, `audio` for the legacy ALSA path some apps still want).
 
+::: {.callout-note}
+## What `/etc/hosts` is, and what `arch.localdomain` means
+
+`/etc/hosts` is the system's local name-resolution file. The NSS resolver checks it **before** going to DNS or mDNS (the order is set in `/etc/nsswitch.conf`), so anything listed here resolves instantly without a network round-trip.
+
+Line-by-line, here's what we just wrote:
+
+| Line                                 | What it does |
+|--------------------------------------|--------------|
+| `127.0.0.1   localhost`              | Maps the loopback name `localhost` to the IPv4 loopback address. Ships in Arch's default `/etc/hosts`. |
+| `::1         localhost`              | Same idea for IPv6. The `::1` address is the IPv6 loopback. |
+| `127.0.1.1   arch.localdomain arch`  | Maps **this machine's own hostname** (`arch`) and its fully-qualified name (`arch.localdomain`) to a *different* loopback address — `127.0.1.1`, note the third octet. |
+
+Two things are worth knowing about that third line:
+
+1. **Why a separate `127.0.1.1` instead of `127.0.0.1`?** It's a Debian-ism the Arch Wiki adopted: by giving your hostname its own loopback address, nothing on a real network can ever depend on you accidentally pointing your hostname at the generic loopback. `127.0.0.0/8` is a /8 subnet (16 million addresses) entirely reserved for loopback, so there's room to spare and `127.0.1.1` is *also* purely local — it never leaves your machine. Functionally either would work; conventionally, `127.0.1.1` is what you use.
+
+2. **What does `.localdomain` mean?** It's a placeholder *domain suffix* for machines that aren't on a real DNS domain — a stand-in fully-qualified name when there's no actual one. Calls like `hostname -f` (get the FQDN), `gethostname()`, and `getfqdn()` from various languages all walk `/etc/hosts` looking for an entry that names this host. With `arch.localdomain arch` on the third line, they all return `arch.localdomain` instead of failing or returning an empty string. If you ever actually join a domain (`mycompany.internal`, say), you'd change this to `arch.mycompany.internal arch`.
+
+**Why it matters in practice:** without this line, `sudo` adds a 1–3 second pause on each invocation while it tries (and fails) to reverse-resolve your hostname. Mail clients, print spoolers, and a handful of other tools have the same pattern. Adding the line is essentially free and removes the delay.
+:::
+
 ::: {.callout-tip}
 ## Already booted and want to change the hostname later?
 
@@ -323,10 +345,22 @@ Don't edit `/etc/hostname` by hand on a running system — use `hostnamectl`, wh
 
 ```bash
 sudo hostnamectl set-hostname arch
-sudo nvim /etc/hosts            # update the 127.0.1.1 line to match
 ```
 
-Then open a new shell (or log out / log back in) — your current shell cached `$HOSTNAME` at startup and won't update in place.
+Then update the third line of `/etc/hosts` to match. If `/etc/hosts` is still at the default (only the two `localhost` lines), append the missing entry without touching what's there:
+
+```bash
+echo "127.0.1.1   arch.localdomain arch" | sudo tee -a /etc/hosts
+```
+
+Verify it took:
+
+```bash
+cat /etc/hosts            # should now have three lines
+getent hosts arch         # should print "127.0.1.1   arch.localdomain arch"
+```
+
+Then open a new shell (or log out / log back in) — your current shell cached `$HOSTNAME` at startup and won't update in place. Substitute `arch` with whatever hostname you actually want in both commands.
 :::
 
 ---
