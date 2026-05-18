@@ -1315,16 +1315,40 @@ Key things to read out of that table:
 | **GPU-Util** | `0 %` | Nothing using the GPU right now (no processes) |
 
 ::: {.callout-note}
-## Post-Caelestia tuning: dGPU dynamic power management
+## Verify dGPU dynamic power management is on (it should be, by default)
 
-The default `Perf: P0` state with `Pwr: 8 W` after a `nvidia-smi` query is the GPU briefly awake and not yet runtime-suspended. For best laptop battery life you want **D3cold runtime power management** enabled, which lets the dGPU drop to ~0.5 W when nothing is asking for it. Confirm with:
+`nvidia-open` driver versions 525+ enable D3cold runtime power management **automatically** for capable Turing-or-newer GPUs. The RTX A2000 is one of them, so on a current Arch install the dGPU should be runtime-suspending without any kernel-cmdline work from you. Confirm with:
 
 ```bash
 cat /proc/driver/nvidia/gpus/0000:01:00.0/power
-# look for: "Runtime D3 status: Enabled"
 ```
 
-If it says `Disabled`, you can opt in by adding `nvidia.NVreg_DynamicPowerManagement=0x02` to `GRUB_CMDLINE_LINUX_DEFAULT` and re-running `sudo grub-mkconfig -o /boot/grub/grub.cfg`. This is a **post-Caelestia tuning step** — leave it alone during the install, come back to it once the desktop is up and you can benchmark battery before/after.
+On the Precision, this prints:
+
+```text
+Runtime D3 status:          Enabled (fine-grained)
+Tegra iGPU Rail-Gating:     Disabled
+Video Memory:               Off
+
+GPU Hardware Support:
+ Video Memory Self Refresh: Supported
+ Video Memory Off:          Supported
+
+S0ix Power Management:
+ Platform Support:          Supported
+ Status:                    Disabled
+
+Notebook Dynamic Boost:     Supported
+```
+
+The two lines that matter:
+
+- **`Runtime D3 status: Enabled (fine-grained)`** — runtime PM is on, and "fine-grained" means the driver can suspend individual function blocks independently (best-case power management).
+- **`Video Memory: Off`** — the 8 GB of GDDR6 is fully powered down right now, dropping idle draw to ~0.5 W instead of the ~8 W you see while `nvidia-smi` is querying.
+
+`S0ix Power Management … Status: Disabled` is **not a problem** — S0ix is the system-wide modern-standby state, and `Disabled` here just means your laptop isn't currently suspended. It'll activate the next time you `systemctl suspend`.
+
+**Only if `Runtime D3 status: Disabled`** (older driver, or some hybrid configs where auto-enable doesn't trigger) do you need to opt in manually — add `nvidia.NVreg_DynamicPowerManagement=0x02` to `GRUB_CMDLINE_LINUX_DEFAULT` and re-run `sudo grub-mkconfig -o /boot/grub/grub.cfg`. On nvidia-open 595+ with an Ampere or newer card, this is unnecessary.
 :::
 
 After the reboot, the four Hyprland NVIDIA env vars (set later, in `~/.config/hypr/hyprland.conf`) become relevant — see the env-vars table above.

@@ -2150,14 +2150,33 @@ Sun May 17 22:44:06 2026
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Post-Caelestia tuning: dGPU dynamic power management
+Verify dGPU dynamic power management is on (it should be, by default)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The default <code>Perf: P0</code> state with <code>Pwr: 8 W</code> after a <code>nvidia-smi</code> query is the GPU briefly awake and not yet runtime-suspended. For best laptop battery life you want <strong>D3cold runtime power management</strong> enabled, which lets the dGPU drop to ~0.5 W when nothing is asking for it. Confirm with:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/driver/nvidia/gpus/0000:01:00.0/power</span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co"># look for: "Runtime D3 status: Enabled"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If it says <code>Disabled</code>, you can opt in by adding <code>nvidia.NVreg_DynamicPowerManagement=0x02</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and re-running <code>sudo grub-mkconfig -o /boot/grub/grub.cfg</code>. This is a <strong>post-Caelestia tuning step</strong> — leave it alone during the install, come back to it once the desktop is up and you can benchmark battery before/after.</p>
+<p><code>nvidia-open</code> driver versions 525+ enable D3cold runtime power management <strong>automatically</strong> for capable Turing-or-newer GPUs. The RTX A2000 is one of them, so on a current Arch install the dGPU should be runtime-suspending without any kernel-cmdline work from you. Confirm with:</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/driver/nvidia/gpus/0000:01:00.0/power</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On the Precision, this prints:</p>
+<pre class="text"><code>Runtime D3 status:          Enabled (fine-grained)
+Tegra iGPU Rail-Gating:     Disabled
+Video Memory:               Off
+
+GPU Hardware Support:
+ Video Memory Self Refresh: Supported
+ Video Memory Off:          Supported
+
+S0ix Power Management:
+ Platform Support:          Supported
+ Status:                    Disabled
+
+Notebook Dynamic Boost:     Supported</code></pre>
+<p>The two lines that matter:</p>
+<ul>
+<li><strong><code>Runtime D3 status: Enabled (fine-grained)</code></strong> — runtime PM is on, and “fine-grained” means the driver can suspend individual function blocks independently (best-case power management).</li>
+<li><strong><code>Video Memory: Off</code></strong> — the 8 GB of GDDR6 is fully powered down right now, dropping idle draw to ~0.5 W instead of the ~8 W you see while <code>nvidia-smi</code> is querying.</li>
+</ul>
+<p><code>S0ix Power Management … Status: Disabled</code> is <strong>not a problem</strong> — S0ix is the system-wide modern-standby state, and <code>Disabled</code> here just means your laptop isn’t currently suspended. It’ll activate the next time you <code>systemctl suspend</code>.</p>
+<p><strong>Only if <code>Runtime D3 status: Disabled</code></strong> (older driver, or some hybrid configs where auto-enable doesn’t trigger) do you need to opt in manually — add <code>nvidia.NVreg_DynamicPowerManagement=0x02</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and re-run <code>sudo grub-mkconfig -o /boot/grub/grub.cfg</code>. On nvidia-open 595+ with an Ampere or newer card, this is unnecessary.</p>
 </div>
 </div>
 <p>After the reboot, the four Hyprland NVIDIA env vars (set later, in <code>~/.config/hypr/hyprland.conf</code>) become relevant — see the env-vars table above.</p>
@@ -2169,7 +2188,7 @@ Post-Caelestia tuning: dGPU dynamic power management
 </div>
 </div>
 <p><strong>Intel iGPU</strong> (Iris, UHD, Arc):</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -2201,7 +2220,7 @@ Post-Caelestia tuning: dGPU dynamic power management
 </tbody>
 </table>
 <p><strong>AMD</strong>:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -2237,7 +2256,7 @@ Post-Caelestia tuning: dGPU dynamic power management
 </tbody>
 </table>
 <p><strong>NVIDIA on Wayland</strong> — the open kernel modules are the recommended path in 2026:</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -2265,7 +2284,7 @@ Post-Caelestia tuning: dGPU dynamic power management
 </tbody>
 </table>
 <p>Verify after install:</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see a list of supported codecs without errors. If you switched the kernel (added <code>linux-lts</code> etc.), re-run <code>mkinitcpio -P</code> so DKMS rebuilds NVIDIA against every installed kernel.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2303,9 +2322,9 @@ Hybrid laptops (Intel + NVIDIA, AMD + NVIDIA): install both blocks
 <li>A <strong><code>nvidia.conf</code> modules-load file</strong> drops into <code>/etc/modules-load.d/</code> so the modules load on next boot, before the display server starts.</li>
 </ul>
 <p>Verify both halves of the GPU stack after install:</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span>            <span class="co"># Intel iGPU: lists h264, h265, vp9, av1 decode entrypoints</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>        <span class="co"># NVIDIA dGPU: prints a table showing the dGPU name,</span></span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>                  <span class="co">#              driver version, and current power draw (~5–10 W idle)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span>            <span class="co"># Intel iGPU: lists h264, h265, vp9, av1 decode entrypoints</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>        <span class="co"># NVIDIA dGPU: prints a table showing the dGPU name,</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>                  <span class="co">#              driver version, and current power draw (~5–10 W idle)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If <code>nvidia-smi</code> returns <em>“No devices were found”</em> or hangs, the kernel modules didn’t load — usually a silent DKMS build failure. Recovery: <code>sudo dkms autoinstall &amp;&amp; sudo modprobe nvidia</code>, then re-check.</p>
 <section id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up" class="level4">
 <h4 class="anchored" data-anchor-id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up">Hyprland env vars for NVIDIA (set once Caelestia is up)</h4>
@@ -2356,7 +2375,7 @@ env = ELECTRON_OZONE_PLATFORM_HINT,auto</code></pre>
 <li><p><strong>Apply after adding</strong> — Hyprland reloads its config on save <em>for most</em> settings, but <code>env</code> lines only take effect for apps started <em>after</em> the change. Either log out and log back in, or <code>hyprctl reload</code> and then close+reopen each app you want to pick up the new env.</p></li>
 <li><p><strong>For the iGPU-only render path</strong> (your default for desktop work), no env vars are needed at all — Hyprland uses the iGPU automatically. The vars above only matter when you want NVIDIA to do specific work.</p></li>
 <li><p><strong>For running a <em>specific</em> app on the dGPU</strong>, you don’t have to flip any global env vars — just launch it with offload:</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prime-run</span> blender        <span class="co"># or: __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia blender</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prime-run</span> blender        <span class="co"># or: __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia blender</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><code>prime-run</code> is a tiny wrapper script that comes with <code>nvidia-prime</code> (worth <code>pacman -S nvidia-prime</code> if you do a lot of per-app dGPU offload).</p></li>
 <li><p><strong>Older NVIDIA driver workarounds you might see online</strong> — older guides recommend <code>WLR_NO_HARDWARE_CURSORS=1</code> (fixes invisible cursor on pre-555 drivers) and <code>GBM_BACKEND=nvidia-drm</code> (sets the GBM allocator). With <code>nvidia-open-dkms</code> ≥ 580 (current as of mid-2026) neither is needed — skip them unless you actually see a problem they describe.</p></li>
 </ul>
@@ -2368,11 +2387,11 @@ env = ELECTRON_OZONE_PLATFORM_HINT,auto</code></pre>
 <section id="install-an-aur-helper" class="level3">
 <h3 class="anchored" data-anchor-id="install-an-aur-helper">5. Install an AUR helper</h3>
 <p>Caelestia is distributed via the AUR and its install script defaults to <code>yay</code>:</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
-<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 73%">
@@ -2404,14 +2423,14 @@ env = ELECTRON_OZONE_PLATFORM_HINT,auto</code></pre>
 <section id="install-caelestia" class="level3">
 <h3 class="anchored" data-anchor-id="install-caelestia">6. Install Caelestia</h3>
 <p>The README pattern is one command per step:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
-<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
-<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2464,16 +2483,16 @@ Do not move the repo after running install.fish
 <section id="install-applications-pre-reboot" class="level3">
 <h3 class="anchored" data-anchor-id="install-applications-pre-reboot">7. Install applications (pre-reboot)</h3>
 <p>Now — <em>before</em> the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
-<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
-<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
-<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
+<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -2547,8 +2566,8 @@ Add Flathub before opening Discover
 </div>
 <div class="callout-body-container callout-body">
 <p><code>flatpak</code> ships without any configured remote. Add Flathub once, system-wide, so Discover and <code>flatpak install</code> both see it:</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Nothing to enable — <code>flatpak</code> has no daemon. The runtime kicks in only when you actually run a Flatpak app.</p>
 </div>
 </div>
@@ -2569,7 +2588,7 @@ What about the rest of the KDE stack?
 <section id="install-a-login-manager-sddm" class="level3">
 <h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
 <p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -2608,14 +2627,14 @@ Why I’m not setting <code>DisplayServer=wayland</code>
 <div class="callout-body-container callout-body">
 <p>SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (<code>kwin_wayland</code>, <code>weston</code>, etc.) which we don’t have installed. SDDM’s default mode (Qt running directly against the framebuffer/DRM-KMS via <code>kms</code>) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that’s independent of how the greeter is rendered.</p>
 <p>If you ever want to switch to the Wayland greeter, install one of the supported compositors (<code>pacman -S weston</code>) and add this to <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
-<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Enable SDDM so it starts at every boot:</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2640,15 +2659,15 @@ Prefer greetd + tuigreet?
 </div>
 <div class="callout-body-container callout-body">
 <p>If you’d rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>…and write <code>/etc/greetd/config.toml</code> per the <a href="https://github.com/caelestia-dots/caelestia#login-manager" target="_blank" rel="noopener">Caelestia README</a>. Only enable <strong>one</strong> display manager at a time — having both <code>sddm.service</code> and <code>greetd.service</code> enabled causes a fight on VT1 that nobody wins.</p>
 </div>
 </div>
 </section>
 <section id="reboot-into-the-desktop" class="level3">
 <h3 class="anchored" data-anchor-id="reboot-into-the-desktop">9. Reboot into the desktop</h3>
-<div class="sourceCode" id="cb90"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.</p>
 <hr>
 </section>
@@ -2656,24 +2675,24 @@ Prefer greetd + tuigreet?
 <section id="part-5-verifying-everything-ended-up-where-it-should" class="level1">
 <h1>Part 5 — Verifying everything ended up where it should</h1>
 <p>Once you’re in Hyprland, open a <code>foot</code> terminal and run:</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
-<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
-<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
-<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
-<span id="cb91-14"><a href="#cb91-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-15"><a href="#cb91-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
-<span id="cb91-16"><a href="#cb91-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
-<span id="cb91-17"><a href="#cb91-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
-<span id="cb91-18"><a href="#cb91-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
+<span id="cb92-12"><a href="#cb92-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
+<span id="cb92-13"><a href="#cb92-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
+<span id="cb92-14"><a href="#cb92-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-15"><a href="#cb92-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
+<span id="cb92-16"><a href="#cb92-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
+<span id="cb92-17"><a href="#cb92-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
+<span id="cb92-18"><a href="#cb92-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
 <hr>
 <section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
@@ -2686,10 +2705,10 @@ Prefer greetd + tuigreet?
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>
