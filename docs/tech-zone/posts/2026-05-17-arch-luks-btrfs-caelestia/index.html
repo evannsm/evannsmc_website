@@ -483,6 +483,25 @@ What this is
 <p>It is <strong>single-boot</strong>. Dual-boot and triple-boot setups get their own articles — those add complexity that I want to introduce one variable at a time after this one is rock-solid.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+How to read the hardware-specific examples in this guide
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some sections of this article have variance by machine — the GPU drivers you need, the swap-file size, what <code>lspci</code> actually prints. Wherever that’s the case, you’ll see a <strong>tabbed block</strong> like the one in <a href="#section-4-graphics-drivers">Section 4 (Graphics drivers)</a>: a row of clickable tabs across the top, each one a different machine.</p>
+<ul>
+<li><strong>Generic</strong> — the version a reader on unknown hardware should follow.</li>
+<li><strong>Dell Precision (Intel Iris Xe + RTX A2000)</strong> — the actual <code>lspci</code> output, exact commands, and post-install env vars from my Dell Precision mobile workstation. This is the machine I’ve fully installed and tested this guide on.</li>
+<li><strong>Dell Pro 16 Plus</strong> — placeholder for a second machine I’ll install this stack on later. Content lands when I actually run through it.</li>
+</ul>
+<p>Click any tab to see the example specific to that machine. The tabs don’t change anything else on the page — they just show or hide the example content. Future readers (including future-me) get both the general guidance and the concrete “here’s what it looked like on a real machine I trust.”</p>
+</div>
+</div>
 <section id="why-this-is-its-own-article-and-not-just-article-02-fixed" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-is-its-own-article-and-not-just-article-02-fixed">Why this is its own article (and not just “Article 02, fixed”)</h2>
 <p>My <a href="../2026-05-05-arch-luks-btrfs-lessons/">first attempt at LUKS + Btrfs</a> dropped into emergency mode at boot. I traced the root cause to two typos in the kernel command line: <code>cryptdevice=UUID&lt;…&gt;</code> (missing <code>=</code>) and literal <code>&lt;angle brackets&gt;</code> around the UUID. Those are easy mistakes to make once and never make again, but I also took the chance to step back and pick a different default for <em>this</em> install, because I’m going to be living in it:</p>
@@ -1258,22 +1277,60 @@ The swapon –show line above
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> /               <span class="co"># Should show subvol=/@</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> /home           <span class="co"># Should show subvol=/@home</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>           <span class="co"># Should show /dev/zram0 (pri 100) AND /swap/swapfile</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="verify-your-hostname-and-fix-it-if-its-off" class="level3">
+<h3 class="anchored" data-anchor-id="verify-your-hostname-and-fix-it-if-its-off">Verify your hostname (and fix it if it’s off)</h3>
+<p>Your shell prompt should already be reading <code>&lt;your-user&gt;@arch</code> (e.g.&nbsp;<code>evanns@arch</code>). If you instead see something like <code>evanns@evanns-arch</code> — because you copy-pasted the chroot block from an earlier draft of this article, or just picked a different name in Chapter 6 — fix it now. The hostname is what shows up in your prompt, in <code>mDNS</code> (<code>arch.local</code> for things like AirDrop-style discovery), in NetworkManager’s DHCP requests, and in every <code>journalctl</code> entry from now on; getting it right early saves grep noise forever.</p>
+<p>Check what’s currently set:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hostnamectl</span>                       <span class="co"># full status (Static hostname, Icon name, Chassis, …)</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/hosts                    <span class="co"># should have 3 lines — see below</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>hostnamectl</code> reports anything other than what you want, change it with one command (no editing <code>/etc/hostname</code> by hand on a live system — <code>hostnamectl</code> updates the file, the kernel’s runtime hostname, <em>and</em> the systemd-hostnamed D-Bus property in one shot):</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hostnamectl set-hostname arch        <span class="co"># substitute your preferred hostname</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then make sure <code>/etc/hosts</code> has the matching third line. The default Arch <code>/etc/hosts</code> ships with only the two <code>localhost</code> entries, so most likely you need to append the third one. (See the <a href="#what-etchosts-is-and-what-archlocaldomain-means">What <code>/etc/hosts</code> is, and what <code>arch.localdomain</code> means</a> callout in Chapter 6 for the <em>why</em> behind this line.)</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/hosts                    <span class="co"># do you see "127.0.1.1 ... arch ..." already?</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># If not, append it:</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"127.0.1.1   arch.localdomain arch"</span> <span class="kw">|</span> <span class="fu">sudo</span> tee <span class="at">-a</span> /etc/hosts</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> hosts arch                 <span class="co"># should print: 127.0.1.1   arch.localdomain arch</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Substitute <code>arch</code> everywhere with whatever hostname you actually picked.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Do you need to reboot?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The kernel hostname changed instantly, but two things still see the old value:</p>
+<ul>
+<li><strong>Your current shell</strong> cached <code>$HOSTNAME</code> at startup. Your prompt won’t update until you open a new shell — either log out and back in, or <code>Ctrl-Alt-F2</code> to another TTY.</li>
+<li><strong>Long-running services that read the hostname once at boot</strong> (NetworkManager publishing your name over mDNS, for example) keep the old name until restarted.</li>
+</ul>
+<p>You can fix both without a reboot:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span> bash                         <span class="co"># replace the current shell — prompt now shows the new hostname</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart NetworkManager</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>…but the cleanest, most thorough way is to reboot once after this point, because we’re going to make more changes (snapper, services, packages) and a reboot gives every daemon a clean slate that reflects the new hostname:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After the reboot you’ll need to re-unlock LUKS, log back in, and your prompt should read <code>&lt;user&gt;@arch</code> cleanly.</p>
+</div>
+</div>
+</section>
 <section id="reconnect-to-wi-fi-do-this-before-anything-else-needs-the-network" class="level3">
 <h3 class="anchored" data-anchor-id="reconnect-to-wi-fi-do-this-before-anything-else-needs-the-network">Reconnect to Wi-Fi (do this before anything else needs the network)</h3>
 <p>NetworkManager is enabled and running, but it has <strong>no saved networks</strong> — your Wi-Fi credentials lived in the live USB’s <code>iwd</code>/<code>iwctl</code> session, not in the installed system. The very first thing to do after the sanity checks is re-establish a connection so <code>pacman</code>, <code>timesyncd</code>, snapper, and everything downstream actually works.</p>
 <p>If you have an <strong>Ethernet cable</strong>, plug it in — NetworkManager runs DHCP automatically and you’re online in a couple seconds. Skip to the next subsection.</p>
 <p>For <strong>Wi-Fi</strong>, three <code>nmcli</code> commands:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Make sure the wifi radio is on (it usually is, but cheap to confirm)</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> radio wifi on</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. See what networks are in range</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> device wifi list</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Connect — quote the SSID if it has spaces; quote the password if it has $ or !</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> device wifi connect <span class="st">"Your SSID Here"</span> password <span class="st">"your-passphrase"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Make sure the wifi radio is on (it usually is, but cheap to confirm)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> radio wifi on</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. See what networks are in range</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> device wifi list</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Connect — quote the SSID if it has spaces; quote the password if it has $ or !</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> device wifi connect <span class="st">"Your SSID Here"</span> password <span class="st">"your-passphrase"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see a line like <code>Device 'wlan0' successfully activated with '&lt;uuid&gt;'</code>. Verify you actually have an IP and can reach the world:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> <span class="at">-brief</span> address                    <span class="co"># wlan0 should have an inet address now</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ping</span> <span class="at">-c</span> 3 archlinux.org              <span class="co"># should see &lt;1% packet loss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> <span class="at">-brief</span> address                    <span class="co"># wlan0 should have an inet address now</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ping</span> <span class="at">-c</span> 3 ping.archlinux.org         <span class="co"># should see &lt;1% packet loss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1334,12 +1391,12 @@ A few <code>nmcli</code> patterns worth knowing
 <h3 class="anchored" data-anchor-id="re-enable-ntp-and-verify-your-timezone">Re-enable NTP and verify your timezone</h3>
 <p>Two related-but-separate clock checks at first boot.</p>
 <p><strong>NTP</strong>: the <code>timedatectl set-ntp true</code> you ran from the live ISO only affected the live environment. The installed system has its own <code>systemd-timesyncd</code>, and on first boot it’s idle until you turn it on:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> timedatectl set-ntp true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> timedatectl set-ntp true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Timezone</strong>: <code>timedatectl status</code> shows what’s currently set. If it says something other than the zone you wanted (you might be staring at the article’s default <code>America/New_York</code> because you copy-pasted the chroot block without substituting), fix it now:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status            <span class="co"># what's currently set?</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> list-timezones <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> <span class="op">&lt;</span>your city<span class="op">&gt;</span>    <span class="co"># find the right Region/City</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> timedatectl set-timezone America/Chicago       <span class="co"># substitute yours</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status            <span class="co"># confirm it took</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status            <span class="co"># what's currently set?</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> list-timezones <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> <span class="op">&lt;</span>your city<span class="op">&gt;</span>    <span class="co"># find the right Region/City</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> timedatectl set-timezone America/Chicago       <span class="co"># substitute yours</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status            <span class="co"># confirm it took</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The result you want from <code>timedatectl status</code> should look like:</p>
 <pre class="text"><code>               Local time: Sun 2026-05-17 12:34:56 CDT
            Universal time: Sun 2026-05-17 17:34:56 UTC
@@ -1359,32 +1416,359 @@ System clock synchronized: yes
 <section id="configure-snapper-for-properly" class="level3">
 <h3 class="anchored" data-anchor-id="configure-snapper-for-properly">Configure snapper for <code>/</code> properly</h3>
 <p><code>snapper -c root create-config /</code> would create its own <code>.snapshots</code> <em>subvolume</em>, which collides with the <code>@snapshots</code> we already mounted. The Arch-recommended dance:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> umount /.snapshots</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm <span class="at">-rf</span> /.snapshots</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root create-config /</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume delete /.snapshots   <span class="co"># delete the one snapper just created</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /.snapshots</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod 750 /.snapshots</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span>                              <span class="co"># remount @snapshots from fstab</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> umount /.snapshots</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm <span class="at">-rf</span> /.snapshots</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root create-config /</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume delete /.snapshots   <span class="co"># delete the one snapper just created</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /.snapshots</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod 750 /.snapshots</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span>                              <span class="co"># remount @snapshots from fstab</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Tighten retention to something humane (the defaults keep too many):</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root set-config <span class="dt">\</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_HOURLY=5 <span class="dt">\</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_DAILY=7 <span class="dt">\</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_WEEKLY=2 <span class="dt">\</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_MONTHLY=1 <span class="dt">\</span></span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_YEARLY=0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can do the same for <code>/home</code> if you want home directory rollback as well:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> home create-config /home</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root set-config <span class="dt">\</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_HOURLY=5 <span class="dt">\</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_DAILY=7 <span class="dt">\</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_WEEKLY=2 <span class="dt">\</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_MONTHLY=1 <span class="dt">\</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_YEARLY=0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="should-you-also-snapshot-home" class="level3">
+<h3 class="anchored" data-anchor-id="should-you-also-snapshot-home">Should you also snapshot <code>/home</code>?</h3>
+<p>A live question worth thinking through rather than enabling reflexively, because the answer changes the disk-usage profile of your install meaningfully.</p>
+<p><strong>Why it’s tempting:</strong> rolling back an accidental <code>rm</code>, an editor that ate a file, or a misbehaving app that scrambled your dotfiles.</p>
+<p><strong>Why it’s not free:</strong> snapshots are copy-on-write, so they cost nothing <em>until files diverge</em>. The catch is that <code>/home</code> on a working machine is full of “write-once-delete-soon” data — <code>cargo target/</code>, <code>node_modules/</code>, <code>~/.cache/</code>, ROS <code>build/</code> and <code>install/</code>, training checkpoints, downloaded tarballs. Every snapshot pins those deleted extents until the snapshot ages out, so a build-heavy <code>/home</code> (research code, ML, robotics workspaces) can balloon snapper’s footprint by many gigabytes in days.</p>
+<p><strong>What snapper for <code>/home</code> doesn’t do:</strong> it doesn’t protect against disk failure, theft, fire, or <code>sudo rm -rf /</code> across the whole filesystem. Those need a <em>backup</em> — <code>restic</code> or <code>borg</code> to a NAS, an external drive, or a cloud bucket. Snapshots and backups solve different problems; for <code>/home</code> data you actually care about, the backup is the load-bearing tool.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 62%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Your workflow looks like…</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Code, papers, configs, mostly git-tracked</td>
+<td><strong>Skip</strong> — git already gives you rollback for the things you’d want to roll back</td>
+</tr>
+<tr class="even">
+<td>Heavy builds (cargo / npm / Python / ROS / ML)</td>
+<td><strong>Skip</strong> <em>unless</em> you mark build dirs NoCOW first (see below)</td>
+</tr>
+<tr class="odd">
+<td>Large datasets, video, ROS bags, model checkpoints</td>
+<td><strong>Skip</strong> — snapshot growth scales with edits to these</td>
+</tr>
+<tr class="even">
+<td>Hand-edited dotfiles you don’t track in git</td>
+<td><strong>Enable</strong> with tight retention (next block)</td>
+</tr>
+<tr class="odd">
+<td>Mostly small documents / email / browser profile</td>
+<td><strong>Enable</strong> with tight retention</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+If you decide to enable it — use tight retention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The default snapper retention is too generous for <code>/home</code>. This config keeps only ~6 rolling snapshots, which is enough to recover from “I deleted that file twenty minutes ago” without storing a month of build artifacts:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> home create-config /home</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> home set-config <span class="dt">\</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_HOURLY=2 <span class="dt">\</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_DAILY=3 <span class="dt">\</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_WEEKLY=1 <span class="dt">\</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_MONTHLY=0 <span class="dt">\</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    TIMELINE_LIMIT_YEARLY=0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>snapper-timeline.timer</code> and <code>snapper-cleanup.timer</code> are already enabled (from Chapter 11), so they automatically apply this config too.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mark build / cache directories NoCOW <em>regardless</em> of whether you enable home snapper
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Even on the live filesystem (no snapshots involved), Btrfs’s copy-on-write semantics produce fragmentation on heavily-rewritten files — exactly what <code>cargo target/</code>, <code>~/.cache/</code>, and Python venvs are. Setting NoCOW on those directories <em>before</em> you populate them tells Btrfs to skip COW for the files inside, which both prevents that fragmentation and means snapshots (if you turn them on later) never pin those build artifacts.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.cache ~/code/builds ~/.cargo</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chattr</span> +C ~/.cache ~/code/builds ~/.cargo     <span class="co"># new files inside inherit NoCOW</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ROS workspace pattern — mark build/install/log before colcon ever creates them</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/ros2_ws/<span class="dt">{build</span><span class="op">,</span><span class="dt">install</span><span class="op">,</span><span class="dt">log}</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">chattr</span> +C ~/ros2_ws/<span class="dt">{build</span><span class="op">,</span><span class="dt">install</span><span class="op">,</span><span class="dt">log}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>chattr +C</code> only affects <em>new</em> files — existing files in the directory keep their old (COW) attributes. So set this on empty directories before they fill up, or recreate the directory contents to inherit it.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+“If I’m not snapshotting <code>/home</code>, why not just NoCOW the whole thing?”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reasonable question — and the answer is a trade-off. NoCOW disables four things Btrfs gives you by default, three of which you probably want for most of <code>/home</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 46%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>What CoW gives you</th>
+<th>What NoCOW takes away</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Per-extent data checksums</strong> — Btrfs verifies every read; silently catches bitrot on disk and refuses to return corrupted data.</td>
+<td>NoCOW files have no per-extent checksums. A flipped bit in a paper draft or a git pack file returns wrong bytes instead of failing loudly.</td>
+</tr>
+<tr class="even">
+<td><strong>Transparent compression</strong> (your <code>compress=zstd:3</code> mount option) — text-heavy data (source code, LaTeX, JSON, logs, markdown) typically compresses 50–70 %.</td>
+<td>NoCOW disables compression for that file. A typical <code>/home</code> of code + papers loses several GB of effective free space if NoCOW’d whole.</td>
+</tr>
+<tr class="odd">
+<td><strong>Reflinks</strong> — <code>cp --reflink=auto</code> finishes in milliseconds and uses zero extra disk because both names point at the same extents. Git, snapshot-y backup tools, and <code>cp</code> itself rely on this.</td>
+<td>NoCOW files can’t be reflinked; <code>cp --reflink=auto</code> silently falls back to a normal byte-for-byte copy.</td>
+</tr>
+<tr class="even">
+<td><strong>Snapshot semantics</strong> — if you ever change your mind and <code>snapper -c home create-config /home</code>, snapshots correctly preserve file state.</td>
+<td>NoCOW files appear in snapshots but modifications are visible across all of them — snapshots silently don’t capture the “before” state. Breaks rollback for those files.</td>
+</tr>
+</tbody>
+</table>
+<p>The CoW <em>cost</em> (the fragmentation we just talked about) only shows up on files with a <strong>write-modify-write-modify</strong> pattern — build artifacts, browser cache, ML checkpoints, VM disk images, hot database files. For the rest of <code>/home</code> (code repos, papers, photos, configs, downloads, dotfiles), files are written once and read many times — CoW’s overhead on those is essentially zero, and you get checksums + compression + reflinks for free.</p>
+<p><strong>The rule that actually works:</strong> NoCOW the <em>specific subtrees</em> with bad write patterns, leave everything else CoW.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 48%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Should be NoCOW</th>
+<th>Should stay CoW</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~/.cache</code> (browser, thumbnail, font, IDE caches)</td>
+<td>Code repositories (<code>~/code/&lt;project&gt;</code>)</td>
+</tr>
+<tr class="even">
+<td><code>~/.cargo/target/</code>, <code>~/ros2_ws/build/install/log/</code>, <code>~/.gradle/</code>, <code>node_modules/</code></td>
+<td>Papers, manuscripts, LaTeX trees</td>
+</tr>
+<tr class="odd">
+<td>ML training output (checkpoints overwritten each epoch)</td>
+<td>Photos, videos, music, downloads</td>
+</tr>
+<tr class="even">
+<td>KVM/QEMU <code>.qcow2</code> disk images (CoW-inside-CoW is pathological)</td>
+<td>Dotfiles, <code>~/.config</code>, <code>~/.local/share</code></td>
+</tr>
+<tr class="odd">
+<td>Hot SQLite databases (some IDE indexes, some mail clients)</td>
+<td>Everything else in <code>/home</code> not explicitly listed left</td>
+</tr>
+</tbody>
+</table>
+<p>The targeted <code>chattr +C</code> on just those subtrees is the minimum NoCOW footprint that solves fragmentation without giving up checksums, compression, or reflinks on the parts of <code>/home</code> that actually benefit from them.</p>
+</div>
+</div>
 <p>Verify snap-pac is wired up:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-Syu</span>       <span class="co"># any pacman transaction now creates a pre + post snapshot</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You should see two new snapshots — one pre, one post — bracketing the update. From here on, <em>every</em> <code>pacman</code> invocation gives you a rollback point.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-Syu</span>       <span class="co"># any pacman transaction now creates a pre + post snapshot</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>What you should see depends on whether <code>pacman -Syu</code> actually did anything:</strong></p>
+<ul>
+<li><strong>If packages were upgraded</strong>: a pre + post snapshot pair appears, bracketing the update — descriptions like <code>pacman -Syu</code> and cleanup <code>number</code>. From here on, <em>every</em> upgrading <code>pacman</code> invocation gives you a rollback point.</li>
+<li><strong>If <code>pacman -Syu</code> printed <code>there is nothing to do</code></strong> (likely on a fresh install — pacstrap already pulled the latest from a current mirror): no pre/post snapshots are created, because <em>no transaction happened</em>. snap-pac hooks transactions, not bare <code>-Syu</code> syncs. You’ll only see snapshot <code>0 │ single │ current</code>, which is snapper’s reference placeholder, not real data.</li>
+</ul>
+<p>To prove snap-pac is wired up without waiting for a real upgrade, either force a manual snapshot or install one small package:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option A — manual snapshot</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root create <span class="at">--description</span> <span class="st">"manual baseline"</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option B — install something to trigger the snap-pac hook</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> htop                 <span class="co"># creates pre + post snapshots</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root list           <span class="co"># snapshots 1, 2, 3 should now appear</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sudo pacman -R htop               # optional cleanup — this also triggers a pre + post pair</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After <code>Option B</code>, the snap-pac hook output during the install confirms snapshots were taken (look for <code>==&gt; root: 1</code> and <code>==&gt; root: 2</code> lines), and <code>snapper -c root list</code> shows them:</p>
+<pre class="text"><code>:: Running pre-transaction hooks...
+(1/1) Performing snapper pre snapshots for the following configurations...
+==&gt; root: 1
+:: Processing package changes...
+(1/1) installing htop                                         [###############################] 100%
+:: Running post-transaction hooks...
+(1/2) Arming ConditionNeedsUpdate...
+(2/2) Performing snapper post snapshots for the following configurations...
+==&gt; root: 2
+
+[evanns@arch ~]$ sudo snapper -c root list
+# │ Type   │ Pre # │ Date                            │ User │ Cleanup │ Description    │ Userdata
+──┼────────┼───────┼─────────────────────────────────┼──────┼─────────┼────────────────┼─────────
+0 │ single │       │                                 │ root │         │ current        │
+1 │ pre    │       │ Sun 17 May 2026 09:20:30 PM CDT │ root │ number  │ pacman -S htop │
+2 │ post   │     1 │ Sun 17 May 2026 09:20:30 PM CDT │ root │ number  │ htop           │</code></pre>
+</section>
+<section id="what-this-table-is-and-what-each-column-shows" class="level3">
+<h3 class="anchored" data-anchor-id="what-this-table-is-and-what-each-column-shows">What this table is and what each column shows</h3>
+<p><code>snapper list</code> prints every snapshot for the named config (<code>-c root</code> here means the <code>/</code> snapper config we set up earlier). Each row is one snapshot. Column-by-column:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>#</code></td>
+<td>The snapshot’s integer ID, assigned in order of creation. <code>0</code> is special — see below.</td>
+</tr>
+<tr class="even">
+<td><code>Type</code></td>
+<td><code>single</code> (a standalone snapshot), <code>pre</code> (taken before a transaction), or <code>post</code> (taken after a transaction). <code>pre</code>/<code>post</code> always come in pairs created by the same pacman invocation.</td>
+</tr>
+<tr class="odd">
+<td><code>Pre #</code></td>
+<td>Only filled in on <code>post</code> rows. Points back at the matching <code>pre</code> snapshot. Lets snapper treat the pair as a unit when you query or roll back.</td>
+</tr>
+<tr class="even">
+<td><code>Date</code></td>
+<td>Local timestamp the snapshot was taken.</td>
+</tr>
+<tr class="odd">
+<td><code>User</code></td>
+<td>Which user ran the command that created the snapshot (almost always <code>root</code> because snap-pac runs as a pacman hook).</td>
+</tr>
+<tr class="even">
+<td><code>Cleanup</code></td>
+<td>The retention policy that decides when this snapshot gets garbage-collected. <code>number</code> = keep the last <em>N</em> pre/post pairs (snap-pac’s default is 10). <code>timeline</code> = keep by age per the <code>TIMELINE_LIMIT_*</code> config. Empty = keep forever (e.g., snapshot <code>0</code> and any <code>manual baseline</code> snapshots you create yourself).</td>
+</tr>
+<tr class="odd">
+<td><code>Description</code></td>
+<td>A human-readable label. For <code>pre</code> snapshots, snap-pac writes the pacman command (<code>pacman -S htop</code>). For <code>post</code>, snap-pac writes the package list that changed (<code>htop</code>). For manual snapshots, whatever you passed to <code>--description</code>.</td>
+</tr>
+<tr class="even">
+<td><code>Userdata</code></td>
+<td>Optional key=value metadata you can attach. Empty by default.</td>
+</tr>
+</tbody>
+</table>
+<p>A few specifics about what we’re seeing above:</p>
+<ul>
+<li><strong>Snapshot <code>0 │ single │ current</code></strong> is snapper’s reference placeholder, created when you ran <code>snapper -c root create-config /</code>. It’s not a real point-in-time copy — it’s an abstract pointer to “the live state of <code>/</code> <em>right now</em>.” You can’t roll back <em>to</em> it (you’re already there), but tools use it as the “before” half of various diffs.</li>
+<li><strong>Snapshot <code>1 │ pre</code></strong> was taken by snap-pac the instant before pacman started touching the filesystem. Description is the exact pacman command line. Cleanup is <code>number</code>, so this snapshot stays around until ten newer pre/post pairs exist.</li>
+<li><strong>Snapshot <code>2 │ post</code></strong> was taken the instant after pacman finished. <code>Pre # = 1</code> ties it back to its pre. Description is the package(s) that were affected. Same timestamp as snapshot 1 because the install took less than a second.</li>
+</ul>
+<p>What you can <em>do</em> with this pair:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See exactly what files changed during the htop install</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root status 1..2</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a unified diff of the changed files</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root diff 1..2</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Roll back the entire filesystem to *before* htop was installed</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root undochange 1..2     <span class="co"># safer: just revert the files</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co"># or, full rollback (changes default subvolume; needs reboot):</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper <span class="at">-c</span> root rollback 1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>undochange</code> reverts the file changes only — safe and reversible. <code>rollback</code> is heavier: it makes snapshot 1’s tree the new default subvolume, and the next boot uses that subvolume as <code>/</code>. Use <code>rollback</code> to recover from a system that won’t boot after a bad update; use <code>undochange</code> for “I wish I hadn’t installed that one package.”</p>
+<p>The <code>snapper-timeline.timer</code> enabled in Chapter 11 fires <code>OnCalendar=hourly</code>, so within an hour of first boot, snapshots will also start appearing automatically with cleanup <code>timeline</code>. You’ll soon see a steadily-growing list with descriptions like <code>timeline</code>, garbage-collected per the <code>TIMELINE_LIMIT_HOURLY=5 / DAILY=7 / WEEKLY=2 / MONTHLY=1</code> retention you set.</p>
 </section>
 <section id="test-hibernation-before-you-trust-it" class="level3">
 <h3 class="anchored" data-anchor-id="test-hibernation-before-you-trust-it">Test hibernation before you trust it</h3>
-<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl hibernate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. If the system resumes with windows where you left them and <code>dmesg | grep -i hibernate</code> shows a clean image read, you’re good. If it instead boots fresh, your <code>resume=</code> parameters didn’t take — re-check the cmdline and re-run <code>mkinitcpio -P &amp;&amp; grub-mkconfig -o /boot/grub/grub.cfg</code>.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl hibernate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The screen should go dark, the fans stop, the power LED dim. Press the power button to wake it. The expected sequence on resume:</p>
+<ol type="1">
+<li>Firmware → GRUB → kernel + initramfs (same as a cold boot).</li>
+<li><strong><code>sd-encrypt</code> prompts for your LUKS passphrase</strong> — see the security-model callout below for why this is the only prompt you should see.</li>
+<li>After unlock, <code>systemd-hibernate-resume.service</code> reads the hibernation image from <code>/swap/swapfile</code> (decrypted on the fly by LUKS as it reads), restores RAM, and userspace picks up where it left off.</li>
+</ol>
+<p>If the system instead boots fresh (clean login prompt, no windows restored), your <code>resume=</code> parameters didn’t take — re-check the GRUB cmdline and re-run <code>mkinitcpio -P &amp;&amp; grub-mkconfig -o /boot/grub/grub.cfg</code>.</p>
+<section id="what-dmesg-should-show-after-a-successful-hibernate-resume" class="level4">
+<h4 class="anchored" data-anchor-id="what-dmesg-should-show-after-a-successful-hibernate-resume">What <code>dmesg</code> should show after a successful hibernate + resume</h4>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dmesg <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> hibernate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Two informational lines, no errors:</p>
+<pre class="text"><code>[   25.728339] systemd[1]: Clear Stale Hibernate Storage Info skipped, unmet condition check ConditionPathExists=/sys/firmware/efi/efivars/HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67
+[  948.817235] efivarfs: removing variable HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67</code></pre>
+<p>Both lines reference the EFI variable <code>HibernateLocation-8cf2644b-4b0b-428f-9387-6d876050dc67</code> — the trailing UUID is systemd’s standard namespace UUID for this variable name and is identical on every Linux machine that uses systemd hibernation. What the two lines are <em>telling</em> you:</p>
+<ul>
+<li><strong><code>Clear Stale Hibernate Storage Info skipped, unmet condition check …</code></strong> (early in boot, ~25 s). The <code>systemd-hibernate-clear.service</code> unit ran, checked whether the <code>HibernateLocation</code> EFI variable existed, found it didn’t (because at that moment you hadn’t yet hibernated this session), and skipped. <strong>Not an error</strong> — it’s the unit correctly declining to do work when there’s nothing to clean up.</li>
+<li><strong><code>efivarfs: removing variable HibernateLocation-…</code></strong> (later, however many minutes after boot you ran <code>systemctl hibernate</code>). The variable was written by <code>systemctl hibernate</code>, persisted across the power cycle, read by the resume logic on next boot, and then <em>removed</em> by the kernel after the resume finished and the bookkeeping was no longer needed. <strong>This is the success signature of a complete hibernate + resume cycle.</strong></li>
+</ul>
+<p>If hibernation <em>failed</em> (image couldn’t be written, resume couldn’t find the image, the swap file wasn’t recognized), you’d see explicit <code>PM: hibernation</code> error lines mixed in with these — typically including the string <code>failed</code>, <code>error</code>, or <code>Cannot find swap device</code>. The absence of such lines is the proof the chain worked end-to-end.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hibernation + LUKS: what this gives you, security-wise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The hibernation image lives in <code>/swap/swapfile</code>, which sits inside <code>/dev/mapper/cryptroot</code> — the unlocked LUKS volume. So <em>the contents of your RAM at the moment you hit hibernate are encrypted on disk at rest</em>, as a side-effect of where the swap file lives. There is no separate “hibernation password” — your LUKS passphrase is the only thing standing between a stolen laptop and the contents of RAM.</p>
+<p><strong>This gives hibernation the security posture of a fully-shut-down device</strong> while preserving “wake up where I left off” UX. Compare with the alternatives:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 44%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Power state</th>
+<th>RAM contents at rest</th>
+<th>Cold-boot attack window</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Shutdown</strong></td>
+<td>Empty (RAM is unpowered, contents lost)</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td><strong>Hibernate</strong></td>
+<td>Encrypted in swap file, inside LUKS</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td><strong>Suspend (S3)</strong></td>
+<td><strong>Plaintext, still in powered RAM</strong></td>
+<td>Minutes — attacker can chill the chips, transplant, dump</td>
+</tr>
+</tbody>
+</table>
+<p>For a laptop that leaves your physical control (travel, conference rooms, anywhere you might want to close the lid and walk away with confidence), <strong>hibernate is meaningfully more secure than suspend</strong>.</p>
+<p>What hibernation + LUKS does <strong>not</strong> protect against: someone walking up to your unlocked desktop session after you’ve successfully resumed. The LUKS prompt gates <em>getting back into the machine</em>; once that prompt is satisfied, you’re returned to whatever session state existed before you hibernated. If you didn’t have a screen-locker active at hibernate time, the unlocked desktop is sitting right there after resume.</p>
+<p>For full two-factor coverage — LUKS to boot/resume, screen-lock to re-enter a session — pair this with <code>hyprlock</code> + <code>hypridle</code> once Hyprland is up:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> hyprlock hypridle        <span class="co"># if not already pulled in by caelestia-meta</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>…and configure <code>hypridle</code> to lock after N minutes of inactivity. With that in place, the threat model becomes: an attacker needs <em>both</em> the LUKS passphrase (to boot the disk) <em>and</em> the screen-lock passphrase (to re-enter your session). Without <code>hyprlock</code> running, only the LUKS prompt stands in their way.</p>
+</div>
+</div>
 <hr>
+</section>
 </section>
 </section>
 <section id="part-4-caelestia-hyprland-desktop" class="level1">
@@ -1393,11 +1777,11 @@ System clock synchronized: yes
 <section id="audio-stack-pipewire" class="level3">
 <h3 class="anchored" data-anchor-id="audio-stack-pipewire">1. Audio stack (PipeWire)</h3>
 <p><code>caelestia-meta</code> depends on <code>wireplumber</code> (the session manager), but it does <strong>not</strong> pull the PipeWire backend itself or the drop-in shims that replace PulseAudio / ALSA / JACK clients. Install the whole stack explicitly so the desktop has working sound from the first launch:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  pipewire pipewire-audio wireplumber <span class="dt">\</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  pipewire-pulse pipewire-alsa pipewire-jack <span class="dt">\</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  pavucontrol <span class="dt">\</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  sof-firmware</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  pipewire pipewire-audio wireplumber <span class="dt">\</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  pipewire-pulse pipewire-alsa pipewire-jack <span class="dt">\</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  pavucontrol <span class="dt">\</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  sof-firmware</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When pacman prompts about a JACK provider, choose <strong><code>pipewire-jack</code></strong> so the PipeWire shim wins. When it prompts about a PulseAudio replacement, choose <strong><code>pipewire-pulse</code></strong> for the same reason.</p>
 <table class="caption-top table">
 <colgroup>
@@ -1445,22 +1829,68 @@ System clock synchronized: yes
 </tr>
 </tbody>
 </table>
-<p>The PipeWire and WirePlumber user services start automatically on login via socket activation — you don’t need to <code>systemctl enable</code> anything by hand. Verify after the next desktop login with:</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should say "PulseAudio (on PipeWire …)"</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># tree of devices/sinks/sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>pactl info</code> reports actual PulseAudio instead of PipeWire, something pulled <code>pulseaudio</code> in as a dependency conflict — <code>pacman -Qs pulseaudio</code> to confirm, then uninstall the offending package and reinstall <code>pipewire-pulse</code>.</p>
+<p>The PipeWire and WirePlumber user services start automatically once a graphical session is active (SDDM → Hyprland triggers <code>graphical-session.target</code> for your user, which fans out and starts the socket-activated PipeWire units). On a bare TTY before that happens, they’re idle and <code>pactl</code> / <code>wpctl</code> will return <code>Connection refused</code> — that’s not a broken install, just “no graphical session has woken them yet.”</p>
+<p>To verify the install <em>now</em>, before the desktop is up, kick the user services manually one time:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> enable <span class="at">--now</span> pipewire.socket pipewire-pulse.socket wireplumber.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then run the verification commands:</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should print: PulseAudio (on PipeWire 1.6.x)</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># should print a tree of devices, sinks, and sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>pactl info</code> reports <code>PulseAudio (on PipeWire …)</code>, the stack is wired correctly and <code>pipewire-pulse</code> is intercepting the PulseAudio API as intended. If <code>wpctl status</code> shows your audio devices (built-in speakers, headphone jack, HDMI sinks), WirePlumber’s device probing is alive.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Two common failure modes after install
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 50%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>What’s wrong</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pactl info</code> reports actual PulseAudio (no “on PipeWire” suffix)</td>
+<td>Something pulled <code>pulseaudio</code> in as a dependency conflict and the real PulseAudio daemon won</td>
+<td><code>pacman -Qs pulseaudio</code> to find the offending package, uninstall it, then reinstall <code>pipewire-pulse</code></td>
+</tr>
+<tr class="even">
+<td><code>Connection refused</code> from <code>pactl</code> / <code>wpctl</code> on a bare TTY</td>
+<td>User services aren’t running yet — no graphical session has triggered them</td>
+<td>Run the <code>systemctl --user enable --now</code> line above. After your next graphical login, they auto-start and you’ll never need to do this by hand again.</td>
+</tr>
+<tr class="odd">
+<td><code>Connection refused</code> even after <code>systemctl --user start</code></td>
+<td><code>XDG_RUNTIME_DIR</code> isn’t set, or the user manager isn’t running</td>
+<td><code>loginctl show-user $USER -p Linger</code> — if <code>Linger=no</code> and you SSH’d in, log out and log in directly at the TTY instead, or <code>sudo loginctl enable-linger $USER</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 <section id="system-prerequisites-caelestia-expects-to-find" class="level3">
 <h3 class="anchored" data-anchor-id="system-prerequisites-caelestia-expects-to-find">2. System prerequisites Caelestia expects to find</h3>
 <p><code>caelestia-meta</code> lists a lot of dependencies but assumes a few CLI essentials are <em>already</em> on the system. Install these now so the install script and theme compilation both have everything they need on first run:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 35%">
@@ -1508,31 +1938,257 @@ System clock synchronized: yes
 </tbody>
 </table>
 <p>Enable the Bluetooth daemon so it starts on every boot:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>--needed</code> flag tells pacman to skip anything already present (some of these are pulled in by <code>base-devel</code>), so this command is safe to re-run any time.</p>
 </section>
 <section id="lazyvim-on-top-of-neovim" class="level3">
 <h3 class="anchored" data-anchor-id="lazyvim-on-top-of-neovim">3. LazyVim on top of Neovim</h3>
 <p>Neovim is in <code>base</code> and was installed by pacstrap. <a href="https://www.lazyvim.org/" target="_blank" rel="noopener">LazyVim</a> layers a curated plugin set, sensible defaults, and a per-language LSP setup on top of it. The official install path is to drop the LazyVim <em>starter</em> config into <code>~/.config/nvim</code>:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The first <code>nvim</code> launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for <code>:Lazy</code> to report all plugins installed, then <code>:q</code>. If you prefer the AUR-packaged version instead, <code>yay -S lazyvim</code> after installing the AUR helper below also works — same end state.</p>
 </section>
-<section id="graphics-drivers" class="level3">
-<h3 class="anchored" data-anchor-id="graphics-drivers">4. Graphics drivers</h3>
-<p>Pick one block based on your GPU.</p>
+<section id="section-4-graphics-drivers" class="level3">
+<h3 class="anchored" data-anchor-id="section-4-graphics-drivers">4. Graphics drivers</h3>
+<p>First figure out which GPU(s) you actually have — don’t guess, the wrong driver set wastes a few hundred MB of install and either does nothing useful or causes silent breakage at first compositor launch.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'VGA|3D|Display'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Interpret the output by vendor string:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 24%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>What <code>lspci</code> reports</th>
+<th>GPU you have</th>
+<th>Run block(s) below</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Intel Corporation … (Graphics\|Iris\|UHD\|Arc) …</code></td>
+<td>Intel iGPU (or Arc dGPU)</td>
+<td><strong>Intel</strong></td>
+</tr>
+<tr class="even">
+<td><code>Advanced Micro Devices, Inc. [AMD/ATI] …</code></td>
+<td>AMD GPU (APU iGPU or Radeon dGPU)</td>
+<td><strong>AMD</strong></td>
+</tr>
+<tr class="odd">
+<td><code>NVIDIA Corporation …</code></td>
+<td>NVIDIA dGPU</td>
+<td><strong>NVIDIA</strong></td>
+</tr>
+<tr class="even">
+<td>One Intel line <strong>and</strong> one NVIDIA line</td>
+<td>Hybrid laptop (Intel iGPU + NVIDIA dGPU)</td>
+<td><strong>Both Intel and NVIDIA</strong></td>
+</tr>
+<tr class="odd">
+<td>One AMD line <strong>and</strong> one NVIDIA line</td>
+<td>Hybrid (AMD APU + NVIDIA dGPU)</td>
+<td><strong>Both AMD and NVIDIA</strong></td>
+</tr>
+<tr class="even">
+<td>Two AMD lines</td>
+<td>AMD APU + AMD dGPU</td>
+<td><strong>AMD</strong> (covers both)</td>
+</tr>
+</tbody>
+</table>
+<p>On a hybrid laptop, install both blocks — the drivers coexist, Hyprland defaults to the iGPU for everyday work to save power, and apps that need the dGPU request it explicitly.</p>
+<section id="machine-examples" class="level4">
+<h4 class="anchored" data-anchor-id="machine-examples">Machine examples</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Generic</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Dell Precision (Intel Iris Xe + RTX A2000)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Dell Pro 16 Plus</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>A clean run on an unknown machine should look like this — one or two <code>lspci</code> lines, no errors, then the install of the matching driver block(s). The specific package names and DKMS output below are <em>templates</em>; substitute your kernel version and driver version.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> lspci <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'VGA|3D|Display'</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co"># one or two lines, depending on whether you have a hybrid GPU laptop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then run the matching driver block from the lists below, verify with <code>vainfo</code> (Intel/AMD VA-API) and/or <code>nvidia-smi</code> (NVIDIA), and reboot if you installed the NVIDIA driver for the first time.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>The mobile workstation I’ve fully installed and tested this guide on. <strong>Alder Lake-P</strong> + <strong>GA107GLM (Ampere)</strong> — a hybrid laptop, so both driver blocks were needed.</p>
+<p><code>lspci -nn | grep -E 'VGA|3D|Display'</code>:</p>
+<pre class="text"><code>0000:00:02.0 VGA compatible controller [0300]: Intel Corporation Alder Lake-P GT2 [Iris Xe Graphics] [8086:46a6] (rev 0c)
+0000:01:00.0 3D controller [0302]: NVIDIA Corporation GA107GLM [RTX A2000 8GB Laptop GPU] [10de:25ba] (rev a1)</code></pre>
+<p>Two GPU lines → install both blocks. Intel first:</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Verify Intel side with <code>vainfo</code>. On the Precision you should see the <strong>full Iris Xe codec set including hardware AV1 decode</strong> (<code>VAProfileAV1Profile0 : VAEntrypointVLD</code>) — confirms <code>intel-media-driver 26.1.5</code> is loaded:</p>
+<pre class="text"><code>$ vainfo
+Trying display: drm
+vainfo: VA-API version: 1.23 (libva 2.22.0)
+vainfo: Driver version: Intel iHD driver for Intel(R) Gen Graphics - 26.1.5 ()
+vainfo: Supported profile and entrypoints
+      VAProfileNone                   :    VAEntrypointVideoProc
+      VAProfileH264High               :    VAEntrypointVLD
+      VAProfileHEVCMain10             :    VAEntrypointVLD
+      VAProfileVP9Profile2            :    VAEntrypointVLD
+      VAProfileAV1Profile0            :    VAEntrypointVLD          # &lt;-- Iris Xe HW AV1 decode
+      ...</code></pre>
+<p>Then NVIDIA:</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The DKMS hook compiles <code>nvidia/595.71.05 -k 7.0.7-arch2-1</code> (driver version × kernel version) and rebuilds the initramfs to include nvidia early. You’ll see snap-pac take pre/post snapshots bracketing the transaction.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+On a hybrid: <code>nvidia-smi</code> will fail <em>until</em> you reboot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Immediately after <code>pacman -S nvidia-open-dkms</code>, running <code>nvidia-smi</code> returns:</p>
+<pre class="text"><code>NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver.
+Make sure that the latest NVIDIA driver is installed and running.</code></pre>
+<p>And <code>sudo modprobe nvidia</code> returns:</p>
+<pre class="text"><code>modprobe: ERROR: could not insert 'nvidia': No such device</code></pre>
+<p><strong>This is expected and not a broken install.</strong> The running kernel was booted <em>before</em> nvidia-open-dkms existed, so the <code>nouveau</code> open-source NVIDIA driver is still bound to the dGPU. nouveau owns the device; nvidia can’t bind on top. The package install dropped a nouveau blacklist file <em>and</em> rebuilt your initramfs to load nvidia early on next boot — both take effect only after a reboot.</p>
+<p><strong>Fix:</strong> <code>sudo reboot</code>. After re-entering your LUKS passphrase and logging back in:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> lsmod <span class="kw">|</span> <span class="fu">grep</span> nvidia</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="co"># expected: nvidia, nvidia_drm, nvidia_modeset, nvidia_uvm</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nvidia-smi</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="co"># expected: table showing "NVIDIA RTX A2000 8GB Laptop GPU", driver 595.71.05, ~5-10 W idle</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>nvidia-smi</code> <em>still</em> fails post-reboot, add <code>nvidia_drm.modeset=1</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> in <code>/etc/default/grub</code>, re-run <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, and reboot again. On nvidia-open 595+ this parameter is usually defaulted, but some hybrid configurations need it explicit.</p>
+</div>
+</div>
+<section id="success-state-on-the-dell-precision-after-the-reboot" class="level4">
+<h4 class="anchored" data-anchor-id="success-state-on-the-dell-precision-after-the-reboot">Success state on the Dell Precision after the reboot</h4>
+<p>What you should see if everything came up cleanly:</p>
+<pre class="text"><code>$ lsmod | grep nvidia
+nvidia_drm            151552  0
+nvidia_modeset       2195456  1 nvidia_drm
+nvidia_uvm           2490368  0
+nvidia              16568320  2 nvidia_uvm,nvidia_modeset
+drm_ttm_helper         20480  2 nvidia_drm,xe
+video                  81920  5 dell_wmi,dell_laptop,xe,i915,nvidia_modeset</code></pre>
+<p>All four NVIDIA modules loaded — <code>nvidia</code>, <code>nvidia_drm</code>, <code>nvidia_modeset</code>, <code>nvidia_uvm</code>. Notice that <code>video</code> shows <strong>both <code>i915</code> and <code>xe</code> loaded for the Intel side</strong>: <code>xe</code> is the modern Mesa-friendly Intel driver, <code>i915</code> is the legacy one — current kernels load both and let the device pick. Alder Lake-P GT2 binds <code>i915</code>; <code>xe</code> is loaded as available. <code>dell_wmi</code> and <code>dell_laptop</code> are the Dell ACPI bits (lid switch, brightness, backlight) wired into the video subsystem.</p>
+<pre class="text"><code>$ nvidia-smi
+Sun May 17 22:44:06 2026
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.71.05              Driver Version: 595.71.05      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|=========================================+========================+======================|
+|   0  NVIDIA RTX A2000 8GB Lap...    Off |   00000000:01:00.0 Off |                  N/A |
+| N/A   55C    P0              8W /   35W |       0MiB /   8192MiB |      0%      Default |
++-----------------------------------------+------------------------+----------------------+
+
+| Processes: No running processes found |</code></pre>
+<p>Key things to read out of that table:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+<th>What it tells you</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Driver Version</strong></td>
+<td><code>595.71.05</code></td>
+<td>nvidia-open from Arch’s <code>nvidia-open-dkms</code> package</td>
+</tr>
+<tr class="even">
+<td><strong>CUDA Version</strong></td>
+<td><code>13.2</code></td>
+<td>The CUDA version the driver supports — install <code>pacman -S cuda</code> later if you want to do ML/PyTorch work, it’ll talk to this driver</td>
+</tr>
+<tr class="odd">
+<td><strong>Persistence-M</strong></td>
+<td><code>Off</code></td>
+<td>Power management lets the GPU sleep between accesses (correct for a laptop; saves battery)</td>
+</tr>
+<tr class="even">
+<td><strong>Temp</strong></td>
+<td><code>55°C</code></td>
+<td>Idle temp after nvidia-smi briefly woke it; will drop in the next few seconds</td>
+</tr>
+<tr class="odd">
+<td><strong>Pwr Usage / Cap</strong></td>
+<td><code>8 W / 35 W</code></td>
+<td>Wake-up draw; the long-term idle floor is ~0.5 W when D3cold-suspended</td>
+</tr>
+<tr class="even">
+<td><strong>Memory-Usage</strong></td>
+<td><code>0 MiB / 8192 MiB</code></td>
+<td>All 8 GB of VRAM available</td>
+</tr>
+<tr class="odd">
+<td><strong>GPU-Util</strong></td>
+<td><code>0 %</code></td>
+<td>Nothing using the GPU right now (no processes)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Verify dGPU dynamic power management is on (it should be, by default)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>nvidia-open</code> driver versions 525+ enable D3cold runtime power management <strong>automatically</strong> for capable Turing-or-newer GPUs. The RTX A2000 is one of them, so on a current Arch install the dGPU should be runtime-suspending without any kernel-cmdline work from you. Confirm with:</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/driver/nvidia/gpus/0000:01:00.0/power</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On the Precision, this prints:</p>
+<pre class="text"><code>Runtime D3 status:          Enabled (fine-grained)
+Tegra iGPU Rail-Gating:     Disabled
+Video Memory:               Off
+
+GPU Hardware Support:
+ Video Memory Self Refresh: Supported
+ Video Memory Off:          Supported
+
+S0ix Power Management:
+ Platform Support:          Supported
+ Status:                    Disabled
+
+Notebook Dynamic Boost:     Supported</code></pre>
+<p>The two lines that matter:</p>
+<ul>
+<li><strong><code>Runtime D3 status: Enabled (fine-grained)</code></strong> — runtime PM is on, and “fine-grained” means the driver can suspend individual function blocks independently (best-case power management).</li>
+<li><strong><code>Video Memory: Off</code></strong> — the 8 GB of GDDR6 is fully powered down right now, dropping idle draw to ~0.5 W instead of the ~8 W you see while <code>nvidia-smi</code> is querying.</li>
+</ul>
+<p><code>S0ix Power Management … Status: Disabled</code> is <strong>not a problem</strong> — S0ix is the system-wide modern-standby state, and <code>Disabled</code> here just means your laptop isn’t currently suspended. It’ll activate the next time you <code>systemctl suspend</code>.</p>
+<p><strong>Only if <code>Runtime D3 status: Disabled</code></strong> (older driver, or some hybrid configs where auto-enable doesn’t trigger) do you need to opt in manually — add <code>nvidia.NVreg_DynamicPowerManagement=0x02</code> to <code>GRUB_CMDLINE_LINUX_DEFAULT</code> and re-run <code>sudo grub-mkconfig -o /boot/grub/grub.cfg</code>. On nvidia-open 595+ with an Ampere or newer card, this is unnecessary.</p>
+</div>
+</div>
+<p>After the reboot, the four Hyprland NVIDIA env vars (set later, in <code>~/.config/hypr/hyprland.conf</code>) become relevant — see the env-vars table above.</p>
+</section>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><em>Placeholder.</em> I haven’t installed this stack on the Dell Pro 16 Plus yet. When I do, this tab will land with: the real <code>lspci</code> output (likely Intel Lunar Lake or Arrow Lake iGPU only, no dGPU on the Pro line), the matching <code>pacman -S</code> block, <code>vainfo</code> confirmation, and any laptop-specific quirks I hit (firmware updates, ACPI workarounds, audio codec patches).</p>
+</div>
+</div>
+</div>
 <p><strong>Intel iGPU</strong> (Iris, UHD, Arc):</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -1564,7 +2220,7 @@ System clock synchronized: yes
 </tbody>
 </table>
 <p><strong>AMD</strong>:</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -1600,7 +2256,7 @@ System clock synchronized: yes
 </tbody>
 </table>
 <p><strong>NVIDIA on Wayland</strong> — the open kernel modules are the recommended path in 2026:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -1628,7 +2284,7 @@ System clock synchronized: yes
 </tbody>
 </table>
 <p>Verify after install:</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see a list of supported codecs without errors. If you switched the kernel (added <code>linux-lts</code> etc.), re-run <code>mkinitcpio -P</code> so DKMS rebuilds NVIDIA against every installed kernel.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1643,15 +2299,99 @@ Nothing to enable here
 <p>These are libraries, not services — there’s no <code>systemctl enable nvidia</code> to forget. The GPU comes up the moment the kernel loads its driver, well before login.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hybrid laptops (Intel + NVIDIA, AMD + NVIDIA): install both blocks
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If your <code>lspci</code> showed two GPU lines — typical on mobile workstations (Dell Precision, ThinkPad P-series, HP ZBook) and most gaming laptops — install the driver blocks for <strong>both</strong> vendors. The drivers coexist without conflict; the kernel loads each as its hardware appears, and Wayland compositors pick which one to render on a per-app basis.</p>
+<p>The default behavior under Hyprland on a hybrid:</p>
+<ul>
+<li>The <strong>iGPU</strong> (Intel Iris Xe, AMD Radeon Graphics) is the <strong>primary render device</strong> — it draws your compositor, your windows, your animations, video playback, and almost every app. It idles at low power and keeps your battery happy.</li>
+<li>The <strong>dGPU</strong> (NVIDIA RTX, AMD Radeon dGPU) <strong>idles at ~5 W until explicitly asked</strong> to render. Apps that want it call <code>prime-run &lt;app&gt;</code> or set <code>__NV_PRIME_RENDER_OFFLOAD=1</code> themselves (CUDA jobs, ML training, Blender, games, video encoders).</li>
+</ul>
+<p>A few things to expect during the NVIDIA install on a hybrid:</p>
+<ul>
+<li><strong>Pacman prompts to pick a <code>libglvnd</code> provider</strong> — pick <code>nvidia-utils</code>. <code>mesa</code> and <code>nvidia-utils</code> both provide pieces of libGL; the GLVND dispatcher at runtime routes calls to whichever GPU each app is actually rendering on.</li>
+<li><strong>DKMS compiles the <code>nvidia</code> kernel modules</strong> against your current kernel (~30–60 seconds, runs inside pacman’s post-install hook). <code>linux-headers</code> from pacstrap is what makes this work — without it, the compile fails loudly. The <code>-open-dkms</code> variant builds against NVIDIA’s open kernel modules, which is the recommended path for any GPU <strong>Turing or newer</strong> (GTX 16-series, RTX 20-series, all RTX 30-series, all RTX 40/50-series, all RTX A/L workstation cards).</li>
+<li>A <strong><code>nvidia.conf</code> modules-load file</strong> drops into <code>/etc/modules-load.d/</code> so the modules load on next boot, before the display server starts.</li>
+</ul>
+<p>Verify both halves of the GPU stack after install:</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span>            <span class="co"># Intel iGPU: lists h264, h265, vp9, av1 decode entrypoints</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nvidia-smi</span>        <span class="co"># NVIDIA dGPU: prints a table showing the dGPU name,</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>                  <span class="co">#              driver version, and current power draw (~5–10 W idle)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>nvidia-smi</code> returns <em>“No devices were found”</em> or hangs, the kernel modules didn’t load — usually a silent DKMS build failure. Recovery: <code>sudo dkms autoinstall &amp;&amp; sudo modprobe nvidia</code>, then re-check.</p>
+<section id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up" class="level4">
+<h4 class="anchored" data-anchor-id="hyprland-env-vars-for-nvidia-set-once-caelestia-is-up">Hyprland env vars for NVIDIA (set once Caelestia is up)</h4>
+<p>Don’t worry about these yet — flagging so you know to look for them after Caelestia is installed and Hyprland is running. NVIDIA on Wayland needs a handful of environment variables to interoperate cleanly with Hyprland and the apps that run inside it. Caelestia’s bundled <code>hyprland.conf</code> may already set them; if not, add them to <code>~/.config/hypr/hyprland.conf</code> (Hyprland’s syntax is <code>env = NAME,VALUE</code> — comma, not equals):</p>
+<pre class="text"><code>env = LIBVA_DRIVER_NAME,nvidia
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+env = NVD_BACKEND,direct
+env = ELECTRON_OZONE_PLATFORM_HINT,auto</code></pre>
+<p>What each variable does:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 35%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>What it does</th>
+<th>When to set it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>LIBVA_DRIVER_NAME=nvidia</code></td>
+<td>VA-API (Video Acceleration API) is the Linux API for hardware-accelerated video decode/encode. This env var tells clients (browsers, <code>mpv</code>, <code>obs</code>) which VA-API driver to load. <code>nvidia</code> routes decode to the NVIDIA GPU via the <code>libva-nvidia-driver</code> shim.</td>
+<td>Set if you want the dGPU doing video decode (faster on 4K, more CPU-cool). <strong>Omit on battery-sensitive workflows</strong> — leaving it unset (or setting <code>iHD</code> for Intel) keeps decode on the iGPU, which is more power-efficient.</td>
+</tr>
+<tr class="even">
+<td><code>__GLX_VENDOR_LIBRARY_NAME=nvidia</code></td>
+<td>GLVND (GL Vendor-Neutral Dispatch) is the library that lets multiple GPU drivers coexist on one system. This env var tells GLVND to route OpenGL/GLX calls through the NVIDIA libGL implementation.</td>
+<td>Set when you want OpenGL apps (legacy X11 apps running via Xwayland) to use the NVIDIA dGPU instead of the Intel iGPU. Less important for native Wayland apps, which use EGL via the compositor’s chosen device.</td>
+</tr>
+<tr class="odd">
+<td><code>NVD_BACKEND=direct</code></td>
+<td>Tells the <code>libva-nvidia-driver</code> shim to talk to NVDEC (NVIDIA’s hardware video decoder) via the <em>direct</em> backend, rather than going through CUDA-based intermediaries. The direct backend is lower-latency and the recommended path for current driver versions.</td>
+<td>Always set this when <code>LIBVA_DRIVER_NAME=nvidia</code> is also set. The two work together — the first picks NVIDIA for VA-API, the second tells NVIDIA <em>how</em> to do the decode.</td>
+</tr>
+<tr class="even">
+<td><code>ELECTRON_OZONE_PLATFORM_HINT=auto</code></td>
+<td>Chromium and Electron apps (VSCode, Discord, Slack, Obsidian, Signal, Spotify, Zen Browser) use the “Ozone” rendering abstraction. <code>auto</code> tells them to detect Wayland and prefer the native Wayland backend over Xwayland.</td>
+<td>Always set this on Hyprland regardless of GPU — <em>not NVIDIA-specific</em>. Without it, Electron apps run via Xwayland (works, but ignores fractional scaling, has worse touchpad gestures, and is slightly laggier on hi-DPI displays).</td>
+</tr>
+</tbody>
+</table>
+<p>A few additional notes:</p>
+<ul>
+<li><p><strong>Apply after adding</strong> — Hyprland reloads its config on save <em>for most</em> settings, but <code>env</code> lines only take effect for apps started <em>after</em> the change. Either log out and log back in, or <code>hyprctl reload</code> and then close+reopen each app you want to pick up the new env.</p></li>
+<li><p><strong>For the iGPU-only render path</strong> (your default for desktop work), no env vars are needed at all — Hyprland uses the iGPU automatically. The vars above only matter when you want NVIDIA to do specific work.</p></li>
+<li><p><strong>For running a <em>specific</em> app on the dGPU</strong>, you don’t have to flip any global env vars — just launch it with offload:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prime-run</span> blender        <span class="co"># or: __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia blender</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>prime-run</code> is a tiny wrapper script that comes with <code>nvidia-prime</code> (worth <code>pacman -S nvidia-prime</code> if you do a lot of per-app dGPU offload).</p></li>
+<li><p><strong>Older NVIDIA driver workarounds you might see online</strong> — older guides recommend <code>WLR_NO_HARDWARE_CURSORS=1</code> (fixes invisible cursor on pre-555 drivers) and <code>GBM_BACKEND=nvidia-drm</code> (sets the GBM allocator). With <code>nvidia-open-dkms</code> ≥ 580 (current as of mid-2026) neither is needed — skip them unless you actually see a problem they describe.</p></li>
+</ul>
+</section>
+</div>
+</div>
+</section>
 </section>
 <section id="install-an-aur-helper" class="level3">
 <h3 class="anchored" data-anchor-id="install-an-aur-helper">5. Install an AUR helper</h3>
 <p>Caelestia is distributed via the AUR and its install script defaults to <code>yay</code>:</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 73%">
@@ -1683,14 +2423,14 @@ Nothing to enable here
 <section id="install-caelestia" class="level3">
 <h3 class="anchored" data-anchor-id="install-caelestia">6. Install Caelestia</h3>
 <p>The README pattern is one command per step:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1702,6 +2442,59 @@ Do not move the repo after running install.fish
 </div>
 <div class="callout-body-container callout-body">
 <p><code>install.fish</code> <strong>symlinks</strong> every config from <code>~/.local/share/caelestia/</code> into <code>~/.config/</code>. If you later move or delete the cloned repo, every symlink becomes a broken pointer and your desktop boots into a half-themed Hyprland with no bar. Treat <code>~/.local/share/caelestia/</code> as part of the install, not as scratch space. To update Caelestia later: <code>cd ~/.local/share/caelestia &amp;&amp; git pull</code> (no need to re-run install.fish unless dependencies change).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Common failure: <code>caelestia-meta</code> <code>.SRCINFO</code> parsing aborts the install
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A reproducible failure mode I hit on a fresh install — and the fix that worked. The first time <code>install.fish</code> runs, you may see all 9 AUR packages build successfully (<code>==&gt; Validating source files with sha256sums... Passed</code> for each), then <strong>the install phase aborts</strong> with:</p>
+<pre class="text"><code>:: (1/9) Parsing SRCINFO: caelestia-meta
+ -&gt; failed to parse caelestia-meta: Unable to read file: .SRCINFO: open .SRCINFO: no such file or directory
+:: Installing hypr* configs...
+fish: Unknown command: hyprctl
+~/.local/share/caelestia/install.fish (line 169):
+    hyprctl reload
+    ^~~~~~^
+fish: Unknown command: caelestia
+~/.local/share/caelestia/install.fish (line 303):
+    caelestia scheme set -n shadotheme</code></pre>
+<p>What happened: <code>caelestia-meta</code> is a pure meta-package (no source code, just dependency declarations). On some yay versions and some AUR mirror states, the <code>.SRCINFO</code> file gets missed during the build → install handoff, and yay aborts the install phase. install.fish doesn’t check yay’s exit status — it cheerfully continues into the config-symlinking step and tries to call <code>hyprctl</code> and <code>caelestia</code>, neither of which exist on disk because the install never happened. The “<code>Unknown command: hyprctl</code> / <code>Unknown command: caelestia</code>” errors are downstream symptoms; the <em>real</em> failure is the SRCINFO line above them.</p>
+<p><strong>Recovery in four steps:</strong></p>
+<ol type="1">
+<li><p><strong>Confirm what’s actually installed</strong> — most likely <em>nothing</em> from the Caelestia stack made it past the parse failure:</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pacman</span> <span class="at">-Qs</span> hyprland foot fish fastfetch quickshell caelestia</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Install the official-repo deps directly with pacman</strong> (skip the broken meta-package’s dependency-resolution path):</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  hyprland foot fish fastfetch starship btop eza fuzzel jq <span class="dt">\</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  xdg-desktop-portal-hyprland hyprpicker wl-clipboard cliphist <span class="dt">\</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  trash-cli adw-gtk-theme papirus-icon-theme <span class="dt">\</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd ttf-material-symbols-variable <span class="dt">\</span></span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  inotify-tools ddcutil brightnessctl power-profiles-daemon <span class="dt">\</span></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  dart-sass swappy grim slurp sndio gpu-screen-recorder <span class="dt">\</span></span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  libnotify python-pillow uwsm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Install the AUR components individually, omitting <code>caelestia-meta</code></strong> — yay caches the source tarballs even when it cleans the built <code>.pkg.tar.zst</code> artifacts, so the rebuild is fast (Quickshell’s ~1–3 min CMake compile is the only meaningful wait):</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  caelestia-shell quickshell-git libcava caelestia-cli <span class="dt">\</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>  app2unit python-materialyoucolor ttf-rubik-vf qtengine</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For the yay prompts: <code>N</code> to cleanBuild (cache is good), <code>N</code> to diffs, <code>N</code> to PKGBUILDs to edit, <code>N</code> to remove make deps after install, <code>Y</code> to “Proceed with installation?”. (See the <a href="../2026-05-17-pacman-yay-aur-prompts/">pacman + yay reference article</a> for full prompt explanations.)</p></li>
+<li><p><strong>Re-run install.fish</strong> so it finishes the config-symlinking step now that <code>hyprctl</code> and <code>caelestia</code> exist:</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>At the prompts: pick <code>1</code> for “backup already exists” (your <code>~/.config</code> was backed up on the first attempt), and <code>Y</code> to every “Overwrite?” question (these are stale partial symlinks from the first run; let install.fish refresh them).</p></li>
+</ol>
+<p><strong>Verify the recovery:</strong></p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> hyprctl caelestia quickshell foot fish    <span class="co"># all 5 should print /usr/bin/&lt;name&gt;</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                                   <span class="co"># prints "HYPRLAND_INSTANCE_SIGNATURE not set!" — that's EXPECTED on a TTY/SSH session (you're outside Hyprland; the binary works, it just has nothing to talk to until a session is running)</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="ex">caelestia</span> <span class="at">--help</span>                                  <span class="co"># prints subcommand list</span></span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> ~/.config/hypr/                             <span class="co"># should show symlinks into ~/.local/share/caelestia/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If all four commands return sane output, you’re recovered. The “HYPRLAND_INSTANCE_SIGNATURE not set!” message is <strong>not</strong> an error — it’s <code>hyprctl</code> correctly reporting that there’s no running Hyprland for it to talk to from your current shell. You’ll see a real version string once you’re inside a Hyprland session (after the SDDM reboot in Section 9).</p>
+<p><strong>Why skip <code>caelestia-meta</code> going forward?</strong> It’s a <em>convenience</em> meta-package — its only role is to declare dependencies. With the 8 component AUR packages + the pacman-installed repo deps, you have functionally the same installed state. You can retry <code>yay -S caelestia-meta</code> later if you want it formally recorded; if it still fails with the SRCINFO error, the practical impact is zero (you just <code>yay -Syu &lt;component&gt;</code> to update each piece individually instead of <code>yay -Syu caelestia-meta</code> to update the whole bundle).</p>
 </div>
 </div>
 <p>Optional flags to pass to <code>install.fish</code>:</p>
@@ -1743,16 +2536,79 @@ Do not move the repo after running install.fish
 <section id="install-applications-pre-reboot" class="level3">
 <h3 class="anchored" data-anchor-id="install-applications-pre-reboot">7. Install applications (pre-reboot)</h3>
 <p>Now — <em>before</em> the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
+<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Provider prompts you’ll see during this install — what to pick
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This pacman command triggers several <code>:: There are N providers available for X:</code> prompts because some of these apps depend on virtual package names that multiple real packages can satisfy. Picking the wrong one isn’t usually fatal but means extra dependencies you don’t need (or worse codec coverage in your media apps). Here’s what each likely prompt will look like and what I recommend:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 32%">
+<col style="width: 21%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Prompt</th>
+<th>Options</th>
+<th>Pick</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>:: There are N providers available for ttf-font:</code></td>
+<td>gnu-free-fonts / noto-fonts / ttf-bitstream-vera / ttf-croscore / ttf-dejavu / ttf-droid / ttf-ibm-plex / ttf-input / ttf-input-nerd / ttf-liberation / ttf-roboto</td>
+<td><strong><code>noto-fonts</code></strong></td>
+<td>Google’s Unicode-spanning family — broadest script coverage (Latin, Cyrillic, CJK fallbacks, Devanagari, Arabic, …), the de-facto modern Linux desktop default. Complements the JetBrains Mono + Material Symbols fonts Caelestia already pulled in.</td>
+</tr>
+<tr class="even">
+<td><code>:: There are 2 providers available for qt6-multimedia-backend:</code></td>
+<td>qt6-multimedia-ffmpeg / qt6-multimedia-gstreamer</td>
+<td><strong><code>qt6-multimedia-ffmpeg</code></strong></td>
+<td>Qt 6.7+’s own recommended default. Broader codec coverage via ffmpeg, fewer transitive deps, less GNOME-stack interop you don’t need on Hyprland.</td>
+</tr>
+<tr class="odd">
+<td><code>:: There are 2 providers available for phonon-qt6-backend:</code></td>
+<td>phonon-qt6-vlc / phonon-qt6-gstreamer</td>
+<td><strong><code>phonon-qt6-vlc</code></strong></td>
+<td>Used by some KDE apps (Okular’s PDF annotations, parts of KDE Frameworks). VLC backend has wider codec support than GStreamer for the same reason as above.</td>
+</tr>
+<tr class="even">
+<td><code>:: There are N providers available for java-runtime</code> <em>(only if libreoffice prompts)</em></td>
+<td>jre-openjdk / jre21-openjdk / jre17-openjdk / …</td>
+<td><strong><code>jre-openjdk</code></strong> (latest non-LTS) or <strong><code>jre21-openjdk</code></strong> (current LTS)</td>
+<td>LibreOffice optionally uses Java for Base (database UI) and some macros. The latest LTS (21 as of mid-2026) is the safe default.</td>
+</tr>
+<tr class="odd">
+<td><code>:: There are N providers available for cron</code> <em>(rarely seen)</em></td>
+<td>cronie / systemd-cron / fcron</td>
+<td><strong><code>cronie</code></strong></td>
+<td>Arch’s traditional cron. You probably don’t need cron at all on this install (systemd timers do the job), but if something pulls it in, cronie is the safest pick.</td>
+</tr>
+</tbody>
+</table>
+<p>For any of these, <strong>just hitting Enter</strong> also works if <code>default=1</code> happens to be the recommendation. Double-check by reading the chosen option name before pressing — the <em>order</em> of options can shift between Arch updates as new providers are added.</p>
+<p>If a different prompt comes up that’s not in this table, the <a href="../2026-05-17-pacman-yay-aur-prompts/">pacman / yay reference article</a> has the full “how to read these” treatment.</p>
+</div>
+</div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -1826,8 +2682,8 @@ Add Flathub before opening Discover
 </div>
 <div class="callout-body-container callout-body">
 <p><code>flatpak</code> ships without any configured remote. Add Flathub once, system-wide, so Discover and <code>flatpak install</code> both see it:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Nothing to enable — <code>flatpak</code> has no daemon. The runtime kicks in only when you actually run a Flatpak app.</p>
 </div>
 </div>
@@ -1848,7 +2704,7 @@ What about the rest of the KDE stack?
 <section id="install-a-login-manager-sddm" class="level3">
 <h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
 <p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -1887,14 +2743,14 @@ Why I’m not setting <code>DisplayServer=wayland</code>
 <div class="callout-body-container callout-body">
 <p>SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (<code>kwin_wayland</code>, <code>weston</code>, etc.) which we don’t have installed. SDDM’s default mode (Qt running directly against the framebuffer/DRM-KMS via <code>kms</code>) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that’s independent of how the greeter is rendered.</p>
 <p>If you ever want to switch to the Wayland greeter, install one of the supported compositors (<code>pacman -S weston</code>) and add this to <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Enable SDDM so it starts at every boot:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1919,15 +2775,15 @@ Prefer greetd + tuigreet?
 </div>
 <div class="callout-body-container callout-body">
 <p>If you’d rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>…and write <code>/etc/greetd/config.toml</code> per the <a href="https://github.com/caelestia-dots/caelestia#login-manager" target="_blank" rel="noopener">Caelestia README</a>. Only enable <strong>one</strong> display manager at a time — having both <code>sddm.service</code> and <code>greetd.service</code> enabled causes a fight on VT1 that nobody wins.</p>
 </div>
 </div>
 </section>
 <section id="reboot-into-the-desktop" class="level3">
 <h3 class="anchored" data-anchor-id="reboot-into-the-desktop">9. Reboot into the desktop</h3>
-<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.</p>
 <hr>
 </section>
@@ -1935,24 +2791,24 @@ Prefer greetd + tuigreet?
 <section id="part-5-verifying-everything-ended-up-where-it-should" class="level1">
 <h1>Part 5 — Verifying everything ended up where it should</h1>
 <p>Once you’re in Hyprland, open a <code>foot</code> terminal and run:</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
-<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
-<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
-<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
-<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
-<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
-<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
-<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
+<span id="cb98-9"><a href="#cb98-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb98-10"><a href="#cb98-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-11"><a href="#cb98-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
+<span id="cb98-12"><a href="#cb98-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
+<span id="cb98-13"><a href="#cb98-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
+<span id="cb98-14"><a href="#cb98-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-15"><a href="#cb98-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
+<span id="cb98-16"><a href="#cb98-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
+<span id="cb98-17"><a href="#cb98-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
+<span id="cb98-18"><a href="#cb98-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
 <hr>
 <section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
@@ -1965,10 +2821,10 @@ Prefer greetd + tuigreet?
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>

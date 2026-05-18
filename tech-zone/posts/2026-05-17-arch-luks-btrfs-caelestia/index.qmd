@@ -1513,6 +1513,79 @@ git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelest
 `install.fish` **symlinks** every config from `~/.local/share/caelestia/` into `~/.config/`. If you later move or delete the cloned repo, every symlink becomes a broken pointer and your desktop boots into a half-themed Hyprland with no bar. Treat `~/.local/share/caelestia/` as part of the install, not as scratch space. To update Caelestia later: `cd ~/.local/share/caelestia && git pull` (no need to re-run install.fish unless dependencies change).
 :::
 
+::: {.callout-important}
+## Common failure: `caelestia-meta` `.SRCINFO` parsing aborts the install
+
+A reproducible failure mode I hit on a fresh install — and the fix that worked. The first time `install.fish` runs, you may see all 9 AUR packages build successfully (`==> Validating source files with sha256sums... Passed` for each), then **the install phase aborts** with:
+
+```text
+:: (1/9) Parsing SRCINFO: caelestia-meta
+ -> failed to parse caelestia-meta: Unable to read file: .SRCINFO: open .SRCINFO: no such file or directory
+:: Installing hypr* configs...
+fish: Unknown command: hyprctl
+~/.local/share/caelestia/install.fish (line 169):
+    hyprctl reload
+    ^~~~~~^
+fish: Unknown command: caelestia
+~/.local/share/caelestia/install.fish (line 303):
+    caelestia scheme set -n shadotheme
+```
+
+What happened: `caelestia-meta` is a pure meta-package (no source code, just dependency declarations). On some yay versions and some AUR mirror states, the `.SRCINFO` file gets missed during the build → install handoff, and yay aborts the install phase. install.fish doesn't check yay's exit status — it cheerfully continues into the config-symlinking step and tries to call `hyprctl` and `caelestia`, neither of which exist on disk because the install never happened. The "`Unknown command: hyprctl` / `Unknown command: caelestia`" errors are downstream symptoms; the *real* failure is the SRCINFO line above them.
+
+**Recovery in four steps:**
+
+1. **Confirm what's actually installed** — most likely *nothing* from the Caelestia stack made it past the parse failure:
+
+   ```bash
+   pacman -Qs hyprland foot fish fastfetch quickshell caelestia
+   ```
+
+2. **Install the official-repo deps directly with pacman** (skip the broken meta-package's dependency-resolution path):
+
+   ```bash
+   sudo pacman -S --needed \
+     hyprland foot fish fastfetch starship btop eza fuzzel jq \
+     xdg-desktop-portal-hyprland hyprpicker wl-clipboard cliphist \
+     trash-cli adw-gtk-theme papirus-icon-theme \
+     ttf-jetbrains-mono-nerd ttf-cascadia-code-nerd ttf-material-symbols-variable \
+     inotify-tools ddcutil brightnessctl power-profiles-daemon \
+     dart-sass swappy grim slurp sndio gpu-screen-recorder \
+     libnotify python-pillow uwsm
+   ```
+
+3. **Install the AUR components individually, omitting `caelestia-meta`** — yay caches the source tarballs even when it cleans the built `.pkg.tar.zst` artifacts, so the rebuild is fast (Quickshell's ~1–3 min CMake compile is the only meaningful wait):
+
+   ```bash
+   yay -S --needed \
+     caelestia-shell quickshell-git libcava caelestia-cli \
+     app2unit python-materialyoucolor ttf-rubik-vf qtengine
+   ```
+
+   For the yay prompts: `N` to cleanBuild (cache is good), `N` to diffs, `N` to PKGBUILDs to edit, `N` to remove make deps after install, `Y` to "Proceed with installation?". (See the [pacman + yay reference article](../2026-05-17-pacman-yay-aur-prompts/) for full prompt explanations.)
+
+4. **Re-run install.fish** so it finishes the config-symlinking step now that `hyprctl` and `caelestia` exist:
+
+   ```bash
+   ~/.local/share/caelestia/install.fish --aur-helper=yay
+   ```
+
+   At the prompts: pick `1` for "backup already exists" (your `~/.config` was backed up on the first attempt), and `Y` to every "Overwrite?" question (these are stale partial symlinks from the first run; let install.fish refresh them).
+
+**Verify the recovery:**
+
+```bash
+which hyprctl caelestia quickshell foot fish    # all 5 should print /usr/bin/<name>
+hyprctl version                                   # prints "HYPRLAND_INSTANCE_SIGNATURE not set!" — that's EXPECTED on a TTY/SSH session (you're outside Hyprland; the binary works, it just has nothing to talk to until a session is running)
+caelestia --help                                  # prints subcommand list
+ls -l ~/.config/hypr/                             # should show symlinks into ~/.local/share/caelestia/
+```
+
+If all four commands return sane output, you're recovered. The "HYPRLAND_INSTANCE_SIGNATURE not set!" message is **not** an error — it's `hyprctl` correctly reporting that there's no running Hyprland for it to talk to from your current shell. You'll see a real version string once you're inside a Hyprland session (after the SDDM reboot in Section 9).
+
+**Why skip `caelestia-meta` going forward?** It's a *convenience* meta-package — its only role is to declare dependencies. With the 8 component AUR packages + the pacman-installed repo deps, you have functionally the same installed state. You can retry `yay -S caelestia-meta` later if you want it formally recorded; if it still fails with the SRCINFO error, the practical impact is zero (you just `yay -Syu <component>` to update each piece individually instead of `yay -Syu caelestia-meta` to update the whole bundle).
+:::
+
 Optional flags to pass to `install.fish`:
 
 | Flag                          | What it adds |
@@ -1539,6 +1612,24 @@ sudo pacman -S \
 
 yay -S discover
 ```
+
+::: {.callout-tip}
+## Provider prompts you'll see during this install — what to pick
+
+This pacman command triggers several `:: There are N providers available for X:` prompts because some of these apps depend on virtual package names that multiple real packages can satisfy. Picking the wrong one isn't usually fatal but means extra dependencies you don't need (or worse codec coverage in your media apps). Here's what each likely prompt will look like and what I recommend:
+
+| Prompt | Options | Pick | Why |
+|--------|---------|------|-----|
+| `:: There are N providers available for ttf-font:` | gnu-free-fonts / noto-fonts / ttf-bitstream-vera / ttf-croscore / ttf-dejavu / ttf-droid / ttf-ibm-plex / ttf-input / ttf-input-nerd / ttf-liberation / ttf-roboto | **`noto-fonts`** | Google's Unicode-spanning family — broadest script coverage (Latin, Cyrillic, CJK fallbacks, Devanagari, Arabic, …), the de-facto modern Linux desktop default. Complements the JetBrains Mono + Material Symbols fonts Caelestia already pulled in. |
+| `:: There are 2 providers available for qt6-multimedia-backend:` | qt6-multimedia-ffmpeg / qt6-multimedia-gstreamer | **`qt6-multimedia-ffmpeg`** | Qt 6.7+'s own recommended default. Broader codec coverage via ffmpeg, fewer transitive deps, less GNOME-stack interop you don't need on Hyprland. |
+| `:: There are 2 providers available for phonon-qt6-backend:` | phonon-qt6-vlc / phonon-qt6-gstreamer | **`phonon-qt6-vlc`** | Used by some KDE apps (Okular's PDF annotations, parts of KDE Frameworks). VLC backend has wider codec support than GStreamer for the same reason as above. |
+| `:: There are N providers available for java-runtime` *(only if libreoffice prompts)* | jre-openjdk / jre21-openjdk / jre17-openjdk / … | **`jre-openjdk`** (latest non-LTS) or **`jre21-openjdk`** (current LTS) | LibreOffice optionally uses Java for Base (database UI) and some macros. The latest LTS (21 as of mid-2026) is the safe default. |
+| `:: There are N providers available for cron` *(rarely seen)* | cronie / systemd-cron / fcron | **`cronie`** | Arch's traditional cron. You probably don't need cron at all on this install (systemd timers do the job), but if something pulls it in, cronie is the safest pick. |
+
+For any of these, **just hitting Enter** also works if `default=1` happens to be the recommendation. Double-check by reading the chosen option name before pressing — the *order* of options can shift between Arch updates as new providers are added.
+
+If a different prompt comes up that's not in this table, the [pacman / yay reference article](../2026-05-17-pacman-yay-aur-prompts/) has the full "how to read these" treatment.
+:::
 
 | Package                | Role |
 |------------------------|------|
