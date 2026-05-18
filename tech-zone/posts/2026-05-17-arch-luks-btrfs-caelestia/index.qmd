@@ -1762,7 +1762,52 @@ If anything weird happens between SDDM and the bar fully rendering — black scr
 
 # Part 5 — Verifying everything ended up where it should
 
-Once you're in Hyprland (Caelestia bar across the top, your wallpaper rendered), open a `foot` terminal — Caelestia's default keybind is `Super+Return` — and run:
+## What the first login looks like (and the one cosmetic error you'll probably see)
+
+When you authenticate at the SDDM greeter and Hyprland starts, expect to see:
+
+- **A black desktop background** — Caelestia doesn't set a wallpaper out-of-the-box. The bar, side panels, and Quickshell widgets render correctly *on top of* black; that's the default fallback Hyprland uses until a wallpaper backend (e.g., `swww`, `hyprpaper`, or Caelestia's own `caelestia wallpaper`) takes over the background layer. Not a bug — just an empty wallpaper slot.
+- **Caelestia's status bar across the top** with the time, system tray, and workspace indicators rendered.
+- **Side panels** (notification feed, calendar, control center, etc., depending on which keybinds you trigger).
+- **Default Hyprland window borders** around any foot terminals you open with `Super+Return`.
+
+::: {.callout-warning}
+## If you see a "config error" overlay at the bottom of the screen referencing `$cConf/hypr-vars.conf`
+
+A small upstream Caelestia bug: on some installs the bundle's `hyprland.conf` references a `hypr-vars.conf` file that isn't shipped, and Hyprland prints any failed `source =` directive as a red overlay at the bottom of the screen. The line that triggers it looks like:
+
+```text
+source = $cConf/hypr-vars.conf
+```
+
+Everything else loads fine — bar, widgets, keybinds, animations all work — but the overlay is visually noisy. To clear it:
+
+1. Open the Caelestia-side Hyprland config (this is the *real* file; your `~/.config/hypr/hyprland.conf` is a symlink to it):
+
+   ```bash
+   nvim ~/.local/share/caelestia/hypr/hyprland.conf
+   ```
+
+2. Find the line `source = $cConf/hypr-vars.conf` and **comment it out** by prefixing with `#`:
+
+   ```text
+   # source = $cConf/hypr-vars.conf
+   ```
+
+3. Save, exit nvim, and reload Hyprland's config without restarting your session:
+
+   ```bash
+   hyprctl reload
+   ```
+
+The error overlay disappears immediately. Your terminals and any open windows stay exactly where they were — `hyprctl reload` re-parses the config in place, it doesn't kill the session.
+
+If Caelestia later ships a fix (or you `cd ~/.local/share/caelestia && git pull` and the line gets re-added because upstream added it back without the missing file), repeat the comment-out. You can also just `touch ~/.config/hypr/hypr-vars.conf` to create an empty file at the expected path — that satisfies the source directive without you having to remember to re-comment after each pull. Both fixes are valid; commenting is simpler, the empty-file trick is more `git pull`-resistant.
+:::
+
+## Verification commands
+
+Open a `foot` terminal — Caelestia's default keybind is `Super+Return` — and run:
 
 ```bash
 # Filesystem & encryption
