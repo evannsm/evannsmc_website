@@ -1089,15 +1089,54 @@ Why we don’t need <code>GRUB_ENABLE_CRYPTODISK=y</code>
 </tbody>
 </table>
 <p>Final sanity checks before reboot:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^MODULES='</span> /etc/mkinitcpio.conf</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^HOOKS='</span>   /etc/mkinitcpio.conf</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^GRUB_CMDLINE_LINUX_DEFAULT='</span> /etc/default/grub</span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^MODULES='</span>                       /etc/mkinitcpio.conf</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^HOOKS='</span>                         /etc/mkinitcpio.conf</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'^GRUB_CMDLINE_LINUX_DEFAULT='</span>    /etc/default/grub</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/fstab <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'subvol=|swap'</span></span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Expected (substituting your UUID and offset):</p>
+<p>Here is the actual output from my own install, end-to-end — yours should have the same <em>shape</em>, with your own UUIDs and resume offset:</p>
 <pre class="text"><code>MODULES=(btrfs)
 HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"</code></pre>
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=d2c12564-6eeb-4ae9-a862-a016a1da7132=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=1320192"
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /             btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@            0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /home         btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@home       0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /.snapshots   btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@snapshots  0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /var/log      btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@var_log    0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /swap         btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@swap       0 0
+/swap/swapfile none swap defaults 0 0
+NAME           TYPE SIZE USED PRIO
+/swap/swapfile file  20G   0B   -1</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why there are <em>two</em> UUIDs in this output
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look closely — the GRUB line and the fstab lines reference different UUIDs:</p>
+<ul>
+<li><code>rd.luks.name=</code><strong><code>d2c12564-…</code></strong><code>=cryptroot</code> is the <strong>LUKS partition UUID</strong>. It identifies the raw encrypted block device (<code>/dev/nvme0n1p2</code>). GRUB hands this string to the kernel; sd-encrypt uses it to find the partition to unlock.</li>
+<li><code>UUID=</code><strong><code>a0c30a40-…</code></strong> in every fstab line is the <strong>Btrfs filesystem UUID</strong> — the filesystem that lives <em>inside</em> the unlocked LUKS container, on <code>/dev/mapper/cryptroot</code>. genfstab uses this so the mount entries survive even if the underlying mapper changes name.</li>
+</ul>
+<p>Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into <code>rd.luks.name=</code>, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you’ll get the “Timed out waiting for device” emergency-mode failure mode from <a href="../2026-05-05-arch-luks-btrfs-lessons/">Article 02</a>. Verify with <code>blkid /dev/nvme0n1p2</code> (should print <code>TYPE="crypto_LUKS"</code>) — that’s the partition whose UUID belongs on the GRUB cmdline.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The swapon –show line above
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The fact that <code>/swap/swapfile</code> appears <em>active</em> in this output is because I ran <code>swapon /swap/swapfile</code> inside the chroot to test it before realizing that’s exactly what the <a href="#chapter-7-the-hibernation-swap-file">Don’t swapon from inside the chroot</a> callout warns against. The reboot block below has <code>swapoff -a</code> before <code>umount -R /mnt</code> specifically so this case still cleans up correctly — but the cleanest path is to skip the test-swapon entirely and trust that <code>/etc/fstab</code> will pick it up on first boot.</p>
+</div>
+</div>
 <p>Then leave the chroot and reboot, in this exact order:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span>                             <span class="co"># leave the chroot first</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapoff</span> <span class="at">-a</span>                       <span class="co"># turn off any active swap (no-op if you didn't swapon)</span></span>

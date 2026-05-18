@@ -502,20 +502,45 @@ What each timer/service is for, in addition to what Article 01 enabled:
 Final sanity checks before reboot:
 
 ```bash
-grep '^MODULES=' /etc/mkinitcpio.conf
-grep '^HOOKS='   /etc/mkinitcpio.conf
-grep '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub
+grep '^MODULES='                       /etc/mkinitcpio.conf
+grep '^HOOKS='                         /etc/mkinitcpio.conf
+grep '^GRUB_CMDLINE_LINUX_DEFAULT='    /etc/default/grub
 cat /etc/fstab | grep -E 'subvol=|swap'
 swapon --show
 ```
 
-Expected (substituting your UUID and offset):
+Here is the actual output from my own install, end-to-end — yours should have the same *shape*, with your own UUIDs and resume offset:
 
 ```text
 MODULES=(btrfs)
 HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=0e6caf44-...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=123456789"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=d2c12564-6eeb-4ae9-a862-a016a1da7132=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=1320192"
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /             btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@            0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /home         btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@home       0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /.snapshots   btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@snapshots  0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /var/log      btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@var_log    0 0
+UUID=a0c30a40-14f5-444d-a23a-abb236c8ed01    /swap         btrfs    rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvol=/@swap       0 0
+/swap/swapfile none swap defaults 0 0
+NAME           TYPE SIZE USED PRIO
+/swap/swapfile file  20G   0B   -1
 ```
+
+::: {.callout-note}
+## Why there are *two* UUIDs in this output
+
+Look closely — the GRUB line and the fstab lines reference different UUIDs:
+
+- `rd.luks.name=`**`d2c12564-…`**`=cryptroot` is the **LUKS partition UUID**. It identifies the raw encrypted block device (`/dev/nvme0n1p2`). GRUB hands this string to the kernel; sd-encrypt uses it to find the partition to unlock.
+- `UUID=`**`a0c30a40-…`** in every fstab line is the **Btrfs filesystem UUID** — the filesystem that lives *inside* the unlocked LUKS container, on `/dev/mapper/cryptroot`. genfstab uses this so the mount entries survive even if the underlying mapper changes name.
+
+Two layers, two identifiers. If you ever confuse them — pasting the Btrfs UUID into `rd.luks.name=`, for example — the kernel will look for a LUKS partition with the Btrfs UUID, fail to find it, and you'll get the "Timed out waiting for device" emergency-mode failure mode from [Article 02](../2026-05-05-arch-luks-btrfs-lessons/). Verify with `blkid /dev/nvme0n1p2` (should print `TYPE="crypto_LUKS"`) — that's the partition whose UUID belongs on the GRUB cmdline.
+:::
+
+::: {.callout-tip}
+## The swapon --show line above
+
+The fact that `/swap/swapfile` appears *active* in this output is because I ran `swapon /swap/swapfile` inside the chroot to test it before realizing that's exactly what the [Don't swapon from inside the chroot](#chapter-7-the-hibernation-swap-file) callout warns against. The reboot block below has `swapoff -a` before `umount -R /mnt` specifically so this case still cleans up correctly — but the cleanest path is to skip the test-swapon entirely and trust that `/etc/fstab` will pick it up on first boot.
+:::
 
 Then leave the chroot and reboot, in this exact order:
 
