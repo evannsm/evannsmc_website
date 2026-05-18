@@ -1810,22 +1810,68 @@ Hibernation + LUKS: what this gives you, security-wise
 </tr>
 </tbody>
 </table>
-<p>The PipeWire and WirePlumber user services start automatically on login via socket activation — you don’t need to <code>systemctl enable</code> anything by hand. Verify after the next desktop login with:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should say "PulseAudio (on PipeWire …)"</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># tree of devices/sinks/sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If <code>pactl info</code> reports actual PulseAudio instead of PipeWire, something pulled <code>pulseaudio</code> in as a dependency conflict — <code>pacman -Qs pulseaudio</code> to confirm, then uninstall the offending package and reinstall <code>pipewire-pulse</code>.</p>
+<p>The PipeWire and WirePlumber user services start automatically once a graphical session is active (SDDM → Hyprland triggers <code>graphical-session.target</code> for your user, which fans out and starts the socket-activated PipeWire units). On a bare TTY before that happens, they’re idle and <code>pactl</code> / <code>wpctl</code> will return <code>Connection refused</code> — that’s not a broken install, just “no graphical session has woken them yet.”</p>
+<p>To verify the install <em>now</em>, before the desktop is up, kick the user services manually one time:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> enable <span class="at">--now</span> pipewire.socket pipewire-pulse.socket wireplumber.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then run the verification commands:</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pactl</span> info <span class="kw">|</span> <span class="fu">grep</span> <span class="st">'Server Name'</span>      <span class="co"># should print: PulseAudio (on PipeWire 1.6.x)</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wpctl</span> status                          <span class="co"># should print a tree of devices, sinks, and sources</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If <code>pactl info</code> reports <code>PulseAudio (on PipeWire …)</code>, the stack is wired correctly and <code>pipewire-pulse</code> is intercepting the PulseAudio API as intended. If <code>wpctl status</code> shows your audio devices (built-in speakers, headphone jack, HDMI sinks), WirePlumber’s device probing is alive.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Two common failure modes after install
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 50%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>What’s wrong</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pactl info</code> reports actual PulseAudio (no “on PipeWire” suffix)</td>
+<td>Something pulled <code>pulseaudio</code> in as a dependency conflict and the real PulseAudio daemon won</td>
+<td><code>pacman -Qs pulseaudio</code> to find the offending package, uninstall it, then reinstall <code>pipewire-pulse</code></td>
+</tr>
+<tr class="even">
+<td><code>Connection refused</code> from <code>pactl</code> / <code>wpctl</code> on a bare TTY</td>
+<td>User services aren’t running yet — no graphical session has triggered them</td>
+<td>Run the <code>systemctl --user enable --now</code> line above. After your next graphical login, they auto-start and you’ll never need to do this by hand again.</td>
+</tr>
+<tr class="odd">
+<td><code>Connection refused</code> even after <code>systemctl --user start</code></td>
+<td><code>XDG_RUNTIME_DIR</code> isn’t set, or the user manager isn’t running</td>
+<td><code>loginctl show-user $USER -p Linger</code> — if <code>Linger=no</code> and you SSH’d in, log out and log in directly at the TTY instead, or <code>sudo loginctl enable-linger $USER</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 <section id="system-prerequisites-caelestia-expects-to-find" class="level3">
 <h3 class="anchored" data-anchor-id="system-prerequisites-caelestia-expects-to-find">2. System prerequisites Caelestia expects to find</h3>
 <p><code>caelestia-meta</code> lists a lot of dependencies but assumes a few CLI essentials are <em>already</em> on the system. Install these now so the install script and theme compilation both have everything they need on first run:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> <span class="dt">\</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  terminus-font <span class="dt">\</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  curl wget <span class="dt">\</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  perl <span class="dt">\</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  gcc make cmake <span class="dt">\</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  sassc <span class="dt">\</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  fish <span class="dt">\</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  bluez bluez-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 35%">
@@ -1873,31 +1919,31 @@ Hibernation + LUKS: what this gives you, security-wise
 </tbody>
 </table>
 <p>Enable the Bluetooth daemon so it starts on every boot:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable <span class="at">--now</span> bluetooth.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>--needed</code> flag tells pacman to skip anything already present (some of these are pulled in by <code>base-devel</code>), so this command is safe to re-run any time.</p>
 </section>
 <section id="lazyvim-on-top-of-neovim" class="level3">
 <h3 class="anchored" data-anchor-id="lazyvim-on-top-of-neovim">3. LazyVim on top of Neovim</h3>
 <p>Neovim is in <code>base</code> and was installed by pacstrap. <a href="https://www.lazyvim.org/" target="_blank" rel="noopener">LazyVim</a> layers a curated plugin set, sensible defaults, and a per-language LSP setup on top of it. The official install path is to drop the LazyVim <em>starter</em> config into <code>~/.config/nvim</code>:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
-<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Back up any existing config (paranoid but cheap)</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.config/nvim ~/.config/nvim.bak           <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/share/nvim ~/.local/share/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.local/state/nvim ~/.local/state/nvim.bak <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/.cache/nvim ~/.cache/nvim.bak             <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the starter</span></span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/LazyVim/starter ~/.config/nvim</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> ~/.config/nvim/.git    <span class="co"># so it becomes *your* config repo, not theirs</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First launch — plugins install themselves on the first time you open nvim</span></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nvim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The first <code>nvim</code> launch will pop up a Lazy.nvim progress window while the plugins clone and compile. Wait for <code>:Lazy</code> to report all plugins installed, then <code>:q</code>. If you prefer the AUR-packaged version instead, <code>yay -S lazyvim</code> after installing the AUR helper below also works — same end state.</p>
 </section>
 <section id="graphics-drivers" class="level3">
 <h3 class="anchored" data-anchor-id="graphics-drivers">4. Graphics drivers</h3>
 <p>Pick one block based on your GPU.</p>
 <p><strong>Intel iGPU</strong> (Iris, UHD, Arc):</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-intel intel-media-driver libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -1929,7 +1975,7 @@ Hibernation + LUKS: what this gives you, security-wise
 </tbody>
 </table>
 <p><strong>AMD</strong>:</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> mesa vulkan-radeon libva-mesa-driver mesa-vdpau libva-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 79%">
@@ -1965,7 +2011,7 @@ Hibernation + LUKS: what this gives you, security-wise
 </tbody>
 </table>
 <p><strong>NVIDIA on Wayland</strong> — the open kernel modules are the recommended path in 2026:</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> nvidia-open-dkms nvidia-utils libva-nvidia-driver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -1993,7 +2039,7 @@ Hibernation + LUKS: what this gives you, security-wise
 </tbody>
 </table>
 <p>Verify after install:</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vainfo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see a list of supported codecs without errors. If you switched the kernel (added <code>linux-lts</code> etc.), re-run <code>mkinitcpio -P</code> so DKMS rebuilds NVIDIA against every installed kernel.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2012,11 +2058,11 @@ Nothing to enable here
 <section id="install-an-aur-helper" class="level3">
 <h3 class="anchored" data-anchor-id="install-an-aur-helper">5. Install an AUR helper</h3>
 <p>Caelestia is distributed via the AUR and its install script defaults to <code>yay</code>:</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
-<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--needed</span> git base-devel</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/yay-bin</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="ex">makepkg</span> <span class="at">-si</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 73%">
@@ -2048,14 +2094,14 @@ Nothing to enable here
 <section id="install-caelestia" class="level3">
 <h3 class="anchored" data-anchor-id="install-caelestia">6. Install Caelestia</h3>
 <p>The README pattern is one command per step:</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
-<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
-<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
-<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in all the dependencies (Hyprland, Quickshell, foot, fish, fastfetch, etc.)</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> caelestia-meta</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dotfiles into the canonical location</span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the installer (it requires fish, which caelestia-meta just installed)</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="ex">~/.local/share/caelestia/install.fish</span> <span class="at">--aur-helper</span><span class="op">=</span>yay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2108,16 +2154,16 @@ Do not move the repo after running install.fish
 <section id="install-applications-pre-reboot" class="level3">
 <h3 class="anchored" data-anchor-id="install-applications-pre-reboot">7. Install applications (pre-reboot)</h3>
 <p>Now — <em>before</em> the login manager and final reboot — install the GUI applications you actually want on the system. Doing this now means the very first graphical login already has a working browser, file manager, office suite, and image/video tools.</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
-<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="dt">\</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  firefox <span class="dt">\</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  nautilus <span class="dt">\</span></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  libreoffice-fresh <span class="dt">\</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  gwenview kate ark okular <span class="dt">\</span></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  haruna swayimg <span class="dt">\</span></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  flatpak <span class="dt">\</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>  desktop-file-utils</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> discover</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -2191,8 +2237,8 @@ Add Flathub before opening Discover
 </div>
 <div class="callout-body-container callout-body">
 <p><code>flatpak</code> ships without any configured remote. Add Flathub once, system-wide, so Discover and <code>flatpak install</code> both see it:</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> flatpak remote-add <span class="at">--if-not-exists</span> flathub <span class="dt">\</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>    https://flathub.org/repo/flathub.flatpakrepo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Nothing to enable — <code>flatpak</code> has no daemon. The runtime kicks in only when you actually run a Flatpak app.</p>
 </div>
 </div>
@@ -2213,7 +2259,7 @@ What about the rest of the KDE stack?
 <section id="install-a-login-manager-sddm" class="level3">
 <h3 class="anchored" data-anchor-id="install-a-login-manager-sddm">8. Install a login manager (SDDM)</h3>
 <p>Caelestia doesn’t ship one. The project’s README recommends <code>greetd</code> + <code>tuigreet</code>; I’m using <strong>SDDM</strong> instead because it matches the KDE apps installed above and renders a graphical login screen instead of a TTY.</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> sddm qt6-svg qt6-virtualkeyboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 80%">
@@ -2252,14 +2298,14 @@ Why I’m not setting <code>DisplayServer=wayland</code>
 <div class="callout-body-container callout-body">
 <p>SDDM 0.21+ has experimental native Wayland support, but it depends on an external compositor for the greeter (<code>kwin_wayland</code>, <code>weston</code>, etc.) which we don’t have installed. SDDM’s default mode (Qt running directly against the framebuffer/DRM-KMS via <code>kms</code>) works fine on this Hyprland-only setup and needs no extra packages. The session it launches (Hyprland) is still Wayland — that’s independent of how the greeter is rendered.</p>
 <p>If you ever want to switch to the Wayland greeter, install one of the supported compositors (<code>pacman -S weston</code>) and add this to <code>/etc/sddm.conf.d/wayland.conf</code>:</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[General]</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="dt">DisplayServer</span><span class="ot">=</span><span class="st">wayland</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[Wayland]</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="dt">CompositorCommand</span><span class="ot">=</span><span class="st">weston --shell=fullscreen-shell.so</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Enable SDDM so it starts at every boot:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable sddm.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2284,15 +2330,15 @@ Prefer greetd + tuigreet?
 </div>
 <div class="callout-body-container callout-body">
 <p>If you’d rather have the project-recommended minimal TTY greeter instead of SDDM, swap the install + service-enable steps with:</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
-<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> greetd greetd-tuigreet</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable greetd.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>…and write <code>/etc/greetd/config.toml</code> per the <a href="https://github.com/caelestia-dots/caelestia#login-manager" target="_blank" rel="noopener">Caelestia README</a>. Only enable <strong>one</strong> display manager at a time — having both <code>sddm.service</code> and <code>greetd.service</code> enabled causes a fight on VT1 that nobody wins.</p>
 </div>
 </div>
 </section>
 <section id="reboot-into-the-desktop" class="level3">
 <h3 class="anchored" data-anchor-id="reboot-into-the-desktop">9. Reboot into the desktop</h3>
-<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>On reboot you should land at the LUKS prompt, then the SDDM graphical login screen, then the Caelestia Hyprland session.</p>
 <hr>
 </section>
@@ -2300,24 +2346,24 @@ Prefer greetd + tuigreet?
 <section id="part-5-verifying-everything-ended-up-where-it-should" class="level1">
 <h1>Part 5 — Verifying everything ended up where it should</h1>
 <p>Once you’re in Hyprland, open a <code>foot</code> terminal and run:</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
-<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
-<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
-<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
-<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
-<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
-<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
-<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
-<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
-<span id="cb75-13"><a href="#cb75-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
-<span id="cb75-14"><a href="#cb75-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-15"><a href="#cb75-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
-<span id="cb75-16"><a href="#cb75-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
-<span id="cb75-17"><a href="#cb75-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
-<span id="cb75-18"><a href="#cb75-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem &amp; encryption</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span> <span class="at">-o</span> NAME,SIZE,FSTYPE,MOUNTPOINTS</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> status cryptroot      <span class="co"># active LUKS mapping</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="ex">findmnt</span> <span class="at">-t</span> btrfs                 <span class="co"># all four Btrfs mountpoints</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> btrfs subvolume list /      <span class="co"># @, @home, @snapshots, @var_log, @swap</span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap + hibernation</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span>                    <span class="co"># zram0 (pri 100) + /swap/swapfile</span></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="ex">zramctl</span>                          <span class="co"># zstd-compressed zram device</span></span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshots</span></span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snapper list                <span class="co"># at least two snapshots from the first pacman -Syu</span></span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /.snapshots/                  <span class="co"># numbered snapshot directories</span></span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compositor + desktop</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> version                  <span class="co"># Hyprland version</span></span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hyprctl</span> monitors                 <span class="co"># detected displays</span></span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> <span class="at">--user</span> status caelestia-shell.service <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If every command above returns sane output and the desktop looks like Caelestia (rounded windows, the status bar across the top, the cyan accent), the install is complete.</p>
 <hr>
 <section id="troubleshooting-timed-out-waiting-for-device-at-boot" class="level2">
@@ -2330,10 +2376,10 @@ Prefer greetd + tuigreet?
 <li><strong><code>mkinitcpio.conf</code> left as the defaults</strong> — no <code>sd-encrypt</code> hook, no <code>btrfs</code> module. Re-edit, re-run <code>mkinitcpio -P</code>.</li>
 </ol>
 <p>To recover, boot the install USB again and re-enter the system:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cryptsetup</span> open /dev/nvme0n1p2 cryptroot</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> <span class="at">-o</span> subvol=@ /dev/mapper/cryptroot /mnt</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mount</span> /dev/nvme0n1p1 /mnt/boot</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="ex">arch-chroot</span> /mnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then fix the offending file, re-run <code>mkinitcpio -P</code> and <code>grub-mkconfig -o /boot/grub/grub.cfg</code>, <code>exit</code>, <code>umount -R /mnt</code>, <code>cryptsetup close cryptroot</code>, <code>reboot</code>.</p>
 <p>If you want loud boot logs to see exactly what the kernel is waiting for, remove <code>quiet</code> and <code>loglevel=3</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code> temporarily and regenerate the GRUB config.</p>
 <hr>

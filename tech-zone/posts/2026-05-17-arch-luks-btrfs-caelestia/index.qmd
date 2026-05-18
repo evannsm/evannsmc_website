@@ -1068,14 +1068,32 @@ When pacman prompts about a JACK provider, choose **`pipewire-jack`** so the Pip
 | `pavucontrol`     | The classic PulseAudio volume / routing GUI. Works fine against `pipewire-pulse` and is still the easiest way to pin specific apps to specific outputs. |
 | `sof-firmware`    | Sound Open Firmware blobs — required for most modern Intel laptop audio codecs. |
 
-The PipeWire and WirePlumber user services start automatically on login via socket activation — you don't need to `systemctl enable` anything by hand. Verify after the next desktop login with:
+The PipeWire and WirePlumber user services start automatically once a graphical session is active (SDDM → Hyprland triggers `graphical-session.target` for your user, which fans out and starts the socket-activated PipeWire units). On a bare TTY before that happens, they're idle and `pactl` / `wpctl` will return `Connection refused` — that's not a broken install, just "no graphical session has woken them yet."
+
+To verify the install *now*, before the desktop is up, kick the user services manually one time:
 
 ```bash
-pactl info | grep 'Server Name'      # should say "PulseAudio (on PipeWire …)"
-wpctl status                          # tree of devices/sinks/sources
+systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
 ```
 
-If `pactl info` reports actual PulseAudio instead of PipeWire, something pulled `pulseaudio` in as a dependency conflict — `pacman -Qs pulseaudio` to confirm, then uninstall the offending package and reinstall `pipewire-pulse`.
+Then run the verification commands:
+
+```bash
+pactl info | grep 'Server Name'      # should print: PulseAudio (on PipeWire 1.6.x)
+wpctl status                          # should print a tree of devices, sinks, and sources
+```
+
+If `pactl info` reports `PulseAudio (on PipeWire …)`, the stack is wired correctly and `pipewire-pulse` is intercepting the PulseAudio API as intended. If `wpctl status` shows your audio devices (built-in speakers, headphone jack, HDMI sinks), WirePlumber's device probing is alive.
+
+::: {.callout-tip}
+## Two common failure modes after install
+
+| Symptom | What's wrong | Fix |
+|---------|--------------|-----|
+| `pactl info` reports actual PulseAudio (no "on PipeWire" suffix) | Something pulled `pulseaudio` in as a dependency conflict and the real PulseAudio daemon won | `pacman -Qs pulseaudio` to find the offending package, uninstall it, then reinstall `pipewire-pulse` |
+| `Connection refused` from `pactl` / `wpctl` on a bare TTY | User services aren't running yet — no graphical session has triggered them | Run the `systemctl --user enable --now` line above. After your next graphical login, they auto-start and you'll never need to do this by hand again. |
+| `Connection refused` even after `systemctl --user start` | `XDG_RUNTIME_DIR` isn't set, or the user manager isn't running | `loginctl show-user $USER -p Linger` — if `Linger=no` and you SSH'd in, log out and log in directly at the TTY instead, or `sudo loginctl enable-linger $USER` |
+:::
 
 ### 2. System prerequisites Caelestia expects to find
 
