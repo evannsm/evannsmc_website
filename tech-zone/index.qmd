@@ -830,7 +830,7 @@ caelestia 0.6.x
 
         <div class="tz-card-meta">
           <span class="tz-card-date">2026-05-17</span>
-          <span class="tz-status-pill ok">boot ok</span>
+          <span class="tz-status-pill ok">booting version</span>
         </div>
 
         <p class="tz-card-preview-copy">
@@ -846,7 +846,7 @@ caelestia 0.6.x
           <div class="tz-screen-bar">
             <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
             <span class="label">first boot — sanity checks</span>
-            <span class="badge ok">boot ok</span>
+            <span class="badge ok">booting version</span>
           </div>
           <div class="tz-screen-body"><span class="p">[evanns@arch ~]$</span> <span class="c">cryptsetup status cryptroot</span>
 <span class="mute">  type:    LUKS2</span>
@@ -895,7 +895,7 @@ NAME           TYPE       SIZE PRIO
 
         <div class="tz-card-meta">
           <span class="tz-card-date">2026-05-01</span>
-          <span class="tz-status-pill ok">boot ok</span>
+          <span class="tz-status-pill ok">booting version</span>
         </div>
 
         <p class="tz-card-preview-copy">
@@ -908,7 +908,7 @@ NAME           TYPE       SIZE PRIO
           <div class="tz-screen-bar">
             <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
             <span class="label">post-install — boot check</span>
-            <span class="badge ok">boot ok</span>
+            <span class="badge ok">booting version</span>
           </div>
           <div class="tz-screen-body"><span class="p">[evannsmc@arch ~]$</span> <span class="c">lsblk</span>
 NAME        SIZE  TYPE  MOUNTPOINTS
