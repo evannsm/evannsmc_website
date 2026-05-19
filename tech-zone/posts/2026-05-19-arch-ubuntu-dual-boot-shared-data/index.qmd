@@ -1,0 +1,1171 @@
+---
+title: "Dual-Boot Arch + Ubuntu — With a Shared Data Partition"
+description: "A dual-boot install that bolts an Ubuntu 24 LTS install alongside the LUKS+Btrfs single-boot Arch from Article 03 — two independently encrypted root partitions, a shared 150 GiB Btrfs data partition both distros mount read-write, and a shared 36 GiB swap partition. Both roots are LUKS2 + Btrfs (`@`, `@home`, `@snapshots`, `@var_log`, `@swap`). Shared partitions are LUKS-encrypted and auto-unlocked at boot via keyfiles stored inside each distro's already-unlocked root — no double passphrase prompt. Each distro hibernates to its own NoCOW Btrfs swap file inside its own encrypted root, so there are no cross-OS resume-image collisions. GRUB on the single shared ESP, with `os-prober` enabled."
+author: "Evanns Morales-Cuadrado"
+date: "2026-05-19"
+categories: [arch linux, ubuntu, linux, installation, dual-boot, luks, btrfs, snapper, hibernation, grub, os-prober, mkinitcpio, sd-encrypt, zram, keyfile, shared partition]
+image: ../../../files/tech-zone/arch-logo-dark.svg
+image-alt: "The Arch Linux logo — official wordmark from archlinux.org."
+draft: false
+---
+
+::: {.callout-warning}
+## Honesty disclaimer: I haven't yet run this end-to-end
+
+Unlike [Article 03 (LUKS+Btrfs single-boot)](../2026-05-17-arch-luks-btrfs-caelestia/) — which is a first-hand install log I executed and can vouch for command-by-command — **this article is the reasoned dual-boot extension of that procedure, not a live-tested install log (yet)**. It's built from Article 03's working stack plus the [Arch wiki](https://wiki.archlinux.org/title/Dual_boot_with_Windows){target="_blank" rel="noopener"}, the [Ubuntu Server / Desktop manual-partitioning docs](https://help.ubuntu.com/community/Installation/FromUSBStick){target="_blank" rel="noopener"}, and `cryptsetup` / `systemd-cryptsetup-generator` man pages.
+
+I'll be running it for real on the next workstation install and updating in place if anything in the procedure changes. If you spot something wrong, the canonical sources are:
+
+- [`cryptsetup`](https://man.archlinux.org/man/cryptsetup.8){target="_blank" rel="noopener"} — LUKS container management and keyfile add/remove
+- [`crypttab`](https://man.archlinux.org/man/crypttab.5){target="_blank" rel="noopener"} — `/etc/crypttab` syntax and `crypttab.initramfs` semantics
+- [`btrfs`](https://man.archlinux.org/man/btrfs.8){target="_blank" rel="noopener"} — subvolumes, swap files, mount options
+- [Arch wiki: GRUB#Dual booting](https://wiki.archlinux.org/title/GRUB#Dual_booting){target="_blank" rel="noopener"} and [`os-prober`](https://wiki.archlinux.org/title/GRUB#Detecting_other_operating_systems){target="_blank" rel="noopener"}
+- [Ubuntu wiki: ManualFullSystemEncryption](https://help.ubuntu.com/community/ManualFullSystemEncryption){target="_blank" rel="noopener"}
+
+Treat this as a careful blueprint for the dual-boot pattern, **not** as a substitute for re-reading the relevant tool docs as you go.
+:::
+
+::: {.callout-note}
+## What this is
+
+A continuation of [Article 03](../2026-05-17-arch-luks-btrfs-caelestia/), turning that single-boot Arch install into a dual-boot with Ubuntu 24 LTS sharing the same NVMe drive. Concretely:
+
+- **Two independently encrypted root partitions** — Arch in its own LUKS2 container, Ubuntu in its own LUKS2 container, each carrying Btrfs subvolumes (`@`, `@home`, …).
+- **One shared 150 GiB Btrfs data partition** — also LUKS-encrypted, auto-unlocked at boot from both distros via keyfiles. Mounted at `/data` on Arch and `/data` on Ubuntu, owned by your user on both sides.
+- **One shared 36 GiB swap partition** — LUKS-encrypted, keyfile-unlocked, used by both distros as everyday overflow swap.
+- **Per-OS hibernation** to a NoCOW Btrfs swap file inside each distro's own encrypted root (no cross-OS resume-image collisions).
+- **One GRUB** on the shared ESP, with `os-prober` enabled so either distro's `grub-mkconfig` regenerates a working menu listing both.
+
+It stops on the console for the Arch side — desktop layer is your choice, exactly like Article 03 ([Caelestia, Article 05](../2026-05-18-caelestia-desktop/) or a custom Hyprland). Ubuntu's GNOME (or whichever flavor you install) comes up out-of-the-box.
+:::
+
+## Why this is its own article (and not just "Article 03 with Ubuntu glued on")
+
+My [first attempt at a dual-boot with LUKS, Btrfs, zram, and a shared partition](../2026-05-05-arch-luks-btrfs-lessons/) (Article 01) tried to land everything in one swing and didn't boot. The post-mortem isolated two `cryptdevice=` typos in the kernel command line and one missing `rootflags=subvol=@` parameter. After I fixed those in [Article 03](../2026-05-17-arch-luks-btrfs-caelestia/), the single-boot version worked end-to-end.
+
+Adding Ubuntu introduces five concerns that single-boot didn't have:
+
+1. **Who owns GRUB?** Both distros want to install their own bootloader to the same ESP. We pick one as the menu driver (Ubuntu, because its installer wires up `os-prober` for you out of the box) and let it discover Arch automatically.
+2. **How do shared encrypted partitions get unlocked from both sides without prompting twice?** A LUKS container can hold up to 8 keyslots. We add the user's passphrase as slot 0 (for recovery from a live USB), then add a 4096-byte keyfile as slot 1 — and store a copy of that keyfile inside each (already-unlocked) root, referenced from each distro's `/etc/crypttab`. Boot order: root unlock by passphrase → root mounts → crypttab reads keyfile → shared partitions unlock silently.
+3. **Resume-image collisions.** Two OSes hibernating to the same swap partition would overwrite each other's resume image. We sidestep this by giving each OS its own NoCOW Btrfs swap file inside its own LUKS root — exactly the [Article 03 pattern](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-7-the-hibernation-swap-file), applied twice.
+4. **UID/GID coordination for the shared partition.** If `evanns` is UID 1000 on Arch and UID 1001 on Ubuntu, every file on `/data` looks like it belongs to a different user depending on which OS you booted into. We pin UID 1000 on both sides during user creation.
+5. **`os-prober` is off by default on Arch.** Modern Arch GRUB ships with `GRUB_DISABLE_OS_PROBER=true`. We flip it for both distros so a re-run of `grub-mkconfig` from either side regenerates a complete menu.
+
+The result is the install I plan to put on my next workstation when I retire the Dell Precision: Arch for daily-driver work, Ubuntu for the (research-y) packages that don't have decent Arch coverage, and a single home directory's worth of documents living in one place — mounted, not synced, not copied.
+
+---
+
+# Part 1 — Bootstrap (same as Article 03)
+
+The first three steps are identical to the [basic install](../2026-05-01-first-arch-install/) and [Article 03's Part 1](../2026-05-17-arch-luks-btrfs-caelestia/#part-1--bootstrap-same-as-the-basic-install). In short, from an Arch live USB:
+
+1. **Verify the ISO** with `sha256sum -c sha256sums.txt` and `gpg --verify`.
+2. **Boot the USB** and confirm UEFI mode with `cat /sys/firmware/efi/fw_platform_size` (should print `64`).
+3. **Connect to Wi-Fi** via `iwctl`, then `systemctl enable --now sshd` and `passwd` so you can SSH in from a real keyboard.
+4. **Keymap, timezone, NTP**: `loadkeys us`, `timedatectl set-timezone America/New_York`, `timedatectl set-ntp true`.
+
+::: {.callout-tip}
+## Confirm what disk you're about to wipe
+
+```bash
+lsblk -d -o NAME,SIZE,MODEL,TRAN
+```
+
+NVMe will show `TRAN=nvme`. Every command below uses `/dev/nvme0n1` as a placeholder — **substitute your actual device**. Wiping the wrong disk is the kind of mistake LUKS can't save you from.
+:::
+
+---
+
+## Chapter 1: The five-partition layout
+
+This is the central design decision and the only place the dual-boot story really diverges from Article 03 at the block-device level. Five partitions on one drive:
+
+| Partition | Size               | Filesystem                  | Encryption | Mounted on | Purpose                                            |
+|-----------|-------------------:|-----------------------------|------------|------------|----------------------------------------------------|
+| `p1`      | 1 GiB              | FAT32                       | none       | `/boot`    | Shared UEFI ESP (kernels, initramfs, GRUB)         |
+| `p2`      | 36 GiB             | swap (inside LUKS2)         | LUKS2      | `[SWAP]`   | Shared everyday swap, keyfile-unlocked             |
+| `p3`      | 150 GiB            | Btrfs (inside LUKS2)        | LUKS2      | `/data`    | Shared data partition, keyfile-unlocked            |
+| `p4`      | (remaining ÷ 2)    | Btrfs (inside LUKS2)        | LUKS2      | `/`        | **Arch** root, passphrase-unlocked                 |
+| `p5`      | (remaining ÷ 2)    | Btrfs (inside LUKS2)        | LUKS2      | `/`        | **Ubuntu** root, passphrase-unlocked (installer)   |
+
+::: {.callout-note}
+## Doing the math for your disk
+
+The user-facing numbers were specified — 36 GiB swap, 150 GiB shared, the rest split 50/50 between Arch and Ubuntu. For a 2 TiB SSD, that's:
+
+```text
+2000 GiB (drive)
+  −   1 GiB  (ESP)
+  −  36 GiB  (swap)
+  − 150 GiB  (shared data)
+= 1813 GiB remaining
+  ÷ 2
+=  906 GiB each for Arch and Ubuntu
+```
+
+Adjust the *split* up or down based on which OS you spend more time in — there's no rule that says it has to be 50/50. The rest of this article assumes whatever sizes you pick at `cfdisk` time; nothing downstream depends on the specific gigabyte counts.
+:::
+
+::: {.callout-important}
+## Why two separate LUKS containers instead of one shared LUKS with LVM inside
+
+You could legitimately do this differently: one LUKS2 container covering the entire post-ESP drive, then LVM inside it carving out logical volumes for Arch root, Ubuntu root, shared data, and swap. That gives you **one** passphrase prompt at boot.
+
+| Approach                                | Pros                                                                 | Cons                                                                                                          |
+|-----------------------------------------|-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **Two LUKS containers** *(this article)* | Each distro can be reinstalled, resized, or wiped independently. Failure to unlock one root doesn't gate the other. No LVM layer to learn. | Two passphrase prompts at boot (one per OS, only at install time — once each distro is up, keyfiles unlock everything else silently). |
+| **One LUKS + LVM inside**                | Single passphrase prompt at boot. No keyfile dance for shared partitions. Slightly less wasted alignment between LVs. | Forces one distro to own the GRUB-on-LVM-on-LUKS configuration; reinstalling either distro is an LVM-tools exercise; recovery from a corrupt root is harder; rare and harder-to-google failure modes. |
+
+**For this article we go with two separate containers.** Independence beats the second passphrase prompt — and you only ever type the second prompt when you're booting *that specific* OS, not on every boot.
+
+If you'd rather do LUKS+LVM, the dm-crypt / Btrfs / mkinitcpio bits below carry over essentially unchanged; the LVM substitution lives entirely in Chapter 2.
+:::
+
+Partition with `cfdisk`:
+
+```bash
+cfdisk /dev/nvme0n1
+```
+
+Inside `cfdisk`:
+
+1. `d` on every existing partition until the table is empty.
+2. `n` → `1G`   → type **EFI System**      → `/dev/nvme0n1p1`.
+3. `n` → `36G`  → type **Linux swap**       → `/dev/nvme0n1p2`. (The "swap" type is hint-only here — we'll wrap it in LUKS first, which presents as `crypto_LUKS` regardless.)
+4. `n` → `150G` → type **Linux filesystem** → `/dev/nvme0n1p3`.
+5. `n` → `906G` → type **Linux filesystem** → `/dev/nvme0n1p4` (Arch root; substitute your half-of-remaining number).
+6. `n` → rest   → type **Linux filesystem** → `/dev/nvme0n1p5` (Ubuntu root).
+7. `w`, then type `yes`.
+
+Verify:
+
+```bash
+lsblk
+```
+
+You should see five children of `nvme0n1`, in order, with the sizes you typed.
+
+---
+
+## Chapter 2: Format the three Arch-side LUKS containers
+
+We format three LUKS containers now (p2, p3, p4) and leave p5 for Ubuntu's installer to format later. The reason: Ubuntu's "Custom layout" installer can unlock an existing LUKS2 container, but it's far more reliable to let it format the target partition itself — that way Ubuntu owns the container's metadata, keyslot policy, and `crypttab` UUID, with no inherited state from us.
+
+LUKS2 is the modern default in `cryptsetup`; there is no good reason to force LUKS1 in 2026.
+
+```bash
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p2   # swap
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p3   # shared data
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p4   # Arch root
+```
+
+Each prompts for `YES` in capital letters then asks you to type a passphrase twice.
+
+::: {.callout-important}
+## Use different passphrases — or use the same one carefully
+
+You have two reasonable choices here:
+
+1. **Three distinct passphrases.** Maximum recovery-time clarity ("which one was for which?"). All three go in your password manager. The keyfile mechanism below means you only ever *type* the Arch root passphrase at boot anyway, so the extra two aren't a daily burden — they're rescue-mode-only.
+2. **The same passphrase on all three.** Less paperwork, slightly worse cryptographic hygiene (a leaked passphrase exposes all three containers). Defensible if you store everything in the same password manager anyway.
+
+I'm using option 1 — a Bitwarden entry per container, named `LUKS — arch root`, `LUKS — swap`, `LUKS — shared`.
+
+**There is no recovery if you forget all three.** Save them somewhere before continuing.
+:::
+
+Now unlock all three to their canonical mapper names:
+
+```bash
+cryptsetup open /dev/nvme0n1p2 cryptswap
+cryptsetup open /dev/nvme0n1p3 cryptshared
+cryptsetup open /dev/nvme0n1p4 cryptroot
+```
+
+The mapper names matter — they're the contract between this step, the kernel cmdline, `/etc/crypttab`, and `/etc/fstab`. Pick a naming convention and stick with it. I'm using `cryptroot` for the Arch root (matching Article 03), `cryptshared` for the data partition, and `cryptswap` for swap. (Ubuntu's root will become `cryptroot_ubuntu` when we install it later, to avoid the name colliding with Arch's mapper if both are open from a live USB.)
+
+Format the inside of each container:
+
+```bash
+mkfs.fat -F32 /dev/nvme0n1p1                # ESP — outside LUKS, must stay unencrypted so GRUB can read it
+mkswap -L cryptswap /dev/mapper/cryptswap   # swap inside its LUKS container
+mkfs.btrfs -L shared /dev/mapper/cryptshared
+mkfs.btrfs -L arch   /dev/mapper/cryptroot
+```
+
+`mkswap` against the **mapper**, not the raw partition — otherwise you'd be putting a swap signature on the raw block device and corrupting the LUKS header. Same logic for the two `mkfs.btrfs` calls.
+
+---
+
+## Chapter 3: Create the Btrfs subvolumes on the Arch root
+
+Same five-subvolume layout as Article 03 — the kernel doesn't care about the names, but snapper does:
+
+```bash
+mount /dev/mapper/cryptroot /mnt
+
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var_log
+btrfs subvolume create /mnt/@swap
+
+umount /mnt
+```
+
+<details>
+<summary>Click to expand: what each subvolume is for</summary>
+
+| Subvolume     | Mountpoint     | Why it's separate                                                               |
+|---------------|----------------|---------------------------------------------------------------------------------|
+| `@`           | `/`            | The Arch root filesystem. Snapshotted by snapper.                               |
+| `@home`       | `/home`        | Separate so a root rollback doesn't roll back the user's home directory.        |
+| `@snapshots`  | `/.snapshots`  | Where snapper writes snapshots. Must be its own subvolume.                      |
+| `@var_log`    | `/var/log`     | Logs are append-mostly and would noisy-up every snapshot.                       |
+| `@swap`       | `/swap`        | Dedicated subvolume for the hibernation swap file (NoCOW; see Chapter 9).       |
+
+</details>
+
+And one subvolume on the shared data partition — a single `@data` is enough; you don't need snapper on data you'll be backing up to off-machine storage anyway (`restic` to a NAS, `borg` to an external drive, whatever your backup tool is). But laying it out as a subvolume from day one lets you add snapshots later if you change your mind, without restructuring:
+
+```bash
+mount /dev/mapper/cryptshared /mnt
+btrfs subvolume create /mnt/@data
+umount /mnt
+```
+
+::: {.callout-tip}
+## Why subvolumes give you "separate root and home" without separate partitions
+
+When I say "separate `/` and `/home`" what most people mean by that in 2026 is *I want a system-rollback to not stomp on my home directory*, and *I want `/home` to grow freely without re-partitioning when I run low on space*. Both of those are *exactly* what Btrfs subvolumes give you — they share the underlying Btrfs filesystem's free space pool (so neither side runs out before the disk does), but they're independent units for snapshotting, rollback, and quota.
+
+The old-school separate-`/home`-partition pattern was an ext4-era workaround for ext4's lack of those features. With Btrfs, separate subvolumes are strictly better: they isolate the same way, share free space, and can be reflinked across.
+:::
+
+---
+
+## Chapter 4: Mount everything for pacstrap
+
+Mount the Arch root subvolumes with the right options — identical to [Article 03 Chapter 4](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-4-mount-the-subvolumes-with-the-right-options):
+
+```bash
+mount -o noatime,compress=zstd:3,subvol=@ /dev/mapper/cryptroot /mnt
+mkdir -p /mnt/{boot,home,.snapshots,var/log,swap,data}
+
+mount -o noatime,compress=zstd:3,subvol=@home       /dev/mapper/cryptroot /mnt/home
+mount -o noatime,compress=zstd:3,subvol=@snapshots  /dev/mapper/cryptroot /mnt/.snapshots
+mount -o noatime,compress=zstd:3,subvol=@var_log    /dev/mapper/cryptroot /mnt/var/log
+mount -o noatime,subvol=@swap                       /dev/mapper/cryptroot /mnt/swap
+
+mount /dev/nvme0n1p1 /mnt/boot
+mount -o noatime,compress=zstd:3,subvol=@data /dev/mapper/cryptshared /mnt/data
+```
+
+The `@swap` subvolume mounts **without** compression — a swap file must not be compressed.
+
+Note the extra `mount /mnt/data` line vs. Article 03. That's the shared partition, mounted *now* so that `genfstab -U /mnt` in the next chapter captures it automatically (so we get the fstab line for free, and only have to add the `crypttab` entry by hand).
+
+::: {.callout-note}
+## We don't `swapon` the shared swap partition from inside the live system
+
+Same reasoning as in Article 03 — activating swap from the live USB's kernel makes it harder to clean up at reboot. The shared swap partition will come up via `/etc/fstab` + `/etc/crypttab` on first boot of the installed system, which is the right time.
+:::
+
+---
+
+## Chapter 5: Pacstrap, fstab, chroot
+
+Same shape as Article 03's Chapter 5, with no new packages — the dual-boot-specific bits are configuration, not new tooling:
+
+```bash
+reflector --country 'United States' --protocol https --latest 20 --age 12 \
+          --sort rate --save /etc/pacman.d/mirrorlist
+
+pacstrap -K /mnt \
+    base linux linux-firmware linux-headers intel-ucode \
+    cryptsetup \
+    btrfs-progs \
+    grub efibootmgr grub-btrfs os-prober \
+    snapper snap-pac \
+    networkmanager openssh sudo \
+    neovim git base-devel \
+    zram-generator \
+    inotify-tools \
+    reflector
+```
+
+Use `amd-ucode` instead of `intel-ucode` on AMD hardware. The one package added vs. Article 03 is **`os-prober`** — the script GRUB runs to discover other operating systems on the same disk. Without it, `grub-mkconfig` would only ever see Arch and the menu would have a single entry.
+
+Generate `fstab` and enter the new system:
+
+```bash
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+```
+
+::: {.callout-note}
+## Sanity-check the generated fstab
+
+```bash
+cat /etc/fstab
+```
+
+You should see:
+
+- Five Btrfs lines for the Arch root subvolumes (`/`, `/home`, `/.snapshots`, `/var/log`, `/swap`), all using the same `UUID=` of the **Arch Btrfs filesystem** (not the LUKS partition's UUID), each with its own `subvol=@…`.
+- One Btrfs line for `/data` using the **shared Btrfs filesystem's UUID**.
+- One FAT32 line for `/boot`.
+
+The two distinct Btrfs UUIDs (Arch root vs. shared data) confirm `genfstab` saw them as separate filesystems — that's correct. If you see only one Btrfs UUID, you skipped a mount somewhere; re-run Chapter 4.
+:::
+
+---
+
+# Part 2 — Inside the chroot
+
+## Chapter 6: Locale, time, hostname, user — with a pinned UID
+
+Identical to [Article 03's Chapter 6](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-6-locale-time-hostname-user) except for **one** dual-boot-specific change: we pin the user's UID and GID to `1000` explicitly. Ubuntu's installer assigns the first regular user UID 1000 by default, so if we also pin to 1000 here, files on `/data` will be owned by the same user-as-the-kernel-sees-it on both sides.
+
+```bash
+# Editor + EDITOR var
+ln -sf /usr/bin/nvim /usr/local/bin/vi
+echo 'export EDITOR=nvim' >> /etc/profile
+
+# Timezone — substitute your zone
+ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+hwclock --systohc
+
+# Locale
+sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=us"        > /etc/vconsole.conf
+
+# Hostname (suffix-based so Arch and Ubuntu show up distinctly in logs)
+echo "arch-dual" > /etc/hostname
+
+# /etc/hosts
+cat > /etc/hosts <<'EOF'
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   arch-dual.localdomain arch-dual
+EOF
+
+# Root password
+passwd
+
+# User account — UID and GID pinned to 1000 (matches Ubuntu's default first-user UID)
+groupadd -g 1000 evanns
+useradd -m -u 1000 -g 1000 -G wheel,video,audio,input evanns
+passwd evanns
+
+# sudo for wheel
+sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+```
+
+Replace `evanns` with whatever username you want; the only thing that matters is that you use the **same username and the same `-u 1000 -g 1000`** when you create the user during Ubuntu install later.
+
+::: {.callout-important}
+## The pinned UID is the load-bearing part of "shared data partition"
+
+Linux filesystems store file ownership as integers, not names. If `evanns` is UID 1000 on Arch and `evanns` is UID 1001 on Ubuntu, the file ownership on `/data` literally cannot match in both directions — *somebody's* `ls -l /data` will show `1001` instead of `evanns`. Pin the UID at user-create time on both sides and the problem disappears before it starts.
+
+If you forget to pin during Ubuntu install and the user ends up as UID 1001, the recovery is `usermod -u 1000 evanns && groupmod -g 1000 evanns && find / -uid 1001 -exec chown 1000 {} +` — workable but tedious. Pin in advance.
+:::
+
+---
+
+## Chapter 7: Generate the shared keyfile and add it to the two shared LUKS containers
+
+This is the new ground vs. Article 03. We want the two shared partitions (swap and data) to unlock automatically on every boot of either OS — **without** prompting for an extra passphrase — so we use the standard pattern: each LUKS container holds an additional keyfile in one of its keyslots, and a copy of that keyfile lives inside each (already-unlocked, encrypted) root, referenced from `/etc/crypttab`.
+
+Boot-time sequence we're targeting:
+
+1. GRUB → kernel → initramfs.
+2. `sd-encrypt` prompts for the Arch root passphrase → unlocks `cryptroot`.
+3. `@` mounts as `/`; systemd takes over.
+4. `systemd-cryptsetup-generator` reads `/etc/crypttab`, finds the two keyfile entries, unlocks `cryptshared` and `cryptswap` using the keyfiles on the *now-mounted* root.
+5. `/etc/fstab` mounts `/data` and `swapon`'s the shared swap partition.
+
+That's all of step 4 happening *after* the root is mounted, which is the key thing: the keyfiles never have to be in the initramfs (which would require `cryptkey=` and a more complex setup). They live as plain files on the encrypted root, only readable once that root is unlocked.
+
+Generate the keyfiles inside the chroot (4 KiB random bytes is the cryptsetup-recommended size — enough entropy that brute force is hopeless, small enough to read in one block):
+
+```bash
+mkdir -p /etc/cryptsetup-keys.d
+chmod 700 /etc/cryptsetup-keys.d
+
+dd if=/dev/random of=/etc/cryptsetup-keys.d/shared.key bs=4096 count=1 iflag=fullblock
+chmod 0400 /etc/cryptsetup-keys.d/shared.key
+
+dd if=/dev/random of=/etc/cryptsetup-keys.d/swap.key bs=4096 count=1 iflag=fullblock
+chmod 0400 /etc/cryptsetup-keys.d/swap.key
+```
+
+`mode 0400, root:root` — only root can read the keyfiles, and the encrypted root partition is what protects them at rest. If the disk is stolen and the thief doesn't have the Arch root passphrase, the keyfiles are unreadable along with everything else inside `cryptroot`.
+
+Now add each keyfile to its corresponding LUKS container as keyslot 1. (Keyslot 0 already holds your passphrase from Chapter 2.)
+
+```bash
+cryptsetup luksAddKey /dev/nvme0n1p3 /etc/cryptsetup-keys.d/shared.key
+# Prompts for any existing passphrase. Type the passphrase you used for the shared container in Chapter 2.
+
+cryptsetup luksAddKey /dev/nvme0n1p2 /etc/cryptsetup-keys.d/swap.key
+# Same — type the swap container's existing passphrase.
+```
+
+Verify the keyslots:
+
+```bash
+cryptsetup luksDump /dev/nvme0n1p3 | grep -A2 Keyslot
+cryptsetup luksDump /dev/nvme0n1p2 | grep -A2 Keyslot
+```
+
+You should see two **Keyslots** listed (0 and 1) on each — keyslot 0 is your passphrase, keyslot 1 is the keyfile. Either will unlock the container.
+
+::: {.callout-tip}
+## Why we keep the passphrase slot too
+
+Keyslot 0 (passphrase) is your rescue path. If the Arch root LUKS container is somehow unbootable, you can boot any live USB, type the shared partition's passphrase manually, and recover the data — even though the keyfile is locked away inside the unbootable Arch root.
+
+Never remove keyslot 0. Treat the keyfile (slot 1) as a convenience overlay on top of the passphrase, not a replacement.
+:::
+
+::: {.callout-note}
+## We are reusing keyfiles across Arch and Ubuntu
+
+A second copy of `shared.key` and `swap.key` will live on the Ubuntu root after we install Ubuntu in Part 4 — but the actual bytes are identical. We generate the keyfiles *now*, on the Arch root, and copy them to the Ubuntu root later (Chapter 23). The two LUKS containers only know about *one* keyfile each; either OS's copy of the file unlocks them.
+
+If you'd rather give each OS its own distinct keyfile, generate four keyfiles instead of two (Arch's shared.key + swap.key, Ubuntu's shared.key + swap.key), `luksAddKey` each into the relevant container, and put one pair on each root. This costs you two more keyslots (out of 8 available) per container — fine in practice, but no security gain since both OSes already trust each other for shared-partition access.
+:::
+
+---
+
+## Chapter 8: `/etc/crypttab` entries for swap and shared
+
+`/etc/crypttab` on the running (post-root-mount) system tells systemd what additional LUKS containers to unlock and how:
+
+```bash
+echo "cryptshared UUID=$(blkid -s UUID -o value /dev/nvme0n1p3) /etc/cryptsetup-keys.d/shared.key luks" \
+    >> /etc/crypttab
+echo "cryptswap   UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) /etc/cryptsetup-keys.d/swap.key   luks" \
+    >> /etc/crypttab
+```
+
+Two entries, four columns each:
+
+| Column   | Meaning |
+|----------|---------|
+| `cryptshared` / `cryptswap` | Mapper name to create. Must match what's referenced in `/etc/fstab` (e.g. `/dev/mapper/cryptshared`). |
+| `UUID=…`                    | The LUKS partition's UUID — the same string you'd find in `blkid /dev/nvme0n1p3`. Pinning by UUID survives device-renaming and partition reordering. |
+| `/etc/cryptsetup-keys.d/*.key` | Path to the keyfile **on the unlocked root** (so it's only readable after the root mounts). |
+| `luks`                      | Tell `systemd-cryptsetup` to expect LUKS metadata on the partition (vs. plain `cryptsetup`). |
+
+Verify what you just wrote:
+
+```bash
+cat /etc/crypttab
+```
+
+::: {.callout-important}
+## Don't put the Arch root entry in `/etc/crypttab`
+
+`cryptroot` (the Arch root LUKS container) is unlocked by **the kernel cmdline + sd-encrypt in the initramfs**, *before* `/etc/crypttab` is ever read. Listing it in `/etc/crypttab` is harmless on most setups but redundant; adding it to `/etc/crypttab.initramfs` is the *systemd-cryptsetup-generator*-friendly way to document the root unlock — see Chapter 11.
+:::
+
+Now update `/etc/fstab` so that mounting `/data` waits for `cryptshared` to be unlocked, and `swapon` waits for `cryptswap`. `genfstab` already wrote the `/data` line in Chapter 5 (Btrfs mount of `/dev/mapper/cryptshared`), but it didn't add the swap line — append it now:
+
+```bash
+echo "/dev/mapper/cryptswap none swap defaults 0 0" >> /etc/fstab
+```
+
+Sanity-check:
+
+```bash
+grep -E 'cryptshared|cryptswap' /etc/fstab
+```
+
+You should see exactly two lines — one Btrfs `/data` line and one swap line.
+
+::: {.callout-tip}
+## Mount-order dependency, for free
+
+systemd parses both `/etc/crypttab` and `/etc/fstab` and emits unit files with the right `Requires=`/`After=` ordering: `data.mount` requires `systemd-cryptsetup@cryptshared.service`, which requires the keyfile path to be readable (which means the root must be mounted). You don't have to write the ordering by hand — declaring the keyfile in `/etc/crypttab` is the declaration.
+:::
+
+---
+
+## Chapter 9: Hibernation swap file for Arch (per Article 03)
+
+Identical to [Article 03 Chapter 7](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-7-the-hibernation-swap-file). The shared swap partition (p2, keyfile-unlocked) is *everyday* swap. Hibernation goes to a NoCOW swap file *inside* the Arch root, so resume target is unambiguous and there's no collision with Ubuntu's own hibernation swap file.
+
+```bash
+btrfs filesystem mkswapfile --size 36g --uuid clear /swap/swapfile
+```
+
+`--size 36g` matches the 36 GiB RAM I'm sizing this install for. **Substitute your RAM size with a small margin** (or skip this whole chapter if you don't want hibernation — then `resume=` and `resume_offset=` drop out of the GRUB cmdline in Chapter 12).
+
+::: {.callout-important}
+## Don't `swapon` from inside the chroot
+
+Same warning as Article 03 — activating the swap file from the *live USB's kernel* prevents clean unmounting later. `/etc/fstab` will pick it up automatically on first boot of the installed system.
+:::
+
+Persist the swap file in `/etc/fstab`:
+
+```bash
+echo '/swap/swapfile none swap defaults,pri=-2 0 0' >> /etc/fstab
+```
+
+The explicit `pri=-2` is documentation — zram at priority 100 will be used first, the shared swap partition (priority `defaults`, ~-1) second, the hibernation swap file (priority -2) only under heavy memory pressure or when systemd writes the hibernation image.
+
+Find the resume offset:
+
+```bash
+btrfs inspect-internal map-swapfile -r /swap/swapfile
+```
+
+Save the integer printed — `<RESUME_OFFSET>` in Chapter 12.
+
+---
+
+## Chapter 10: zram for everyday compressed swap
+
+Same as [Article 03 Chapter 8](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-8-zram-for-everyday-swap):
+
+```bash
+cat > /etc/systemd/zram-generator.conf <<'EOF'
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+EOF
+```
+
+Note the three-tier swap arrangement we end up with:
+
+| Tier | What                              | Priority | When the kernel uses it                                   |
+|------|-----------------------------------|----------|-----------------------------------------------------------|
+| 1    | `/dev/zram0`                      | 100      | Almost all everyday swap-out lands here.                  |
+| 2    | `/dev/mapper/cryptswap` (shared)  | defaults | Overflow when zram is full.                               |
+| 3    | `/swap/swapfile` (hibernation)    | -2       | Only on actual hibernation, or last-resort overflow.      |
+
+---
+
+## Chapter 11: `mkinitcpio` — same as Article 03
+
+Open `/etc/mkinitcpio.conf` and set:
+
+```text
+MODULES=(btrfs)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+```
+
+The reasoning is identical to [Article 03 Chapter 9](../2026-05-17-arch-luks-btrfs-caelestia/#chapter-9-mkinitcpio--the-systemd-way) — only the Arch root container needs to be unlockable from the initramfs, and `sd-encrypt` + `rd.luks.name=…` is the path that does it.
+
+Add the root entry to `/etc/crypttab.initramfs` (it gets copied into the initramfs at build time and makes the configuration discoverable post-install):
+
+```bash
+echo "cryptroot UUID=$(blkid -s UUID -o value /dev/nvme0n1p4) none luks" \
+    > /etc/crypttab.initramfs
+```
+
+Regenerate the initramfs:
+
+```bash
+mkinitcpio -P
+```
+
+A successful run ends with `Image generation successful` for each preset (`linux`, plus `linux-lts` if installed).
+
+::: {.callout-note}
+## Why the shared / swap LUKS entries aren't in `crypttab.initramfs`
+
+The initramfs's job is to unlock just enough to mount `/` — and that's only `cryptroot`. The two shared partitions are unlocked by the *running system's* `systemd-cryptsetup` units, generated from `/etc/crypttab` (the non-`.initramfs` one). They'd fail to unlock in the initramfs anyway because the keyfile path `/etc/cryptsetup-keys.d/shared.key` doesn't exist until `/` is mounted.
+:::
+
+---
+
+## Chapter 12: GRUB cmdline
+
+Get the **Arch root LUKS partition's UUID** (`/dev/nvme0n1p4`, not the mapper):
+
+```bash
+blkid -s UUID -o value /dev/nvme0n1p4
+```
+
+Open `/etc/default/grub` and replace the `GRUB_CMDLINE_LINUX_DEFAULT` line with:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=<UUID>=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=<RESUME_OFFSET>"
+```
+
+Replace `<UUID>` with the Arch root LUKS UUID and `<RESUME_OFFSET>` with the integer from Chapter 9. **Do not include the angle brackets in the actual file** — Article 01's failure mode 1, see [emergency section](#emergency-failure-modes).
+
+Same line-by-line breakdown as Article 03:
+
+<details>
+<summary>Click to expand: every parameter</summary>
+
+| Parameter                                    | Purpose                                                                                |
+|----------------------------------------------|----------------------------------------------------------------------------------------|
+| `loglevel=3`                                 | Quieter kernel boot logs.                                                              |
+| `quiet`                                      | Suppress most non-critical kernel boot output.                                         |
+| `zswap.enabled=0`                            | Disable zswap; we're using zram.                                                        |
+| `rd.luks.name=<UUID>=cryptroot`              | Unlock LUKS partition `<UUID>` and expose it at `/dev/mapper/cryptroot`.               |
+| `root=/dev/mapper/cryptroot`                 | The unlocked mapper is the root device.                                                |
+| `rootflags=subvol=@`                         | Mount the `@` Btrfs subvolume as `/`.                                                  |
+| `resume=/dev/mapper/cryptroot`               | Resume hibernation from this device (the LUKS-unlocked Btrfs).                         |
+| `resume_offset=<RESUME_OFFSET>`              | Byte offset (in pages) of the swap file's first extent.                                |
+
+</details>
+
+Now enable `os-prober` — the key dual-boot setting. In `/etc/default/grub`, find the commented line `#GRUB_DISABLE_OS_PROBER=false` and **uncomment it**:
+
+```bash
+sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
+```
+
+Verify:
+
+```bash
+grep '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub
+# Should print: GRUB_DISABLE_OS_PROBER=false
+```
+
+Right now (Arch's pre-Ubuntu state) `os-prober` will find nothing — Ubuntu isn't installed yet. But we want the flag flipped so when we re-run `grub-mkconfig` from Arch *after* Ubuntu is installed, the menu picks up Ubuntu automatically.
+
+Install the bootloader and generate the GRUB config:
+
+```bash
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+The `grub-install --bootloader-id=GRUB` writes a `GRUB` entry to the EFI NVRAM and copies the GRUB binaries to `/boot/EFI/GRUB/`. When Ubuntu's installer runs `grub-install` later, it writes a separate `Ubuntu` NVRAM entry and copies its own binaries to `/boot/EFI/Ubuntu/`. The ESP holds **both** sets simultaneously — firmware decides which to chainload based on NVRAM boot-order.
+
+::: {.callout-note}
+## We don't set `GRUB_ENABLE_CRYPTODISK=y`
+
+Same reason as Article 03 — `/boot` is the unencrypted FAT32 ESP, so GRUB never reads encrypted blocks itself. Leaving `GRUB_ENABLE_CRYPTODISK` unset is correct.
+:::
+
+---
+
+## Chapter 13: Enable services, sanity check, reboot
+
+```bash
+systemctl enable NetworkManager sshd fstrim.timer reflector.timer \
+                 snapper-timeline.timer snapper-cleanup.timer \
+                 grub-btrfsd.service
+```
+
+Final sanity check inside the chroot — same shape as Article 03:
+
+```bash
+grep '^MODULES='                       /etc/mkinitcpio.conf
+grep '^HOOKS='                         /etc/mkinitcpio.conf
+grep '^GRUB_CMDLINE_LINUX_DEFAULT='    /etc/default/grub
+grep '^GRUB_DISABLE_OS_PROBER='        /etc/default/grub
+cat /etc/fstab     | grep -E 'subvol=|swap|cryptshared|cryptswap'
+cat /etc/crypttab  | grep -v '^#'
+swapon --show
+ls -l /etc/cryptsetup-keys.d/
+```
+
+Expected output shape (your UUIDs and resume offset will differ):
+
+```text
+MODULES=(btrfs)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet zswap.enabled=0 rd.luks.name=<arch-luks-uuid>=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ resume=/dev/mapper/cryptroot resume_offset=1320192"
+GRUB_DISABLE_OS_PROBER=false
+UUID=<arch-btrfs>    /            btrfs    rw,noatime,compress=zstd:3,subvol=/@           0 0
+UUID=<arch-btrfs>    /home        btrfs    rw,noatime,compress=zstd:3,subvol=/@home       0 0
+UUID=<arch-btrfs>    /.snapshots  btrfs    rw,noatime,compress=zstd:3,subvol=/@snapshots  0 0
+UUID=<arch-btrfs>    /var/log     btrfs    rw,noatime,compress=zstd:3,subvol=/@var_log    0 0
+UUID=<arch-btrfs>    /swap        btrfs    rw,noatime,subvol=/@swap                       0 0
+UUID=<shared-btrfs>  /data        btrfs    rw,noatime,compress=zstd:3,subvol=/@data       0 0
+/swap/swapfile         none swap defaults,pri=-2 0 0
+/dev/mapper/cryptswap  none swap defaults        0 0
+cryptshared UUID=<shared-luks-uuid> /etc/cryptsetup-keys.d/shared.key luks
+cryptswap   UUID=<swap-luks-uuid>   /etc/cryptsetup-keys.d/swap.key   luks
+-r-------- 1 root root 4096 May 19 14:23 shared.key
+-r-------- 1 root root 4096 May 19 14:23 swap.key
+```
+
+Then leave the chroot and reboot, in this exact order:
+
+```bash
+exit
+swapoff -a
+umount -R /mnt
+cryptsetup close cryptroot
+cryptsetup close cryptshared
+cryptsetup close cryptswap
+reboot
+```
+
+Pull the USB. Expected first-boot sequence:
+
+1. Firmware → GRUB menu (just `GRUB`/`Arch Linux` for now — Ubuntu isn't installed yet).
+2. Kernel + initramfs.
+3. `sd-encrypt` prompts: **`Please enter passphrase for disk arch (cryptroot):`** — type the Arch root passphrase.
+4. `@` subvolume mounts as `/`.
+5. systemd starts; `systemd-cryptsetup@cryptshared.service` and `…@cryptswap.service` read their keyfiles and unlock the two shared containers silently.
+6. `/data` mounts; `cryptswap` swap activates.
+7. Login prompt.
+
+If you instead drop into emergency mode, jump to the [🚨 emergency section](#emergency-failure-modes).
+
+---
+
+# Part 3 — Arch first boot: verify shared partitions, snapper, hibernation
+
+Log in as your user. Run the Article 03 sanity block plus the new shared-partition checks:
+
+```bash
+sudo systemctl status            # System should be "running"
+findmnt /                        # subvol=/@
+findmnt /home                    # subvol=/@home
+findmnt /data                    # subvol=/@data, on /dev/mapper/cryptshared
+swapon --show                    # zram0 (pri 100), cryptswap (pri -1 or so), /swap/swapfile (pri -2)
+cryptsetup status cryptshared    # active LUKS2 mapping
+cryptsetup status cryptswap      # active LUKS2 mapping
+```
+
+**What pass looks like:** all three `cryptsetup status` outputs print `is active and is in use`, `findmnt /data` shows the shared Btrfs filesystem, and `swapon --show` lists three devices.
+
+Reconnect to Wi-Fi, re-enable NTP, verify timezone — same as [Article 03 Part 3](../2026-05-17-arch-luks-btrfs-caelestia/#part-3--first-boot-snapper-snapshots-sanity-checks).
+
+### Test that the shared partition is actually shareable
+
+Write a probe file as your user, then check it from a root shell:
+
+```bash
+echo "written from arch" > /data/probe-arch.txt
+ls -l /data/probe-arch.txt
+# Should print: -rw-r--r-- 1 evanns evanns ... /data/probe-arch.txt
+#                            ^^^^^^^^^^^^^ — user/group name, not raw UID
+stat -c '%u %g' /data/probe-arch.txt
+# Should print: 1000 1000
+```
+
+The point of the second `stat` line is to confirm the *integer* UID is 1000 — that's what Ubuntu's `evanns` will see when it mounts `/data` later. If the integer is anything other than 1000, your `useradd` in Chapter 6 didn't pin correctly; fix it now with `usermod -u 1000 evanns && chown -R 1000:1000 /home/evanns /data/*-by-evanns`.
+
+### Configure snapper for `/` and test hibernation
+
+Identical to [Article 03 Part 3](../2026-05-17-arch-luks-btrfs-caelestia/#configure-snapper-for--properly) — won't repeat here. Once those are green:
+
+- `sudo snapper -c root list` shows at least one row.
+- `sudo systemctl hibernate` works (screen goes dark, fans stop; press power button to resume; LUKS passphrase prompt; system comes back where you left it).
+
+::: {.callout-important}
+## Verify hibernation **before** you install Ubuntu
+
+If hibernation is broken on Arch, fixing it later (after Ubuntu has rewritten parts of the boot path) is meaningfully harder. Confirm it works now, while only one OS exists.
+:::
+
+### A note on snapper and the shared partition
+
+I deliberately did **not** create a snapper config for `/data`. Reasoning: data on `/data` is precisely the kind of file you'd want a *backup* of (off-machine — NAS, cloud, external drive), not a snapshot of. Snapshots survive your filesystem; they don't survive your laptop being stolen or the SSD dying. Pair `/data` with whatever backup tool you trust (`restic` or `borg` to a NAS is what I'm doing) instead of snapshotting it.
+
+If you change your mind later, `sudo snapper -c data create-config /data` works fine — the `@data` subvolume layout already supports it.
+
+---
+
+# Part 4 — Install Ubuntu 24 LTS alongside
+
+You now have a verified, encrypted, snapshot-able Arch install with two shared LUKS partitions sitting unused-by-Ubuntu-yet. Time to bring up Ubuntu in p5 (the empty partition we left for it in Chapter 1).
+
+Download the [Ubuntu 24.04 LTS Desktop ISO](https://ubuntu.com/download/desktop){target="_blank" rel="noopener"} (or Server, if you'd rather configure a desktop later — same procedure either way), verify its `SHA256SUMS` and signature, flash to a USB stick, and boot.
+
+::: {.callout-warning}
+## Ubuntu will overwrite the EFI NVRAM `BootOrder`
+
+When Ubuntu's installer runs `grub-install`, it writes an `Ubuntu` entry to NVRAM and **adjusts the boot order so Ubuntu's GRUB is tried first**. That's fine — Ubuntu's GRUB, with `os-prober` enabled, picks up Arch automatically and shows both in its menu. But if you'd rather Arch's GRUB own the menu, you'll restore the order with `efibootmgr` in Part 6.
+
+If you want to be safe before continuing, dump the current NVRAM state so you can compare later:
+
+```bash
+efibootmgr -v > ~/efi-before-ubuntu.txt
+```
+
+Run that from the *Arch* side, before booting the Ubuntu installer.
+:::
+
+### In the Ubuntu installer
+
+1. Pick **"Install Ubuntu"** (not "Try Ubuntu without installing", though either gets you to the installer eventually).
+2. **Keyboard, network, updates** — answer normally. Network: connect to the same Wi-Fi as before so `/dev/disk/by-uuid` mappings the live system sees match what the installed system will see.
+3. **Installation type** → **"Something else"** (the manual-partitioning option — the other choices will try to wipe the whole disk).
+4. In the partition table editor:
+    - **`/dev/nvme0n1p1`** — select it, **"Change"**, set "Use as: EFI System Partition" → **DO NOT FORMAT** (the checkbox at the bottom — leave it unchecked). This shares Arch's ESP with Ubuntu.
+    - **`/dev/nvme0n1p2`** — leave it alone (Ubuntu will recognize it as a LUKS container; don't let the installer touch it).
+    - **`/dev/nvme0n1p3`** — same, leave alone.
+    - **`/dev/nvme0n1p4`** — same, leave alone (this is Arch's root; Ubuntu must not even read it).
+    - **`/dev/nvme0n1p5`** — select it, **"Change"**, **set "Use as: physical volume for encryption"**, **format checked**. The installer will prompt for a LUKS passphrase. Use a distinct passphrase from Arch's root — save it in your password manager as `LUKS — ubuntu root`.
+    - After confirming the encryption setup, the partition will show as a mapper (e.g., `/dev/mapper/nvme0n1p5_crypt`). Select that mapper, **"Change"**, set "Use as: btrfs journaling file system", "Mount point: /", **format checked**.
+5. **"Device for boot loader installation"** — set this to `/dev/nvme0n1` (the *disk*, not a partition). Ubuntu's `grub-install` will write to the ESP we created.
+6. **User account creation**: username `evanns` (match exactly what you used on Arch), tick **"Log in automatically"** off, password whatever. The installer does not expose the UID for the first user — it's hard-coded to 1000, which is exactly what we want.
+7. Confirm, install.
+
+::: {.callout-note}
+## What the Ubuntu installer is actually doing under the hood
+
+The `Something else` flow gives you a partition table editor that drives `parted`, `cryptsetup`, `mkfs.btrfs`, and `grub-install` for you. Equivalent to roughly:
+
+```bash
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p5
+cryptsetup open /dev/nvme0n1p5 nvme0n1p5_crypt
+mkfs.btrfs -L ubuntu /dev/mapper/nvme0n1p5_crypt
+# … debootstrap of Ubuntu rootfs into a Btrfs filesystem with @ and @home subvolumes …
+mount /dev/nvme0n1p1 /target/boot/efi
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Ubuntu /dev/nvme0n1
+update-initramfs -u
+update-grub                        # Ubuntu's wrapper around grub-mkconfig
+```
+
+`update-grub` with `os-prober` enabled (which is the Ubuntu default) discovers Arch on `/dev/nvme0n1p4` after unlocking the LUKS container with the passphrase it doesn't have… well, it discovers the LUKS container exists and adds a "Arch Linux GNU/Linux" entry that chainloads our `/boot/EFI/GRUB/grubx64.efi`. Functionally: at the GRUB menu after Ubuntu install, picking "Ubuntu" boots Ubuntu directly; picking "Arch Linux" chains to Arch's GRUB and from there to Arch.
+:::
+
+8. When the installer finishes, **don't reboot yet** — instead pick **"Continue Testing"**, open a terminal in the live session, and continue with Chapter 14 below.
+
+---
+
+## Chapter 14: Configure Ubuntu's shared-partition unlock from the live ISO
+
+The cleanest place to set up Ubuntu's keyfile + crypttab + fstab is from within the Ubuntu live ISO, while the installed system's root is still mountable as `/target`. (If you reboot first, the same configuration is doable from inside the Ubuntu install — but you'll be working without a network until you set up Wi-Fi from a fresh Ubuntu login.)
+
+Mount the installed Ubuntu system and bind-mount the essentials:
+
+```bash
+sudo cryptsetup open /dev/nvme0n1p5 ubunturoot
+sudo mkdir -p /mnt/ubuntu
+sudo mount -o subvol=@ /dev/mapper/ubunturoot /mnt/ubuntu
+sudo mount /dev/nvme0n1p1 /mnt/ubuntu/boot/efi
+for d in dev dev/pts proc sys run; do
+    sudo mount --bind /$d /mnt/ubuntu/$d
+done
+sudo chroot /mnt/ubuntu
+```
+
+The mapper name `ubunturoot` here is a *temporary* name for the live ISO's use — the installed system uses whatever name Ubuntu's installer chose (typically `nvme0n1p5_crypt`). Inside the chroot, you're working with the installed system's filesystem layout.
+
+Inside the chroot, mount the still-unlocked Arch root just long enough to copy the keyfiles:
+
+```bash
+cryptsetup open /dev/nvme0n1p4 archroot_tmp
+mount -o subvol=@ /dev/mapper/archroot_tmp /mnt
+mkdir -p /etc/cryptsetup-keys.d
+cp /mnt/etc/cryptsetup-keys.d/shared.key /etc/cryptsetup-keys.d/
+cp /mnt/etc/cryptsetup-keys.d/swap.key   /etc/cryptsetup-keys.d/
+chmod 700 /etc/cryptsetup-keys.d
+chmod 0400 /etc/cryptsetup-keys.d/*.key
+umount /mnt
+cryptsetup close archroot_tmp
+```
+
+The keyfiles are now on the *Ubuntu* encrypted root with the same bytes as the *Arch* copy. Either OS's copy unlocks the same LUKS containers.
+
+Now write Ubuntu's `/etc/crypttab` entries (Ubuntu uses the same format as Arch, parsed by the same `systemd-cryptsetup-generator`):
+
+```bash
+SHARED_UUID=$(blkid -s UUID -o value /dev/nvme0n1p3)
+SWAP_UUID=$(blkid -s UUID -o value /dev/nvme0n1p2)
+
+echo "cryptshared UUID=${SHARED_UUID} /etc/cryptsetup-keys.d/shared.key luks" >> /etc/crypttab
+echo "cryptswap   UUID=${SWAP_UUID}   /etc/cryptsetup-keys.d/swap.key   luks" >> /etc/crypttab
+```
+
+(The Ubuntu installer already wrote a root-LUKS line at the top of `/etc/crypttab` — leave that line alone, just append these two below it.)
+
+Add the corresponding `/etc/fstab` lines:
+
+```bash
+echo "/dev/mapper/cryptshared /data btrfs rw,noatime,compress=zstd:3,subvol=@data 0 0" >> /etc/fstab
+echo "/dev/mapper/cryptswap   none  swap  defaults                                 0 0" >> /etc/fstab
+mkdir -p /data
+```
+
+Rebuild Ubuntu's initramfs and GRUB so the new `/etc/crypttab` is picked up:
+
+```bash
+update-initramfs -u -k all
+update-grub
+```
+
+`update-initramfs -u` regenerates the initramfs for every installed kernel; `update-grub` regenerates `grub.cfg` (and runs `os-prober`, picking up Arch).
+
+Exit the chroot and unmount cleanly:
+
+```bash
+exit
+for d in run sys proc dev/pts dev; do
+    sudo umount /mnt/ubuntu/$d
+done
+sudo umount /mnt/ubuntu/boot/efi
+sudo umount /mnt/ubuntu
+sudo cryptsetup close ubunturoot
+sudo reboot
+```
+
+Pull the Ubuntu USB as the laptop restarts.
+
+---
+
+## Chapter 15: Add the hibernation swap file on Ubuntu
+
+Ubuntu's installer doesn't create a hibernation swap file by default. We mirror Arch's Chapter 9 from inside the running Ubuntu system.
+
+After the reboot, pick **Ubuntu** from the GRUB menu (or `Arch Linux` to flip back if you want to compare; we'll boot Ubuntu first to finish its config).
+
+Log in as `evanns`. Open a terminal:
+
+```bash
+# Find the Btrfs filesystem mounted at / — should be /dev/mapper/nvme0n1p5_crypt
+findmnt /
+
+# Create the swap subvolume (Ubuntu's installer doesn't ship one)
+sudo btrfs subvolume create /swap
+
+# Make a NoCOW swap file — same size logic as Arch (≥ RAM)
+sudo btrfs filesystem mkswapfile --size 36g --uuid clear /swap/swapfile
+
+# Persist in fstab
+echo '/swap/swapfile none swap defaults,pri=-2 0 0' | sudo tee -a /etc/fstab
+
+# Find the resume offset for the cmdline
+sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+# Save the integer — Ubuntu calls it RESUME_OFFSET too.
+```
+
+Edit `/etc/default/grub`. Ubuntu's `GRUB_CMDLINE_LINUX_DEFAULT` typically reads `quiet splash`. Add the `resume=` and `resume_offset=` parameters, using the *Ubuntu root LUKS partition's* UUID (not Arch's), the mapper name Ubuntu uses (`nvme0n1p5_crypt`), and the offset from the previous step:
+
+```bash
+sudo blkid -s UUID -o value /dev/nvme0n1p5     # save this as <UBUNTU_LUKS_UUID>
+sudoedit /etc/default/grub
+```
+
+Set:
+
+```text
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash resume=/dev/mapper/nvme0n1p5_crypt resume_offset=<UBUNTU_RESUME_OFFSET>"
+```
+
+Tell Ubuntu's initramfs builder about the hibernation device:
+
+```bash
+echo "RESUME=/dev/mapper/nvme0n1p5_crypt" | sudo tee /etc/initramfs-tools/conf.d/resume
+sudo update-initramfs -u -k all
+sudo update-grub
+```
+
+::: {.callout-note}
+## Why the explicit `/etc/initramfs-tools/conf.d/resume` file
+
+On Ubuntu, `initramfs-tools` (the analog of Arch's `mkinitcpio`) reads `/etc/initramfs-tools/conf.d/resume` at build time and bakes the resume device into the initramfs so userspace's hibernation tooling agrees with the kernel cmdline. Without this file, `update-initramfs` defaults to detecting the *largest* swap from `/etc/fstab` — which on this system would be the 36 GiB shared swap partition (`cryptswap`), wrong for hibernation. Pinning to the per-OS swap file mapper is what avoids the cross-OS collision.
+:::
+
+Confirm Ubuntu sees the shared partitions and swap correctly:
+
+```bash
+findmnt /data                 # /dev/mapper/cryptshared, subvol=@data
+swapon --show                 # zram (if Ubuntu set it up — recent Ubuntu does), cryptswap, /swap/swapfile
+cryptsetup status cryptshared
+cryptsetup status cryptswap
+ls -l /data                   # files written from Arch should appear, owned by evanns
+```
+
+Test hibernation:
+
+```bash
+sudo systemctl hibernate
+```
+
+Screen goes dark, fans stop. Press the power button to resume. You should see: GRUB menu → kernel/initramfs → Ubuntu LUKS passphrase prompt → resume completes, exact same desktop state as before.
+
+If hibernation resumes into a fresh boot instead, re-check `RESUME=` in `/etc/initramfs-tools/conf.d/resume` and re-run `sudo update-initramfs -u -k all && sudo update-grub`.
+
+---
+
+# Part 5 — Finalize the GRUB menu from Arch
+
+Reboot, pick **Arch Linux** in the GRUB menu (Ubuntu's GRUB, with `os-prober`, knows about Arch — that entry chainloads Arch's GRUB, which boots Arch).
+
+Once logged in to Arch, re-run `grub-mkconfig` from the Arch side now that Ubuntu exists:
+
+```bash
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+You should see `os-prober` output like:
+
+```text
+Found Ubuntu 24.04 LTS (24.04) on /dev/nvme0n1p5
+```
+
+…and `grub.cfg` will now contain entries for Arch *and* Ubuntu. Either GRUB (Arch's or Ubuntu's) can boot either OS — you have two parallel menus, both functional.
+
+### Optional: choose which GRUB owns the menu via NVRAM order
+
+If you'd rather Arch's GRUB be the primary (so the menu's color scheme, default selection, and timeout match what we configured in Chapter 12 rather than Ubuntu's defaults):
+
+```bash
+efibootmgr                                 # list current EFI entries
+# Find the BootNNNN number for "GRUB" (Arch) and for "Ubuntu", and the BootOrder line.
+sudo efibootmgr -o GRUB_NUM,UBUNTU_NUM     # substitute the BootNNNN numbers, comma-separated
+```
+
+This reorders NVRAM so Arch's GRUB is tried first. Ubuntu's GRUB remains installed and reachable (as a backup, or to be made primary again by re-flipping the order).
+
+If you'd rather Ubuntu's GRUB stay primary (it's perfectly capable, and `update-grub` runs on Ubuntu kernel updates automatically — slightly less manual): leave NVRAM alone. The choice is cosmetic + ergonomic, not functional.
+
+---
+
+# Part 6 — Final sanity checks across both OSes
+
+Before treating the dual-boot as "done":
+
+### From Arch
+
+```bash
+findmnt /                       # subvol=/@, on cryptroot
+findmnt /home                   # subvol=/@home
+findmnt /data                   # subvol=/@data, on cryptshared
+swapon --show                   # zram, cryptswap, /swap/swapfile
+cryptsetup status cryptroot     # active LUKS2
+cryptsetup status cryptshared   # active LUKS2
+cryptsetup status cryptswap     # active LUKS2
+sudo snapper -c root list       # at least one snapshot
+sudo systemctl hibernate        # works, resumes into Arch
+ls -l /data                     # files from Arch + files written from Ubuntu
+stat -c '%u %g %n' /data/*      # all UIDs/GIDs == 1000
+```
+
+### From Ubuntu (reboot, pick Ubuntu)
+
+```bash
+findmnt /                       # subvol=/@, on nvme0n1p5_crypt
+findmnt /home                   # subvol=/@home
+findmnt /data                   # subvol=/@data, on cryptshared (same UUID as Arch sees)
+swapon --show                   # /swap/swapfile (Ubuntu's), cryptswap (shared)
+cryptsetup status nvme0n1p5_crypt
+cryptsetup status cryptshared
+cryptsetup status cryptswap
+sudo systemctl hibernate        # works, resumes into Ubuntu (separate from Arch's hibernation)
+ls -l /data                     # same files as Arch sees, owned by evanns
+stat -c '%u %g %n' /data/*      # all UIDs/GIDs == 1000
+```
+
+**What pass looks like at the system level:** each OS hibernates and resumes into itself without touching the other, both mount `/data` with identical file ownership, both see exactly three swap devices in priority order, and the GRUB menu lists both OSes regardless of which `grub-mkconfig`/`update-grub` regenerated it last.
+
+If any of these fail, the [emergency section](#emergency-failure-modes) below covers the common dual-boot-specific failure modes.
+
+---
+
+[]{#emergency-failure-modes}
+
+::: {.callout-important}
+## 🚨 Emergency: common dual-boot failure modes
+
+This section is for when something has gone visibly wrong. If the Part 6 sanity check passed, you can skip the rest of this article.
+:::
+
+### 1. Arch boots, but `/data` doesn't mount on first boot
+
+Symptom: `findmnt /data` prints nothing. `journalctl -b -u systemd-cryptsetup@cryptshared.service` shows `Failed to activate with key file …`.
+
+Most-likely causes:
+
+- The keyfile path in `/etc/crypttab` doesn't match where the keyfile actually lives. `cat /etc/crypttab` and `ls -l /etc/cryptsetup-keys.d/` — they have to match.
+- The keyfile's permissions are wrong (must be `0400`, root-owned). `chmod 0400 /etc/cryptsetup-keys.d/shared.key`.
+- The keyfile was never added to the LUKS container's keyslot. `cryptsetup luksDump /dev/nvme0n1p3 | grep -i keyslot` should show **two** active keyslots; if only one, re-run `cryptsetup luksAddKey /dev/nvme0n1p3 /etc/cryptsetup-keys.d/shared.key`.
+- The UUID in `/etc/crypttab` doesn't match the partition's actual LUKS UUID. `blkid /dev/nvme0n1p3` — compare.
+
+### 2. Boot drops into emergency mode after Arch LUKS passphrase
+
+Same four failure modes as Article 03's [emergency section](../2026-05-17-arch-luks-btrfs-caelestia/#emergency-timed-out-waiting-for-device):
+
+1. `<UUID>` or `<RESUME_OFFSET>` left as literal text in `/etc/default/grub`.
+2. Mapper name mismatch between `rd.luks.name=…=cryptroot` and `root=/dev/mapper/cryptroot`.
+3. `rootflags=subvol=@` missing.
+4. `mkinitcpio.conf` not regenerated after edits (no `sd-encrypt` hook in the actual image).
+
+Recover the same way: boot the Arch USB, `cryptsetup open /dev/nvme0n1p4 cryptroot`, `mount -o subvol=@ /dev/mapper/cryptroot /mnt`, `mount /dev/nvme0n1p1 /mnt/boot`, `arch-chroot /mnt`, fix, `mkinitcpio -P`, `grub-mkconfig -o /boot/grub/grub.cfg`, reboot.
+
+### 3. GRUB menu shows only one OS
+
+You re-ran `grub-mkconfig` (or `update-grub`) and only see one entry. Two common causes:
+
+- **`os-prober` not enabled.** `grep ^GRUB_DISABLE_OS_PROBER= /etc/default/grub` should print `GRUB_DISABLE_OS_PROBER=false`. If not, uncomment/set, re-run.
+- **`os-prober` not installed.** On Arch, `pacman -S os-prober`. On Ubuntu, `apt install os-prober`.
+
+After fixing, re-run `grub-mkconfig -o /boot/grub/grub.cfg` (Arch) or `update-grub` (Ubuntu). You should see `Found <Other OS> on /dev/nvme0n1pX` in the output.
+
+### 4. Hibernation from one OS resumes into the *other* OS
+
+This means both OSes' `resume=` parameters point at the *same* device, and whichever boots last reads the other's image. The fix: each OS's `resume=` parameter should point at its own per-OS swap file's underlying mapper (`/dev/mapper/cryptroot` for Arch, `/dev/mapper/nvme0n1p5_crypt` for Ubuntu) — NOT the shared `cryptswap` mapper.
+
+If you accidentally set `resume=/dev/mapper/cryptswap` on either OS, fix the cmdline (Arch: `/etc/default/grub` → `grub-mkconfig`; Ubuntu: `/etc/default/grub` → `update-grub`; Ubuntu also: `/etc/initramfs-tools/conf.d/resume` → `update-initramfs -u -k all`).
+
+### 5. File ownership on `/data` looks like `1001` from Ubuntu, `1000` from Arch
+
+The Ubuntu installer assigned the user UID 1001 because there was already a UID 1000 in some inherited config (rare, but possible). Fix from Ubuntu:
+
+```bash
+sudo usermod -u 1000 evanns
+sudo groupmod -g 1000 evanns
+sudo find / -uid 1001 -not -path '/proc/*' -not -path '/sys/*' -exec chown 1000 {} +
+sudo find / -gid 1001 -not -path '/proc/*' -not -path '/sys/*' -exec chgrp 1000 {} +
+```
+
+Reboot Ubuntu. Now `id evanns` prints `uid=1000(evanns) gid=1000(evanns)`.
+
+### 6. Ubuntu installer can't see the Arch ESP
+
+Symptom: when you select `/dev/nvme0n1p1` in the installer, "Use as: EFI System Partition" is greyed out, or the installer wants to format it.
+
+Workaround: pre-mount it from the live ISO's terminal before re-launching the installer:
+
+```bash
+sudo mount /dev/nvme0n1p1 /mnt
+ls /mnt/EFI                 # should see GRUB/ from Arch's grub-install
+sudo umount /mnt
+```
+
+Then re-launch the installer — the partition type recognition usually settles after a clean mount-cycle.
+
+---
+
+# Part 7 — What comes next
+
+You now have two encrypted, snapshot-able OSes sharing one ESP, one swap partition, and one data partition, with hibernation isolated per-OS. The next decisions are personal:
+
+::: {.callout-tip}
+## Arch desktop layer — same fork as Article 03's Part 4
+
+[**Caelestia (Article 05)**](../2026-05-18-caelestia-desktop/) for a turnkey Hyprland bundle, or a custom Hyprland (upcoming). Neither affects Ubuntu — desktop choice lives entirely on the Arch side.
+:::
+
+::: {.callout-tip}
+## Ubuntu desktop layer
+
+Comes up out-of-the-box with whichever Ubuntu flavor you installed (GNOME for stock Ubuntu Desktop, Plasma for Kubuntu, etc.). No further configuration required to log in graphically.
+:::
+
+::: {.callout-tip}
+## Eventually: triple-boot with Windows
+
+If you ever want to bolt Windows onto this layout, that's [Article 10](../../#tz-planned-10) territory — the dual-boot above doesn't preclude it, but Windows adds BitLocker, signed-bootloader, and ESP-conflict considerations that deserve their own article.
+:::
+
+---
+
+::: {.callout-note}
+## Attribution
+
+The Arch Linux logo is a trademark of the Arch Linux project and is used here under [Arch Linux's branding terms](https://archlinux.org/art/){target="_blank" rel="noopener"} for editorial purposes only. The Ubuntu wordmark and Circle of Friends are trademarks of Canonical Ltd. — references here are editorial and follow Canonical's [trademark policy](https://ubuntu.com/legal/intellectual-property-policy){target="_blank" rel="noopener"}.
+:::
