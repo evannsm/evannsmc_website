@@ -1149,8 +1149,10 @@ Either way: take Article 05's caveats as a warning, not a deterrent. The bundle 
 
 ---
 
+[]{#emergency-timed-out-waiting-for-device}
+
 ::: {.callout-important}
-## 🚨 Emergency: "Timed out waiting for device" at boot {#emergency-timed-out-waiting-for-device}
+## 🚨 Emergency: "Timed out waiting for device" at boot
 
 **You only need this section if something has gone horribly wrong.** Specifically: you rebooted into the new system after Part 3, GRUB loaded, the LUKS prompt accepted your passphrase, and then the kernel dropped into a `systemd` emergency shell with a `Timed out waiting for device` line followed by a couple of `Dependency failed for /sysroot` lines and `You are in emergency mode.`
 
