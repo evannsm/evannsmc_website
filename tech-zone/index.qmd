@@ -675,12 +675,13 @@ main.content.column-page {
 
         <p class="tz-card-preview-copy">
           Bolts Ubuntu 24 LTS alongside the working LUKS+Btrfs single-boot from Article 03 — two
-          independently encrypted root partitions, a shared <code>150 GiB</code> Btrfs data partition both
-          distros mount read-write (LUKS-encrypted, keyfile-unlocked from each root), a shared
-          <code>36 GiB</code> LUKS swap partition, and a <code>1 GiB</code> shared ESP. Per-OS hibernation
-          to NoCOW Btrfs swap files inside each encrypted root — no cross-OS resume-image collisions.
-          One GRUB on the shared ESP with <code>os-prober</code> enabled. The full reasoned procedure;
-          I'll update in place once I've run it end-to-end on the next workstation install.
+          independently encrypted root partitions, one shared <code>150 GiB</code> Btrfs data partition
+          both distros mount read-write (LUKS-encrypted, keyfile-unlocked from each root), and a
+          <code>1 GiB</code> shared ESP. Everyday swap via zram on each OS; hibernation to per-OS NoCOW
+          Btrfs swap files inside each encrypted root — no shared swap partition, no cross-OS
+          resume-image collisions. One GRUB on the shared ESP with <code>os-prober</code> enabled.
+          The full reasoned procedure; I'll update in place once I've run it end-to-end on the next
+          workstation install.
         </p>
 
         <div class="tz-screen" aria-hidden="true">
@@ -699,13 +700,12 @@ TARGET SOURCE                     FSTYPE OPTIONS
   keyfile: <span class="ok">/etc/cryptsetup-keys.d/shared.key</span>
 
 <span class="p">[evanns@arch-dual ~]$</span> <span class="c">swapon --show</span>
-NAME                    TYPE       SIZE PRIO
-/dev/zram0              partition  8G   <span class="ok">100</span>
-/dev/mapper/cryptswap   partition 36G   <span class="mute">-2</span>
-/swap/swapfile          file      36G   <span class="mute">-3</span>
+NAME           TYPE       SIZE PRIO
+/dev/zram0     partition  16G  <span class="ok">100</span>
+/swap/swapfile file       36G  <span class="mute">-2</span>
 
 <span class="p">[evanns@arch-dual ~]$</span> <span class="c">sudo grub-mkconfig -o /boot/grub/grub.cfg 2&gt;&amp;1 | grep Found</span>
-<span class="ok">Found Ubuntu 24.04 LTS (24.04) on /dev/nvme0n1p5</span><span class="u">_</span></div>
+<span class="ok">Found Ubuntu 24.04 LTS (24.04) on /dev/nvme0n1p4</span><span class="u">_</span></div>
         </div>
 
         <span class="tz-card-cta">read the dual-boot plan <span class="arrow">→</span></span>
